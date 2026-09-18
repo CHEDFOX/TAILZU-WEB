@@ -80,7 +80,6 @@
   /* The jump across the microphone is the drama: small dim sans in, large
      bright serif out. */
   .clean { font-family: var(--serif); font-size: 31px; fill: var(--white); }
-  .heat { transform-origin: 730px 268px; animation: breathe 5.5s ease-in-out infinite; }
   #drift { transition: transform .5s cubic-bezier(.2,.8,.3,1); }
 
   /* The mark. Boxes drawn over the wires, so nothing needs trimming. */
@@ -171,7 +170,6 @@
   /* ---- motion ---------------------------------------------------------- */
   @keyframes rise { from { opacity: 0; transform: translateY(26px); } to { opacity: 1; transform: none; } }
   @keyframes fade { from { opacity: 0; } to { opacity: 1; } }
-  @keyframes breathe { 0%, 100% { transform: scale(1); opacity: .75; } 50% { transform: scale(1.1); opacity: 1; } }
   .reveal { opacity: 0; transform: translateY(26px); transition: opacity .9s cubic-bezier(.2,.85,.25,1), transform .9s cubic-bezier(.2,.85,.25,1); }
   .reveal.in { opacity: 1; transform: none; }
 
@@ -234,9 +232,6 @@
            allowed to be steep and crowded; the sentence gets room to read. -->
       <path id="out1" d="M803 284 C920 274 1030 258 1170 236 C1330 211 1460 194 1740 158"/>
       <clipPath id="clipIn"><rect x="-300" y="-140" width="962" height="800"/></clipPath>
-      <!-- A few units clear of the last box's edge, so the sentence leaves it
-           rather than growing out of its side. -->
-      <clipPath id="clipOut"><rect x="838" y="-140" width="1000" height="800"/></clipPath>
       <!-- The mouth. Ink at full strength over the first box, fading to
            nothing by the rim, so the mess dissolves INTO it rather than being
            chopped off at a clip edge. -->
@@ -244,11 +239,14 @@
         <stop offset="30%" stop-color="#100F0E" stop-opacity="1"/>
         <stop offset="100%" stop-color="#100F0E" stop-opacity="0"/>
       </radialGradient>
-      <radialGradient id="heat">
-        <stop offset="0%" stop-color="#E8A23C" stop-opacity=".26"/>
-        <stop offset="55%" stop-color="#E8A23C" stop-opacity=".06"/>
-        <stop offset="100%" stop-color="#E8A23C" stop-opacity="0"/>
-      </radialGradient>
+      <!-- The sentence forms as it leaves the last box instead of arriving
+           whole at a clip edge, which read as sliding out from behind a
+           sheet rather than coming out of the box. -->
+      <linearGradient id="emerge" gradientUnits="userSpaceOnUse" x1="824" y1="0" x2="912" y2="0">
+        <stop offset="0" stop-color="#fff" stop-opacity="0"/>
+        <stop offset="1" stop-color="#fff" stop-opacity="1"/>
+      </linearGradient>
+      <mask id="leaving"><rect x="812" y="-140" width="1100" height="800" fill="url(#emerge)"/></mask>
     </defs>
 
     <g id="drift">
@@ -257,7 +255,7 @@
         <text class="mess near"><textPath href="#in2" id="t2" startOffset="0"> </textPath></text>
         <text class="mess far"><textPath href="#in3" id="t3" startOffset="0"> </textPath></text>
       </g>
-      <g clip-path="url(#clipOut)">
+      <g mask="url(#leaving)">
         <text class="clean"><textPath href="#out1" id="t4" startOffset="0"> </textPath></text>
       </g>
     </g>
@@ -266,7 +264,6 @@
          through does not, or the still point of the picture is not still. -->
     <g>
       <ellipse cx="660" cy="330" rx="118" ry="78" fill="url(#mouth)"/>
-      <ellipse cx="730" cy="268" rx="240" ry="150" fill="url(#heat)" class="heat"/>
 
       <!-- THE MARK, doing the job it was drawn for, and drawn to its own
            measurements: speech into the first box, the second one thinks, the
@@ -529,8 +526,11 @@
    * box stays lit because it is the one taking the sound, and the timed
    * sequence stands down — there is a real signal to show.
    */
-  var A_ON = [0, 420], B_ON = [560, 980], PULSE = [1090, 1880],
-      C_ON = [2000, 2420], CYCLE = 5400, STEP = (PULSE[1] - PULSE[0]) / 8;
+  /* Off the splash at 60fps, not rounded off by eye. The pulse steps every
+     eight frames — 133ms — and the third box lights on the very frame the
+     last tick goes out, so the signal is handed over rather than dropped. */
+  var A_ON = [0, 400], B_ON = [480, 900], PULSE = [933, 1999],
+      C_ON = [1999, 2400], CYCLE = 5400, STEP = 133.3;
   var CREAM = "#CFC3A8", AMBER = "#E8A23C";
   var bx = [$("bx1"), $("bx2"), $("bx3")];
 

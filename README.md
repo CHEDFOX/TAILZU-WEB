@@ -26,8 +26,10 @@ the viewport cut them off. No two inbound lanes run at the same speed, because e
 speeds beat against each other and read as one repeating pattern rather than
 three separate people talking at once; they carry interleaved cases rather
 than consecutive ones, so three scripts are on screen at once. A radial ink
-gradient over the crossing dissolves the mess into the microphone instead of
-chopping it off at a clip edge.
+gradient over the crossing dissolves the mess into the first box instead of
+chopping it off at a clip edge, and a gradient mask at the far side lets the
+sentence form as it leaves the last one — arriving whole at a hard edge read
+as sliding out from behind a sheet. Nothing glows: the mark sits on plain ink.
 
 All four lanes are drawn through the centre of the viewBox, which is where the
 capsule is centred — that is what keeps the button exactly on the crossing at
@@ -59,11 +61,12 @@ makes the hatch a wave and not a ladder — 27, 36, 40, 46, 44, 35, 28, short at
 the ends and longest just past the middle. One scale and one offset carry
 those numbers into the page, so the hatch keeps its shape at any size.
 
-The signal is timed off the splash frame by frame rather than invented: first
-box, second box, then exactly TWO adjacent ticks stepping one position every
-tenth of a second from the second box to the third, then the third box, then
-three seconds of nothing. Lengths never change; a lit tick swells about a
-twelfth, which is what the splash does too.
+The signal is timed off the splash at 60fps rather than invented: first box,
+second box, then — a tenth of a second after the second box goes out — exactly
+TWO adjacent ticks stepping one position every 133ms (eight frames) from the
+second box to the third, and the third box lights on the very frame the last
+tick goes out. Then three seconds of nothing. Lengths never change; a lit tick
+swells about a twelfth, which is what the splash does too.
 
 While the microphone is open the run becomes the level meter, the first box
 stays lit because it is the one taking the sound, and the timed sequence
