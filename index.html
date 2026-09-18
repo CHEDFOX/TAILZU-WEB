@@ -61,7 +61,7 @@
      the right. Many in, one out — which is the shape of the product as well
      as the shape of the picture. The button sits on the crossing, because
      pressing it is what puts your own voice through the same funnel.       */
-  .river { position: relative; margin-top: -34px; height: 520px; animation: fade 1.4s .5s both; }
+  .river { position: relative; margin-top: -72px; height: 520px; animation: fade 1.4s .5s both; }
   /* No bands. Speech runs on the page itself, and the mask dissolves it into
      the ground at both edges rather than letting the viewport cut it off —
      so nothing on this page has a visible strip around it. The mask is on the
@@ -83,13 +83,15 @@
   .clean { font-family: var(--serif); font-size: 23px; fill: var(--white); }
   #drift { transition: transform .5s cubic-bezier(.2,.8,.3,1); }
 
-  /* The mark. Boxes drawn over the wires, so nothing needs trimming. */
+  /* The caret. 530ms on, 530ms off, which is the rate a real one blinks at —
+     any faster reads as an error state, any slower as a dying battery. */
   #mark { cursor: pointer; }
-  #mark:focus-visible { outline: 2px solid var(--amber); outline-offset: 8px; border-radius: 12px; }
-  .box  { fill: var(--white); }
-  .wire { stroke: #CFC3A8; stroke-width: 2.2; fill: none; }
-  .tick { stroke: #CFC3A8; stroke-width: 1.8; stroke-linecap: round; }
-  .box, .tick { transition: fill .18s linear, stroke .18s linear; }
+  #mark:focus-visible { outline: 2px solid var(--amber); outline-offset: 10px; border-radius: 8px; }
+  .caret { fill: var(--white); animation: blink 1.06s steps(1) infinite; }
+  @keyframes blink { 0%, 49.9% { opacity: 1; } 50%, 100% { opacity: .1; } }
+  /* Open microphone: it stops blinking and holds, because now there is
+     something to wait for rather than nothing. */
+  .river.on .caret { animation: none; opacity: 1; fill: var(--amber); }
 
   /* The control sits under the mark; its position is measured, not guessed,
      because the svg is sliced and the mark lands somewhere different at
@@ -225,38 +227,36 @@
            path that doubles back hangs its own glyphs upside down. All three
            inbound lanes arrive at (720, 260), which is the centre of this
            box, which is where the mark's first box sits at every window width. -->
-      <!-- Every lane arrives at the mark's first box, at (660, 330). -->
-      <path id="in1" d="M-220 52 C60 64 300 140 480 248 C556 292 614 318 660 330"/>
-      <path id="in2" d="M-220 318 C80 324 320 330 480 331 C566 331 618 331 660 330"/>
-      <path id="in3" d="M-220 506 C90 498 320 440 480 376 C562 342 616 336 660 330"/>
-      <!-- Dead level, out of the middle of the last box. The three lanes
-           arriving are curved and crowded because that is what speech is;
-           the sentence leaving is a straight line on a straight line, which
-           is the whole difference the product makes. -->
-      <path id="out1" d="M803 284 L1800 284"/>
-      <clipPath id="clipIn"><rect x="-300" y="-140" width="962" height="800"/></clipPath>
-      <!-- The mouth. Ink at full strength over the first box, fading to
+      <!-- Every lane arrives just left of the caret, at (712, 284). -->
+      <path id="in1" d="M-220 40 C60 52 300 128 480 212 C556 248 620 272 712 284"/>
+      <path id="in2" d="M-220 288 C80 292 320 286 480 285 C566 284 640 284 712 284"/>
+      <path id="in3" d="M-220 500 C90 492 320 432 480 366 C562 330 630 300 712 284"/>
+      <!-- Dead level, out of the caret. The three lanes arriving are curved
+           and crowded because that is what speech is; the one leaving is a
+           straight line, which is the whole difference the product makes. -->
+      <path id="out1" d="M728 284 L1800 284"/>
+      <clipPath id="clipIn"><rect x="-300" y="-140" width="1014" height="800"/></clipPath>
+      <!-- The mouth. Ink at full strength just before the caret, fading to
            nothing by the rim, so the mess dissolves INTO it rather than being
            chopped off at a clip edge. -->
       <radialGradient id="mouth">
-        <stop offset="30%" stop-color="#100F0E" stop-opacity="1"/>
+        <stop offset="26%" stop-color="#100F0E" stop-opacity="1"/>
         <stop offset="100%" stop-color="#100F0E" stop-opacity="0"/>
       </radialGradient>
-      <!-- The sentence forms as it leaves the last box instead of arriving
-           whole at a clip edge, which read as sliding out from behind a
-           sheet rather than coming out of the box. -->
-      <linearGradient id="emerge" gradientUnits="userSpaceOnUse" x1="826" y1="0" x2="886" y2="0">
+      <!-- The sentence forms as it leaves the caret instead of arriving whole
+           at a hard edge, which reads as sliding out from behind a sheet. -->
+      <linearGradient id="emerge" gradientUnits="userSpaceOnUse" x1="728" y1="0" x2="792" y2="0">
         <stop offset="0" stop-color="#fff" stop-opacity="0"/>
         <stop offset="1" stop-color="#fff" stop-opacity="1"/>
       </linearGradient>
-      <mask id="leaving"><rect x="812" y="-140" width="1100" height="800" fill="url(#emerge)"/></mask>
+      <mask id="leaving"><rect x="716" y="-140" width="1200" height="800" fill="url(#emerge)"/></mask>
     </defs>
 
     <g id="drift">
       <g clip-path="url(#clipIn)">
         <!-- dy carries the glyphs down onto the line. A textPath sets the
              BASELINE on the path, so without it every lane floats a third of
-             its own height above the box it is supposed to be running into. -->
+             its own height above the line it is supposed to run along. -->
         <text class="mess far" dy=".33em"><textPath href="#in1" id="t1" startOffset="0"> </textPath></text>
         <text class="mess near" dy=".33em"><textPath href="#in2" id="t2" startOffset="0"> </textPath></text>
         <text class="mess far" dy=".33em"><textPath href="#in3" id="t3" startOffset="0"> </textPath></text>
@@ -266,22 +266,18 @@
       </g>
     </g>
 
-    <!-- Outside the drift. Speech moves under the hand; the mark it passes
+    <!-- Outside the drift. Speech moves under the hand; the thing it passes
          through does not, or the still point of the picture is not still. -->
     <g>
-      <ellipse cx="660" cy="330" rx="118" ry="78" fill="url(#mouth)"/>
+      <ellipse cx="700" cy="284" rx="112" ry="72" fill="url(#mouth)"/>
 
-      <!-- THE MARK, doing the job it was drawn for, and drawn to its own
-           measurements: speech into the first box, the second one thinks, the
-           hatch carries it across, the sentence leaves from the third. The
-           wire runs centre to centre and the boxes sit on top of it, so
-           nothing has to be trimmed to an edge. -->
+      <!-- THE CARET. Not an ornament standing in for the product: it is the
+           product. Everything Tailzu does ends at somebody's cursor, so the
+           cursor is what the speech runs into and what the sentence comes
+           out of. It blinks at the rate a real one does, and while the
+           microphone is open it stops blinking and breathes with the voice. -->
       <g id="mark" role="button" tabindex="0" aria-label="Use your own voice">
-        <line class="wire" x1="660" y1="330" x2="709.8" y2="206.8"/>
-        <g id="hatch"></g>
-        <rect class="box" id="bx1" x="636.2" y="305.4" width="47.6" height="49.1" rx="11"/>
-        <rect class="box" id="bx2" x="686" y="182.7" width="47.6" height="48.4" rx="11"/>
-        <rect class="box" id="bx3" x="779" y="260" width="46.9" height="48.4" rx="11"/>
+        <rect id="caret" class="caret" x="716" y="248" width="8" height="72" rx="4"/>
       </g>
     </g>
   </svg>
@@ -482,7 +478,7 @@
       L.off = (L.off + L.speed * boost * dt / 1000) % L.len;
       L.el.setAttribute("startOffset", String(-L.len + L.off));
     });
-    drawHatch(now, listening);
+    drawCaret(listening);
     tx += (mx - tx) * 0.06; ty += (my - ty) * 0.06;
     var s = Math.max(-40, Math.min(40, (window.pageYOffset || 0) * 0.06));
     drift.setAttribute("transform", "translate(" + tx.toFixed(1) + "," + (ty - s).toFixed(1) + ")");
@@ -497,73 +493,26 @@
      signal crossing. While the microphone is open the same ticks are the
      level meter, so the thing you are watching is your own voice rather
      than a decoration pretending to be one.                              */
-  /* Straight off the artwork rather than off a formula: seven ticks, each one
-     leaning 130°, their centres evenly stepped, and their lengths forming the
-     lens that makes this a wave and not a ladder — short at the ends, longest
-     just past the middle. Measured from the 1000px original and carried here
-     by one scale and one offset, so the hatch stays the drawn shape at any
-     size the mark is set in. */
-  var REF = [[449.5, 397.5, 27.0], [466.3, 411.4, 35.7], [482.8, 425.6, 40.1],
-             [499.5, 439.5, 45.8], [516.2, 453.5, 43.7], [532.8, 467.7, 34.6],
-             [549.5, 481.5, 28.0]];
-  var S = 0.372, DX = 570.3, DY = 82.2;
-  var ANG = 130 * Math.PI / 180, px = Math.cos(ANG), py = Math.sin(ANG);
-  var TICKS = REF.length;
-  var ticks = [], amp = [], hatch = $("hatch"), listening = false;
-  for (var k = 0; k < TICKS; k++) {
-    var ln = document.createElementNS("http://www.w3.org/2000/svg", "line");
-    ln.setAttribute("class", "tick");
-    ticks.push({ el: ln, cx: REF[k][0] * S + DX, cy: REF[k][1] * S + DY, h: REF[k][2] * S / 2 });
-    amp.push(0);
-    hatch.appendChild(ln);
+  /* ---------------------------------------------------------------------
+     THE CARET
+
+     Everything this product does ends at somebody's cursor, so the cursor is
+     what the speech runs into and what the sentence comes out of. No object
+     standing in for the product — the product's own destination.
+
+     It holds still and blinks while nothing is happening. With the microphone
+     open it stops blinking, turns amber and breathes with the voice, so what
+     grows and shrinks is the thing the words are about to be written at.   */
+  var caret = $("caret"), MID = 284, REST = 72, listening = false, voice = 0;
+
+  function drawCaret(live) {
+    voice += ((live ? level : 0) - voice) * 0.22;      // eased, or it judders
+    var h = REST + voice * 86;
+    caret.setAttribute("y", (MID - h / 2).toFixed(1));
+    caret.setAttribute("height", h.toFixed(1));
   }
-
-  /**
-   * THE SIGNAL, timed off the splash frame by frame rather than invented.
-   *
-   * One pulse crosses the whole mark and then the mark rests. The first box
-   * lights, the second lights, exactly TWO adjacent ticks travel the hatch a
-   * step at a time from the second box to the third, the third lights, and
-   * then nothing happens for three seconds. The lengths never change: the
-   * lens they form IS the drawing, and a tick that stretches stops being it.
-   * A lit tick swells about a twelfth, which is what the splash does too.
-   *
-   * While the microphone is open the run becomes the level meter, the first
-   * box stays lit because it is the one taking the sound, and the timed
-   * sequence stands down — there is a real signal to show.
-   */
-  /* Off the splash at 60fps, not rounded off by eye. The pulse steps every
-     eight frames — 133ms — and the third box lights on the very frame the
-     last tick goes out, so the signal is handed over rather than dropped. */
-  var A_ON = [0, 400], B_ON = [480, 900], PULSE = [933, 1999],
-      C_ON = [1999, 2400], CYCLE = 5400, STEP = 133.3;
-  var CREAM = "#CFC3A8", AMBER = "#E8A23C";
-  var bx = [$("bx1"), $("bx2"), $("bx3")];
-
-  function drawHatch(now, live) {
-    var t = now % CYCLE, lit = -1;
-    if (!live && t >= PULSE[0] && t < PULSE[1]) lit = Math.floor((t - PULSE[0]) / STEP);
-
-    for (var i = 0; i < TICKS; i++) {
-      var T = ticks[i];
-      var on = live ? amp[i] > 0.34 : (i === lit || i === lit - 1);
-      var h = live ? T.h * (0.45 + amp[i] * 1.5) : T.h * (on ? 1.08 : 1);
-      T.el.setAttribute("x1", (T.cx - px * h).toFixed(1));
-      T.el.setAttribute("y1", (T.cy - py * h).toFixed(1));
-      T.el.setAttribute("x2", (T.cx + px * h).toFixed(1));
-      T.el.setAttribute("y2", (T.cy + py * h).toFixed(1));
-      T.el.setAttribute("stroke", on ? AMBER : CREAM);
-    }
-
-    bx[0].setAttribute("fill", live || (!live && t < A_ON[1]) ? AMBER : "#F6F2EA");
-    bx[1].setAttribute("fill", !live && t >= B_ON[0] && t < B_ON[1] ? AMBER : "#F6F2EA");
-    bx[2].setAttribute("fill", !live && t >= C_ON[0] && t < C_ON[1] ? AMBER : "#F6F2EA");
-  }
-  // Straight away, not on the first frame. A line with no coordinates sits at
-  // the origin, which drags the mark's measured box out to the left edge of
-  // the drawing — and under reduced motion, where the loop never runs, the
-  // hatch would simply never be drawn at all.
-  drawHatch(0, false);
+  var level = 0;
+  drawCaret(false);
 
   var riverEl = $("river");
   riverEl.addEventListener("pointermove", function (e) {
@@ -785,15 +734,13 @@
     (function tick() {
       if (!analyser) return;
       analyser.getByteFrequencyData(buf);
-      var sum = 0;
-      // Straight into the hatch: the ticks between the second and third box
-      // become the meter, so what moves is your voice and not an ornament.
-      for (var i = 0; i < TICKS; i++) {
-        var v = buf[Math.floor(i * buf.length / TICKS / 2)] / 255;
-        sum += v; amp[i] = v;
-      }
+      // One number, not a bank of them: the caret has a single height, so
+      // the loudness of the whole voice is all there is to read.
+      var sum = 0, n = Math.floor(buf.length / 2);
+      for (var i = 0; i < n; i++) sum += buf[i] / 255;
+      level = Math.min(1, (sum / n) * 3.2);
       var now = Date.now();
-      if (sum / TICKS > 0.06) { heard = true; lastLoud = now; }
+      if (level > 0.19) { heard = true; lastLoud = now; }
       // It stops itself when you pause. A pitch is one breath long.
       if (heard && now - lastLoud > 1400) { stop(); return; }
       vraf = requestAnimationFrame(tick);
@@ -807,7 +754,7 @@
     if (actx) { try { actx.close(); } catch (e) {} actx = null; }
     mic.setAttribute("aria-pressed", "false");
     riverEl.classList.remove("on"); listening = false;
-    for (var i = 0; i < TICKS; i++) amp[i] = 0;
+    level = 0;
     if (rec && rec.state !== "inactive") { busy = true; micLabel.textContent = C.writing; rec.stop(); }
     else micLabel.textContent = C.cta;
     if (stream_) { stream_.getTracks().forEach(function (t) { t.stop(); }); stream_ = null; }

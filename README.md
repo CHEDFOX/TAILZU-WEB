@@ -52,35 +52,21 @@ the frame after it are the same picture.
 Press the button and your own clip replaces the stream: the mess you actually
 said flows in, your sentence flows out, and the page stops arguing.
 
-## The mark is the filter
+## The caret
 
-The pill in the middle is gone; the brand mark does the job it was drawn for.
-Speech goes into the first box, the second one blinks amber twice and rests,
-the hatch between the second and third carries it across, and the sentence
-leaves from the amber tip. Clicking the mark starts the microphone, and so
-does the button under it.
+Where a logo or a device would go there is a text cursor. Everything this
+product does ends at somebody's cursor, so the cursor is what the speech runs
+into and what the sentence comes out of — not an object standing in for the
+product, the product's own destination.
 
-The mark is drawn to its own measurements, taken off the artwork: seven ticks,
-each leaning 130°, centres evenly stepped, and lengths forming the lens that
-makes the hatch a wave and not a ladder — 27, 36, 40, 46, 44, 35, 28, short at
-the ends and longest just past the middle. One scale and one offset carry
-those numbers into the page, so the hatch keeps its shape at any size.
+It blinks at 530ms on, 530ms off, which is the rate a real one blinks at; any
+faster reads as an error state, any slower as a dying battery. With the
+microphone open it stops blinking, turns amber and breathes with the voice,
+so the thing growing and shrinking is the point the words are about to be
+written at. Clicking it starts the microphone, and so does the button below.
 
-The signal is timed off the splash at 60fps rather than invented: first box,
-second box, then — a tenth of a second after the second box goes out — exactly
-TWO adjacent ticks stepping one position every 133ms (eight frames) from the
-second box to the third, and the third box lights on the very frame the last
-tick goes out. Then three seconds of nothing. Lengths never change; a lit tick
-swells about a twelfth, which is what the splash does too.
-
-While the microphone is open the run becomes the level meter, the first box
-stays lit because it is the one taking the sound, and the timed sequence
-stands down — there is a real signal to show.
-
-The button's position is measured from the mark, not set as a percentage: the
-svg is sliced, so the mark lands at a different place and size at every window
-width. It is measured more than once, too — the first measurement can land
-before the band has its final box.
+It sits at the centre of the viewBox, which is the centre of the band, so the
+button under it needs no arithmetic to line up.
 
 ## The surge
 
