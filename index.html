@@ -57,21 +57,33 @@
   .lede { margin: 26px auto 0; max-width: 46ch; color: var(--grey); font-size: 17px; animation: rise .9s cubic-bezier(.2,.85,.25,1) .42s both; }
 
   /* ---- the ribbon ------------------------------------------------------
-     One path. The spoken mess travels along it from the right, is swallowed
-     at the capsule, and the written sentence leaves to the left. The button
-     on the capsule is the real microphone — it is placed exactly where the
-     change happens, because that is what pressing it does.                */
-  .river { position: relative; margin-top: -26px; height: 420px; animation: fade 1.4s .5s both; }
+     Three lanes of speech pour in from the left and one sentence leaves to
+     the right. Many in, one out — which is the shape of the product as well
+     as the shape of the picture. The button sits on the crossing, because
+     pressing it is what puts your own voice through the same funnel.       */
+  .river { position: relative; margin-top: -34px; height: 520px; animation: fade 1.4s .5s both; }
   .river svg { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
-  .tape { fill: none; stroke: #1E1B17; stroke-width: 62; stroke-linecap: round; }
-  .mess { font-family: var(--sans); font-size: 19px; fill: #6E675C; letter-spacing: .005em; }
-  .clean { font-family: var(--serif); font-size: 26px; fill: var(--white); }
+  /* Three lanes of mess at three depths. The near one is bigger, brighter and
+     faster; the far ones sit back. Depth is what stops three lines reading as
+     one wallpaper pattern. */
+  .tape { fill: none; stroke: #1D1A16; stroke-width: 52; stroke-linecap: round; }
+  .tape.thin { stroke: #17150F; stroke-width: 34; }
+  .mess { font-family: var(--sans); letter-spacing: .005em; }
+  .mess.near { font-size: 19.5px; fill: #797163; }
+  .mess.far  { font-size: 16px;   fill: #514B43; }
+  /* The jump across the microphone is the drama: small dim sans in, large
+     bright serif out. */
+  .clean { font-family: var(--serif); font-size: 31px; fill: var(--white); }
+  .heat { transform-origin: 720px 260px; animation: breathe 5.5s ease-in-out infinite; }
+  #drift { transition: transform .5s cubic-bezier(.2,.8,.3,1); }
 
   .capsule {
     position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
     display: flex; align-items: center; gap: 14px; height: 68px; padding: 0 12px 0 22px;
-    background: var(--ink); border: 1px solid var(--rule); border-radius: 999px;
-    box-shadow: 0 0 0 10px var(--ink), 0 22px 60px rgba(0,0,0,.6);
+    background: var(--ink); border: 1px solid #332E28; border-radius: 999px;
+    /* No ink ring: the SVG mouth already dissolves the lanes into this, and a
+       hard ring would cut a visible disc out of the glow behind it. */
+    box-shadow: 0 18px 60px rgba(0,0,0,.65), 0 0 40px rgba(232,162,60,.10);
   }
   .wave { display: flex; align-items: center; gap: 2.5px; height: 30px; }
   .wave i { display: block; width: 3px; height: 5px; border-radius: 2px; background: var(--dim); transition: height .09s linear, background .2s; }
@@ -152,6 +164,7 @@
   /* ---- motion ---------------------------------------------------------- */
   @keyframes rise { from { opacity: 0; transform: translateY(26px); } to { opacity: 1; transform: none; } }
   @keyframes fade { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes breathe { 0%, 100% { transform: scale(1); opacity: .75; } 50% { transform: scale(1.1); opacity: 1; } }
   .reveal { opacity: 0; transform: translateY(26px); transition: opacity .9s cubic-bezier(.2,.85,.25,1), transform .9s cubic-bezier(.2,.85,.25,1); }
   .reveal.in { opacity: 1; transform: none; }
 
@@ -201,23 +214,49 @@
 </div>
 
 <div class="river" id="river">
-  <svg id="riverSvg" viewBox="0 0 1440 420" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+  <svg id="riverSvg" viewBox="0 0 1440 520" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
     <defs>
-      <!-- Left to right, because that is the direction text reads and the
-           direction the product runs: mess in, sentence out. A path that
-           doubles back would hang its own glyphs upside down. The centre of
-           this box is (720, 210) and the curve passes through it, which is
-           what keeps the capsule sitting exactly on the line at every width. -->
-      <path id="flow" d="M-180 300 C60 300 190 152 400 148 C560 145 612 206 720 210 C828 214 884 290 1040 286 C1220 281 1340 142 1620 134"/>
-      <clipPath id="clipIn"><rect x="-260" y="-80" width="980" height="580"/></clipPath>
-      <clipPath id="clipOut"><rect x="720" y="-80" width="980" height="580"/></clipPath>
+      <!-- THREE IN, ONE OUT. Every lane runs left to right, because that is
+           the direction text reads and the direction the product runs — a
+           path that doubles back hangs its own glyphs upside down. All three
+           inbound lanes arrive at (720, 260), which is the centre of this
+           box, which is where the capsule sits at every window width. -->
+      <path id="in1" d="M-220 48 C60 58 300 128 520 196 C610 224 668 246 720 260"/>
+      <path id="in2" d="M-220 214 C80 222 330 240 520 252 C604 257 664 259 720 260"/>
+      <path id="in3" d="M-220 486 C90 478 330 396 520 322 C608 288 666 270 720 260"/>
+      <!-- Leaves flatter than the lanes arrive. The mess is allowed to be
+           steep and crowded; the sentence gets room to be read. -->
+      <path id="out1" d="M720 260 C840 252 920 236 1060 212 C1270 176 1430 152 1700 118"/>
+      <clipPath id="clipIn"><rect x="-300" y="-120" width="1020" height="760"/></clipPath>
+      <clipPath id="clipOut"><rect x="720" y="-120" width="1020" height="760"/></clipPath>
+      <!-- The mouth. Ink at full strength over the capsule fading to nothing
+           by the rim, so the mess dissolves INTO the microphone instead of
+           being chopped off at a clip edge. -->
+      <radialGradient id="mouth">
+        <stop offset="34%" stop-color="#100F0E" stop-opacity="1"/>
+        <stop offset="100%" stop-color="#100F0E" stop-opacity="0"/>
+      </radialGradient>
+      <radialGradient id="heat">
+        <stop offset="0%" stop-color="#E8A23C" stop-opacity=".30"/>
+        <stop offset="55%" stop-color="#E8A23C" stop-opacity=".07"/>
+        <stop offset="100%" stop-color="#E8A23C" stop-opacity="0"/>
+      </radialGradient>
     </defs>
-    <g clip-path="url(#clipIn)">
-      <use href="#flow" class="tape"/>
-      <text class="mess"><textPath href="#flow" id="tIn" startOffset="0"> </textPath></text>
-    </g>
-    <g clip-path="url(#clipOut)">
-      <text class="clean"><textPath href="#flow" id="tOut" startOffset="0"> </textPath></text>
+
+    <g id="drift">
+      <g clip-path="url(#clipIn)">
+        <use href="#in1" class="tape thin"/>
+        <use href="#in2" class="tape"/>
+        <use href="#in3" class="tape thin"/>
+        <text class="mess far"><textPath href="#in1" id="t1" startOffset="0"> </textPath></text>
+        <text class="mess near"><textPath href="#in2" id="t2" startOffset="0"> </textPath></text>
+        <text class="mess far"><textPath href="#in3" id="t3" startOffset="0"> </textPath></text>
+      </g>
+      <g clip-path="url(#clipOut)">
+        <text class="clean"><textPath href="#out1" id="t4" startOffset="0"> </textPath></text>
+      </g>
+      <ellipse cx="720" cy="260" rx="215" ry="118" fill="url(#mouth)"/>
+      <ellipse cx="720" cy="260" rx="330" ry="170" fill="url(#heat)" class="heat"/>
     </g>
   </svg>
 
@@ -336,48 +375,84 @@
      sentence flows out. The page stops arguing and hands the argument over.
      ================================================================== */
   var own = null;                 // set once the visitor's own clip has run
-  var tIn = $("tIn"), tOut = $("tOut");
   var SEP = "   ·   ";
-  var inLen = 0, outLen = 0, off = 0, rraf = 0, last = 0;
-  var SPEED = 34;                                    // px a second along the path
+  var rraf = 0, last = 0, drift = $("drift");
+  var mx = 0, my = 0, tx = 0, ty = 0;
 
-  function stream(key) {
-    var s = C.cases.map(function (c) { return c[key]; }).join(SEP) + SEP;
-    return s + s;                                    // doubled, so the wrap is invisible
-  }
+  /**
+   * Four lanes. Three carry the mess in and one carries the sentence out, and
+   * no two inbound lanes run at the same speed — equal speeds would beat
+   * against each other and read as one repeating pattern rather than three
+   * separate people talking at once.
+   *
+   * `take` is which cases a lane carries: interleaved rather than sliced, so
+   * three scripts are on screen at once instead of three lanes of English
+   * followed by three lanes of Devanagari.
+   */
+  var LANES = [
+    { el: $("t1"), key: "said",  speed: 27, take: function (i) { return i % 3 === 0; }, len: 0, off: 0 },
+    { el: $("t2"), key: "said",  speed: 37, take: function (i) { return i % 3 === 1; }, len: 0, off: 0 },
+    { el: $("t3"), key: "said",  speed: 31, take: function (i) { return i % 3 === 2; }, len: 0, off: 0 },
+    { el: $("t4"), key: "wrote", speed: 33, take: function () { return true; },        len: 0, off: 0 }
+  ];
 
   function loadRiver() {
-    tIn.textContent = stream("said");
-    tOut.textContent = stream("wrote");
-    // Half the doubled string: the distance after which the loop repeats
-    // itself exactly, so resetting there cannot be seen.
-    inLen = tIn.getComputedTextLength() / 2;
-    outLen = tOut.getComputedTextLength() / 2;
+    LANES.forEach(function (L) {
+      var s = C.cases.filter(function (c, i) { return L.take(i); })
+                     .map(function (c) { return c[L.key]; }).join(SEP) + SEP;
+      L.el.textContent = s + s;              // doubled, so the wrap is invisible
+      // Half the doubled string: the distance after which the pattern repeats
+      // exactly, so resetting there cannot be seen.
+      L.len = L.el.getComputedTextLength() / 2 || 1;
+    });
   }
 
   /**
-   * The string is written twice, so the pattern along the path repeats every
-   * half-length. Sliding the offset through exactly one of those periods and
-   * jumping back cannot be seen: the frame before the jump and the frame
-   * after it are the same picture. Starting at minus one period keeps the
-   * whole path covered, so neither end of the river is ever empty.
+   * Sliding a lane's offset through exactly one period and jumping back is
+   * invisible: the frame before the jump and the frame after it are the same
+   * picture. Starting at minus one period keeps the whole path covered, so no
+   * lane is ever empty at either end.
+   *
+   * The group also drifts — a little toward the pointer, a little against the
+   * scroll. It is small on purpose: enough that the thing feels alive under
+   * the hand, not so much that anybody catches it moving.
    */
   function river(now) {
     rraf = requestAnimationFrame(river);
     if (!last) last = now;
     var dt = Math.min(64, now - last); last = now;
-    off += SPEED * dt / 1000;
-    tIn.setAttribute("startOffset", String(-inLen + (off % (inLen || 1))));
-    tOut.setAttribute("startOffset", String(-outLen + (off % (outLen || 1))));
+    LANES.forEach(function (L) {
+      // The observer can start this before the text has been measured, and a
+      // remainder by zero is NaN — which, once in `off`, stays there through
+      // every later frame and freezes the lane for good.
+      if (!(L.len > 0)) return;
+      if (!(L.off >= 0)) L.off = 0;
+      L.off = (L.off + L.speed * dt / 1000) % L.len;
+      L.el.setAttribute("startOffset", String(-L.len + L.off));
+    });
+    tx += (mx - tx) * 0.06; ty += (my - ty) * 0.06;
+    var s = Math.max(-40, Math.min(40, (window.pageYOffset || 0) * 0.06));
+    drift.setAttribute("transform", "translate(" + tx.toFixed(1) + "," + (ty - s).toFixed(1) + ")");
   }
 
-  /** Their own words replace the loop for good — one pair, held still. */
+  var riverEl = $("river");
+  riverEl.addEventListener("pointermove", function (e) {
+    var r = riverEl.getBoundingClientRect();
+    mx = ((e.clientX - r.left) / r.width - 0.5) * 34;
+    my = ((e.clientY - r.top) / r.height - 0.5) * 20;
+  });
+  riverEl.addEventListener("pointerleave", function () { mx = 0; my = 0; });
+
+  /** Their own words take every lane — pouring in from all three sides, out
+   *  as one sentence. Different speeds keep three copies from looking like a
+   *  bug: no two lanes ever show the same word in the same place. */
   function ownRiver(said, wrote) {
-    tIn.textContent = said + SEP + said;
-    tOut.textContent = wrote + SEP + wrote;
-    inLen = tIn.getComputedTextLength() / 2;
-    outLen = tOut.getComputedTextLength() / 2;
-    off = 0;
+    LANES.forEach(function (L) {
+      var t = L.key === "wrote" ? wrote : said;
+      L.el.textContent = t + SEP + t;
+      L.len = L.el.getComputedTextLength() / 2 || 1;
+      L.off = 0;
+    });
   }
 
   /* =====================================================================

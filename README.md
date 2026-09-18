@@ -13,18 +13,27 @@ page back, so the legal text is never unreachable.
 
 ## The river
 
-One line runs across the page. Everything anybody ever said travels along it
-from the left, is swallowed at the microphone, and leaves to the right as a
-written sentence — grey sans going in, white serif coming out.
+Three lanes of speech pour in from the left, are swallowed at the microphone,
+and one sentence leaves to the right — small dim sans going in, large bright
+serif coming out. Many in, one out: the shape of the picture is the shape of
+the product.
 
-It is a single SVG `<path>` with two `<textPath>` elements on it, clipped
-either side of the capsule. That is why the change appears to happen *at* the
-microphone rather than near it, and why the button can sit exactly on the line
-at any window width: the curve is drawn through the centre of the viewBox, and
-the capsule is centred on the same point.
+It is four SVG `<path>` elements with a `<textPath>` on each, clipped either
+side of the capsule. No two inbound lanes run at the same speed, because equal
+speeds beat against each other and read as one repeating pattern rather than
+three separate people talking at once; they carry interleaved cases rather
+than consecutive ones, so three scripts are on screen at once. A radial ink
+gradient over the crossing dissolves the mess into the microphone instead of
+chopping it off at a clip edge.
 
-The path runs left to right on purpose. A path that doubles back hangs its own
-glyphs upside down, which is the first thing that goes wrong with this effect.
+All four lanes are drawn through the centre of the viewBox, which is where the
+capsule is centred — that is what keeps the button exactly on the crossing at
+any window width, and why the change appears to happen *at* the microphone
+rather than near it.
+
+Every lane runs left to right on purpose. A path that doubles back hangs its
+own glyphs upside down, which is the first thing that goes wrong with this
+effect.
 
 The stream is written twice and the offset slides through exactly one half
 before jumping back, so the loop has no seam — the frame before the jump and
