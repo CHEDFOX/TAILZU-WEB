@@ -62,15 +62,21 @@
      as the shape of the picture. The button sits on the crossing, because
      pressing it is what puts your own voice through the same funnel.       */
   .river { position: relative; margin-top: -34px; height: 520px; animation: fade 1.4s .5s both; }
-  .river svg { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
-  /* Three lanes of mess at three depths. The near one is bigger, brighter and
-     faster; the far ones sit back. Depth is what stops three lines reading as
-     one wallpaper pattern. */
-  .tape { fill: none; stroke: #1D1A16; stroke-width: 52; stroke-linecap: round; }
-  .tape.thin { stroke: #17150F; stroke-width: 34; }
+  /* No bands. Speech runs on the page itself, and the mask dissolves it into
+     the ground at both edges rather than letting the viewport cut it off —
+     so nothing on this page has a visible strip around it. The mask is on the
+     svg, not the container, so the capsule over it stays crisp. */
+  .river svg {
+    position: absolute; inset: 0; width: 100%; height: 100%; display: block;
+    -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 15%, #000 85%, transparent 100%);
+            mask-image: linear-gradient(90deg, transparent 0, #000 15%, #000 85%, transparent 100%);
+  }
+  /* Three lanes at three depths. The near one is bigger and a shade brighter;
+     the far ones sit back. Depth is what stops three lines reading as one
+     wallpaper pattern — it is carried by size, not by three different slabs. */
   .mess { font-family: var(--sans); letter-spacing: .005em; }
-  .mess.near { font-size: 19.5px; fill: #797163; }
-  .mess.far  { font-size: 16px;   fill: #514B43; }
+  .mess.near { font-size: 20px;   fill: #7C7466; }
+  .mess.far  { font-size: 15.5px; fill: #5C554B; }
   /* The jump across the microphone is the drama: small dim sans in, large
      bright serif out. */
   .clean { font-family: var(--serif); font-size: 31px; fill: var(--white); }
@@ -245,9 +251,6 @@
 
     <g id="drift">
       <g clip-path="url(#clipIn)">
-        <use href="#in1" class="tape thin"/>
-        <use href="#in2" class="tape"/>
-        <use href="#in3" class="tape thin"/>
         <text class="mess far"><textPath href="#in1" id="t1" startOffset="0"> </textPath></text>
         <text class="mess near"><textPath href="#in2" id="t2" startOffset="0"> </textPath></text>
         <text class="mess far"><textPath href="#in3" id="t3" startOffset="0"> </textPath></text>
@@ -417,17 +420,46 @@
    * scroll. It is small on purpose: enough that the thing feels alive under
    * the hand, not so much that anybody catches it moving.
    */
+  /* ---------------------------------------------------------------------
+     THE SURGE
+
+     The first few scrolls from the top of the page drive the river instead of
+     the page: each one kicks the flow into a rush that falls back, and after
+     the third the page scrolls normally and never does this again.
+
+     Held to three, and only from the very top, and never on a scroll upward,
+     because a page that will not move when you ask it to is broken — the
+     whole thing is over in about a second, and the way out is to keep doing
+     exactly what you were already doing.
+
+     Not on touch. A phone has no wheel to intercept, and stealing a swipe is
+     a far worse trade than stealing a scroll.                             */
+  var SURGE = [1, 5, 9, 15], pushes = 0, boost = 1, lastPush = 0;
+  var coarse = window.matchMedia && window.matchMedia("(pointer: coarse)").matches;
+
+  window.addEventListener("wheel", function (e) {
+    if (reduced || coarse || pushes >= 3) return;      // released for good
+    if ((window.pageYOffset || 0) > 40) return;        // only from the top
+    if (e.deltaY <= 0) return;                         // never trap a scroll up
+    e.preventDefault();
+    var now = performance.now();
+    if (now - lastPush < 420) return;                  // one flick is one push
+    lastPush = now;
+    boost = SURGE[++pushes];
+  }, { passive: false });
+
   function river(now) {
     rraf = requestAnimationFrame(river);
     if (!last) last = now;
     var dt = Math.min(64, now - last); last = now;
+    boost += (1 - boost) * Math.min(1, dt / 620);      // falls back to a walk
     LANES.forEach(function (L) {
       // The observer can start this before the text has been measured, and a
       // remainder by zero is NaN — which, once in `off`, stays there through
       // every later frame and freezes the lane for good.
       if (!(L.len > 0)) return;
       if (!(L.off >= 0)) L.off = 0;
-      L.off = (L.off + L.speed * dt / 1000) % L.len;
+      L.off = (L.off + L.speed * boost * dt / 1000) % L.len;
       L.el.setAttribute("startOffset", String(-L.len + L.off));
     });
     tx += (mx - tx) * 0.06; ty += (my - ty) * 0.06;

@@ -19,7 +19,10 @@ serif coming out. Many in, one out: the shape of the picture is the shape of
 the product.
 
 It is four SVG `<path>` elements with a `<textPath>` on each, clipped either
-side of the capsule. No two inbound lanes run at the same speed, because equal
+side of the capsule. There are no bands behind the text: speech runs on the
+page itself, and a mask on the `<svg>` — not on the container, so the capsule
+over it stays crisp — dissolves both ends into the ground rather than letting
+the viewport cut them off. No two inbound lanes run at the same speed, because equal
 speeds beat against each other and read as one repeating pattern rather than
 three separate people talking at once; they carry interleaved cases rather
 than consecutive ones, so three scripts are on screen at once. A radial ink
@@ -41,6 +44,18 @@ the frame after it are the same picture.
 
 Press the button and your own clip replaces the stream: the mess you actually
 said flows in, your sentence flows out, and the page stops arguing.
+
+## The surge
+
+The first three scrolls from the top drive the river instead of the page. Each
+one kicks the flow into a rush that falls back over about half a second, and
+after the third the page scrolls normally and never does it again.
+
+It is held to three, and only from the very top, and never on a scroll upward,
+because a page that will not move when you ask it to is broken. The whole
+thing is over in about a second and the way out is to keep doing what you were
+already doing. It does not run on touch: a phone has no wheel to intercept,
+and stealing a swipe is a far worse trade than stealing a scroll.
 
 ## The card
 
