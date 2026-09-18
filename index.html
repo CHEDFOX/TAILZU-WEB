@@ -65,7 +65,7 @@
   /* No bands. Speech runs on the page itself, and the mask dissolves it into
      the ground at both edges rather than letting the viewport cut it off —
      so nothing on this page has a visible strip around it. The mask is on the
-     svg, not the container, so the capsule over it stays crisp. */
+     svg, not the container, so the mark drawn over it stays crisp. */
   .river svg {
     position: absolute; inset: 0; width: 100%; height: 100%; display: block;
     -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 15%, #000 85%, transparent 100%);
@@ -83,28 +83,41 @@
   .heat { transform-origin: 720px 260px; animation: breathe 5.5s ease-in-out infinite; }
   #drift { transition: transform .5s cubic-bezier(.2,.8,.3,1); }
 
-  .capsule {
-    position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
-    display: flex; align-items: center; gap: 14px; height: 68px; padding: 0 12px 0 22px;
-    background: var(--ink); border: 1px solid #332E28; border-radius: 999px;
-    /* No ink ring: the SVG mouth already dissolves the lanes into this, and a
-       hard ring would cut a visible disc out of the glow behind it. */
-    box-shadow: 0 18px 60px rgba(0,0,0,.65), 0 0 40px rgba(232,162,60,.10);
+  /* The mark. Boxes drawn over the wires, so nothing needs trimming. */
+  #mark { cursor: pointer; }
+  #mark:focus-visible { outline: 2px solid var(--amber); outline-offset: 8px; border-radius: 12px; }
+  .box  { fill: var(--white); }
+  .wire { stroke: #CFC3A8; stroke-width: 3.4; fill: none; }
+  .awire{ stroke: #B5661C; stroke-width: 3.4; fill: none; }
+  .adot { fill: #B5661C; }
+  .tick { stroke: #CFC3A8; stroke-width: 3.2; stroke-linecap: round; }
+  /* Two beats and a long rest, so it reads as something thinking rather than
+     something faulty. */
+  .brain { animation: think 4.6s ease-in-out infinite; }
+  @keyframes think {
+    0%, 4%    { fill: var(--white); }
+    6%, 11%   { fill: var(--amber); }
+    13%, 17%  { fill: var(--white); }
+    19%, 24%  { fill: var(--amber); }
+    26%, 100% { fill: var(--white); }
   }
-  .wave { display: flex; align-items: center; gap: 2.5px; height: 30px; }
-  .wave i { display: block; width: 3px; height: 5px; border-radius: 2px; background: var(--dim); transition: height .09s linear, background .2s; }
-  .capsule.on .wave i { background: var(--amber); }
-  .mic {
+  .river.on .brain { animation: none; fill: var(--amber); }
+
+  /* The control sits under the mark; its position is measured, not guessed,
+     because the svg is sliced and the mark lands somewhere different at
+     every window width. */
+  .speak {
+    position: absolute; left: 50%; top: 78%; transform: translateX(-50%);
     display: inline-flex; align-items: center; gap: 9px; height: 46px; padding: 0 22px;
     border: 0; border-radius: 999px; background: var(--white); color: var(--ink);
     font-size: 13px; font-weight: 500; cursor: pointer; white-space: nowrap;
     transition: background .18s, transform .18s; -webkit-tap-highlight-color: transparent;
   }
-  .mic:hover { background: var(--amber); transform: translateY(-1px); }
-  .mic[aria-pressed="true"] { background: var(--amber); }
-  .mic[disabled] { background: transparent; color: var(--dim); box-shadow: inset 0 0 0 1px var(--rule); cursor: default; transform: none; }
-  .mic svg { position: static; width: 16px; height: 16px; }
-  .under { position: absolute; left: 50%; top: calc(50% + 58px); transform: translateX(-50%); width: max-content; max-width: 90vw; text-align: center; color: var(--dim); font-size: 13px; }
+  .speak:hover { background: var(--amber); transform: translateX(-50%) translateY(-1px); }
+  .speak[aria-pressed="true"] { background: var(--amber); }
+  .speak[disabled] { background: transparent; color: var(--dim); box-shadow: inset 0 0 0 1px var(--rule); cursor: default; }
+  .speak svg { width: 16px; height: 16px; }
+  .under { position: absolute; left: 50%; transform: translateX(-50%); top: calc(78% + 58px); width: max-content; max-width: 90vw; text-align: center; color: var(--dim); font-size: 13px; }
   .under.err { color: var(--amber); }
 
   /* ---- the sheet: dark gives way to paper ----------------------------- */
@@ -190,9 +203,7 @@
   }
   @media (max-width: 560px) {
     .river { height: 320px; }
-    .capsule { padding-left: 16px; gap: 10px; }
-    .mic span { display: none; }
-    .mic { padding: 0 14px; }
+    .speak span { font-size: 12.5px; }
   }
   @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after { animation: none !important; transition: none !important; }
@@ -226,25 +237,26 @@
            the direction text reads and the direction the product runs — a
            path that doubles back hangs its own glyphs upside down. All three
            inbound lanes arrive at (720, 260), which is the centre of this
-           box, which is where the capsule sits at every window width. -->
-      <path id="in1" d="M-220 48 C60 58 300 128 520 196 C610 224 668 246 720 260"/>
-      <path id="in2" d="M-220 214 C80 222 330 240 520 252 C604 257 664 259 720 260"/>
-      <path id="in3" d="M-220 486 C90 478 330 396 520 322 C608 288 666 270 720 260"/>
-      <!-- Leaves flatter than the lanes arrive. The mess is allowed to be
-           steep and crowded; the sentence gets room to be read. -->
-      <path id="out1" d="M720 260 C840 252 920 236 1060 212 C1270 176 1430 152 1700 118"/>
-      <clipPath id="clipIn"><rect x="-300" y="-120" width="1020" height="760"/></clipPath>
-      <clipPath id="clipOut"><rect x="720" y="-120" width="1020" height="760"/></clipPath>
-      <!-- The mouth. Ink at full strength over the capsule fading to nothing
-           by the rim, so the mess dissolves INTO the microphone instead of
-           being chopped off at a clip edge. -->
+           box, which is where the mark's first box sits at every window width. -->
+      <!-- Every lane arrives at the mark's first box, at (690, 330). -->
+      <path id="in1" d="M-220 52 C60 64 300 140 500 244 C580 286 642 316 690 330"/>
+      <path id="in2" d="M-220 316 C80 322 330 330 500 331 C590 331 646 331 690 330"/>
+      <path id="in3" d="M-220 506 C90 498 330 438 500 372 C588 338 644 336 690 330"/>
+      <!-- Leaves from the amber tip, flatter than the lanes arrive. The mess
+           is allowed to be steep and crowded; the sentence gets room to read. -->
+      <path id="out1" d="M942 147 C1070 134 1200 116 1340 98 C1470 82 1580 70 1720 52"/>
+      <clipPath id="clipIn"><rect x="-300" y="-140" width="1000" height="800"/></clipPath>
+      <clipPath id="clipOut"><rect x="930" y="-140" width="1000" height="800"/></clipPath>
+      <!-- The mouth. Ink at full strength over the first box, fading to
+           nothing by the rim, so the mess dissolves INTO it rather than being
+           chopped off at a clip edge. -->
       <radialGradient id="mouth">
-        <stop offset="34%" stop-color="#100F0E" stop-opacity="1"/>
+        <stop offset="30%" stop-color="#100F0E" stop-opacity="1"/>
         <stop offset="100%" stop-color="#100F0E" stop-opacity="0"/>
       </radialGradient>
       <radialGradient id="heat">
-        <stop offset="0%" stop-color="#E8A23C" stop-opacity=".30"/>
-        <stop offset="55%" stop-color="#E8A23C" stop-opacity=".07"/>
+        <stop offset="0%" stop-color="#E8A23C" stop-opacity=".26"/>
+        <stop offset="55%" stop-color="#E8A23C" stop-opacity=".06"/>
         <stop offset="100%" stop-color="#E8A23C" stop-opacity="0"/>
       </radialGradient>
     </defs>
@@ -258,21 +270,38 @@
       <g clip-path="url(#clipOut)">
         <text class="clean"><textPath href="#out1" id="t4" startOffset="0"> </textPath></text>
       </g>
-      <ellipse cx="720" cy="260" rx="215" ry="118" fill="url(#mouth)"/>
-      <ellipse cx="720" cy="260" rx="330" ry="170" fill="url(#heat)" class="heat"/>
+    </g>
+
+    <!-- Outside the drift. Speech moves under the hand; the mark it passes
+         through does not, or the still point of the picture is not still. -->
+    <g>
+      <ellipse cx="690" cy="330" rx="170" ry="105" fill="url(#mouth)"/>
+      <ellipse cx="816" cy="244" rx="330" ry="190" fill="url(#heat)" class="heat"/>
+
+      <!-- THE MARK, doing the job it was drawn for. Speech goes into the first
+           box, the second one thinks, the hatch between the second and third
+           carries it across, and the sentence leaves from the amber tip. The
+           wires are drawn centre to centre and the boxes sit on top of them,
+           which is why nothing has to be trimmed to an edge. -->
+      <g id="mark" role="button" tabindex="0" aria-label="Use your own voice">
+        <line class="wire" x1="690" y1="330" x2="748" y2="185"/>
+        <g id="hatch"></g>
+        <line class="awire" x1="855" y1="276" x2="942" y2="147"/>
+        <circle class="adot" cx="942" cy="147" r="6.5"/>
+        <rect class="box" x="660" y="300" width="60" height="60" rx="15"/>
+        <rect class="box brain" id="brain" x="718" y="155" width="60" height="60" rx="15"/>
+        <rect class="box" x="825" y="246" width="60" height="60" rx="15"/>
+      </g>
     </g>
   </svg>
 
-  <div class="capsule" id="capsule">
-    <div class="wave" id="wave"></div>
-    <button class="mic" id="mic" aria-pressed="false">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-        <rect x="9" y="3" width="6" height="11" rx="3"></rect>
-        <path d="M5 11a7 7 0 0 0 14 0"></path><path d="M12 18v3M9 21h6"></path>
-      </svg>
-      <span id="micLabel">Use your own voice</span>
-    </button>
-  </div>
+  <button class="speak" id="mic" aria-pressed="false">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <rect x="9" y="3" width="6" height="11" rx="3"></rect>
+      <path d="M5 11a7 7 0 0 0 14 0"></path><path d="M12 18v3M9 21h6"></path>
+    </svg>
+    <span id="micLabel">Use your own voice</span>
+  </button>
   <span class="under" id="under">No sign-up. It stops when you pause.</span>
 </div>
 
@@ -368,9 +397,9 @@
      THE RIVER
 
      One path across the page. Everything anybody ever said travels along it
-     from the right, is swallowed at the capsule, and leaves to the left as
+     from the left, is swallowed at the mark, and leaves to the right as
      a written sentence. The two halves are the same path with the same
-     motion, clipped either side of the capsule — which is why the change
+     motion, clipped either side of the mark — which is why the change
      appears to happen AT the microphone rather than near it.
 
      The real microphone sits on that crossing. Press it and your own words
@@ -462,10 +491,59 @@
       L.off = (L.off + L.speed * boost * dt / 1000) % L.len;
       L.el.setAttribute("startOffset", String(-L.len + L.off));
     });
+    drawHatch(now, listening);
     tx += (mx - tx) * 0.06; ty += (my - ty) * 0.06;
     var s = Math.max(-40, Math.min(40, (window.pageYOffset || 0) * 0.06));
     drift.setAttribute("transform", "translate(" + tx.toFixed(1) + "," + (ty - s).toFixed(1) + ")");
   }
+
+  /* ---------------------------------------------------------------------
+     THE HATCH
+
+     The run of ticks between the second and third box is the only part of
+     the mark that moves on its own. At rest a slow swell travels along it,
+     from the box that thinks toward the box the sentence leaves by — the
+     signal crossing. While the microphone is open the same ticks are the
+     level meter, so the thing you are watching is your own voice rather
+     than a decoration pretending to be one.                              */
+  var TICKS = 9, B = [748, 185], Cc = [855, 276];
+  var dx = Cc[0] - B[0], dy = Cc[1] - B[1], dl = Math.sqrt(dx * dx + dy * dy);
+  var ux = dx / dl, uy = dy / dl, px = -uy, py = ux;   // along, and across
+  var ticks = [], amp = [], hatch = $("hatch"), listening = false;
+  for (var k = 0; k < TICKS; k++) {
+    // Clear of both boxes: each covers about the first and last fifth.
+    var t = (0.25 + k * (0.50 / (TICKS - 1))) * dl;
+    var ln = document.createElementNS("http://www.w3.org/2000/svg", "line");
+    ln.setAttribute("class", "tick");
+    ticks.push({ el: ln, cx: B[0] + ux * t, cy: B[1] + uy * t });
+    amp.push(0);
+    hatch.appendChild(ln);
+  }
+
+  /**
+   * At rest the ticks keep the mark's own drawing — all one length — and only
+   * the colour travels, the way the boxes light in sequence. Varying their
+   * length instead bows the run into a coil and stops it being the logo.
+   * While the microphone is open the length is the meter, because then it is
+   * carrying something real and has earned the right to move.
+   */
+  function drawHatch(now, live) {
+    for (var i = 0; i < TICKS; i++) {
+      var a = live ? amp[i] : 0.5 + 0.5 * Math.sin(now / 470 - i * 0.62);
+      var h = live ? 4 + a * 11 : 6.5;
+      var T = ticks[i];
+      T.el.setAttribute("x1", (T.cx - px * h).toFixed(1));
+      T.el.setAttribute("y1", (T.cy - py * h).toFixed(1));
+      T.el.setAttribute("x2", (T.cx + px * h).toFixed(1));
+      T.el.setAttribute("y2", (T.cy + py * h).toFixed(1));
+      T.el.setAttribute("stroke", a > 0.66 ? "#E8A23C" : "#CFC3A8");
+    }
+  }
+  // Straight away, not on the first frame. A line with no coordinates sits at
+  // the origin, which drags the mark's measured box out to the left edge of
+  // the drawing — and under reduced motion, where the loop never runs, the
+  // hatch would simply never be drawn at all.
+  drawHatch(0, false);
 
   var riverEl = $("river");
   riverEl.addEventListener("pointermove", function (e) {
@@ -648,9 +726,7 @@
   }
 
   // ---- the microphone -----------------------------------------------------
-  var mic = $("mic"), wave = $("wave"), capsule = $("capsule"), micLabel = $("micLabel");
-  var NB = 13;
-  for (var b = 0; b < NB; b++) wave.appendChild(document.createElement("i"));
+  var mic = $("mic"), micLabel = $("micLabel");
   var rec = null, stream_ = null, chunks = [], actx = null, analyser = null, vraf = 0;
   var startedAt = 0, heard = false, lastLoud = 0, hard = 0, busy = false;
 
@@ -672,7 +748,7 @@
       rec.start();
       startedAt = Date.now(); heard = false; lastLoud = startedAt;
       mic.setAttribute("aria-pressed", "true"); micLabel.textContent = C.ctaHeld;
-      capsule.className = "capsule on";
+      riverEl.classList.add("on"); listening = true;
       under(C.invite);
       level(s);
       hard = setTimeout(stop, site.maxSeconds * 1000);
@@ -685,17 +761,19 @@
       analyser = actx.createAnalyser(); analyser.fftSize = 128;
       actx.createMediaStreamSource(s).connect(analyser);
     } catch (e) { return; }
-    var buf = new Uint8Array(analyser.frequencyBinCount), els = wave.children;
+    var buf = new Uint8Array(analyser.frequencyBinCount);
     (function tick() {
       if (!analyser) return;
       analyser.getByteFrequencyData(buf);
       var sum = 0;
-      for (var i = 0; i < NB; i++) {
-        var v = buf[Math.floor(i * buf.length / NB / 2)] / 255;
-        sum += v; els[i].style.height = (5 + v * 24) + "px";
+      // Straight into the hatch: the ticks between the second and third box
+      // become the meter, so what moves is your voice and not an ornament.
+      for (var i = 0; i < TICKS; i++) {
+        var v = buf[Math.floor(i * buf.length / TICKS / 2)] / 255;
+        sum += v; amp[i] = v;
       }
       var now = Date.now();
-      if (sum / NB > 0.06) { heard = true; lastLoud = now; }
+      if (sum / TICKS > 0.06) { heard = true; lastLoud = now; }
       // It stops itself when you pause. A pitch is one breath long.
       if (heard && now - lastLoud > 1400) { stop(); return; }
       vraf = requestAnimationFrame(tick);
@@ -708,8 +786,8 @@
     analyser = null;
     if (actx) { try { actx.close(); } catch (e) {} actx = null; }
     mic.setAttribute("aria-pressed", "false");
-    capsule.className = "capsule";
-    for (var i = 0; i < wave.children.length; i++) wave.children[i].style.height = "5px";
+    riverEl.classList.remove("on"); listening = false;
+    for (var i = 0; i < TICKS; i++) amp[i] = 0;
     if (rec && rec.state !== "inactive") { busy = true; micLabel.textContent = C.writing; rec.stop(); }
     else micLabel.textContent = C.cta;
     if (stream_) { stream_.getTracks().forEach(function (t) { t.stop(); }); stream_ = null; }
@@ -737,8 +815,40 @@
     }).catch(function (e) { under(e.message || String(e), true); done(); });
   }
 
-  mic.addEventListener("click", function () {
+  function toggle() {
+    if (mic.disabled) return;
     if (mic.getAttribute("aria-pressed") === "true") stop(); else start();
+  }
+  mic.addEventListener("click", toggle);
+  // The mark is the control too: it is the thing that looks like it does this.
+  var markEl = $("mark");
+  markEl.addEventListener("click", toggle);
+
+  /**
+   * The button goes under the mark, and where that is has to be measured. The
+   * river's svg is sliced, so the mark lands at a different place and a
+   * different size at every window width — a percentage from the top is right
+   * at one width and wrong at all the others.
+   */
+  function placeControl() {
+    var m = markEl.getBoundingClientRect(), r = riverEl.getBoundingClientRect();
+    if (!m.width || !r.width) return;
+    var cx = m.left + m.width / 2 - r.left;
+    // Clamped, because a wider window scales the sliced svg up and pushes the
+    // mark's foot past the bottom of the band — where the sheet, which is
+    // painted over it, would swallow the button and the line under it.
+    var y = Math.min(m.bottom - r.top + 30, r.height - 118);
+    mic.style.left = cx + "px"; mic.style.top = y + "px";
+    $("under").style.left = cx + "px"; $("under").style.top = (y + 60) + "px";
+  }
+  // Measured once is measured too early: the first call can land before the
+  // band has its final box, and then the button sits somewhere the mark is
+  // not. Re-measure whenever the band changes size, which covers the late
+  // layout, the fonts arriving and the window being dragged.
+  if (window.ResizeObserver) new ResizeObserver(placeControl).observe(riverEl);
+  window.addEventListener("load", placeControl);
+  markEl.addEventListener("keydown", function (e) {
+    if (e.key === "Enter" || e.key === " ") { e.preventDefault(); toggle(); }
   });
   document.addEventListener("keydown", function (e) {
     if (e.key === "Escape" && mic.getAttribute("aria-pressed") === "true") stop();
@@ -750,6 +860,7 @@
   function boot() {
     loadRiver();
     if (!reduced && !rraf) { last = 0; rraf = requestAnimationFrame(river); }
+    placeControl();
     show(0);
   }
   // The river measures text along a path, so it must not be laid out before
@@ -757,7 +868,10 @@
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(boot); else window.addEventListener("load", boot);
 
   var rt = 0;
-  window.addEventListener("resize", function () { clearTimeout(rt); rt = setTimeout(loadRiver, 200); });
+  window.addEventListener("resize", function () {
+    clearTimeout(rt);
+    rt = setTimeout(function () { loadRiver(); placeControl(); }, 200);
+  });
 
   fetch(API + "/v1/site").then(function (r) { return r.json(); }).then(function (j) {
     if (j && j.copy) { for (var k in j.copy) if (Object.prototype.hasOwnProperty.call(j.copy, k)) C[k] = j.copy[k]; }

@@ -45,6 +45,25 @@ the frame after it are the same picture.
 Press the button and your own clip replaces the stream: the mess you actually
 said flows in, your sentence flows out, and the page stops arguing.
 
+## The mark is the filter
+
+The pill in the middle is gone; the brand mark does the job it was drawn for.
+Speech goes into the first box, the second one blinks amber twice and rests,
+the hatch between the second and third carries it across, and the sentence
+leaves from the amber tip. Clicking the mark starts the microphone, and so
+does the button under it.
+
+The hatch keeps the mark's own drawing at rest — all ticks one length, only
+the colour travelling, the way the boxes light in sequence in the splash.
+Varying their length instead bows the run into a coil and stops it being the
+logo. While the microphone is open the length *is* the level meter, because
+then it is carrying something real.
+
+The button's position is measured from the mark, not set as a percentage: the
+svg is sliced, so the mark lands at a different place and size at every window
+width. It is measured more than once, too — the first measurement can land
+before the band has its final box.
+
 ## The surge
 
 The first three scrolls from the top drive the river instead of the page. Each
