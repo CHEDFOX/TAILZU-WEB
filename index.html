@@ -4,113 +4,148 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Tailzu</title>
-<meta name="description" content="Nobody speaks in clean sentences. Tailzu keeps every word you meant and drops every one you didn't — in 22 Indian languages and most of the world's. Try it with your own voice, no sign-up.">
-<meta name="theme-color" content="#F2F0EA">
-<meta property="og:title" content="Tailzu — watch it take the mess out">
+<meta name="description" content="Say it badly, send it perfect. Tailzu keeps every word you meant and drops every one you didn't — 22 Indian languages and most of the world's. Try it with your own voice, no sign-up.">
+<meta name="theme-color" content="#0B0A09">
+<meta property="og:title" content="Tailzu — say it badly, send it perfect">
 <meta property="og:description" content="Talk. It writes. No sign-up to try it.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <style>
+  /* One visual world, committed: this page is a dark room with one lit thing
+     in it. No light theme — every colour is painted, nothing is inherited. */
   :root {
-    --ground: #F2F0EA; --panel: #FBFAF7; --ink: #141413;
-    --mute: #5A5A55; --soft: #6E6B63; --hair: #DAD7CE; --hair2: #EAE7DE;
-    --accent: #C8791A; --accent-ink: #9A5B0E; --amber: #E8A23C;
-    --serif: 'Instrument Serif', Georgia, 'Times New Roman', serif;
+    --void:   #0B0A09;
+    --stage:  #121110;
+    --edge:   #24211D;
+    --white:  #F7F3EA;
+    --grey:   #9C968B;
+    --dim:    #6B655C;
+    --amber:  #E8A23C;
+    --ember:  #C8791A;
+    --display: 'Syne', system-ui, -apple-system, 'Segoe UI', sans-serif;
     --mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
   }
   * { box-sizing: border-box; }
-  html, body { margin: 0; background: var(--ground); color: var(--ink); }
-  body { font-family: var(--mono); font-size: 15px; line-height: 1.7; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
-  a { color: var(--accent-ink); text-decoration: none; }
-  a:hover { color: #6F410A; }
+  html { background: var(--void); }
+  body {
+    margin: 0; background: var(--void); color: var(--white);
+    font-family: var(--mono); font-size: 15px; line-height: 1.7;
+    -webkit-font-smoothing: antialiased; overflow-x: hidden;
+  }
+  a { color: var(--amber); text-decoration: none; }
   button { font-family: inherit; }
-  :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
-  .wrap { max-width: 1120px; margin: 0 auto; padding: 0 24px; }
+  :focus-visible { outline: 2px solid var(--amber); outline-offset: 4px; }
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 0 28px; }
+
+  /* Grain. A launch poster has a surface; a blank hex does not. */
+  .grain {
+    position: fixed; inset: -120px; z-index: 99; pointer-events: none;
+    opacity: .05; mix-blend-mode: screen;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/></filter><rect width='140' height='140' filter='url(%23n)'/></svg>");
+    animation: grain 6s steps(6) infinite;
+  }
+  @keyframes grain {
+    0%   { transform: translate(0,0); }      20% { transform: translate(-22px,14px); }
+    40%  { transform: translate(16px,-20px); } 60% { transform: translate(-14px,-12px); }
+    80%  { transform: translate(20px,18px); } 100% { transform: translate(0,0); }
+  }
 
   /* masthead */
-  .mast { display: flex; justify-content: space-between; align-items: center; padding: 34px 0 16px; border-bottom: 1px solid var(--ink); animation: fade .8s both; }
-  .mark { font-size: 14px; letter-spacing: 5px; font-weight: 500; }
-  .mast nav { display: flex; gap: 26px; font-size: 11px; letter-spacing: 2px; align-items: center; }
-  .mast nav a { color: var(--mute); }
-  .mast nav a.hot { color: var(--ink); border-bottom: 2px solid var(--accent); padding-bottom: 3px; }
+  .mast { display: flex; justify-content: space-between; align-items: center; padding: 26px 0; animation: fade .7s both; }
+  .mark { font-family: var(--display); font-weight: 800; font-size: 19px; letter-spacing: .22em; color: var(--white); }
+  .mast nav { display: flex; gap: 28px; font-size: 11px; letter-spacing: .18em; align-items: center; }
+  .mast nav a { color: var(--grey); transition: color .15s; }
+  .mast nav a:hover { color: var(--white); }
+  .mast nav a.hot { color: var(--void); background: var(--amber); padding: 9px 18px; font-weight: 500; }
+  .mast nav a.hot:hover { background: #F5BE6B; color: var(--void); }
 
   /* hero */
-  .hero { padding: 64px 0 34px; }
-  h1 { margin: 0 0 20px; font-family: var(--serif); font-weight: 400; font-size: clamp(44px, 7.4vw, 96px); line-height: .99; letter-spacing: -.015em; max-width: 15ch; animation: up .9s cubic-bezier(.2,.8,.2,1) .15s both; }
-  .sub { margin: 0; max-width: 540px; color: var(--mute); animation: up .9s cubic-bezier(.2,.8,.2,1) .35s both; }
+  /* The stage is the argument, so the words above it are rationed: the hero
+     has to end high enough that the canvas is on screen when the page lands. */
+  .hero { padding: 34px 0 34px; }
+  .eyebrow { display: inline-flex; align-items: center; gap: 10px; font-size: 11px; letter-spacing: .22em; color: var(--amber); margin-bottom: 18px; animation: up .7s cubic-bezier(.2,.9,.2,1) .1s both; }
+  .eyebrow i { display: block; width: 26px; height: 1px; background: var(--ember); }
+  h1 {
+    margin: 0 0 18px; font-family: var(--display); font-weight: 800;
+    font-size: clamp(42px, 7.4vw, 104px); line-height: .9;
+    letter-spacing: -.035em; text-transform: uppercase;
+  }
+  h1 span { display: block; }
+  h1 span:nth-child(1) { animation: slam .72s cubic-bezier(.18,1.1,.28,1) .12s both; }
+  h1 span:nth-child(2) { animation: slam .72s cubic-bezier(.18,1.1,.28,1) .26s both; color: var(--amber); }
+  .sub { margin: 0; max-width: 620px; color: var(--grey); font-size: 15px; animation: up .8s cubic-bezier(.2,.9,.2,1) .46s both; }
 
-  /* the one field */
-  .panel { border: 1px solid var(--ink); background: var(--panel); animation: up .9s cubic-bezier(.2,.8,.2,1) .55s both; }
-  .strip { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 15px 24px; border-bottom: 1px solid var(--hair); font-size: 11px; letter-spacing: 3px; color: var(--mute); flex-wrap: wrap; }
-  .strip .who { display: flex; align-items: center; gap: 10px; }
-  /* The language name swaps on every case, so it fades rather than jumps. */
-  .strip .who b { font-weight: 400; animation: fade .3s both; }
-  .strip .claim { color: #8C887F; letter-spacing: 2px; }
+  /* the stage — full bleed, because it is the loudest thing here */
+  .stage { position: relative; border-top: 1px solid var(--edge); border-bottom: 1px solid var(--edge); background: var(--stage); overflow: hidden; animation: fade 1s .5s both; }
+  /* An ember behind the sentence, so the dark has a centre. */
+  .stage::before {
+    content: ""; position: absolute; left: 50%; top: 46%; width: 900px; height: 420px;
+    transform: translate(-50%, -50%); pointer-events: none;
+    background: radial-gradient(ellipse at center, rgba(232,162,60,.13), rgba(232,162,60,0) 68%);
+  }
+  .stagehead { position: relative; display: flex; justify-content: space-between; align-items: center; gap: 16px; padding: 16px 28px; border-bottom: 1px solid var(--edge); font-size: 11px; letter-spacing: .2em; color: var(--dim); }
+  .stagehead .who { display: flex; align-items: center; gap: 11px; color: var(--grey); }
+  .stagehead b { font-weight: 400; }
+  .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--ember); flex: none; }
+  .dot.live { animation: pulse 1.1s ease-in-out infinite; }
+  .flow { color: var(--dim); }
+  .flow em { font-style: normal; color: var(--amber); }
+  canvas { position: relative; display: block; width: 100%; height: 400px; }
 
-  .cols { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1px; background: var(--hair); }
-  /* A floor, not a height: the box must not jump as the lines change length. */
-  .col { background: var(--panel); padding: 34px 32px; display: flex; flex-direction: column; gap: 16px; min-height: 208px; }
-  .lab { display: flex; align-items: center; gap: 10px; font-size: 11px; letter-spacing: 3px; color: var(--mute); }
-  .lab.right { color: var(--accent-ink); }
-  .dot { width: 7px; height: 7px; border-radius: 50%; background: #B3AFA2; flex: none; }
-  .dot.live { background: var(--accent); animation: pulse 1.2s ease-in-out infinite; }
-  .dot.amber { background: var(--accent); }
-  .said { margin: 0; font-size: 18px; line-height: 1.7; color: var(--soft); }
-  .wrote { margin: 0; font-family: var(--serif); font-size: clamp(22px, 2.6vw, 30px); line-height: 1.4; color: var(--ink); }
-  .caret { color: var(--accent); }
-
-  .meter { height: 2px; background: var(--hair2); }
-  .meter i { display: block; height: 100%; width: 100%; background: var(--accent); transform-origin: left; transform: scaleX(0); transition: transform .25s linear; }
-
-  .invite { display: flex; align-items: center; gap: 18px; padding: 20px 24px; border-top: 1px solid var(--hair); flex-wrap: wrap; }
-  .mic { display: inline-flex; align-items: center; gap: 12px; height: 54px; padding: 0 26px 0 20px; border: 1px solid var(--ink); background: var(--ink); color: var(--ground); font-size: 12px; letter-spacing: 2px; font-weight: 500; cursor: pointer; transition: transform .18s, background .18s; -webkit-tap-highlight-color: transparent; }
-  .mic:hover { transform: translateY(-1px); }
-  .mic svg { width: 20px; height: 20px; flex: none; }
-  .mic[aria-pressed="true"] { background: var(--amber); border-color: var(--amber); color: var(--ink); }
-  /* Off, not broken: a hollow outline rather than a greyed-out slab. */
-  .mic[disabled] { background: transparent; border-color: var(--hair); color: #8C887F; cursor: default; transform: none; }
-  .bars { display: none; align-items: center; gap: 3px; height: 34px; }
+  .stagefoot { position: relative; display: flex; align-items: center; gap: 20px; padding: 20px 28px; border-top: 1px solid var(--edge); flex-wrap: wrap; }
+  .mic { display: inline-flex; align-items: center; gap: 13px; height: 58px; padding: 0 30px 0 24px; border: 0; background: var(--amber); color: var(--void); font-size: 12.5px; letter-spacing: .16em; font-weight: 500; cursor: pointer; transition: transform .15s, background .15s; -webkit-tap-highlight-color: transparent; }
+  .mic:hover { transform: translateY(-2px); background: #F5BE6B; }
+  .mic:active { transform: translateY(0); }
+  .mic svg { width: 21px; height: 21px; flex: none; }
+  .mic[aria-pressed="true"] { background: var(--white); }
+  .mic[disabled] { background: transparent; color: var(--dim); box-shadow: inset 0 0 0 1px var(--edge); cursor: default; transform: none; }
+  .bars { display: none; align-items: flex-end; gap: 3px; height: 36px; }
   .bars.on { display: flex; }
-  .bars i { display: block; width: 4px; height: 5px; background: var(--accent); transition: height .07s linear; }
-  .say { font-size: 12.5px; color: var(--mute); letter-spacing: .5px; }
-  .say.err { color: var(--accent-ink); }
+  .bars i { display: block; width: 4px; height: 4px; background: var(--amber); transition: height .06s linear; }
+  .say { font-size: 12.5px; color: var(--grey); letter-spacing: .04em; }
+  .say.err { color: var(--amber); }
 
-  /* cta */
-  .cta { margin-top: 72px; display: flex; align-items: center; justify-content: space-between; gap: 26px; padding: 38px 40px; background: var(--ink); color: var(--ground); flex-wrap: wrap; }
-  .cta .big { font-family: var(--serif); font-size: clamp(26px, 3.2vw, 34px); display: block; }
-  .cta .small { font-size: 11px; letter-spacing: 2px; color: #A8A59C; }
-  .dl { display: flex; gap: 10px; flex-wrap: wrap; }
-  .dl a { display: inline-flex; align-items: center; height: 52px; padding: 0 26px; border: 1px solid #3C3B37; color: var(--ground); font-size: 12px; letter-spacing: 2px; transition: border-color .2s; }
-  .dl a:hover { border-color: var(--amber); color: var(--ground); }
-  .dl a.primary { background: var(--amber); border-color: var(--amber); color: var(--ink); font-weight: 500; }
-  .dl a.primary:hover { background: #F5BE6B; border-color: #F5BE6B; }
-  .dl a.soon { opacity: .4; pointer-events: none; }
+  /* download */
+  .get { display: flex; justify-content: space-between; align-items: flex-end; gap: 36px; padding: 74px 0 26px; flex-wrap: wrap; }
+  .get h2 { margin: 0; font-family: var(--display); font-weight: 800; font-size: clamp(30px, 5vw, 62px); line-height: .95; letter-spacing: -.03em; text-transform: uppercase; max-width: 12ch; }
+  .get .note { margin: 14px 0 0; color: var(--dim); font-size: 12px; letter-spacing: .14em; }
+  .dl { display: flex; gap: 11px; flex-wrap: wrap; }
+  .dl a { display: inline-flex; align-items: center; height: 56px; padding: 0 28px; box-shadow: inset 0 0 0 1px var(--edge); color: var(--grey); font-size: 12px; letter-spacing: .16em; transition: color .18s, box-shadow .18s; }
+  .dl a:hover { color: var(--white); box-shadow: inset 0 0 0 1px var(--grey); }
+  .dl a.primary { background: var(--amber); color: var(--void); box-shadow: none; font-weight: 500; }
+  .dl a.primary:hover { background: #F5BE6B; color: var(--void); }
+  .dl a.soon { opacity: .38; pointer-events: none; }
 
-  footer { padding: 26px 0 48px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px; font-size: 11px; letter-spacing: 1px; color: #86827A; }
-  footer nav { display: flex; gap: 24px; }
-  footer nav a { color: var(--mute); }
+  footer { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 14px; padding: 40px 0 54px; margin-top: 46px; border-top: 1px solid var(--edge); font-size: 11px; letter-spacing: .14em; color: var(--dim); }
+  footer nav { display: flex; gap: 26px; }
+  footer nav a { color: var(--dim); }
+  footer nav a:hover { color: var(--grey); }
 
-  @keyframes up { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: none; } }
   @keyframes fade { from { opacity: 0; } to { opacity: 1; } }
-  @keyframes blink { 0%, 49% { opacity: 1; } 50%, 100% { opacity: 0; } }
-  @keyframes pulse { 0%, 100% { transform: scale(1); opacity: .9; } 50% { transform: scale(1.45); opacity: .4; } }
+  @keyframes up   { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
+  @keyframes slam { from { opacity: 0; transform: translateY(46px) scale(.94); } to { opacity: 1; transform: none; } }
+  @keyframes pulse { 0%,100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.7); opacity: .35; } }
 
-  @media (max-width: 760px) {
-    .hero { padding-top: 44px; }
-    .cols { grid-template-columns: 1fr; }
-    .col { min-height: 0; padding: 28px 22px; }
-    .strip .claim { display: none; }
-    .cta { padding: 30px 24px; }
+  @media (max-width: 900px) {
+    .hero { padding: 40px 0 34px; }
+    canvas { height: 320px; }
+    .stagehead .flow { display: none; }
+    .get { padding-top: 56px; }
     .mast nav a:not(.hot) { display: none; }
   }
+  @media (max-width: 560px) { canvas { height: 270px; } .stagehead, .stagefoot { padding-left: 20px; padding-right: 20px; } }
+
   @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after { animation: none !important; transition: none !important; }
+    .grain { display: none; }
   }
 </style>
 </head>
 <body>
-<div class="wrap">
+<div class="grain" aria-hidden="true"></div>
 
+<div class="wrap">
   <header class="mast">
     <span class="mark">TAILZU</span>
     <nav>
@@ -121,53 +156,44 @@
   </header>
 
   <section class="hero">
-    <h1 id="headline">Watch it take the mess out.</h1>
+    <span class="eyebrow"><i></i><span id="eyebrow">DICTATION THAT WRITES, NOT TRANSCRIBES</span></span>
+    <h1 id="headline"><span>Say it badly.</span><span>Send it perfect.</span></h1>
     <p class="sub" id="sub">Nobody speaks in clean sentences. Tailzu keeps every word you meant and drops every one you didn't.</p>
   </section>
+</div>
 
-  <section class="panel">
-    <div class="strip">
-      <span class="who"><span class="dot" id="dot"></span><b id="lang">ENGLISH</b></span>
-      <span class="claim" id="claim">22 INDIAN LANGUAGES, AND MOST OF THE WORLD'S</span>
-    </div>
+<section class="stage">
+  <div class="stagehead">
+    <span class="who"><span class="dot" id="dot"></span><b id="lang">ENGLISH</b></span>
+    <span class="flow" id="flow">WHAT YOU SAID <em>→</em> WHAT IT WROTE</span>
+  </div>
 
-    <div class="cols">
-      <div class="col">
-        <div class="lab"><span id="labSaid">YOU SAID</span></div>
-        <p class="said" id="said"></p>
-      </div>
-      <div class="col">
-        <div class="lab right"><span class="dot amber"></span><span id="labWrote">IT WROTE</span></div>
-        <p class="wrote" id="wrote"></p>
-      </div>
-    </div>
+  <canvas id="stage" aria-label="Spoken words collapsing into a written sentence"></canvas>
 
-    <div class="meter"><i id="meter"></i></div>
+  <div class="stagefoot">
+    <button class="mic" id="mic" aria-pressed="false">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <rect x="9" y="3" width="6" height="11" rx="3"></rect>
+        <path d="M5 11a7 7 0 0 0 14 0"></path><path d="M12 18v3M9 21h6"></path>
+      </svg>
+      <span id="micLabel">USE YOUR OWN VOICE</span>
+    </button>
+    <div class="bars" id="bars"></div>
+    <span class="say" id="say">No sign-up. It stops when you pause.</span>
+  </div>
+</section>
 
-    <div class="invite">
-      <button class="mic" id="mic" aria-pressed="false">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <rect x="9" y="3" width="6" height="11" rx="3"></rect>
-          <path d="M5 11a7 7 0 0 0 14 0"></path>
-          <path d="M12 18v3M9 21h6"></path>
-        </svg>
-        <span id="micLabel">USE YOUR OWN VOICE</span>
-      </button>
-      <div class="bars" id="bars"></div>
-      <span class="say" id="say">No sign-up. It stops when you pause.</span>
-    </div>
-  </section>
-
-  <section class="cta">
+<div class="wrap">
+  <section class="get">
     <div>
-      <span class="big" id="price">Free to 800 words a month.</span>
-      <span class="small">MAC · WINDOWS · iPHONE · ANDROID</span>
+      <h2 id="price">Free to 800 words a month.</h2>
+      <p class="note" id="note">MAC · WINDOWS · iPHONE · ANDROID</p>
     </div>
     <div class="dl" id="dl"></div>
   </section>
 
   <footer>
-    <span>© 2026 TAILZU · EST. 2026</span>
+    <span>© 2026 TAILZU</span>
     <nav><a href="/privacy">PRIVACY</a><a href="/terms">TERMS</a><a href="/download">DOWNLOAD</a></nav>
   </footer>
 </div>
@@ -180,106 +206,325 @@
   var $ = function (id) { return document.getElementById(id); };
   var reduced = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-  // ---- copy: the backend's, with this as the fallback -----------------------
+  // ---- copy: the backend's, with this as the fallback ----------------------
   var C = {
-    headline: "Watch it take the mess out.",
+    eyebrow: "Dictation that writes, not transcribes",
+    headline: "Say it badly.|Send it perfect.",
     sub: $("sub").textContent,
-    cta: "USE YOUR OWN VOICE", ctaHeld: "STOP", writing: "WRITING",
-    again: "AGAIN", said: "You said", wrote: "It wrote",
-    languages: "22 Indian languages, and most of the world's.",
+    flow: "What you said → what it wrote",
+    cta: "USE YOUR OWN VOICE", ctaHeld: "STOP", writing: "WRITING", again: "AGAIN",
     invite: "No sign-up. It stops when you pause.",
     after: "That is the whole product. It works everywhere you type.",
     demoOff: "The live demo is resting. The apps below are not.",
     micDenied: "Your browser blocked the microphone. Allow it and try again.",
     price: "Free to {words} words a month.",
-    // One field, one loop. No tabs and no chapters: the point is not three
-    // labelled tricks, it is that the same thing happens whatever you speak.
-    // Every line is short on purpose so the cycle stays quick.
+    // The stage needs nothing but these two strings per case: what was said
+    // and what was written. The choreography is worked out from the pair.
     cases: [
-      { lang: "ENGLISH",  said: "um so like can we push the call to four",
-                          wrote: "Can we push the call to four?" },
-      { lang: "HINGLISH", said: "the deploy is done but abhi testing baaki hai",
-                          wrote: "The deploy is done, but abhi testing baaki hai." },
-      { lang: "हिन्दी",     said: "हाँ वो फाइल वो मैंने भेज दी थी कल शाम को",
-                          wrote: "हाँ, वो फाइल मैंने कल शाम भेज दी थी।" },
-      { lang: "தமிழ்",     said: "நான் இப்போ கிளம்பறேன் கொஞ்சம் லேட் ஆகும்",
-                          wrote: "நான் இப்போ கிளம்பறேன், கொஞ்சம் லேட் ஆகும்." },
-      { lang: "NUMBERS",  said: "trensfer 2500 rupeez to ramesh tomorow",
-                          wrote: "Transfer 2500 rupees to Ramesh tomorrow." },
-      { lang: "বাংলা",     said: "আমি কাল অফিসে আসব না একটু কাজ আছে",
-                          wrote: "আমি কাল অফিসে আসব না, একটু কাজ আছে।" },
-      { lang: "मराठी",     said: "मी उद्या ऑफिसला येणार नाही जरा काम आहे",
-                          wrote: "मी उद्या ऑफिसला येणार नाही, जरा काम आहे." },
-      { lang: "ESPAÑOL",  said: "eh o sea puedo llegar como a las siete",
-                          wrote: "Puedo llegar como a las siete." },
-      { lang: "తెలుగు",     said: "నేను రేపు ఆఫీస్ కి రాను కొంచెం పని ఉంది",
-                          wrote: "నేను రేపు ఆఫీస్‌కి రాను, కొంచెం పని ఉంది." },
-      { lang: "ਪੰਜਾਬੀ",     said: "ਮੈਂ ਕੱਲ੍ਹ ਨਹੀਂ ਆ ਸਕਦਾ ਥੋੜ੍ਹਾ ਕੰਮ ਹੈ",
-                          wrote: "ਮੈਂ ਕੱਲ੍ਹ ਨਹੀਂ ਆ ਸਕਦਾ, ਥੋੜ੍ਹਾ ਕੰਮ ਹੈ।" }
-    ]
+      { lang: "ENGLISH",  said: "um so like can we push the call to four",           wrote: "Can we push the call to four?" },
+      { lang: "HINGLISH", said: "the deploy is done but abhi testing baaki hai",     wrote: "The deploy is done, but abhi testing baaki hai." },
+      { lang: "हिन्दी",    said: "हाँ वो फाइल मैंने भेज दी थी कल शाम को",                 wrote: "हाँ, वो फाइल मैंने कल शाम भेज दी थी।" },
+      { lang: "தமிழ்",    said: "நான் இப்போ கிளம்பறேன் கொஞ்சம் லேட் ஆகும்",             wrote: "நான் இப்போ கிளம்பறேன், கொஞ்சம் லேட் ஆகும்." },
+      { lang: "NUMBERS",  said: "trensfer 2500 rupeez to ramesh tomorow",            wrote: "Transfer 2500 rupees to Ramesh tomorrow." },
+      { lang: "বাংলা",     said: "আমি কাল অফিসে আসব না একটু কাজ আছে",                  wrote: "আমি কাল অফিসে আসব না, একটু কাজ আছে।" },
+      { lang: "मराठी",    said: "मी उद्या ऑफिसला येणार नाही जरा काम आहे",               wrote: "मी उद्या ऑफिसला येणार नाही, जरा काम आहे." },
+      { lang: "ESPAÑOL",  said: "eh o sea puedo llegar como a las siete",            wrote: "Puedo llegar como a las siete." },
+      { lang: "తెలుగు",    said: "నేను రేపు ఆఫీస్ కి రాను కొంచెం పని ఉంది",                 wrote: "నేను రేపు ఆఫీస్‌కి రాను, కొంచెం పని ఉంది." },
+      { lang: "ਪੰਜਾਬੀ",    said: "ਮੈਂ ਕੱਲ੍ਹ ਨਹੀਂ ਆ ਸਕਦਾ ਥੋੜ੍ਹਾ ਕੰਮ ਹੈ",                      wrote: "ਮੈਂ ਕੱਲ੍ਹ ਨਹੀਂ ਆ ਸਕਦਾ, ਥੋੜ੍ਹਾ ਕੰਮ ਹੈ।" }
+    ],
+    download: { win: "Windows", mac: "macOS", linux: "Linux", ios: "iPhone", android: "Android", soon: "soon" }
   };
   var site = { freeWords: 800, downloads: {}, demo: false, maxSeconds: 15 };
 
-  // ---- the field ------------------------------------------------------------
-  var idx = 0, timer = null, live = false;   // live = showing the visitor's own take
-  var saidEl = $("said"), wroteEl = $("wrote"), meterEl = $("meter");
-  var dot = $("dot"), langEl = $("lang"), sayEl = $("say");
+  /* =======================================================================
+     THE STAGE
 
-  function clear() { if (timer) { clearTimeout(timer); timer = null; } }
-  function at(ms, fn) { clear(); timer = setTimeout(fn, ms); }
-  function say(msg, bad) { sayEl.textContent = msg; sayEl.className = bad ? "say err" : "say"; }
+     What the product does is subtraction, so the page performs a subtraction.
+     Every word you spoke arrives as loose debris, then the ones you meant fly
+     into a line and the ones you didn't fall out of frame. Words the recogniser
+     misheard change letters on the way in and stay amber, so you can see
+     exactly what was repaired and exactly what was left alone.
 
-  /** Types `text` into `el` at `speed` ms a character, caret and all. */
-  function type(el, text, speed, done) {
-    if (reduced) { el.textContent = text; if (done) done(); return; }
-    el.textContent = "";
-    var node = document.createTextNode(""), caret = document.createElement("span");
-    caret.className = "caret"; caret.textContent = "▍";
-    caret.style.animation = "blink .85s steps(1) infinite";
-    el.appendChild(node); el.appendChild(caret);
-    var i = 0;
-    (function step() {
-      i += 1; node.textContent = text.slice(0, i);
-      if (i < text.length) { timer = setTimeout(step, speed); }
-      else { caret.remove(); if (done) done(); }
-    })();
+     THE CHOREOGRAPHY IS DERIVED, NOT AUTHORED. A case is two strings — what
+     was said, what was written — and a fuzzy longest-common-subsequence works
+     out which word became which. That matters: it means this runs on the
+     visitor's own sentence the moment they press the microphone, with nothing
+     authored for it, and it means the backend can send new examples without
+     anybody choreographing them.
+     ==================================================================== */
+
+  var cv = $("stage"), g = cv.getContext("2d");
+  var FACE = "'Syne', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif";
+  var COL = { keep: "#F7F3EA", fix: "#E8A23C", mess: "#6B655C", drop: "#4A443C" };
+  var W = 0, H = 0, DPR = 1;
+
+  function size() {
+    DPR = Math.min(2, window.devicePixelRatio || 1);
+    W = cv.clientWidth; H = cv.clientHeight;
+    cv.width = Math.round(W * DPR); cv.height = Math.round(H * DPR);
+    g.setTransform(DPR, 0, 0, DPR, 0, 0);
   }
 
-  /** One turn of the loop: the mess types in, then the sentence, then the next
-   *  language. Fast on purpose — ten of these go by in half a minute. */
-  function play() {
-    clear(); live = false;
-    var c = C.cases[idx % C.cases.length];
-    langEl.textContent = c.lang;
-    langEl.style.animation = "none"; void langEl.offsetWidth; langEl.style.animation = "";
-    dot.className = "dot";
-    wroteEl.textContent = "";
-    meterEl.style.transform = "scaleX(0)";
-    type(saidEl, c.said, 14, function () {
-      meterEl.style.transform = "scaleX(.55)";
-      at(240, function () {
-        type(wroteEl, c.wrote, 11, function () {
-          meterEl.style.transform = "scaleX(1)";
-          at(1500, function () { idx += 1; play(); });
-        });
+  function norm(s) { return s.toLowerCase().replace(/[^\p{L}\p{N}]/gu, ""); }
+
+  /** Levenshtein, capped — only ever run on single words. */
+  function lev(a, b) {
+    var m = a.length, n = b.length, prev = [], cur = [], i, j;
+    for (j = 0; j <= n; j++) prev[j] = j;
+    for (i = 1; i <= m; i++) {
+      cur[0] = i;
+      for (j = 1; j <= n; j++) {
+        cur[j] = Math.min(prev[j] + 1, cur[j - 1] + 1, prev[j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1));
+      }
+      prev = cur.slice();
+    }
+    return prev[n];
+  }
+
+  /** Close enough to be the same word badly heard. "trensfer" is "transfer";
+   *  "four" is not "for" at this threshold, and must not be. */
+  function same(a, b) {
+    if (a === b) return true;
+    if (!a || !b) return false;
+    var short = Math.min(a.length, b.length);
+    if (short < 4 || Math.abs(a.length - b.length) > 2) return false;
+    return lev(a, b) <= Math.max(1, Math.floor(short / 4));
+  }
+
+  /** Pairs of [saidIndex, wroteIndex] for the words that survived. */
+  function align(a, b) {
+    var n = a.length, m = b.length, d = [], i, j;
+    for (i = 0; i <= n; i++) { d[i] = []; for (j = 0; j <= m; j++) d[i][j] = 0; }
+    for (i = 1; i <= n; i++) for (j = 1; j <= m; j++) {
+      d[i][j] = same(a[i - 1], b[j - 1]) ? d[i - 1][j - 1] + 1 : Math.max(d[i - 1][j], d[i][j - 1]);
+    }
+    var out = []; i = n; j = m;
+    while (i > 0 && j > 0) {
+      if (same(a[i - 1], b[j - 1])) { out.unshift([i - 1, j - 1]); i--; j--; }
+      else if (d[i - 1][j] >= d[i][j - 1]) i--; else j--;
+    }
+    return out;
+  }
+
+  /** Lay the written sentence out as centred lines that fit the stage. */
+  function layout(words, pxAvail, pxHeight) {
+    var pad = Math.max(28, pxAvail * 0.06);
+    var maxW = pxAvail - pad * 2;
+    var fs = Math.min(46, Math.max(19, Math.round(pxAvail / 26)));
+    var lines, lh;
+    for (;;) {
+      g.font = "700 " + fs + "px " + FACE;
+      lines = []; var line = [], wide = 0;
+      for (var i = 0; i < words.length; i++) {
+        var w = g.measureText(words[i]).width, sp = g.measureText(" ").width;
+        var next = wide + (line.length ? sp : 0) + w;
+        if (line.length && next > maxW) { lines.push({ words: line, w: wide }); line = [words[i]]; wide = w; }
+        else { line.push(words[i]); wide = next; }
+      }
+      if (line.length) lines.push({ words: line, w: wide });
+      lh = fs * 1.34;
+      // Three lines is a sentence; four is a paragraph nobody reads in 2s.
+      if ((lines.length <= 3 && lines.length * lh < pxHeight - 60) || fs <= 19) break;
+      fs -= 2;
+    }
+    var top = (pxHeight - lines.length * lh) / 2 + lh / 2;
+    var pos = [], k = 0;
+    for (var L = 0; L < lines.length; L++) {
+      var x = (pxAvail - lines[L].w) / 2, sp2 = g.measureText(" ").width;
+      for (var q = 0; q < lines[L].words.length; q++) {
+        var t = lines[L].words[q];
+        pos[k++] = { x: x, y: top + L * lh, w: g.measureText(t).width };
+        x += g.measureText(t).width + sp2;
+      }
+    }
+    return { pos: pos, fs: fs, lh: lh, lines: lines, top: top };
+  }
+
+  function build(said, wrote) {
+    var S = said.trim().split(/\s+/).filter(Boolean);
+    var T = wrote.trim().split(/\s+/).filter(Boolean);
+    var lay = layout(T, W, H);
+    var pairs = align(S.map(norm), T.map(norm));
+    var srcOf = {}, dstOf = {};
+    pairs.forEach(function (p) { dstOf[p[0]] = p[1]; srcOf[p[1]] = p[0]; });
+
+    var parts = [], i;
+    for (i = 0; i < S.length; i++) {
+      var d = dstOf[i];
+      var kept = d !== undefined;
+      var to = kept ? T[d] : null;
+      parts.push({
+        from: S[i], to: to, text: S[i],
+        kept: kept,
+        fixed: kept && norm(S[i]) !== norm(to),          // misheard, repaired
+        tx: kept ? lay.pos[d].x : 0, ty: kept ? lay.pos[d].y : 0,
+        // Debris starts loose, and where it starts is where it fell.
+        sx: 40 + Math.random() * Math.max(60, W - 160),
+        sy: 40 + Math.random() * Math.max(60, H - 80),
+        rot: (Math.random() - 0.5) * 0.5, alpha: 0, born: Math.random() * 0.16
       });
-    });
+    }
+    // A word the writer added that nothing was spoken for: it fades up in
+    // place rather than flying, because it did not come from anywhere.
+    for (i = 0; i < T.length; i++) {
+      if (srcOf[i] === undefined) {
+        parts.push({ from: null, to: T[i], text: T[i], kept: true, fixed: false, added: true,
+          tx: lay.pos[i].x, ty: lay.pos[i].y, sx: lay.pos[i].x, sy: lay.pos[i].y,
+          rot: 0, alpha: 0, born: 0.1 });
+      }
+    }
+    return { parts: parts, lay: lay };
   }
 
-  /** The visitor's own words, which end the loop for good. */
-  function show(said, wrote, ms) {
-    clear(); live = true;
-    langEl.textContent = "YOUR VOICE" + (ms ? " · " + (ms / 1000).toFixed(1) + "s" : "");
-    dot.className = "dot";
-    saidEl.textContent = said;
-    meterEl.style.transform = "scaleX(.55)";
-    type(wroteEl, wrote, 14, function () {
-      meterEl.style.transform = "scaleX(1)";
-      say(C.after);
-    });
+  // --- the loop -----------------------------------------------------------
+  // BURST is short and CHAOS ramps fast on purpose. The two are adjacent, so
+  // any gap between one case clearing and the next arriving is a frame where
+  // the stage is an empty black box — which reads as broken, not as a pause.
+  var CHAOS = 950, SNAP = 780, HOLD = 1750, BURST = 280;
+  var scene = null, t0 = 0, phase = "chaos", idx = 0, raf = 0, own = null;
+  var langEl = $("lang"), dotEl = $("dot");
+
+  function ease(x) { return 1 - Math.pow(1 - x, 3); }
+  function lerp(a, b, t) { return a + (b - a) * t; }
+
+  function begin(c) {
+    langEl.textContent = c.lang;
+    scene = build(c.said, c.wrote);
+    phase = "chaos"; t0 = performance.now();
   }
 
-  // ---- downloads ------------------------------------------------------------
+  function next() {
+    if (own) return;                              // their sentence stays put
+    idx = (idx + 1) % C.cases.length;
+    begin(C.cases[idx]);
+  }
+
+  function draw(now) {
+    raf = requestAnimationFrame(draw);
+    if (!scene) return;
+    var el = now - t0;
+    if (phase === "chaos" && el > CHAOS) { phase = "snap"; t0 = now; el = 0; }
+    else if (phase === "snap" && el > SNAP) { phase = "hold"; t0 = now; el = 0; }
+    // Their own sentence does not burst. The loop was there to argue for the
+    // product; once they have made the argument themselves it is over.
+    else if (phase === "hold" && el > HOLD && !own) { phase = "burst"; t0 = now; el = 0; }
+    else if (phase === "burst" && el > BURST) { next(); return; }
+    if (phase === "hold" && el > HOLD) el = HOLD;
+
+    g.clearRect(0, 0, W, H);
+    var lay = scene.lay;
+    g.textBaseline = "middle";
+
+    // The rule under the sentence, drawn across while it is being read.
+    if (phase === "hold" || phase === "snap") {
+      var sweep = phase === "hold" ? Math.min(1, el / 620) : 0;
+      if (sweep > 0) {
+        var last = lay.lines[lay.lines.length - 1];
+        var y = lay.top + (lay.lines.length - 1) * lay.lh + lay.fs * 0.78;
+        g.fillStyle = "#C8791A";
+        g.fillRect((W - last.w) / 2, y, last.w * ease(sweep), 2);
+      }
+    }
+
+    for (var i = 0; i < scene.parts.length; i++) {
+      var p = scene.parts[i], x, y, a = 1, rot = 0, col = COL.mess, fs = lay.fs;
+
+      if (phase === "chaos") {
+        var t = Math.max(0, Math.min(1, (el / CHAOS - p.born) * 6));
+        x = p.sx + Math.sin((now / 700) + i) * 7;
+        y = p.sy + Math.cos((now / 820) + i * 1.7) * 7;
+        rot = p.rot; a = t * (p.added ? 0 : 0.92); fs = lay.fs * 0.82;
+        col = COL.mess;
+      } else if (phase === "snap") {
+        var k = ease(Math.min(1, el / SNAP));
+        if (p.kept) {
+          x = lerp(p.sx, p.tx, k); y = lerp(p.sy, p.ty, k);
+          rot = p.rot * (1 - k); fs = lerp(lay.fs * 0.82, lay.fs, k);
+          a = p.added ? k : 1;
+          // Halfway across, a misheard word becomes the word you meant.
+          if (p.to && k > 0.5) { p.text = p.to; col = p.fixed ? COL.fix : COL.keep; }
+          else col = p.fixed ? COL.fix : lerp01(COL.mess, COL.keep, k);
+        } else {
+          // Filler does not fade politely. It drops.
+          x = p.sx + p.rot * 90 * k; y = p.sy + 220 * k * k;
+          rot = p.rot * (1 + k * 2.4); a = Math.max(0, 1 - k * 1.7); fs = lay.fs * 0.82;
+          col = COL.drop;
+        }
+      } else if (phase === "hold") {
+        if (!p.kept) continue;
+        x = p.tx; y = p.ty; fs = lay.fs; a = 1;
+        col = p.fixed ? COL.fix : COL.keep;
+      } else {                                     // burst
+        if (!p.kept) continue;
+        var b = el / BURST;
+        x = p.tx + (p.tx - W / 2) * b * b * 0.55;
+        y = p.ty + (p.ty - H / 2) * b * b * 0.55;
+        fs = lay.fs * (1 + b * 0.12); a = Math.max(0, 1 - b * 1.25);
+        col = p.fixed ? COL.fix : COL.keep;
+      }
+
+      if (a <= 0.01) continue;
+      g.save();
+      g.globalAlpha = a;
+      g.fillStyle = col;
+      g.font = (p.kept && phase !== "chaos" ? "700 " : "600 ") + Math.round(fs) + "px " + FACE;
+      if (rot) { g.translate(x, y); g.rotate(rot); g.translate(-x, -y); }
+      g.fillText(p.text, x, y);
+      g.restore();
+    }
+  }
+
+  /** Mess-grey to paper-white, so a word brightens as it finds its place. */
+  function lerp01(c1, c2, t) {
+    function rgb(h) { return [parseInt(h.slice(1, 3), 16), parseInt(h.slice(3, 5), 16), parseInt(h.slice(5, 7), 16)]; }
+    var a = rgb(c1), b = rgb(c2);
+    return "rgb(" + Math.round(lerp(a[0], b[0], t)) + "," + Math.round(lerp(a[1], b[1], t)) + "," + Math.round(lerp(a[2], b[2], t)) + ")";
+  }
+
+  /** Reduced motion gets the same information with none of the movement: the
+   *  written sentence, swapping. */
+  var stillT = 0;
+  function still() {
+    clearTimeout(stillT);
+    var c = own || C.cases[idx];
+    langEl.textContent = c.lang;
+    var T = c.wrote.trim().split(/\s+/).filter(Boolean);
+    var lay = layout(T, W, H);
+    g.clearRect(0, 0, W, H);
+    g.textBaseline = "middle"; g.fillStyle = COL.keep;
+    g.font = "700 " + lay.fs + "px " + FACE;
+    for (var i = 0; i < T.length; i++) g.fillText(T[i], lay.pos[i].x, lay.pos[i].y);
+    if (!own) stillT = setTimeout(function () { idx = (idx + 1) % C.cases.length; still(); }, 3000);
+  }
+
+  function run() {
+    size();
+    if (!W || !H) return;                    // nothing laid out yet to measure
+    if (reduced) { still(); return; }
+    begin(own || C.cases[idx]);
+    if (!raf) raf = requestAnimationFrame(draw);
+  }
+
+  var rt = 0;
+  window.addEventListener("resize", function () {
+    clearTimeout(rt);
+    rt = setTimeout(function () {
+      size();
+      if (reduced) { still(); return; }
+      if (scene) { var c = own || C.cases[idx]; begin(c); }
+    }, 160);
+  });
+
+  // The stage is the whole point; do not burn a phone's battery off-screen.
+  if (window.IntersectionObserver) {
+    new IntersectionObserver(function (es) {
+      var on = es[0].isIntersecting;
+      if (on && !raf && !reduced) raf = requestAnimationFrame(draw);
+      else if (!on && raf) { cancelAnimationFrame(raf); raf = 0; }
+    }, { threshold: 0 }).observe(cv);
+  }
+
+  // ---- downloads ----------------------------------------------------------
   function os() {
     var ua = navigator.userAgent;
     if (/iPhone|iPad|iPod/i.test(ua)) return "ios";
@@ -290,18 +535,18 @@
     return "win";
   }
   var FILES = { win: "/downloads/Tailzu-Setup.exe", mac: "/downloads/Tailzu.dmg", linux: "/downloads/Tailzu.AppImage", ios: "/download", android: "/download" };
-  function have(k) { return (k === "ios" || k === "android") ? true : !!site.downloads[k]; }
+  function has(k) { return (k === "ios" || k === "android") ? true : !!site.downloads[k]; }
 
   function paintDownloads() {
     var el = $("dl"); el.innerHTML = "";
     var mine = os();
     var order = [mine].concat(["mac", "win", "ios", "android", "linux"].filter(function (k) { return k !== mine; })).slice(0, 4);
-    // The amber button is a promise that something downloads. It goes to the
-    // visitor's own platform when there is an installer for it, and otherwise
-    // to the first one there is — never to a button that says "soon".
-    var lead = have(mine) ? mine : (order.filter(have)[0] || null);
+    // The amber button promises that something downloads. It goes to the
+    // visitor's platform when there is an installer, otherwise to the first
+    // one there is — never to a button that says "soon".
+    var lead = has(mine) ? mine : (order.filter(has)[0] || null);
     order.forEach(function (k) {
-      var ok = have(k);
+      var ok = has(k);
       var a = document.createElement("a");
       a.href = ok ? FILES[k] : "#";
       a.textContent = (C.download[k] || k).toUpperCase() + (ok ? "" : " · " + C.download.soon.toUpperCase());
@@ -309,27 +554,36 @@
       if (!ok) a.setAttribute("aria-disabled", "true");
       el.appendChild(a);
     });
-    if (have(mine)) $("navdl").href = FILES[mine];
+    if (has(mine)) $("navdl").href = FILES[mine];
   }
 
+  function say(msg, bad) { $("say").textContent = msg; $("say").className = bad ? "say err" : "say"; }
+
   function applyCopy() {
-    $("headline").textContent = C.headline;
+    $("eyebrow").textContent = C.eyebrow.toUpperCase();
+    $("headline").innerHTML = "";
+    C.headline.split("|").forEach(function (line) {
+      var s = document.createElement("span"); s.textContent = line;
+      $("headline").appendChild(s);
+    });
     $("sub").textContent = C.sub;
-    $("claim").textContent = C.languages.replace(/\.$/, "").toUpperCase();
-    $("labSaid").textContent = C.said.toUpperCase();
-    $("labWrote").textContent = C.wrote.toUpperCase();
+    $("flow").innerHTML = "";
+    C.flow.toUpperCase().split("→").forEach(function (half, i) {
+      if (i) { var em = document.createElement("em"); em.textContent = " → "; $("flow").appendChild(em); }
+      $("flow").appendChild(document.createTextNode(half.trim()));
+    });
     $("micLabel").textContent = C.cta;
     $("price").textContent = C.price.replace("{words}", String(site.freeWords));
     paintDownloads();
     if (!site.demo) { $("mic").disabled = true; say(C.demoOff); }
-    else if (!live) say(C.invite);
+    else if (!own) say(C.invite);
   }
 
-  // ---- the microphone -------------------------------------------------------
+  // ---- the microphone -----------------------------------------------------
   var mic = $("mic"), bars = $("bars"), micLabel = $("micLabel");
-  var NB = 28;
+  var NB = 30;
   for (var b = 0; b < NB; b++) bars.appendChild(document.createElement("i"));
-  var rec = null, stream = null, chunks = [], actx = null, analyser = null, raf = 0;
+  var rec = null, stream = null, chunks = [], actx = null, analyser = null, vraf = 0;
   var startedAt = 0, heard = false, lastLoud = 0, hard = 0, busy = false;
 
   function pickMime() {
@@ -342,7 +596,6 @@
   function start() {
     if (busy) return;
     navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true } }).then(function (s) {
-      clear();                       // the loop stops the moment they speak
       stream = s; chunks = [];
       var m = pickMime();
       rec = new MediaRecorder(s, m ? { mimeType: m } : undefined);
@@ -352,20 +605,18 @@
       startedAt = Date.now(); heard = false; lastLoud = startedAt;
       mic.setAttribute("aria-pressed", "true"); micLabel.textContent = C.ctaHeld;
       bars.className = "bars on";
-      langEl.textContent = "LISTENING"; dot.className = "dot live";
-      saidEl.textContent = ""; wroteEl.textContent = "";
-      meterEl.style.transform = "scaleX(0)";
+      langEl.textContent = "LISTENING"; dotEl.className = "dot live";
       say(C.invite);
-      meter(s);
+      level(s);
       hard = setTimeout(stop, site.maxSeconds * 1000);
     }).catch(function () { say(C.micDenied, true); });
   }
 
-  function meter(s) {
+  function level(s) {
     try {
       actx = new (window.AudioContext || window.webkitAudioContext)();
-      var src = actx.createMediaStreamSource(s);
-      analyser = actx.createAnalyser(); analyser.fftSize = 256; src.connect(analyser);
+      analyser = actx.createAnalyser(); analyser.fftSize = 256;
+      actx.createMediaStreamSource(s).connect(analyser);
     } catch (e) { return; }
     var buf = new Uint8Array(analyser.frequencyBinCount), els = bars.children;
     (function tick() {
@@ -374,33 +625,32 @@
       var sum = 0;
       for (var i = 0; i < NB; i++) {
         var v = buf[Math.floor(i * buf.length / NB / 2)] / 255;
-        sum += v; els[i].style.height = (5 + v * 28) + "px";
+        sum += v; els[i].style.height = (4 + v * 30) + "px";
       }
-      var level = sum / NB, now = Date.now();
-      if (level > 0.06) { heard = true; lastLoud = now; }
-      meterEl.style.transform = "scaleX(" + Math.min(0.9, (now - startedAt) / (site.maxSeconds * 1000)) + ")";
+      var now = Date.now();
+      if (sum / NB > 0.06) { heard = true; lastLoud = now; }
       // It stops itself when you pause. A pitch is one breath long.
       if (heard && now - lastLoud > 1400) { stop(); return; }
-      raf = requestAnimationFrame(tick);
+      vraf = requestAnimationFrame(tick);
     })();
   }
 
   function stop() {
     clearTimeout(hard);
-    if (raf) { cancelAnimationFrame(raf); raf = 0; }
+    if (vraf) { cancelAnimationFrame(vraf); vraf = 0; }
     analyser = null;
     if (actx) { try { actx.close(); } catch (e) {} actx = null; }
     mic.setAttribute("aria-pressed", "false");
     bars.className = "bars";
+    dotEl.className = "dot";
     if (rec && rec.state !== "inactive") {
-      busy = true; micLabel.textContent = C.writing;
-      langEl.textContent = "WRITING"; dot.className = "dot";
+      busy = true; micLabel.textContent = C.writing; langEl.textContent = "WRITING";
       rec.stop();
     } else { micLabel.textContent = C.cta; }
     if (stream) { stream.getTracks().forEach(function (t) { t.stop(); }); stream = null; }
   }
 
-  function done() { busy = false; micLabel.textContent = live ? C.again : C.cta; }
+  function done() { busy = false; micLabel.textContent = own ? C.again : C.cta; }
 
   function upload() {
     var m = (rec && rec.mimeType) || "audio/webm";
@@ -415,13 +665,16 @@
     }).then(function (j) {
       var s = (j.transcript || "").trim(), w = (j.cleanedText || "").trim();
       if (!s && !w) throw new Error("Nothing heard. Try a little louder.");
-      show(s, w || s, j.ms || 0);
+      // Their sentence runs through the same choreography, derived the same
+      // way — and then it stays, because it is the better argument.
+      own = { lang: "YOUR VOICE", said: s, wrote: w || s };
+      if (reduced) still(); else begin(own);
+      say(C.after);
       done();
     }).catch(function (e) {
       say(e.message || String(e), true);
+      langEl.textContent = C.cases[idx].lang;
       done();
-      // A failed attempt should not leave a dead field: go back to the loop.
-      at(1600, function () { idx += 1; play(); });
     });
   }
 
@@ -432,10 +685,12 @@
     if (e.key === "Escape" && mic.getAttribute("aria-pressed") === "true") stop();
   });
 
-  // ---- boot -----------------------------------------------------------------
-  C.download = { win: "Windows", mac: "macOS", linux: "Linux", ios: "iPhone", android: "Android", soon: "soon" };
+  // ---- boot ---------------------------------------------------------------
   applyCopy();
-  play();
+  // The stage measures text, so it must not start before the face has landed
+  // or every line is laid out for a fallback and re-flows under the reader.
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(run); else window.addEventListener("load", run);
+
   fetch(API + "/v1/site").then(function (r) { return r.json(); }).then(function (j) {
     if (j && j.copy) { for (var k in j.copy) if (Object.prototype.hasOwnProperty.call(j.copy, k)) C[k] = j.copy[k]; }
     if (j) {
@@ -445,7 +700,7 @@
       site.maxSeconds = j.maxSeconds || 15;
     }
     applyCopy();
-    if (!live) { idx = 0; play(); }   // the server may have sent other lines
+    if (!own) { idx = 0; if (W) run(); }        // the server may have sent other lines
   }).catch(function () { /* the fallbacks are already on screen */ });
 })();
 </script>
