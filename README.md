@@ -13,41 +13,43 @@ page back, so the legal text is never unreachable.
 
 ## The river
 
-Three lanes of speech pour in from the left, are swallowed at the mark, and
-one sentence leaves to the right — dim sans going in, bright serif coming out.
-Many in, one out: the shape of the picture is the shape of the product.
+Seven lanes of speech pour in from the left, are swallowed at the caret, and
+one sentence leaves to the right. Many in, one out: the shape of the picture
+is the shape of the product.
 
-The three lanes arriving are curved and crowded because that is what speech
-is. The one leaving is dead level, out of the middle of the last box, which is
-the whole difference the product makes. Every lane carries a `dy` of a third
-of an em, because a textPath puts the BASELINE on the path and without it the
-text floats a third of its own height above the box it is running into.
+**The left is ugly on purpose.** Speech has no typography, so the lanes have
+none either — each is set in whatever face the machine happens to have, at
+whatever size, with no two agreeing: Comic Sans, Courier, Times, Verdana,
+Trebuchet, Georgia, Arial. Nothing there is loaded from a font host, because
+the whole point is that these are the defaults nobody chose. The right is one
+line with every decision on it made on purpose. That contrast is the argument.
 
-It is four SVG `<path>` elements with a `<textPath>` on each, clipped either
-side of the capsule. There are no bands behind the text: speech runs on the
-page itself, and a mask on the `<svg>` — not on the container, so the capsule
-over it stays crisp — dissolves both ends into the ground rather than letting
-the viewport cut them off. No two inbound lanes run at the same speed, because equal
-speeds beat against each other and read as one repeating pattern rather than
-three separate people talking at once; they carry interleaved cases rather
-than consecutive ones, so three scripts are on screen at once. A radial ink
-gradient over the crossing dissolves the mess into the first box instead of
-chopping it off at a clip edge, and a gradient mask at the far side lets the
-sentence form as it leaves the last one — arriving whole at a hard edge read
-as sliding out from behind a sheet. Nothing glows: the mark sits on plain ink.
+The lanes arriving are curved and crowded; the one leaving is dead level, out
+of the middle of the caret. Every lane carries a `dy` of a third of an em,
+because a textPath puts the BASELINE on the path and without it the text
+floats a third of its own height above the line it is running along.
 
-All four lanes are drawn through the centre of the viewBox, which is where the
-capsule is centred — that is what keeps the button exactly on the crossing at
-any window width, and why the change appears to happen *at* the microphone
-rather than near it.
+Each lane's stream repeats until it is longer than the curve it runs on, then
+the whole thing is written twice. Doubling alone is not enough — a lane
+carrying three short sentences is shorter than its path, and the offset then
+drags a visible hole along it. The repeat guarantees one period covers the
+curve; the doubling makes the wrap seamless, because the frame before the jump
+and the frame after it are the same picture.
+
+No two lanes run at the same speed: equal speeds beat against each other and
+read as one repeating pattern rather than seven people talking at once. They
+carry interleaved cases rather than consecutive ones, so seven scripts are on
+screen at the same time.
+
+There are no bands behind the text. A mask on the `<svg>` — not on the
+container, so the caret over it stays crisp — dissolves both ends into the
+ground rather than letting the viewport cut them off, a radial ink gradient
+swallows the mess at the caret, and a gradient on the far side lets the
+sentence form as it leaves. Nothing glows.
 
 Every lane runs left to right on purpose. A path that doubles back hangs its
 own glyphs upside down, which is the first thing that goes wrong with this
 effect.
-
-The stream is written twice and the offset slides through exactly one half
-before jumping back, so the loop has no seam — the frame before the jump and
-the frame after it are the same picture.
 
 Press the button and your own clip replaces the stream: the mess you actually
 said flows in, your sentence flows out, and the page stops arguing.

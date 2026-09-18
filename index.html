@@ -71,16 +71,28 @@
     -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 15%, #000 85%, transparent 100%);
             mask-image: linear-gradient(90deg, transparent 0, #000 15%, #000 85%, transparent 100%);
   }
-  /* Three lanes at three depths. The near one is bigger and a shade brighter;
-     the far ones sit back. Depth is what stops three lines reading as one
-     wallpaper pattern — it is carried by size, not by three different slabs. */
-  .mess { font-family: var(--sans); letter-spacing: .005em; }
-  .mess.near { font-size: 19px;   fill: #7C7466; }
-  .mess.far  { font-size: 15px;   fill: #5C554B; }
-  /* The jump across the mark is the drama: dim sans in, bright serif out —
-     carried by weight and colour rather than by size, now that the mark it
-     passes through is small. */
-  .clean { font-family: var(--serif); font-size: 23px; fill: var(--white); }
+  /* UGLY ON PURPOSE. Speech has no typography, so the seven lanes have none
+     either: each is set in whatever face the machine happens to have, at
+     whatever size, with no two agreeing. Nothing here is loaded from a font
+     host — the whole point is that these are the defaults nobody chose. The
+     incoherence is the argument, and it is what the one line on the right
+     answers. */
+  .mess { letter-spacing: 0; }
+  .u1 { font-family: 'Comic Sans MS', 'Comic Neue', cursive;      font-size: 15px;   fill: #56504A; }
+  .u2 { font-family: 'Courier New', Courier, monospace;           font-size: 16.5px; fill: #6A6257; }
+  .u3 { font-family: 'Times New Roman', Times, serif;             font-size: 19px;   fill: #5B554D; }
+  .u4 { font-family: Verdana, Geneva, sans-serif;                 font-size: 17px;   fill: #7C7466; }
+  .u5 { font-family: 'Trebuchet MS', 'Lucida Grande', sans-serif; font-size: 14px;   fill: #5E584F; }
+  .u6 { font-family: Georgia, 'Times New Roman', serif;           font-size: 18px;   fill: #665F55; }
+  .u7 { font-family: Arial, Helvetica, sans-serif;                font-size: 13.5px; fill: #514C45; }
+
+  /* One line, and every decision on it made on purpose: the optical size the
+     face was cut for, a hair of tracking, and nothing else on the page set
+     like it. That contrast is the whole product in one picture. */
+  .clean {
+    font-family: var(--serif); font-size: 24px; font-weight: 400;
+    font-optical-sizing: auto; letter-spacing: .004em; fill: var(--white);
+  }
   #drift { transition: transform .5s cubic-bezier(.2,.8,.3,1); }
 
   /* The caret. 530ms on, 530ms off, which is the rate a real one blinks at —
@@ -105,9 +117,11 @@
   }
   .speak:hover { background: var(--amber); transform: translateX(-50%) translateY(-1px); }
   .speak[aria-pressed="true"] { background: var(--amber); }
-  .speak[disabled] { background: transparent; color: var(--dim); box-shadow: inset 0 0 0 1px var(--rule); cursor: default; }
+  /* The lanes run underneath the controls now, so the off state needs a
+     ground of its own — a transparent pill over moving text is unreadable. */
+  .speak[disabled] { background: rgba(16,15,14,.82); color: var(--dim); box-shadow: inset 0 0 0 1px var(--rule); cursor: default; }
   .speak svg { width: 16px; height: 16px; }
-  .under { position: absolute; left: 50%; transform: translateX(-50%); top: calc(78% + 58px); width: max-content; max-width: 90vw; text-align: center; color: var(--dim); font-size: 13px; }
+  .under { position: absolute; left: 50%; transform: translateX(-50%); top: calc(78% + 58px); width: max-content; max-width: 90vw; text-align: center; color: var(--dim); font-size: 13px; text-shadow: 0 0 12px var(--ink), 0 0 6px var(--ink), 0 0 3px var(--ink); }
   .under.err { color: var(--amber); }
 
   /* ---- the sheet: dark gives way to paper ----------------------------- */
@@ -227,13 +241,14 @@
            path that doubles back hangs its own glyphs upside down. All three
            inbound lanes arrive at (720, 260), which is the centre of this
            box, which is where the mark's first box sits at every window width. -->
-      <!-- Every lane arrives just left of the caret, at (712, 284). -->
-      <path id="in1" d="M-220 40 C60 52 300 128 480 212 C556 248 620 272 712 284"/>
-      <path id="in2" d="M-220 288 C80 292 320 286 480 285 C566 284 640 284 712 284"/>
-      <path id="in3" d="M-220 500 C90 492 320 432 480 366 C562 330 630 300 712 284"/>
-      <!-- Dead level, out of the caret. The three lanes arriving are curved
-           and crowded because that is what speech is; the one leaving is a
-           straight line, which is the whole difference the product makes. -->
+      <!-- Seven lanes, every one arriving just left of the caret at (712, 284). -->
+      <path id="in1" d="M-220 16 C120 20 380 44 560 122 C642 158 682 236 712 284"/>
+      <path id="in2" d="M-220 104 C140 106 400 126 580 180 C652 202 692 246 712 284"/>
+      <path id="in3" d="M-220 190 C150 192 420 204 600 228 C662 238 696 262 712 284"/>
+      <path id="in4" d="M-220 288 C120 290 400 287 580 286 C652 285 692 285 712 284"/>
+      <path id="in5" d="M-220 376 C150 374 420 366 600 340 C662 332 696 308 712 284"/>
+      <path id="in6" d="M-220 460 C140 458 400 436 580 386 C652 366 692 322 712 284"/>
+      <path id="in7" d="M-220 516 C120 514 380 484 560 426 C642 400 682 330 712 284"/>
       <path id="out1" d="M728 284 L1800 284"/>
       <clipPath id="clipIn"><rect x="-300" y="-140" width="1014" height="800"/></clipPath>
       <!-- The mouth. Ink at full strength just before the caret, fading to
@@ -257,12 +272,16 @@
         <!-- dy carries the glyphs down onto the line. A textPath sets the
              BASELINE on the path, so without it every lane floats a third of
              its own height above the line it is supposed to run along. -->
-        <text class="mess far" dy=".33em"><textPath href="#in1" id="t1" startOffset="0"> </textPath></text>
-        <text class="mess near" dy=".33em"><textPath href="#in2" id="t2" startOffset="0"> </textPath></text>
-        <text class="mess far" dy=".33em"><textPath href="#in3" id="t3" startOffset="0"> </textPath></text>
+        <text class="mess u1" dy=".33em"><textPath href="#in1" id="t1" startOffset="0"> </textPath></text>
+        <text class="mess u2" dy=".33em"><textPath href="#in2" id="t2" startOffset="0"> </textPath></text>
+        <text class="mess u3" dy=".33em"><textPath href="#in3" id="t3" startOffset="0"> </textPath></text>
+        <text class="mess u4" dy=".33em"><textPath href="#in4" id="t4" startOffset="0"> </textPath></text>
+        <text class="mess u5" dy=".33em"><textPath href="#in5" id="t5" startOffset="0"> </textPath></text>
+        <text class="mess u6" dy=".33em"><textPath href="#in6" id="t6" startOffset="0"> </textPath></text>
+        <text class="mess u7" dy=".33em"><textPath href="#in7" id="t7" startOffset="0"> </textPath></text>
       </g>
       <g mask="url(#leaving)">
-        <text class="clean" dy=".33em"><textPath href="#out1" id="t4" startOffset="0"> </textPath></text>
+        <text class="clean" dy=".33em"><textPath href="#out1" id="tOut" startOffset="0"> </textPath></text>
       </g>
     </g>
 
@@ -350,16 +369,26 @@
     micDenied: "Your browser blocked the microphone. Allow it and try again.",
     price: "Free to {words} words a month.",
     cases: [
-      { lang: "ENGLISH",  said: "um so like can we push the call to four",        wrote: "Can we push the call to four?" },
-      { lang: "HINGLISH", said: "the deploy is done but abhi testing baaki hai",  wrote: "The deploy is done, but abhi testing baaki hai." },
-      { lang: "हिन्दी",     said: "हाँ वो फाइल मैंने भेज दी थी कल शाम को",              wrote: "हाँ, वो फाइल मैंने कल शाम भेज दी थी।" },
-      { lang: "தமிழ்",     said: "நான் இப்போ கிளம்பறேன் கொஞ்சம் லேட் ஆகும்",          wrote: "நான் இப்போ கிளம்பறேன், கொஞ்சம் லேட் ஆகும்." },
-      { lang: "NUMBERS",  said: "trensfer 2500 rupeez to ramesh tomorow",         wrote: "Transfer 2500 rupees to Ramesh tomorrow." },
-      { lang: "বাংলা",     said: "আমি কাল অফিসে আসব না একটু কাজ আছে",               wrote: "আমি কাল অফিসে আসব না, একটু কাজ আছে।" },
-      { lang: "मराठी",     said: "मी उद्या ऑफिसला येणार नाही जरा काम आहे",            wrote: "मी उद्या ऑफिसला येणार नाही, जरा काम आहे." },
-      { lang: "ESPAÑOL",  said: "eh o sea puedo llegar como a las siete",         wrote: "Puedo llegar como a las siete." },
-      { lang: "తెలుగు",     said: "నేను రేపు ఆఫీస్ కి రాను కొంచెం పని ఉంది",              wrote: "నేను రేపు ఆఫీస్‌కి రాను, కొంచెం పని ఉంది." },
-      { lang: "ਪੰਜਾਬੀ",     said: "ਮੈਂ ਕੱਲ੍ਹ ਨਹੀਂ ਆ ਸਕਦਾ ਥੋੜ੍ਹਾ ਕੰਮ ਹੈ",                   wrote: "ਮੈਂ ਕੱਲ੍ਹ ਨਹੀਂ ਆ ਸਕਦਾ, ਥੋੜ੍ਹਾ ਕੰਮ ਹੈ।" }
+      { said: "um so like can we push the call to four",          wrote: "Can we push the call to four?" },
+      { said: "the deploy is done but abhi testing baaki hai",    wrote: "The deploy is done, but abhi testing baaki hai." },
+      { said: "हाँ वो फाइल मैंने भेज दी थी कल शाम को",                  wrote: "हाँ, वो फाइल मैंने कल शाम भेज दी थी।" },
+      { said: "நான் இப்போ கிளம்பறேன் கொஞ்சம் லேட் ஆகும்",              wrote: "நான் இப்போ கிளம்பறேன், கொஞ்சம் லேட் ஆகும்." },
+      { said: "trensfer 2500 rupeez to ramesh tomorow",            wrote: "Transfer 2500 rupees to Ramesh tomorrow." },
+      { said: "আমি কাল অফিসে আসব না একটু কাজ আছে",                   wrote: "আমি কাল অফিসে আসব না, একটু কাজ আছে।" },
+      { said: "मी उद्या ऑफिसला येणार नाही जरा काम आहे",                wrote: "मी उद्या ऑफिसला येणार नाही, जरा काम आहे." },
+      { said: "eh o sea puedo llegar como a las siete",            wrote: "Puedo llegar como a las siete." },
+      { said: "నేను రేపు ఆఫీస్ కి రాను కొంచెం పని ఉంది",                  wrote: "నేను రేపు ఆఫీస్‌కి రాను, కొంచెం పని ఉంది." },
+      { said: "ਮੈਂ ਕੱਲ੍ਹ ਨਹੀਂ ਆ ਸਕਦਾ ਥੋੜ੍ਹਾ ਕੰਮ ਹੈ",                       wrote: "ਮੈਂ ਕੱਲ੍ਹ ਨਹੀਂ ਆ ਸਕਦਾ, ਥੋੜ੍ਹਾ ਕੰਮ ਹੈ।" },
+      { said: "હું કાલે ઓફિસે નહીં આવું થોડું કામ છે",                       wrote: "હું કાલે ઓફિસે નહીં આવું, થોડું કામ છે." },
+      { said: "ನಾನು ನಾಳೆ ಆಫೀಸಿಗೆ ಬರಲ್ಲ ಸ್ವಲ್ಪ ಕೆಲಸ ಇದೆ",               wrote: "ನಾನು ನಾಳೆ ಆಫೀಸಿಗೆ ಬರಲ್ಲ, ಸ್ವಲ್ಪ ಕೆಲಸ ಇದೆ." },
+      { said: "ഞാൻ നാളെ ഓഫീസിൽ വരില്ല കുറച്ച് ജോലി ഉണ്ട്",            wrote: "ഞാൻ നാളെ ഓഫീസിൽ വരില്ല, കുറച്ച് ജോലി ഉണ്ട്." },
+      { said: "ମୁଁ କାଲି ଅଫିସ ଆସିବି ନାହିଁ ଟିକେ କାମ ଅଛି",                   wrote: "ମୁଁ କାଲି ଅଫିସ ଆସିବି ନାହିଁ, ଟିକେ କାମ ଅଛି।" },
+      { said: "euh ben je peux arriver vers sept heures je pense", wrote: "Je peux arriver vers sept heures, je pense." },
+      { said: "é tipo assim eu posso chegar por volta das sete",   wrote: "Eu posso chegar por volta das sete." },
+      { said: "ähm also ich komme so gegen sieben glaube ich",     wrote: "Ich komme so gegen sieben, glaube ich." },
+      { said: "eh gimana ya saya bisa datang sekitar jam tujuh",   wrote: "Saya bisa datang sekitar jam tujuh." },
+      { said: "yani sey saat yedi gibi gelebilirim heralde",       wrote: "Yani saat yedi gibi gelebilirim, herhalde." },
+      { said: "ano eto nakaka pagod pero tapos na yung report",    wrote: "Nakakapagod, pero tapos na yung report." }
     ],
     // The three things the page argues, each shown rather than claimed.
     steps: [
@@ -409,20 +438,39 @@
    * followed by three lanes of Devanagari.
    */
   var LANES = [
-    { el: $("t1"), key: "said",  speed: 27, take: function (i) { return i % 3 === 0; }, len: 0, off: 0 },
-    { el: $("t2"), key: "said",  speed: 37, take: function (i) { return i % 3 === 1; }, len: 0, off: 0 },
-    { el: $("t3"), key: "said",  speed: 31, take: function (i) { return i % 3 === 2; }, len: 0, off: 0 },
-    { el: $("t4"), key: "wrote", speed: 33, take: function () { return true; },        len: 0, off: 0 }
+    { el: $("t1"), path: "in1", key: "said",  speed: 23, take: function (i) { return i % 7 === 0; }, len: 1, off: 0 },
+    { el: $("t2"), path: "in2", key: "said",  speed: 31, take: function (i) { return i % 7 === 1; }, len: 1, off: 0 },
+    { el: $("t3"), path: "in3", key: "said",  speed: 27, take: function (i) { return i % 7 === 2; }, len: 1, off: 0 },
+    { el: $("t4"), path: "in4", key: "said",  speed: 37, take: function (i) { return i % 7 === 3; }, len: 1, off: 0 },
+    { el: $("t5"), path: "in5", key: "said",  speed: 21, take: function (i) { return i % 7 === 4; }, len: 1, off: 0 },
+    { el: $("t6"), path: "in6", key: "said",  speed: 33, take: function (i) { return i % 7 === 5; }, len: 1, off: 0 },
+    { el: $("t7"), path: "in7", key: "said",  speed: 29, take: function (i) { return i % 7 === 6; }, len: 1, off: 0 },
+    { el: $("tOut"), path: "out1", key: "wrote", speed: 30, take: function () { return true; },       len: 1, off: 0 }
   ];
+
+  /**
+   * Repeat until the lane is longer than the curve it runs on, then write the
+   * whole thing twice.
+   *
+   * Doubling alone is not enough: a lane carrying three short sentences is
+   * shorter than the path, and the offset then drags a visible hole along it.
+   * The repeat guarantees one period covers the curve; the doubling makes the
+   * wrap seamless, because the frame before the jump and the frame after it
+   * are then the same picture.
+   */
+  function fill(L, one) {
+    L.el.textContent = one;
+    var w = L.el.getComputedTextLength() || 1;
+    var body = new Array(Math.max(1, Math.ceil(L.pathLen / w)) + 1).join(one);
+    L.el.textContent = body + body;
+    L.len = L.el.getComputedTextLength() / 2 || 1;
+  }
 
   function loadRiver() {
     LANES.forEach(function (L) {
-      var s = C.cases.filter(function (c, i) { return L.take(i); })
-                     .map(function (c) { return c[L.key]; }).join(SEP) + SEP;
-      L.el.textContent = s + s;              // doubled, so the wrap is invisible
-      // Half the doubled string: the distance after which the pattern repeats
-      // exactly, so resetting there cannot be seen.
-      L.len = L.el.getComputedTextLength() / 2 || 1;
+      if (!L.pathLen) L.pathLen = $(L.path).getTotalLength() || 1;
+      fill(L, C.cases.filter(function (c, i) { return L.take(i); })
+                     .map(function (c) { return c[L.key]; }).join(SEP) + SEP);
     });
   }
 
@@ -528,11 +576,11 @@
   function ownRiver(said, wrote) {
     LANES.forEach(function (L) {
       var t = L.key === "wrote" ? wrote : said;
-      L.el.textContent = t + SEP + t;
-      L.len = L.el.getComputedTextLength() / 2 || 1;
+      fill(L, t + SEP);
       L.off = 0;
     });
   }
+
 
   /* =====================================================================
      THE CARD
