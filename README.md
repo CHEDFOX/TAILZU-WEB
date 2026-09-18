@@ -53,11 +53,21 @@ the hatch between the second and third carries it across, and the sentence
 leaves from the amber tip. Clicking the mark starts the microphone, and so
 does the button under it.
 
-The hatch keeps the mark's own drawing at rest — all ticks one length, only
-the colour travelling, the way the boxes light in sequence in the splash.
-Varying their length instead bows the run into a coil and stops it being the
-logo. While the microphone is open the length *is* the level meter, because
-then it is carrying something real.
+The mark is drawn to its own measurements, taken off the artwork: seven ticks,
+each leaning 130°, centres evenly stepped, and lengths forming the lens that
+makes the hatch a wave and not a ladder — 27, 36, 40, 46, 44, 35, 28, short at
+the ends and longest just past the middle. One scale and one offset carry
+those numbers into the page, so the hatch keeps its shape at any size.
+
+The signal is timed off the splash frame by frame rather than invented: first
+box, second box, then exactly TWO adjacent ticks stepping one position every
+tenth of a second from the second box to the third, then the third box, then
+three seconds of nothing. Lengths never change; a lit tick swells about a
+twelfth, which is what the splash does too.
+
+While the microphone is open the run becomes the level meter, the first box
+stays lit because it is the one taking the sound, and the timed sequence
+stands down — there is a real signal to show.
 
 The button's position is measured from the mark, not set as a percentage: the
 svg is sliced, so the mark lands at a different place and size at every window

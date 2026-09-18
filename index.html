@@ -80,28 +80,16 @@
   /* The jump across the microphone is the drama: small dim sans in, large
      bright serif out. */
   .clean { font-family: var(--serif); font-size: 31px; fill: var(--white); }
-  .heat { transform-origin: 720px 260px; animation: breathe 5.5s ease-in-out infinite; }
+  .heat { transform-origin: 730px 268px; animation: breathe 5.5s ease-in-out infinite; }
   #drift { transition: transform .5s cubic-bezier(.2,.8,.3,1); }
 
   /* The mark. Boxes drawn over the wires, so nothing needs trimming. */
   #mark { cursor: pointer; }
   #mark:focus-visible { outline: 2px solid var(--amber); outline-offset: 8px; border-radius: 12px; }
   .box  { fill: var(--white); }
-  .wire { stroke: #CFC3A8; stroke-width: 3.4; fill: none; }
-  .awire{ stroke: #B5661C; stroke-width: 3.4; fill: none; }
-  .adot { fill: #B5661C; }
-  .tick { stroke: #CFC3A8; stroke-width: 3.2; stroke-linecap: round; }
-  /* Two beats and a long rest, so it reads as something thinking rather than
-     something faulty. */
-  .brain { animation: think 4.6s ease-in-out infinite; }
-  @keyframes think {
-    0%, 4%    { fill: var(--white); }
-    6%, 11%   { fill: var(--amber); }
-    13%, 17%  { fill: var(--white); }
-    19%, 24%  { fill: var(--amber); }
-    26%, 100% { fill: var(--white); }
-  }
-  .river.on .brain { animation: none; fill: var(--amber); }
+  .wire { stroke: #CFC3A8; stroke-width: 2.2; fill: none; }
+  .tick { stroke: #CFC3A8; stroke-width: 1.8; stroke-linecap: round; }
+  .box, .tick { transition: fill .18s linear, stroke .18s linear; }
 
   /* The control sits under the mark; its position is measured, not guessed,
      because the svg is sliced and the mark lands somewhere different at
@@ -238,15 +226,17 @@
            path that doubles back hangs its own glyphs upside down. All three
            inbound lanes arrive at (720, 260), which is the centre of this
            box, which is where the mark's first box sits at every window width. -->
-      <!-- Every lane arrives at the mark's first box, at (690, 330). -->
-      <path id="in1" d="M-220 52 C60 64 300 140 500 244 C580 286 642 316 690 330"/>
-      <path id="in2" d="M-220 316 C80 322 330 330 500 331 C590 331 646 331 690 330"/>
-      <path id="in3" d="M-220 506 C90 498 330 438 500 372 C588 338 644 336 690 330"/>
-      <!-- Leaves from the amber tip, flatter than the lanes arrive. The mess
-           is allowed to be steep and crowded; the sentence gets room to read. -->
-      <path id="out1" d="M942 147 C1070 134 1200 116 1340 98 C1470 82 1580 70 1720 52"/>
-      <clipPath id="clipIn"><rect x="-300" y="-140" width="1000" height="800"/></clipPath>
-      <clipPath id="clipOut"><rect x="930" y="-140" width="1000" height="800"/></clipPath>
+      <!-- Every lane arrives at the mark's first box, at (660, 330). -->
+      <path id="in1" d="M-220 52 C60 64 300 140 480 248 C556 292 614 318 660 330"/>
+      <path id="in2" d="M-220 318 C80 324 320 330 480 331 C566 331 618 331 660 330"/>
+      <path id="in3" d="M-220 506 C90 498 320 440 480 376 C562 342 616 336 660 330"/>
+      <!-- Leaves from the last box, flatter than the lanes arrive. The mess is
+           allowed to be steep and crowded; the sentence gets room to read. -->
+      <path id="out1" d="M803 284 C920 274 1030 258 1170 236 C1330 211 1460 194 1740 158"/>
+      <clipPath id="clipIn"><rect x="-300" y="-140" width="962" height="800"/></clipPath>
+      <!-- A few units clear of the last box's edge, so the sentence leaves it
+           rather than growing out of its side. -->
+      <clipPath id="clipOut"><rect x="838" y="-140" width="1000" height="800"/></clipPath>
       <!-- The mouth. Ink at full strength over the first box, fading to
            nothing by the rim, so the mess dissolves INTO it rather than being
            chopped off at a clip edge. -->
@@ -275,22 +265,20 @@
     <!-- Outside the drift. Speech moves under the hand; the mark it passes
          through does not, or the still point of the picture is not still. -->
     <g>
-      <ellipse cx="690" cy="330" rx="170" ry="105" fill="url(#mouth)"/>
-      <ellipse cx="816" cy="244" rx="330" ry="190" fill="url(#heat)" class="heat"/>
+      <ellipse cx="660" cy="330" rx="118" ry="78" fill="url(#mouth)"/>
+      <ellipse cx="730" cy="268" rx="240" ry="150" fill="url(#heat)" class="heat"/>
 
-      <!-- THE MARK, doing the job it was drawn for. Speech goes into the first
-           box, the second one thinks, the hatch between the second and third
-           carries it across, and the sentence leaves from the amber tip. The
-           wires are drawn centre to centre and the boxes sit on top of them,
-           which is why nothing has to be trimmed to an edge. -->
+      <!-- THE MARK, doing the job it was drawn for, and drawn to its own
+           measurements: speech into the first box, the second one thinks, the
+           hatch carries it across, the sentence leaves from the third. The
+           wire runs centre to centre and the boxes sit on top of it, so
+           nothing has to be trimmed to an edge. -->
       <g id="mark" role="button" tabindex="0" aria-label="Use your own voice">
-        <line class="wire" x1="690" y1="330" x2="748" y2="185"/>
+        <line class="wire" x1="660" y1="330" x2="709.8" y2="206.8"/>
         <g id="hatch"></g>
-        <line class="awire" x1="855" y1="276" x2="942" y2="147"/>
-        <circle class="adot" cx="942" cy="147" r="6.5"/>
-        <rect class="box" x="660" y="300" width="60" height="60" rx="15"/>
-        <rect class="box brain" id="brain" x="718" y="155" width="60" height="60" rx="15"/>
-        <rect class="box" x="825" y="246" width="60" height="60" rx="15"/>
+        <rect class="box" id="bx1" x="636.2" y="305.4" width="47.6" height="49.1" rx="11"/>
+        <rect class="box" id="bx2" x="686" y="182.7" width="47.6" height="48.4" rx="11"/>
+        <rect class="box" id="bx3" x="779" y="260" width="46.9" height="48.4" rx="11"/>
       </g>
     </g>
   </svg>
@@ -506,38 +494,64 @@
      signal crossing. While the microphone is open the same ticks are the
      level meter, so the thing you are watching is your own voice rather
      than a decoration pretending to be one.                              */
-  var TICKS = 9, B = [748, 185], Cc = [855, 276];
-  var dx = Cc[0] - B[0], dy = Cc[1] - B[1], dl = Math.sqrt(dx * dx + dy * dy);
-  var ux = dx / dl, uy = dy / dl, px = -uy, py = ux;   // along, and across
+  /* Straight off the artwork rather than off a formula: seven ticks, each one
+     leaning 130°, their centres evenly stepped, and their lengths forming the
+     lens that makes this a wave and not a ladder — short at the ends, longest
+     just past the middle. Measured from the 1000px original and carried here
+     by one scale and one offset, so the hatch stays the drawn shape at any
+     size the mark is set in. */
+  var REF = [[449.5, 397.5, 27.0], [466.3, 411.4, 35.7], [482.8, 425.6, 40.1],
+             [499.5, 439.5, 45.8], [516.2, 453.5, 43.7], [532.8, 467.7, 34.6],
+             [549.5, 481.5, 28.0]];
+  var S = 0.372, DX = 570.3, DY = 82.2;
+  var ANG = 130 * Math.PI / 180, px = Math.cos(ANG), py = Math.sin(ANG);
+  var TICKS = REF.length;
   var ticks = [], amp = [], hatch = $("hatch"), listening = false;
   for (var k = 0; k < TICKS; k++) {
-    // Clear of both boxes: each covers about the first and last fifth.
-    var t = (0.25 + k * (0.50 / (TICKS - 1))) * dl;
     var ln = document.createElementNS("http://www.w3.org/2000/svg", "line");
     ln.setAttribute("class", "tick");
-    ticks.push({ el: ln, cx: B[0] + ux * t, cy: B[1] + uy * t });
+    ticks.push({ el: ln, cx: REF[k][0] * S + DX, cy: REF[k][1] * S + DY, h: REF[k][2] * S / 2 });
     amp.push(0);
     hatch.appendChild(ln);
   }
 
   /**
-   * At rest the ticks keep the mark's own drawing — all one length — and only
-   * the colour travels, the way the boxes light in sequence. Varying their
-   * length instead bows the run into a coil and stops it being the logo.
-   * While the microphone is open the length is the meter, because then it is
-   * carrying something real and has earned the right to move.
+   * THE SIGNAL, timed off the splash frame by frame rather than invented.
+   *
+   * One pulse crosses the whole mark and then the mark rests. The first box
+   * lights, the second lights, exactly TWO adjacent ticks travel the hatch a
+   * step at a time from the second box to the third, the third lights, and
+   * then nothing happens for three seconds. The lengths never change: the
+   * lens they form IS the drawing, and a tick that stretches stops being it.
+   * A lit tick swells about a twelfth, which is what the splash does too.
+   *
+   * While the microphone is open the run becomes the level meter, the first
+   * box stays lit because it is the one taking the sound, and the timed
+   * sequence stands down — there is a real signal to show.
    */
+  var A_ON = [0, 420], B_ON = [560, 980], PULSE = [1090, 1880],
+      C_ON = [2000, 2420], CYCLE = 5400, STEP = (PULSE[1] - PULSE[0]) / 8;
+  var CREAM = "#CFC3A8", AMBER = "#E8A23C";
+  var bx = [$("bx1"), $("bx2"), $("bx3")];
+
   function drawHatch(now, live) {
+    var t = now % CYCLE, lit = -1;
+    if (!live && t >= PULSE[0] && t < PULSE[1]) lit = Math.floor((t - PULSE[0]) / STEP);
+
     for (var i = 0; i < TICKS; i++) {
-      var a = live ? amp[i] : 0.5 + 0.5 * Math.sin(now / 470 - i * 0.62);
-      var h = live ? 4 + a * 11 : 6.5;
       var T = ticks[i];
+      var on = live ? amp[i] > 0.34 : (i === lit || i === lit - 1);
+      var h = live ? T.h * (0.45 + amp[i] * 1.5) : T.h * (on ? 1.08 : 1);
       T.el.setAttribute("x1", (T.cx - px * h).toFixed(1));
       T.el.setAttribute("y1", (T.cy - py * h).toFixed(1));
       T.el.setAttribute("x2", (T.cx + px * h).toFixed(1));
       T.el.setAttribute("y2", (T.cy + py * h).toFixed(1));
-      T.el.setAttribute("stroke", a > 0.66 ? "#E8A23C" : "#CFC3A8");
+      T.el.setAttribute("stroke", on ? AMBER : CREAM);
     }
+
+    bx[0].setAttribute("fill", live || (!live && t < A_ON[1]) ? AMBER : "#F6F2EA");
+    bx[1].setAttribute("fill", !live && t >= B_ON[0] && t < B_ON[1] ? AMBER : "#F6F2EA");
+    bx[2].setAttribute("fill", !live && t >= C_ON[0] && t < C_ON[1] ? AMBER : "#F6F2EA");
   }
   // Straight away, not on the first frame. A line with no coordinates sits at
   // the origin, which drags the mark's measured box out to the left edge of
