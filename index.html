@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Tailzu</title>
-<meta name="description" content="Nobody speaks in clean sentences. Tailzu keeps every word you meant and drops every one you didn't. Try it with your own voice — no sign-up.">
+<meta name="description" content="Nobody speaks in clean sentences. Tailzu keeps every word you meant and drops every one you didn't — in 22 Indian languages and most of the world's. Try it with your own voice, no sign-up.">
 <meta name="theme-color" content="#F2F0EA">
 <meta property="og:title" content="Tailzu — watch it take the mess out">
 <meta property="og:description" content="Talk. It writes. No sign-up to try it.">
@@ -29,7 +29,7 @@
 
   /* masthead */
   .mast { display: flex; justify-content: space-between; align-items: center; padding: 34px 0 16px; border-bottom: 1px solid var(--ink); animation: fade .8s both; }
-  .mark { font-size: 14px; letter-spacing: 5px; font-weight: 500; color: var(--ink); }
+  .mark { font-size: 14px; letter-spacing: 5px; font-weight: 500; }
   .mast nav { display: flex; gap: 26px; font-size: 11px; letter-spacing: 2px; align-items: center; }
   .mast nav a { color: var(--mute); }
   .mast nav a.hot { color: var(--ink); border-bottom: 2px solid var(--accent); padding-bottom: 3px; }
@@ -39,36 +39,31 @@
   h1 { margin: 0 0 20px; font-family: var(--serif); font-weight: 400; font-size: clamp(44px, 7.4vw, 96px); line-height: .99; letter-spacing: -.015em; max-width: 15ch; animation: up .9s cubic-bezier(.2,.8,.2,1) .15s both; }
   .sub { margin: 0; max-width: 540px; color: var(--mute); animation: up .9s cubic-bezier(.2,.8,.2,1) .35s both; }
 
-  /* the panel */
+  /* the one field */
   .panel { border: 1px solid var(--ink); background: var(--panel); animation: up .9s cubic-bezier(.2,.8,.2,1) .55s both; }
   .strip { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 15px 24px; border-bottom: 1px solid var(--hair); font-size: 11px; letter-spacing: 3px; color: var(--mute); flex-wrap: wrap; }
   .strip .who { display: flex; align-items: center; gap: 10px; }
-  .tabs { display: flex; gap: 8px; flex-wrap: wrap; }
-  .tabs button { height: 32px; padding: 0 14px; font-size: 11px; letter-spacing: 2px; cursor: pointer; border: 1px solid var(--hair); background: transparent; color: var(--mute); transition: all .18s; }
-  .tabs button:hover { border-color: var(--ink); color: var(--ink); }
-  .tabs button[aria-pressed="true"] { background: var(--ink); border-color: var(--ink); color: var(--ground); }
+  /* The language name swaps on every case, so it fades rather than jumps. */
+  .strip .who b { font-weight: 400; animation: fade .3s both; }
+  .strip .claim { color: #8C887F; letter-spacing: 2px; }
 
   .cols { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1px; background: var(--hair); }
-  /* A floor, not a height: the box must not jump as the cases swap length. */
-  .col { background: var(--panel); padding: 34px 32px; display: flex; flex-direction: column; gap: 16px; min-height: 212px; }
+  /* A floor, not a height: the box must not jump as the lines change length. */
+  .col { background: var(--panel); padding: 34px 32px; display: flex; flex-direction: column; gap: 16px; min-height: 208px; }
   .lab { display: flex; align-items: center; gap: 10px; font-size: 11px; letter-spacing: 3px; color: var(--mute); }
   .lab.right { color: var(--accent-ink); }
   .dot { width: 7px; height: 7px; border-radius: 50%; background: #B3AFA2; flex: none; }
   .dot.live { background: var(--accent); animation: pulse 1.2s ease-in-out infinite; }
   .dot.amber { background: var(--accent); }
-  .said { margin: 0; font-size: 18px; line-height: 1.75; color: var(--soft); }
-  .wrote { margin: 0; font-family: var(--serif); font-size: clamp(22px, 2.6vw, 30px); line-height: 1.45; color: var(--ink); }
+  .said { margin: 0; font-size: 18px; line-height: 1.7; color: var(--soft); }
+  .wrote { margin: 0; font-family: var(--serif); font-size: clamp(22px, 2.6vw, 30px); line-height: 1.4; color: var(--ink); }
   .caret { color: var(--accent); }
-  .caret.on { animation: blink .85s steps(1) infinite; }
 
-  .meter { height: 2px; background: var(--hair2); position: relative; overflow: hidden; }
-  .meter i { position: absolute; inset: 0 auto 0 0; width: 100%; background: var(--accent); transform-origin: left; transform: scaleX(0); transition: transform .3s linear; }
-  .foot { padding: 17px 24px; font-size: 13px; line-height: 1.7; color: var(--mute); min-height: 56px; display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
-  .foot .err { color: var(--accent-ink); }
+  .meter { height: 2px; background: var(--hair2); }
+  .meter i { display: block; height: 100%; width: 100%; background: var(--accent); transform-origin: left; transform: scaleX(0); transition: transform .25s linear; }
 
-  /* the mic invitation */
-  .invite { display: flex; align-items: center; gap: 18px; padding: 22px 24px; border-top: 1px solid var(--hair); flex-wrap: wrap; }
-  .mic { position: relative; display: inline-flex; align-items: center; gap: 12px; height: 54px; padding: 0 26px 0 20px; border: 1px solid var(--ink); background: var(--ink); color: var(--ground); font-size: 12px; letter-spacing: 2px; font-weight: 500; cursor: pointer; transition: transform .18s, background .18s; -webkit-tap-highlight-color: transparent; }
+  .invite { display: flex; align-items: center; gap: 18px; padding: 20px 24px; border-top: 1px solid var(--hair); flex-wrap: wrap; }
+  .mic { display: inline-flex; align-items: center; gap: 12px; height: 54px; padding: 0 26px 0 20px; border: 1px solid var(--ink); background: var(--ink); color: var(--ground); font-size: 12px; letter-spacing: 2px; font-weight: 500; cursor: pointer; transition: transform .18s, background .18s; -webkit-tap-highlight-color: transparent; }
   .mic:hover { transform: translateY(-1px); }
   .mic svg { width: 20px; height: 20px; flex: none; }
   .mic[aria-pressed="true"] { background: var(--amber); border-color: var(--amber); color: var(--ink); }
@@ -77,18 +72,11 @@
   .bars { display: none; align-items: center; gap: 3px; height: 34px; }
   .bars.on { display: flex; }
   .bars i { display: block; width: 4px; height: 5px; background: var(--accent); transition: height .07s linear; }
-  .invite .say { font-size: 12px; color: var(--mute); letter-spacing: 1px; }
-
-  /* never */
-  .never { margin-top: 96px; }
-  .eyebrow { font-size: 11px; letter-spacing: 3px; color: var(--mute); display: block; margin-bottom: 22px; }
-  .never .grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 60px; }
-  .never .row { display: flex; gap: 16px; padding: 20px 0; border-top: 1px solid var(--hair); animation: up .7s cubic-bezier(.2,.8,.2,1) both; }
-  .never .row span { color: var(--accent); font-size: 18px; line-height: 1.35; }
-  .never .row p { margin: 0; font-size: 15px; line-height: 1.6; }
+  .say { font-size: 12.5px; color: var(--mute); letter-spacing: .5px; }
+  .say.err { color: var(--accent-ink); }
 
   /* cta */
-  .cta { margin-top: 84px; display: flex; align-items: center; justify-content: space-between; gap: 26px; padding: 38px 40px; background: var(--ink); color: var(--ground); flex-wrap: wrap; }
+  .cta { margin-top: 72px; display: flex; align-items: center; justify-content: space-between; gap: 26px; padding: 38px 40px; background: var(--ink); color: var(--ground); flex-wrap: wrap; }
   .cta .big { font-family: var(--serif); font-size: clamp(26px, 3.2vw, 34px); display: block; }
   .cta .small { font-size: 11px; letter-spacing: 2px; color: #A8A59C; }
   .dl { display: flex; gap: 10px; flex-wrap: wrap; }
@@ -110,8 +98,8 @@
   @media (max-width: 760px) {
     .hero { padding-top: 44px; }
     .cols { grid-template-columns: 1fr; }
-    .col { min-height: 0; padding: 30px 22px; }
-    .never .grid { grid-template-columns: 1fr; }
+    .col { min-height: 0; padding: 28px 22px; }
+    .strip .claim { display: none; }
     .cta { padding: 30px 24px; }
     .mast nav a:not(.hot) { display: none; }
   }
@@ -126,8 +114,8 @@
   <header class="mast">
     <span class="mark">TAILZU</span>
     <nav>
-      <a href="#never">PROMISES</a>
       <a href="/privacy">PRIVACY</a>
+      <a href="/terms">TERMS</a>
       <a href="/download" class="hot" id="navdl">DOWNLOAD</a>
     </nav>
   </header>
@@ -139,8 +127,8 @@
 
   <section class="panel">
     <div class="strip">
-      <span class="who"><span class="dot" id="dot"></span><span id="caseLabel">ENGLISH — THINKING OUT LOUD</span></span>
-      <div class="tabs" id="tabs"></div>
+      <span class="who"><span class="dot" id="dot"></span><b id="lang">ENGLISH</b></span>
+      <span class="claim" id="claim">22 INDIAN LANGUAGES, AND MOST OF THE WORLD'S</span>
     </div>
 
     <div class="cols">
@@ -155,9 +143,8 @@
     </div>
 
     <div class="meter"><i id="meter"></i></div>
-    <div class="foot"><span id="note"></span><span class="err" id="err"></span></div>
 
-    <div class="invite" id="invite">
+    <div class="invite">
       <button class="mic" id="mic" aria-pressed="false">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
           <rect x="9" y="3" width="6" height="11" rx="3"></rect>
@@ -169,11 +156,6 @@
       <div class="bars" id="bars"></div>
       <span class="say" id="say">No sign-up. It stops when you pause.</span>
     </div>
-  </section>
-
-  <section class="never" id="never">
-    <span class="eyebrow">WHAT IT NEVER DOES</span>
-    <div class="grid" id="neverGrid"></div>
   </section>
 
   <section class="cta">
@@ -204,51 +186,56 @@
     sub: $("sub").textContent,
     cta: "USE YOUR OWN VOICE", ctaHeld: "STOP", writing: "WRITING",
     again: "AGAIN", said: "You said", wrote: "It wrote",
+    languages: "22 Indian languages, and most of the world's.",
+    invite: "No sign-up. It stops when you pause.",
     after: "That is the whole product. It works everywhere you type.",
     demoOff: "The live demo is resting. The apps below are not.",
     micDenied: "Your browser blocked the microphone. Allow it and try again.",
     price: "Free to {words} words a month.",
-    never: [
-      "Add a greeting you never spoke",
-      "Translate you into English",
-      "Answer a question you were sending",
-      "Change a number, a name or an amount"
-    ],
-    download: { win: "Windows", mac: "macOS", linux: "Linux", ios: "iPhone", android: "Android", soon: "soon" }
+    // One field, one loop. No tabs and no chapters: the point is not three
+    // labelled tricks, it is that the same thing happens whatever you speak.
+    // Every line is short on purpose so the cycle stays quick.
+    cases: [
+      { lang: "ENGLISH",  said: "um so like can we push the call to four",
+                          wrote: "Can we push the call to four?" },
+      { lang: "HINGLISH", said: "the deploy is done but abhi testing baaki hai",
+                          wrote: "The deploy is done, but abhi testing baaki hai." },
+      { lang: "हिन्दी",     said: "हाँ वो फाइल वो मैंने भेज दी थी कल शाम को",
+                          wrote: "हाँ, वो फाइल मैंने कल शाम भेज दी थी।" },
+      { lang: "தமிழ்",     said: "நான் இப்போ கிளம்பறேன் கொஞ்சம் லேட் ஆகும்",
+                          wrote: "நான் இப்போ கிளம்பறேன், கொஞ்சம் லேட் ஆகும்." },
+      { lang: "NUMBERS",  said: "trensfer 2500 rupeez to ramesh tomorow",
+                          wrote: "Transfer 2500 rupees to Ramesh tomorrow." },
+      { lang: "বাংলা",     said: "আমি কাল অফিসে আসব না একটু কাজ আছে",
+                          wrote: "আমি কাল অফিসে আসব না, একটু কাজ আছে।" },
+      { lang: "मराठी",     said: "मी उद्या ऑफिसला येणार नाही जरा काम आहे",
+                          wrote: "मी उद्या ऑफिसला येणार नाही, जरा काम आहे." },
+      { lang: "ESPAÑOL",  said: "eh o sea puedo llegar como a las siete",
+                          wrote: "Puedo llegar como a las siete." },
+      { lang: "తెలుగు",     said: "నేను రేపు ఆఫీస్ కి రాను కొంచెం పని ఉంది",
+                          wrote: "నేను రేపు ఆఫీస్‌కి రాను, కొంచెం పని ఉంది." },
+      { lang: "ਪੰਜਾਬੀ",     said: "ਮੈਂ ਕੱਲ੍ਹ ਨਹੀਂ ਆ ਸਕਦਾ ਥੋੜ੍ਹਾ ਕੰਮ ਹੈ",
+                          wrote: "ਮੈਂ ਕੱਲ੍ਹ ਨਹੀਂ ਆ ਸਕਦਾ, ਥੋੜ੍ਹਾ ਕੰਮ ਹੈ।" }
+    ]
   };
   var site = { freeWords: 800, downloads: {}, demo: false, maxSeconds: 15 };
 
-  // Three cases the page plays by itself, so it is never a dead panel. Every
-  // one is a fault the backend's own harness tests for.
-  var CASES = [
-    { name: "FILLER", label: "ENGLISH — THINKING OUT LOUD",
-      said: "um so like i think we should probably move the review to thursday because the design is uh not done",
-      wrote: "I think we should move the review to Thursday — the design is not done.",
-      note: "Filler and false starts gone. Every fact kept, nothing added." },
-    { name: "HINGLISH", label: "TWO LANGUAGES, ONE SENTENCE",
-      said: "the deploy is done but abhi testing baaki hai",
-      wrote: "The deploy is done, but abhi testing baaki hai.",
-      note: "It stays in both languages. Most tools quietly translate the half they understand least." },
-    { name: "NUMBERS", label: "THE PART THAT MUST NOT MOVE",
-      said: "trensfer 2500 rupeez to ramesh tomorow",
-      wrote: "Transfer 2500 rupees to Ramesh tomorrow.",
-      note: "Misheard words repaired. The amount and the name untouched — nothing guesses a number." }
-  ];
-
-  // ---- the panel ------------------------------------------------------------
+  // ---- the field ------------------------------------------------------------
   var idx = 0, timer = null, live = false;   // live = showing the visitor's own take
-  var saidEl = $("said"), wroteEl = $("wrote"), noteEl = $("note"), meterEl = $("meter");
-  var dot = $("dot"), caseLabel = $("caseLabel"), tabs = $("tabs"), errEl = $("err");
+  var saidEl = $("said"), wroteEl = $("wrote"), meterEl = $("meter");
+  var dot = $("dot"), langEl = $("lang"), sayEl = $("say");
 
   function clear() { if (timer) { clearTimeout(timer); timer = null; } }
   function at(ms, fn) { clear(); timer = setTimeout(fn, ms); }
-  function say(msg) { errEl.textContent = msg || ""; }
+  function say(msg, bad) { sayEl.textContent = msg; sayEl.className = bad ? "say err" : "say"; }
 
+  /** Types `text` into `el` at `speed` ms a character, caret and all. */
   function type(el, text, speed, done) {
     if (reduced) { el.textContent = text; if (done) done(); return; }
     el.textContent = "";
     var node = document.createTextNode(""), caret = document.createElement("span");
-    caret.className = "caret on"; caret.textContent = "▍";
+    caret.className = "caret"; caret.textContent = "▍";
+    caret.style.animation = "blink .85s steps(1) infinite";
     el.appendChild(node); el.appendChild(caret);
     var i = 0;
     (function step() {
@@ -258,33 +245,22 @@
     })();
   }
 
-  function paintTabs() {
-    tabs.innerHTML = "";
-    CASES.forEach(function (c, i) {
-      var b = document.createElement("button");
-      b.type = "button"; b.textContent = c.name;
-      b.setAttribute("aria-pressed", String(!live && i === idx));
-      b.setAttribute("aria-label", "Show the " + c.name.toLowerCase() + " example");
-      b.onclick = function () { clear(); live = false; idx = i; play(); };
-      tabs.appendChild(b);
-    });
-  }
-
-  /** Play case `idx`: the raw line types in, a beat, then the clean one. */
+  /** One turn of the loop: the mess types in, then the sentence, then the next
+   *  language. Fast on purpose — ten of these go by in half a minute. */
   function play() {
-    clear(); say(""); live = false; paintTabs();
-    var c = CASES[idx];
-    caseLabel.textContent = c.label;
+    clear(); live = false;
+    var c = C.cases[idx % C.cases.length];
+    langEl.textContent = c.lang;
+    langEl.style.animation = "none"; void langEl.offsetWidth; langEl.style.animation = "";
     dot.className = "dot";
-    wroteEl.textContent = ""; noteEl.textContent = "";
+    wroteEl.textContent = "";
     meterEl.style.transform = "scaleX(0)";
-    type(saidEl, c.said, 26, function () {
-      meterEl.style.transform = "scaleX(.6)";
-      at(520, function () {
-        type(wroteEl, c.wrote, 18, function () {
-          noteEl.textContent = c.note;
+    type(saidEl, c.said, 14, function () {
+      meterEl.style.transform = "scaleX(.55)";
+      at(240, function () {
+        type(wroteEl, c.wrote, 11, function () {
           meterEl.style.transform = "scaleX(1)";
-          at(4200, function () { idx = (idx + 1) % CASES.length; play(); });
+          at(1500, function () { idx += 1; play(); });
         });
       });
     });
@@ -292,26 +268,14 @@
 
   /** The visitor's own words, which end the loop for good. */
   function show(said, wrote, ms) {
-    clear(); live = true; paintTabs();
-    caseLabel.textContent = "YOUR VOICE" + (ms ? " · " + (ms / 1000).toFixed(1) + "s" : "");
+    clear(); live = true;
+    langEl.textContent = "YOUR VOICE" + (ms ? " · " + (ms / 1000).toFixed(1) + "s" : "");
     dot.className = "dot";
     saidEl.textContent = said;
-    noteEl.textContent = "";
-    meterEl.style.transform = "scaleX(.6)";
-    type(wroteEl, wrote, 18, function () {
+    meterEl.style.transform = "scaleX(.55)";
+    type(wroteEl, wrote, 14, function () {
       meterEl.style.transform = "scaleX(1)";
-      noteEl.textContent = C.after;
-    });
-  }
-
-  function paintNever() {
-    var g = $("neverGrid"); g.innerHTML = "";
-    C.never.forEach(function (t, i) {
-      var row = document.createElement("div");
-      row.className = "row"; row.style.animationDelay = (i * 0.08) + "s";
-      var dash = document.createElement("span"); dash.textContent = "—";
-      var p = document.createElement("p"); p.textContent = t;
-      row.appendChild(dash); row.appendChild(p); g.appendChild(row);
+      say(C.after);
     });
   }
 
@@ -351,16 +315,14 @@
   function applyCopy() {
     $("headline").textContent = C.headline;
     $("sub").textContent = C.sub;
+    $("claim").textContent = C.languages.replace(/\.$/, "").toUpperCase();
     $("labSaid").textContent = C.said.toUpperCase();
     $("labWrote").textContent = C.wrote.toUpperCase();
     $("micLabel").textContent = C.cta;
-    var price = C.price.replace("{words}", String(site.freeWords));
-    $("price").textContent = price;
-    paintNever(); paintDownloads();
-    if (!site.demo) {
-      $("mic").disabled = true;
-      $("say").textContent = C.demoOff;
-    }
+    $("price").textContent = C.price.replace("{words}", String(site.freeWords));
+    paintDownloads();
+    if (!site.demo) { $("mic").disabled = true; say(C.demoOff); }
+    else if (!live) say(C.invite);
   }
 
   // ---- the microphone -------------------------------------------------------
@@ -379,7 +341,6 @@
 
   function start() {
     if (busy) return;
-    say("");
     navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true } }).then(function (s) {
       clear();                       // the loop stops the moment they speak
       stream = s; chunks = [];
@@ -391,12 +352,13 @@
       startedAt = Date.now(); heard = false; lastLoud = startedAt;
       mic.setAttribute("aria-pressed", "true"); micLabel.textContent = C.ctaHeld;
       bars.className = "bars on";
-      caseLabel.textContent = "LISTENING"; dot.className = "dot live";
-      saidEl.textContent = ""; wroteEl.textContent = ""; noteEl.textContent = "";
+      langEl.textContent = "LISTENING"; dot.className = "dot live";
+      saidEl.textContent = ""; wroteEl.textContent = "";
       meterEl.style.transform = "scaleX(0)";
+      say(C.invite);
       meter(s);
       hard = setTimeout(stop, site.maxSeconds * 1000);
-    }).catch(function () { say(C.micDenied); });
+    }).catch(function () { say(C.micDenied, true); });
   }
 
   function meter(s) {
@@ -432,7 +394,7 @@
     bars.className = "bars";
     if (rec && rec.state !== "inactive") {
       busy = true; micLabel.textContent = C.writing;
-      caseLabel.textContent = "WRITING"; dot.className = "dot";
+      langEl.textContent = "WRITING"; dot.className = "dot";
       rec.stop();
     } else { micLabel.textContent = C.cta; }
     if (stream) { stream.getTracks().forEach(function (t) { t.stop(); }); stream = null; }
@@ -456,10 +418,10 @@
       show(s, w || s, j.ms || 0);
       done();
     }).catch(function (e) {
-      say(e.message || String(e));
+      say(e.message || String(e), true);
       done();
-      // A failed attempt should not leave a dead panel: go back to the loop.
-      at(1600, function () { idx = 0; play(); });
+      // A failed attempt should not leave a dead field: go back to the loop.
+      at(1600, function () { idx += 1; play(); });
     });
   }
 
@@ -471,6 +433,7 @@
   });
 
   // ---- boot -----------------------------------------------------------------
+  C.download = { win: "Windows", mac: "macOS", linux: "Linux", ios: "iPhone", android: "Android", soon: "soon" };
   applyCopy();
   play();
   fetch(API + "/v1/site").then(function (r) { return r.json(); }).then(function (j) {
@@ -482,6 +445,7 @@
       site.maxSeconds = j.maxSeconds || 15;
     }
     applyCopy();
+    if (!live) { idx = 0; play(); }   // the server may have sent other lines
   }).catch(function () { /* the fallbacks are already on screen */ });
 })();
 </script>
