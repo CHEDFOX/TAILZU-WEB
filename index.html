@@ -1,0 +1,669 @@
+<!doctype html>
+<html lang="en" data-api="">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tailzu</title>
+<meta name="description" content="Say it badly, send it perfect. Tailzu drops the filler and keeps every number, every name and the language you spoke it in. 22 Indian languages and most of the world's.">
+<meta name="theme-color" content="#100F0E">
+<meta property="og:title" content="Tailzu — say it badly, send it perfect">
+<meta property="og:description" content="Talk. It writes. No sign-up to try it.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300..500;1,6..72,300..500&family=Instrument+Sans:wght@400;500&family=IBM+Plex+Mono:wght@400&display=swap">
+<style>
+  :root {
+    --ink: #100F0E; --ink2: #171512; --rule: #262320;
+    --white: #F6F2EA; --grey: #9C968B; --dim: #5F5A52;
+    --paper: #F2EEE5; --pink: #E4DED1; --pmute: #6B6459; --pdim: #928B7E;
+    --amber: #E8A23C; --ember: #8A5310;
+    --serif: 'Newsreader', Georgia, 'Times New Roman', serif;
+    --sans: 'Instrument Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+    --mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  }
+  * { box-sizing: border-box; }
+  html { background: var(--ink); }
+  body {
+    margin: 0; background: var(--ink); color: var(--white);
+    font-family: var(--sans); font-size: 16px; line-height: 1.65;
+    -webkit-font-smoothing: antialiased; overflow-x: hidden;
+  }
+  a { color: inherit; text-decoration: none; }
+  button { font-family: inherit; }
+  :focus-visible { outline: 2px solid var(--amber); outline-offset: 4px; }
+  .wrap { max-width: 1140px; margin: 0 auto; padding: 0 28px; }
+  .eye { font-family: var(--mono); font-size: 11px; letter-spacing: .2em; text-transform: uppercase; }
+
+  /* ---- masthead ------------------------------------------------------- */
+  .mast { position: relative; z-index: 6; display: flex; justify-content: space-between; align-items: center; padding: 26px 0; }
+  .mark { font-family: var(--serif); font-size: 23px; letter-spacing: .01em; }
+  .mast nav { display: flex; gap: 26px; align-items: center; }
+  .mast nav a { color: var(--grey); font-size: 13.5px; transition: color .18s; }
+  .mast nav a:hover { color: var(--white); }
+  .mast nav a.cta { color: var(--ink); background: var(--white); padding: 9px 18px; border-radius: 999px; font-weight: 500; font-size: 13px; }
+  .mast nav a.cta:hover { background: var(--amber); color: var(--ink); }
+
+  /* ---- hero ----------------------------------------------------------- */
+  .hero { position: relative; text-align: center; padding: 52px 0 0; }
+  .hero .eye { color: var(--dim); display: block; margin-bottom: 26px; animation: rise .8s cubic-bezier(.2,.85,.25,1) .05s both; }
+  h1 {
+    margin: 0 auto; max-width: 15ch; font-family: var(--serif); font-weight: 400;
+    font-size: clamp(46px, 7.6vw, 104px); line-height: 1.02; letter-spacing: -.022em;
+  }
+  h1 i { font-style: italic; color: var(--amber); }
+  h1 span { display: block; }
+  h1 span:nth-child(1) { animation: rise .95s cubic-bezier(.2,.85,.25,1) .12s both; }
+  h1 span:nth-child(2) { animation: rise .95s cubic-bezier(.2,.85,.25,1) .26s both; }
+  .lede { margin: 26px auto 0; max-width: 46ch; color: var(--grey); font-size: 17px; animation: rise .9s cubic-bezier(.2,.85,.25,1) .42s both; }
+
+  /* ---- the ribbon ------------------------------------------------------
+     One path. The spoken mess travels along it from the right, is swallowed
+     at the capsule, and the written sentence leaves to the left. The button
+     on the capsule is the real microphone — it is placed exactly where the
+     change happens, because that is what pressing it does.                */
+  .river { position: relative; margin-top: -26px; height: 420px; animation: fade 1.4s .5s both; }
+  .river svg { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+  .tape { fill: none; stroke: #1E1B17; stroke-width: 62; stroke-linecap: round; }
+  .mess { font-family: var(--sans); font-size: 19px; fill: #6E675C; letter-spacing: .005em; }
+  .clean { font-family: var(--serif); font-size: 26px; fill: var(--white); }
+
+  .capsule {
+    position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
+    display: flex; align-items: center; gap: 14px; height: 68px; padding: 0 12px 0 22px;
+    background: var(--ink); border: 1px solid var(--rule); border-radius: 999px;
+    box-shadow: 0 0 0 10px var(--ink), 0 22px 60px rgba(0,0,0,.6);
+  }
+  .wave { display: flex; align-items: center; gap: 2.5px; height: 30px; }
+  .wave i { display: block; width: 3px; height: 5px; border-radius: 2px; background: var(--dim); transition: height .09s linear, background .2s; }
+  .capsule.on .wave i { background: var(--amber); }
+  .mic {
+    display: inline-flex; align-items: center; gap: 9px; height: 46px; padding: 0 22px;
+    border: 0; border-radius: 999px; background: var(--white); color: var(--ink);
+    font-size: 13px; font-weight: 500; cursor: pointer; white-space: nowrap;
+    transition: background .18s, transform .18s; -webkit-tap-highlight-color: transparent;
+  }
+  .mic:hover { background: var(--amber); transform: translateY(-1px); }
+  .mic[aria-pressed="true"] { background: var(--amber); }
+  .mic[disabled] { background: transparent; color: var(--dim); box-shadow: inset 0 0 0 1px var(--rule); cursor: default; transform: none; }
+  .mic svg { position: static; width: 16px; height: 16px; }
+  .under { position: absolute; left: 50%; top: calc(50% + 58px); transform: translateX(-50%); width: max-content; max-width: 90vw; text-align: center; color: var(--dim); font-size: 13px; }
+  .under.err { color: var(--amber); }
+
+  /* ---- the sheet: dark gives way to paper ----------------------------- */
+  .sheet { position: relative; z-index: 2; background: var(--paper); color: #16150F; border-radius: 40px 40px 0 0; margin-top: -26px; padding: 96px 0 104px; }
+  .sheet h2 { margin: 0 auto 16px; max-width: 20em; text-align: center; font-family: var(--serif); font-weight: 400; font-size: clamp(30px, 4.2vw, 52px); line-height: 1.12; letter-spacing: -.02em; }
+  .sheet h2 i { font-style: italic; color: var(--ember); }
+  .sheet .eye { color: var(--pdim); text-align: center; display: block; margin-bottom: 20px; }
+  .sheet .lede2 { margin: 0 auto 64px; max-width: 44ch; text-align: center; color: var(--pmute); font-size: 16px; }
+
+  .steps { display: grid; grid-template-columns: 250px 1fr; gap: 64px; align-items: start; }
+  .rail { display: flex; flex-direction: column; gap: 2px; }
+  .rail button {
+    position: relative; text-align: left; border: 0; background: none; cursor: pointer;
+    padding: 13px 0 13px 20px; color: var(--pdim); font-family: var(--serif); font-size: 20px;
+    transition: color .3s; line-height: 1.3;
+  }
+  .rail button::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 2px; background: #DAD3C5; }
+  .rail button::after { content: ""; position: absolute; left: 0; top: 0; width: 2px; height: 0; background: var(--ember); }
+  .rail button[aria-selected="true"] { color: #16150F; }
+  .rail button[aria-selected="true"]::after { height: 100%; transition: height var(--dwell, 6000ms) linear; }
+  .rail p { margin: 0; padding: 0 0 4px 20px; color: var(--pmute); font-size: 14.5px; max-width: 30ch; }
+
+  /* the transcript card */
+  .card { position: relative; background: #FBF9F4; border: 1px solid #E2DACA; border-radius: 22px; padding: 40px 42px 34px; min-height: 300px; overflow: hidden; }
+  .card .eye { text-align: left; color: var(--pdim); margin: 0 0 18px; }
+  .raw { margin: 0 0 30px; font-size: 21px; line-height: 1.85; color: #3C382F; }
+  .raw span { transition: color .45s, opacity .45s, text-decoration-color .45s; }
+  .raw span.gone { color: var(--pdim); opacity: .42; text-decoration: line-through; text-decoration-color: #C9C0AE; text-decoration-thickness: 1px; }
+  .raw span.hit { color: var(--ember); }
+  .out { margin: 0; font-family: var(--serif); font-size: clamp(22px, 2.5vw, 30px); line-height: 1.4; color: #16150F; min-height: 1.4em; }
+  .out b { font-weight: 400; color: var(--ember); }
+  /* The rule and the reason share one row: the pill names what just happened
+     to the line above it, and sits on the line that divides before from after. */
+  .mid { display: flex; align-items: center; gap: 18px; margin: 0 0 26px; min-height: 30px; flex-wrap: wrap; }
+  .mid i { flex: 1 1 60px; height: 1px; background: #E8E1D2; }
+  /* inline-block, not inline-flex: a flex container drops the whitespace
+     between its children, which runs the pill's own words together. */
+  .pill {
+    flex: 0 1 auto; display: inline-block; padding: 7px 15px;
+    border-radius: 999px; background: #16150F; color: var(--paper);
+    font-family: var(--mono); font-size: 10.5px; letter-spacing: .14em; text-transform: uppercase;
+    opacity: 0; transform: translateY(6px); transition: opacity .35s, transform .35s;
+  }
+  .pill.show { opacity: 1; transform: none; }
+  .pill em { font-style: normal; color: var(--amber); }
+
+  /* ---- download -------------------------------------------------------- */
+  .get { background: var(--paper); color: #16150F; padding: 0 0 104px; }
+  .getin { border-top: 1px solid #E2DACA; padding-top: 56px; display: flex; justify-content: space-between; align-items: flex-end; gap: 40px; flex-wrap: wrap; }
+  .get h3 { margin: 0; font-family: var(--serif); font-weight: 400; font-size: clamp(28px, 3.6vw, 46px); line-height: 1.05; letter-spacing: -.02em; max-width: 14ch; }
+  .get .note { margin: 12px 0 0; color: var(--pdim); font-family: var(--mono); font-size: 11px; letter-spacing: .16em; }
+  .dl { display: flex; gap: 10px; flex-wrap: wrap; }
+  .dl a { display: inline-flex; align-items: center; height: 52px; padding: 0 26px; border-radius: 999px; border: 1px solid #DAD3C5; color: #3C382F; font-size: 13.5px; transition: border-color .2s, color .2s; }
+  .dl a:hover { border-color: #16150F; color: #16150F; }
+  .dl a.primary { background: #16150F; border-color: #16150F; color: var(--paper); font-weight: 500; }
+  .dl a.primary:hover { background: var(--ember); border-color: var(--ember); color: #FFF; }
+  .dl a.soon { opacity: .4; pointer-events: none; }
+
+  footer { background: var(--paper); color: var(--pdim); }
+  footer .in { border-top: 1px solid #E2DACA; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px; padding: 26px 0 40px; font-size: 13px; }
+  footer nav { display: flex; gap: 24px; }
+
+  /* ---- motion ---------------------------------------------------------- */
+  @keyframes rise { from { opacity: 0; transform: translateY(26px); } to { opacity: 1; transform: none; } }
+  @keyframes fade { from { opacity: 0; } to { opacity: 1; } }
+  .reveal { opacity: 0; transform: translateY(26px); transition: opacity .9s cubic-bezier(.2,.85,.25,1), transform .9s cubic-bezier(.2,.85,.25,1); }
+  .reveal.in { opacity: 1; transform: none; }
+
+  @media (max-width: 900px) {
+    .hero { padding-top: 48px; }
+    .river { height: 380px; }
+    .steps { grid-template-columns: 1fr; gap: 34px; }
+    .rail { flex-direction: row; overflow-x: auto; gap: 0; }
+    .rail button { white-space: nowrap; padding: 10px 18px 12px; font-size: 17px; }
+    .rail button::before { left: 0; top: auto; bottom: 0; right: 0; width: auto; height: 2px; }
+    .rail button::after { left: 0; top: auto; bottom: 0; width: 0; height: 2px; }
+    .rail button[aria-selected="true"]::after { height: 2px; width: 100%; transition: width var(--dwell, 6000ms) linear; }
+    .rail p { display: none; }
+    .card { padding: 30px 24px 28px; }
+    .pill { left: 24px; bottom: 112px; }
+    .mast nav a:not(.cta) { display: none; }
+  }
+  @media (max-width: 560px) {
+    .river { height: 320px; }
+    .capsule { padding-left: 16px; gap: 10px; }
+    .mic span { display: none; }
+    .mic { padding: 0 14px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation: none !important; transition: none !important; }
+    .reveal { opacity: 1; transform: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header class="mast">
+    <a class="mark" href="/">Tailzu</a>
+    <nav>
+      <a href="/privacy">Privacy</a>
+      <a href="/terms">Terms</a>
+      <a href="/download" class="cta" id="navdl">Download</a>
+    </nav>
+  </header>
+
+  <section class="hero">
+    <span class="eye" id="eyebrow">Dictation that writes, not transcribes</span>
+    <h1 id="headline"><span>Say it badly.</span><span><i>Send it perfect.</i></span></h1>
+    <p class="lede" id="lede">Nobody speaks in clean sentences. Tailzu drops the filler and keeps every number, every name, and the language you said it in.</p>
+  </section>
+</div>
+
+<div class="river" id="river">
+  <svg id="riverSvg" viewBox="0 0 1440 420" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+    <defs>
+      <!-- Left to right, because that is the direction text reads and the
+           direction the product runs: mess in, sentence out. A path that
+           doubles back would hang its own glyphs upside down. The centre of
+           this box is (720, 210) and the curve passes through it, which is
+           what keeps the capsule sitting exactly on the line at every width. -->
+      <path id="flow" d="M-180 300 C60 300 190 152 400 148 C560 145 612 206 720 210 C828 214 884 290 1040 286 C1220 281 1340 142 1620 134"/>
+      <clipPath id="clipIn"><rect x="-260" y="-80" width="980" height="580"/></clipPath>
+      <clipPath id="clipOut"><rect x="720" y="-80" width="980" height="580"/></clipPath>
+    </defs>
+    <g clip-path="url(#clipIn)">
+      <use href="#flow" class="tape"/>
+      <text class="mess"><textPath href="#flow" id="tIn" startOffset="0"> </textPath></text>
+    </g>
+    <g clip-path="url(#clipOut)">
+      <text class="clean"><textPath href="#flow" id="tOut" startOffset="0"> </textPath></text>
+    </g>
+  </svg>
+
+  <div class="capsule" id="capsule">
+    <div class="wave" id="wave"></div>
+    <button class="mic" id="mic" aria-pressed="false">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <rect x="9" y="3" width="6" height="11" rx="3"></rect>
+        <path d="M5 11a7 7 0 0 0 14 0"></path><path d="M12 18v3M9 21h6"></path>
+      </svg>
+      <span id="micLabel">Use your own voice</span>
+    </button>
+  </div>
+  <span class="under" id="under">No sign-up. It stops when you pause.</span>
+</div>
+
+<section class="sheet">
+  <div class="wrap">
+    <span class="eye reveal">How it decides</span>
+    <h2 class="reveal">It takes out what you didn't mean.<br><i>Nothing else moves.</i></h2>
+    <p class="lede2 reveal">Most tools tidy a sentence until it sounds like the tool. Watch what this one touches — and, more to the point, what it refuses to.</p>
+
+    <div class="steps reveal">
+      <div class="rail" id="rail" role="tablist" aria-label="What it does"></div>
+      <div class="card">
+        <span class="eye">What you said</span>
+        <p class="raw" id="raw"></p>
+        <div class="mid"><i></i><span class="pill" id="pill"></span></div>
+        <span class="eye">What it wrote</span>
+        <p class="out" id="out"></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="get">
+  <div class="wrap">
+    <div class="getin reveal">
+      <div>
+        <h3 id="price">Free to 800 words a month.</h3>
+        <p class="note" id="platforms">MAC · WINDOWS · iPHONE · ANDROID</p>
+      </div>
+      <div class="dl" id="dl"></div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap"><div class="in">
+    <span>© 2026 Tailzu</span>
+    <nav><a href="/privacy">Privacy</a><a href="/terms">Terms</a><a href="/download">Download</a></nav>
+  </div></div>
+</footer>
+
+<script>
+(function () {
+  "use strict";
+  var API = document.documentElement.getAttribute("data-api") || "";
+  if (!API && location.protocol === "file:") API = "https://api.tailzu.space";
+  var $ = function (id) { return document.getElementById(id); };
+  var reduced = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  // ---- copy: the backend's, with this as the fallback --------------------
+  var C = {
+    eyebrow: "Dictation that writes, not transcribes",
+    headline: "Say it badly.|Send it perfect.",
+    lede: $("lede").textContent,
+    cta: "Use your own voice", ctaHeld: "Stop", writing: "Writing…", again: "Again",
+    invite: "No sign-up. It stops when you pause.",
+    after: "That is the whole product. It works everywhere you type.",
+    demoOff: "The live demo is resting. The apps below are not.",
+    micDenied: "Your browser blocked the microphone. Allow it and try again.",
+    price: "Free to {words} words a month.",
+    cases: [
+      { lang: "ENGLISH",  said: "um so like can we push the call to four",        wrote: "Can we push the call to four?" },
+      { lang: "HINGLISH", said: "the deploy is done but abhi testing baaki hai",  wrote: "The deploy is done, but abhi testing baaki hai." },
+      { lang: "हिन्दी",     said: "हाँ वो फाइल मैंने भेज दी थी कल शाम को",              wrote: "हाँ, वो फाइल मैंने कल शाम भेज दी थी।" },
+      { lang: "தமிழ்",     said: "நான் இப்போ கிளம்பறேன் கொஞ்சம் லேட் ஆகும்",          wrote: "நான் இப்போ கிளம்பறேன், கொஞ்சம் லேட் ஆகும்." },
+      { lang: "NUMBERS",  said: "trensfer 2500 rupeez to ramesh tomorow",         wrote: "Transfer 2500 rupees to Ramesh tomorrow." },
+      { lang: "বাংলা",     said: "আমি কাল অফিসে আসব না একটু কাজ আছে",               wrote: "আমি কাল অফিসে আসব না, একটু কাজ আছে।" },
+      { lang: "मराठी",     said: "मी उद्या ऑफिसला येणार नाही जरा काम आहे",            wrote: "मी उद्या ऑफिसला येणार नाही, जरा काम आहे." },
+      { lang: "ESPAÑOL",  said: "eh o sea puedo llegar como a las siete",         wrote: "Puedo llegar como a las siete." },
+      { lang: "తెలుగు",     said: "నేను రేపు ఆఫీస్ కి రాను కొంచెం పని ఉంది",              wrote: "నేను రేపు ఆఫీస్‌కి రాను, కొంచెం పని ఉంది." },
+      { lang: "ਪੰਜਾਬੀ",     said: "ਮੈਂ ਕੱਲ੍ਹ ਨਹੀਂ ਆ ਸਕਦਾ ਥੋੜ੍ਹਾ ਕੰਮ ਹੈ",                   wrote: "ਮੈਂ ਕੱਲ੍ਹ ਨਹੀਂ ਆ ਸਕਦਾ, ਥੋੜ੍ਹਾ ਕੰਮ ਹੈ।" }
+    ],
+    // The three things the page argues, each shown rather than claimed.
+    steps: [
+      { tab: "The mess goes",      note: "Filler, false starts, the sentence you began and abandoned.",
+        said: "um so like i think we should probably move the review to thursday because the design is uh not done",
+        wrote: "I think we should move the review to Thursday — the design is not done.",
+        cut: ["um","so","like","probably","uh"], pill: "Filler and false starts" },
+      { tab: "The facts stay",     note: "A number, a name or an amount is never guessed at.",
+        said: "trensfer 2500 rupeez to ramesh tomorow",
+        wrote: "Transfer 2500 rupees to Ramesh tomorrow.",
+        keep: ["2500","ramesh"], pill: "Misheard words repaired · 2500 and Ramesh untouched" },
+      { tab: "Your language stays", note: "Two languages in one sentence come back as two languages.",
+        said: "the deploy is done but abhi testing baaki hai",
+        wrote: "The deploy is done, but abhi testing baaki hai.",
+        keep: ["abhi","testing","baaki","hai"], pill: "Never translated, never transliterated" }
+    ],
+    download: { win: "Windows", mac: "macOS", linux: "Linux", ios: "iPhone", android: "Android", soon: "soon" }
+  };
+  var site = { freeWords: 800, downloads: {}, demo: false, maxSeconds: 15 };
+
+  /* =====================================================================
+     THE RIVER
+
+     One path across the page. Everything anybody ever said travels along it
+     from the right, is swallowed at the capsule, and leaves to the left as
+     a written sentence. The two halves are the same path with the same
+     motion, clipped either side of the capsule — which is why the change
+     appears to happen AT the microphone rather than near it.
+
+     The real microphone sits on that crossing. Press it and your own words
+     take over both halves: the mess you actually said flows in, and your
+     sentence flows out. The page stops arguing and hands the argument over.
+     ================================================================== */
+  var own = null;                 // set once the visitor's own clip has run
+  var tIn = $("tIn"), tOut = $("tOut");
+  var SEP = "   ·   ";
+  var inLen = 0, outLen = 0, off = 0, rraf = 0, last = 0;
+  var SPEED = 34;                                    // px a second along the path
+
+  function stream(key) {
+    var s = C.cases.map(function (c) { return c[key]; }).join(SEP) + SEP;
+    return s + s;                                    // doubled, so the wrap is invisible
+  }
+
+  function loadRiver() {
+    tIn.textContent = stream("said");
+    tOut.textContent = stream("wrote");
+    // Half the doubled string: the distance after which the loop repeats
+    // itself exactly, so resetting there cannot be seen.
+    inLen = tIn.getComputedTextLength() / 2;
+    outLen = tOut.getComputedTextLength() / 2;
+  }
+
+  /**
+   * The string is written twice, so the pattern along the path repeats every
+   * half-length. Sliding the offset through exactly one of those periods and
+   * jumping back cannot be seen: the frame before the jump and the frame
+   * after it are the same picture. Starting at minus one period keeps the
+   * whole path covered, so neither end of the river is ever empty.
+   */
+  function river(now) {
+    rraf = requestAnimationFrame(river);
+    if (!last) last = now;
+    var dt = Math.min(64, now - last); last = now;
+    off += SPEED * dt / 1000;
+    tIn.setAttribute("startOffset", String(-inLen + (off % (inLen || 1))));
+    tOut.setAttribute("startOffset", String(-outLen + (off % (outLen || 1))));
+  }
+
+  /** Their own words replace the loop for good — one pair, held still. */
+  function ownRiver(said, wrote) {
+    tIn.textContent = said + SEP + said;
+    tOut.textContent = wrote + SEP + wrote;
+    inLen = tIn.getComputedTextLength() / 2;
+    outLen = tOut.getComputedTextLength() / 2;
+    off = 0;
+  }
+
+  /* =====================================================================
+     THE CARD
+     Three claims, each demonstrated on the same card: the raw line is marked
+     up word by word — struck through where it goes, amber where it must not
+     move — a pill names the reason, and the written line resolves under it.
+     ================================================================== */
+  var rail = $("rail"), rawEl = $("raw"), outEl = $("out"), pillEl = $("pill");
+  var step = 0, seq = [], dwell = 6400, running = false;
+
+  function words(s) { return s.split(/\s+/).filter(Boolean); }
+  function bare(s) { return s.toLowerCase().replace(/[^\p{L}\p{N}]/gu, ""); }
+
+  function paintRail() {
+    rail.innerHTML = "";
+    C.steps.forEach(function (s, i) {
+      var b = document.createElement("button");
+      b.type = "button"; b.textContent = s.tab;
+      b.setAttribute("role", "tab");
+      b.setAttribute("aria-selected", String(i === step));
+      b.onclick = function () { show(i); };
+      var p = document.createElement("p"); p.textContent = s.note;
+      rail.appendChild(b);
+      if (i === step) rail.appendChild(p);
+    });
+  }
+
+  function clearSeq() { seq.forEach(clearTimeout); seq = []; }
+  function at(ms, fn) { seq.push(setTimeout(fn, ms)); }
+
+  function show(i) {
+    clearSeq();
+    step = ((i % C.steps.length) + C.steps.length) % C.steps.length;
+    var s = C.steps[step];
+    paintRail();
+    rail.style.setProperty("--dwell", dwell + "ms");
+
+    // The raw line, one span a word, so each can be marked on its own.
+    rawEl.innerHTML = "";
+    var W = words(s.said), spans = [];
+    W.forEach(function (w, k) {
+      var el = document.createElement("span");
+      el.textContent = w; rawEl.appendChild(el); spans.push(el);
+      if (k < W.length - 1) rawEl.appendChild(document.createTextNode(" "));
+    });
+    outEl.textContent = "";
+    pillEl.className = "pill";
+
+    if (reduced) { markAll(spans, s); written(s); pillEl.textContent = s.pill; pillEl.className = "pill show"; return; }
+
+    // Mark the words one at a time, so the reader watches it decide.
+    var cut = (s.cut || []).map(bare), keep = (s.keep || []).map(bare), n = 0;
+    spans.forEach(function (el) {
+      var b = bare(el.textContent);
+      if (cut.indexOf(b) >= 0) { at(420 + n * 150, function () { el.className = "gone"; }); n++; }
+      else if (keep.indexOf(b) >= 0) { at(420 + n * 150, function () { el.className = "hit"; }); n++; }
+    });
+    at(520 + n * 150, function () { pillEl.textContent = s.pill; pillEl.className = "pill show"; });
+    at(900 + n * 150, function () { written(s); });
+    if (running) at(dwell, function () { show(step + 1); });
+  }
+
+  /** The written line, with anything that had to survive left in amber. Built
+   *  from nodes rather than a string of markup: every word on this page is
+   *  copy the server sent, and copy is never markup. */
+  function written(s) {
+    var keep = (s.keep || []).map(bare);
+    outEl.textContent = "";
+    words(s.wrote).forEach(function (w, i) {
+      if (i) outEl.appendChild(document.createTextNode(" "));
+      if (keep.indexOf(bare(w)) >= 0) {
+        var b = document.createElement("b"); b.textContent = w; outEl.appendChild(b);
+      } else outEl.appendChild(document.createTextNode(w));
+    });
+  }
+  function markAll(spans, s) {
+    var cut = (s.cut || []).map(bare), keep = (s.keep || []).map(bare);
+    spans.forEach(function (el) {
+      var b = bare(el.textContent);
+      if (cut.indexOf(b) >= 0) el.className = "gone";
+      else if (keep.indexOf(b) >= 0) el.className = "hit";
+    });
+  }
+
+  // ---- reveals & idling ---------------------------------------------------
+  if (window.IntersectionObserver) {
+    var io = new IntersectionObserver(function (es) {
+      es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); } });
+    }, { threshold: 0.12, rootMargin: "0px 0px -8% 0px" });
+    [].forEach.call(document.querySelectorAll(".reveal"), function (el) { io.observe(el); });
+
+    // The card only starts once it is looked at, and stops when it is not.
+    new IntersectionObserver(function (es) {
+      running = es[0].isIntersecting;
+      if (running) show(step); else clearSeq();
+    }, { threshold: 0.3 }).observe($("rail").parentNode);
+
+    // The river never stops while it is on screen, so it must stop when it
+    // is not — this is the one thing on the page that costs a phone battery.
+    new IntersectionObserver(function (es) {
+      var on = es[0].isIntersecting;
+      if (on && !rraf && !reduced) { last = 0; rraf = requestAnimationFrame(river); }
+      else if (!on && rraf) { cancelAnimationFrame(rraf); rraf = 0; }
+    }, { threshold: 0 }).observe($("river"));
+  } else {
+    [].forEach.call(document.querySelectorAll(".reveal"), function (el) { el.classList.add("in"); });
+    running = true;
+  }
+
+  // ---- downloads ----------------------------------------------------------
+  function os() {
+    var ua = navigator.userAgent;
+    if (/iPhone|iPad|iPod/i.test(ua)) return "ios";
+    if (/Android/i.test(ua)) return "android";
+    if (/Windows/i.test(ua)) return "win";
+    if (/Mac OS X|Macintosh/i.test(ua)) return "mac";
+    if (/Linux/i.test(ua)) return "linux";
+    return "win";
+  }
+  var FILES = { win: "/downloads/Tailzu-Setup.exe", mac: "/downloads/Tailzu.dmg", linux: "/downloads/Tailzu.AppImage", ios: "/download", android: "/download" };
+  function has(k) { return (k === "ios" || k === "android") ? true : !!site.downloads[k]; }
+
+  function paintDownloads() {
+    var el = $("dl"); el.innerHTML = "";
+    var mine = os();
+    var order = [mine].concat(["mac", "win", "ios", "android", "linux"].filter(function (k) { return k !== mine; })).slice(0, 4);
+    // The filled button promises that something downloads. It goes to the
+    // visitor's platform when there is an installer, otherwise to the first
+    // one there is — never to a button that says "soon".
+    var lead = has(mine) ? mine : (order.filter(has)[0] || null);
+    order.forEach(function (k) {
+      var ok = has(k);
+      var a = document.createElement("a");
+      a.href = ok ? FILES[k] : "#";
+      a.textContent = (C.download[k] || k) + (ok ? "" : " · " + C.download.soon);
+      a.className = (k === lead ? "primary" : "") + (ok ? "" : " soon");
+      if (!ok) a.setAttribute("aria-disabled", "true");
+      el.appendChild(a);
+    });
+    if (has(mine)) $("navdl").href = FILES[mine];
+  }
+
+  function under(msg, bad) { $("under").textContent = msg; $("under").className = bad ? "under err" : "under"; }
+
+  function applyCopy() {
+    $("eyebrow").textContent = C.eyebrow;
+    $("headline").innerHTML = "";
+    C.headline.split("|").forEach(function (line, i) {
+      var s = document.createElement("span");
+      if (i) { var em = document.createElement("i"); em.textContent = line; s.appendChild(em); }
+      else s.textContent = line;
+      $("headline").appendChild(s);
+    });
+    $("lede").textContent = C.lede;
+    $("micLabel").textContent = C.cta;
+    $("price").textContent = C.price.replace("{words}", String(site.freeWords));
+    paintDownloads();
+    if (!site.demo) { $("mic").disabled = true; under(C.demoOff); }
+    else if (!own) under(C.invite);
+  }
+
+  // ---- the microphone -----------------------------------------------------
+  var mic = $("mic"), wave = $("wave"), capsule = $("capsule"), micLabel = $("micLabel");
+  var NB = 13;
+  for (var b = 0; b < NB; b++) wave.appendChild(document.createElement("i"));
+  var rec = null, stream_ = null, chunks = [], actx = null, analyser = null, vraf = 0;
+  var startedAt = 0, heard = false, lastLoud = 0, hard = 0, busy = false;
+
+  function pickMime() {
+    var c = ["audio/webm;codecs=opus", "audio/webm", "audio/mp4", "audio/ogg;codecs=opus"];
+    for (var i = 0; i < c.length; i++) if (window.MediaRecorder && MediaRecorder.isTypeSupported(c[i])) return c[i];
+    return "";
+  }
+  function ext(m) { return /mp4/.test(m) ? "m4a" : /ogg/.test(m) ? "ogg" : "webm"; }
+
+  function start() {
+    if (busy) return;
+    navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true } }).then(function (s) {
+      stream_ = s; chunks = [];
+      var m = pickMime();
+      rec = new MediaRecorder(s, m ? { mimeType: m } : undefined);
+      rec.ondataavailable = function (e) { if (e.data && e.data.size) chunks.push(e.data); };
+      rec.onstop = upload;
+      rec.start();
+      startedAt = Date.now(); heard = false; lastLoud = startedAt;
+      mic.setAttribute("aria-pressed", "true"); micLabel.textContent = C.ctaHeld;
+      capsule.className = "capsule on";
+      under(C.invite);
+      level(s);
+      hard = setTimeout(stop, site.maxSeconds * 1000);
+    }).catch(function () { under(C.micDenied, true); });
+  }
+
+  function level(s) {
+    try {
+      actx = new (window.AudioContext || window.webkitAudioContext)();
+      analyser = actx.createAnalyser(); analyser.fftSize = 128;
+      actx.createMediaStreamSource(s).connect(analyser);
+    } catch (e) { return; }
+    var buf = new Uint8Array(analyser.frequencyBinCount), els = wave.children;
+    (function tick() {
+      if (!analyser) return;
+      analyser.getByteFrequencyData(buf);
+      var sum = 0;
+      for (var i = 0; i < NB; i++) {
+        var v = buf[Math.floor(i * buf.length / NB / 2)] / 255;
+        sum += v; els[i].style.height = (5 + v * 24) + "px";
+      }
+      var now = Date.now();
+      if (sum / NB > 0.06) { heard = true; lastLoud = now; }
+      // It stops itself when you pause. A pitch is one breath long.
+      if (heard && now - lastLoud > 1400) { stop(); return; }
+      vraf = requestAnimationFrame(tick);
+    })();
+  }
+
+  function stop() {
+    clearTimeout(hard);
+    if (vraf) { cancelAnimationFrame(vraf); vraf = 0; }
+    analyser = null;
+    if (actx) { try { actx.close(); } catch (e) {} actx = null; }
+    mic.setAttribute("aria-pressed", "false");
+    capsule.className = "capsule";
+    for (var i = 0; i < wave.children.length; i++) wave.children[i].style.height = "5px";
+    if (rec && rec.state !== "inactive") { busy = true; micLabel.textContent = C.writing; rec.stop(); }
+    else micLabel.textContent = C.cta;
+    if (stream_) { stream_.getTracks().forEach(function (t) { t.stop(); }); stream_ = null; }
+  }
+
+  function done() { busy = false; micLabel.textContent = own ? C.again : C.cta; }
+
+  function upload() {
+    var m = (rec && rec.mimeType) || "audio/webm";
+    var fd = new FormData();
+    fd.append("audio", new Blob(chunks, { type: m }), "clip." + ext(m));
+    fetch(API + "/v1/demo/transcribe", { method: "POST", body: fd }).then(function (r) {
+      if (r.status === 413) throw new Error("Keep it under " + site.maxSeconds + " seconds.");
+      if (r.status === 429) throw new Error("One moment — try again shortly.");
+      if (r.status === 404) throw new Error(C.demoOff);
+      if (!r.ok) throw new Error("Something went wrong. Try again.");
+      return r.json();
+    }).then(function (j) {
+      var s = (j.transcript || "").trim(), w = (j.cleanedText || "").trim();
+      if (!s && !w) throw new Error("Nothing heard. Try a little louder.");
+      own = true;
+      ownRiver(s, w || s);
+      under(C.after);
+      done();
+    }).catch(function (e) { under(e.message || String(e), true); done(); });
+  }
+
+  mic.addEventListener("click", function () {
+    if (mic.getAttribute("aria-pressed") === "true") stop(); else start();
+  });
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape" && mic.getAttribute("aria-pressed") === "true") stop();
+  });
+
+  // ---- boot ---------------------------------------------------------------
+  applyCopy();
+  paintRail();
+  function boot() {
+    loadRiver();
+    if (!reduced && !rraf) { last = 0; rraf = requestAnimationFrame(river); }
+    show(0);
+  }
+  // The river measures text along a path, so it must not be laid out before
+  // the face lands or every offset is computed for a fallback and jumps.
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(boot); else window.addEventListener("load", boot);
+
+  var rt = 0;
+  window.addEventListener("resize", function () { clearTimeout(rt); rt = setTimeout(loadRiver, 200); });
+
+  fetch(API + "/v1/site").then(function (r) { return r.json(); }).then(function (j) {
+    if (j && j.copy) { for (var k in j.copy) if (Object.prototype.hasOwnProperty.call(j.copy, k)) C[k] = j.copy[k]; }
+    if (j) {
+      site.freeWords = j.freeWords || site.freeWords;
+      site.downloads = j.downloads || {};
+      site.demo = !!j.demo;
+      site.maxSeconds = j.maxSeconds || 15;
+    }
+    applyCopy();
+    if (!own) { loadRiver(); show(0); }        // the server may have sent other lines
+  }).catch(function () { /* the fallbacks are already on screen */ });
+})();
+</script>
+</body>
+</html>
