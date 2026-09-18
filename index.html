@@ -75,11 +75,12 @@
      the far ones sit back. Depth is what stops three lines reading as one
      wallpaper pattern — it is carried by size, not by three different slabs. */
   .mess { font-family: var(--sans); letter-spacing: .005em; }
-  .mess.near { font-size: 20px;   fill: #7C7466; }
-  .mess.far  { font-size: 15.5px; fill: #5C554B; }
-  /* The jump across the microphone is the drama: small dim sans in, large
-     bright serif out. */
-  .clean { font-family: var(--serif); font-size: 31px; fill: var(--white); }
+  .mess.near { font-size: 19px;   fill: #7C7466; }
+  .mess.far  { font-size: 15px;   fill: #5C554B; }
+  /* The jump across the mark is the drama: dim sans in, bright serif out —
+     carried by weight and colour rather than by size, now that the mark it
+     passes through is small. */
+  .clean { font-family: var(--serif); font-size: 23px; fill: var(--white); }
   #drift { transition: transform .5s cubic-bezier(.2,.8,.3,1); }
 
   /* The mark. Boxes drawn over the wires, so nothing needs trimming. */
@@ -228,9 +229,11 @@
       <path id="in1" d="M-220 52 C60 64 300 140 480 248 C556 292 614 318 660 330"/>
       <path id="in2" d="M-220 318 C80 324 320 330 480 331 C566 331 618 331 660 330"/>
       <path id="in3" d="M-220 506 C90 498 320 440 480 376 C562 342 616 336 660 330"/>
-      <!-- Leaves from the last box, flatter than the lanes arrive. The mess is
-           allowed to be steep and crowded; the sentence gets room to read. -->
-      <path id="out1" d="M803 284 C920 274 1030 258 1170 236 C1330 211 1460 194 1740 158"/>
+      <!-- Dead level, out of the middle of the last box. The three lanes
+           arriving are curved and crowded because that is what speech is;
+           the sentence leaving is a straight line on a straight line, which
+           is the whole difference the product makes. -->
+      <path id="out1" d="M803 284 L1800 284"/>
       <clipPath id="clipIn"><rect x="-300" y="-140" width="962" height="800"/></clipPath>
       <!-- The mouth. Ink at full strength over the first box, fading to
            nothing by the rim, so the mess dissolves INTO it rather than being
@@ -242,7 +245,7 @@
       <!-- The sentence forms as it leaves the last box instead of arriving
            whole at a clip edge, which read as sliding out from behind a
            sheet rather than coming out of the box. -->
-      <linearGradient id="emerge" gradientUnits="userSpaceOnUse" x1="824" y1="0" x2="912" y2="0">
+      <linearGradient id="emerge" gradientUnits="userSpaceOnUse" x1="826" y1="0" x2="886" y2="0">
         <stop offset="0" stop-color="#fff" stop-opacity="0"/>
         <stop offset="1" stop-color="#fff" stop-opacity="1"/>
       </linearGradient>
@@ -251,12 +254,15 @@
 
     <g id="drift">
       <g clip-path="url(#clipIn)">
-        <text class="mess far"><textPath href="#in1" id="t1" startOffset="0"> </textPath></text>
-        <text class="mess near"><textPath href="#in2" id="t2" startOffset="0"> </textPath></text>
-        <text class="mess far"><textPath href="#in3" id="t3" startOffset="0"> </textPath></text>
+        <!-- dy carries the glyphs down onto the line. A textPath sets the
+             BASELINE on the path, so without it every lane floats a third of
+             its own height above the box it is supposed to be running into. -->
+        <text class="mess far" dy=".33em"><textPath href="#in1" id="t1" startOffset="0"> </textPath></text>
+        <text class="mess near" dy=".33em"><textPath href="#in2" id="t2" startOffset="0"> </textPath></text>
+        <text class="mess far" dy=".33em"><textPath href="#in3" id="t3" startOffset="0"> </textPath></text>
       </g>
       <g mask="url(#leaving)">
-        <text class="clean"><textPath href="#out1" id="t4" startOffset="0"> </textPath></text>
+        <text class="clean" dy=".33em"><textPath href="#out1" id="t4" startOffset="0"> </textPath></text>
       </g>
     </g>
 

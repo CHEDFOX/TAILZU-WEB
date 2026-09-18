@@ -13,10 +13,15 @@ page back, so the legal text is never unreachable.
 
 ## The river
 
-Three lanes of speech pour in from the left, are swallowed at the microphone,
-and one sentence leaves to the right — small dim sans going in, large bright
-serif coming out. Many in, one out: the shape of the picture is the shape of
-the product.
+Three lanes of speech pour in from the left, are swallowed at the mark, and
+one sentence leaves to the right — dim sans going in, bright serif coming out.
+Many in, one out: the shape of the picture is the shape of the product.
+
+The three lanes arriving are curved and crowded because that is what speech
+is. The one leaving is dead level, out of the middle of the last box, which is
+the whole difference the product makes. Every lane carries a `dy` of a third
+of an em, because a textPath puts the BASELINE on the path and without it the
+text floats a third of its own height above the box it is running into.
 
 It is four SVG `<path>` elements with a `<textPath>` on each, clipped either
 side of the capsule. There are no bands behind the text: speech runs on the
