@@ -10,7 +10,7 @@
 <meta property="og:description" content="Talk. It writes. No sign-up.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300..500;1,6..72,300..500&family=Instrument+Sans:wght@400;500&family=IBM+Plex+Mono:wght@400&family=Caveat:wght@400..700&family=Kalam:wght@400;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300..500;1,6..72,300..500&family=Instrument+Sans:wght@400;500&family=IBM+Plex+Mono:wght@400&family=Caveat:wght@400..700&family=Kalam:wght@400;700&family=Bricolage+Grotesque:wght@800&display=swap">
 <style>
   :root {
     /* THE STATS PALETTE, unchanged from the app.
@@ -50,11 +50,14 @@
     --mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
   }
   * { box-sizing: border-box; }
-  html { background: var(--ink); }
+  /* clip, not hidden: hidden still lets a script scroll the page sideways
+     to reach something that hangs past the edge, and this page hangs light
+     and dust past both. clip cannot be scrolled at all. */
+  html { background: var(--ink); overflow-x: hidden; overflow-x: clip; }
   body {
     margin: 0; background: var(--ink); color: var(--white);
     font-family: var(--sans); font-size: 16px; line-height: 1.65;
-    -webkit-font-smoothing: antialiased; overflow-x: hidden;
+    -webkit-font-smoothing: antialiased; overflow-x: hidden; overflow-x: clip;
   }
   a { color: inherit; text-decoration: none; }
   button { font-family: inherit; }
@@ -129,7 +132,7 @@
      grows the document, and a page that scrolls on past its own footer into
      the dark is the one thing a light must not do. The clip sits where every
      fall-off is already at zero, so nothing is cut, only contained. */
-  .light { position: absolute; left: -10%; right: -10%; top: -90%; bottom: -40%; overflow: hidden; z-index: 0; pointer-events: none; }
+  .light { position: absolute; left: 0; right: 0; top: -90%; bottom: -40%; overflow: hidden; z-index: 0; pointer-events: none; }
   .pool {
     position: absolute; left: 0; top: 0; width: 125%; height: 108%; pointer-events: none;
     background:
@@ -241,27 +244,56 @@
   .dl a.primary:hover { opacity: .88; }
   .dl a.soon { opacity: .4; pointer-events: none; }
 
-  /* ---- below the river ------------------------------------------------- */
-  /* Three things, and each is shown before it is said. The titles are set
-     like the one over the buttons; the pairs are the river's two materials
-     at reading size — the mess by hand, the sentence in type — and the
-     sentence is born in the accent and cools to the reading colour, which is
-     the one rule the accent has on this page. */
-  .sec { padding: 108px 0 0; }
-  .sec h2 { margin: 0 0 30px; font-family: var(--serif); font-weight: 400; font-size: clamp(26px, 3vw, 40px); line-height: 1.05; letter-spacing: -.02em; text-wrap: balance; }
-  .pair { max-width: 820px; min-height: 148px; }
-  .said {
-    margin: 0 0 12px; font-family: 'Caveat', 'Kalam', cursive; font-size: clamp(24px, 2.6vw, 32px); line-height: 1.25; color: var(--dim);
-    opacity: 0; transform: translateY(6px); transition: opacity .5s, transform .5s;
-  }
-  .wrote {
-    margin: 0; font-family: var(--serif); font-weight: 380; font-size: clamp(30px, 3.6vw, 46px); line-height: 1.12; letter-spacing: -.018em; color: var(--white); text-wrap: balance;
-    opacity: 0; transform: translateY(8px); transition: opacity .55s, transform .55s, color 1.7s;
-  }
-  .said.in, .wrote.in { opacity: 1; transform: none; }
+  /* ---- the dust ---------------------------------------------------------
+     A tall section with a stage pinned inside it: the scroll through the
+     section is the progress of the transformation, so the visitor holds it,
+     not a timer. Two and a half screens of scroll for one sentence — long
+     enough that the cloud can be looked at, short enough that nobody is
+     asked to work for it. The caption is the only text: two states, and
+     the one that is true is the one that is lit. */
+  .morph { position: relative; height: 250vh; margin-top: 40px; }
+  .stick { position: sticky; top: 0; height: 100vh; overflow: hidden; }
+  #dust { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+  .cap { position: absolute; left: 0; right: 0; bottom: 9vh; margin: 0; text-align: center; font-family: var(--mono); font-size: 11px; letter-spacing: .22em; text-transform: uppercase; color: var(--dim); }
+  .cap span { position: absolute; left: 0; right: 0; transition: opacity .5s, color .5s; }
+  .cap span.lit { color: var(--white); }
+  .cap span:not(.lit) { opacity: .0; }
+
+  /* ---- the materials ----------------------------------------------------
+     One tone, one medium. The line the keyboard was given stays in the hand
+     it arrived in; the line it writes back is set in whatever the tone is
+     made of, and the words and the material change together. */
+  .tones { padding: 96px 0 0; }
+  .tones h2 { margin: 0 0 26px; font-family: var(--serif); font-weight: 400; font-size: clamp(26px, 3vw, 40px); line-height: 1.05; letter-spacing: -.02em; text-wrap: balance; }
+  .said { margin: 0 0 22px; font-family: 'Caveat', 'Kalam', cursive; font-size: clamp(24px, 2.6vw, 32px); line-height: 1.25; color: var(--dim); opacity: 0; transition: opacity .5s; }
+  .said.in { opacity: 1; }
+  .stage { min-height: 172px; display: flex; align-items: center; }
+  .mat { margin: 0; max-width: 900px; color: var(--white); opacity: 0; transition: opacity .45s, color 1.7s; }
+  .mat.in { opacity: 1; }
   /* Born in the accent: the class is put on and taken off in the same
      frame, so the colour starts amber and the transition carries it home. */
-  .wrote.born { color: var(--amber); transition: opacity .55s, transform .55s, color 0s; }
+  .mat.born { color: var(--amber); transition: opacity .45s, color 0s; }
+  /* PRINT. The page's own serif, a shade under regular, as the river's word. */
+  .m-neutral { font-family: var(--serif); font-weight: 380; font-size: clamp(30px, 3.8vw, 50px); line-height: 1.1; letter-spacing: -.018em; text-wrap: balance; }
+  /* MARKER. The hand, heavier, every word set down at its own angle, with
+     the ragged felt-tip edge from the filter above. */
+  .m-casual { font-family: 'Caveat', 'Kalam', cursive; font-weight: 600; font-size: clamp(34px, 4.6vw, 60px); line-height: 1.15; filter: url(#ink); }
+  .m-casual span { display: inline-block; transform: rotate(var(--r, 0deg)); }
+  /* THE PLATE. Capitals, spaced, and cut rather than filled: the letters are
+     hatched with the same diagonal that hatches the link in the mark, so
+     the formal tone is engraved on the page rather than printed on it. */
+  .m-formal {
+    font-family: var(--serif); font-weight: 500; font-size: clamp(22px, 2.9vw, 36px); line-height: 1.32; letter-spacing: .1em; text-transform: uppercase;
+    color: transparent;
+    background: repeating-linear-gradient(115deg, rgba(243,226,198,.94) 0 1.1px, rgba(243,226,198,.24) 1.1px 2.6px);
+    -webkit-background-clip: text; background-clip: text;
+  }
+  /* THE POSTER. A heavy grotesque, tight, leaning, every letter arriving on
+     its own beat — the one tone that is allowed to shout. */
+  .m-excited { font-family: 'Bricolage Grotesque', var(--sans); font-weight: 800; font-size: clamp(38px, 5.6vw, 72px); line-height: .96; letter-spacing: -.03em; text-transform: uppercase; transform: skewX(-4deg); }
+  .m-excited .w { display: inline-block; white-space: nowrap; }
+  .m-excited .l { display: inline-block; opacity: 0; transform: translateY(.35em); animation: pop .5s cubic-bezier(.2, .9, .25, 1) forwards; }
+  @keyframes pop { to { opacity: 1; transform: none; } }
   .chips { display: flex; flex-wrap: wrap; gap: 6px 22px; margin-top: 34px; }
   .chips button {
     appearance: none; border: 0; background: none; padding: 6px 0; cursor: pointer;
@@ -270,9 +302,6 @@
   }
   .chips button:hover { color: var(--white); }
   .chips button[aria-selected="true"] { color: var(--white); border-bottom-color: var(--white); }
-  .facts { padding-top: 92px; }
-  .facts ul { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 10px 0; font-family: var(--mono); font-size: 11px; letter-spacing: .18em; text-transform: uppercase; color: var(--dim); }
-  .facts li + li::before { content: "·"; margin: 0 18px; color: var(--grey); }
 
   footer { background: var(--wash); color: var(--dim); }
   footer .in { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px; padding: 26px 0 40px; font-size: 13px; }
@@ -389,34 +418,41 @@
   </button>
 </div>
 
-<!-- BELOW THE RIVER. The reel: the twenty lines, one at a time, hand then
-     type. The tones: one line in each of the keyboard's own tones. The facts:
-     the only claims in words, and there are four. -->
-<section class="sec reveal" id="reel">
-  <div class="wrap">
-    <h2 id="reelTitle">Said. Written.</h2>
-    <div class="pair">
-      <p class="said" id="reelSaid"></p>
-      <p class="wrote" id="reelWrote"></p>
-    </div>
-    <div class="chips" id="reelChips" role="tablist" aria-label="Language"></div>
+<!-- BELOW THE RIVER: two set pieces, no features.
+
+     THE DUST. One sentence, the way it was said, in handwriting. Scroll, and
+     it breaks into a few thousand grains that fly and settle as the sentence
+     the way it was meant, in type. The visitor drives it with the scroll
+     and can stop it anywhere — halfway is a cloud, and a cloud that has not
+     landed yet is what keeps a hand on the wheel. Pointillism, then print.
+
+     THE MATERIALS. The same words in each of the keyboard's tones, and each
+     tone is a different medium, not just different words: print, marker,
+     an engraved plate, a poster. The words change and so does the thing
+     they are made of. -->
+<section class="morph" id="morph" aria-label="What you said, becoming what you meant">
+  <div class="stick">
+    <canvas id="dust" aria-hidden="true"></canvas>
+    <p class="cap" aria-hidden="true"><span id="capA">what you said</span><span id="capB">what you meant</span></p>
   </div>
 </section>
 
-<section class="sec reveal" id="tone">
+<section class="tones reveal" id="tone">
   <div class="wrap">
     <h2 id="toneTitle">Same words. Your tone.</h2>
-    <div class="pair">
-      <p class="said" id="toneSaid"></p>
-      <p class="wrote" id="toneWrote"></p>
-    </div>
+    <p class="said" id="toneSaid"></p>
+    <div class="stage"><p class="mat" id="toneWrote"></p></div>
     <div class="chips" id="toneChips" role="tablist" aria-label="Tone"></div>
   </div>
 </section>
-
-<section class="sec facts reveal">
-  <div class="wrap"><ul id="facts"></ul></div>
-</section>
+<!-- The marker's ink: a whisper of displacement, so a hand-written line has
+     the ragged edge a felt tip leaves and not the vector edge a font has. -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <filter id="ink" x="-2%" y="-5%" width="104%" height="110%">
+    <feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="2" seed="3" result="n"/>
+    <feDisplacementMap in="SourceGraphic" in2="n" scale="2.4" xChannelSelector="R" yChannelSelector="G"/>
+  </filter>
+</svg>
 
 <section class="get">
   <div class="wrap">
@@ -457,30 +493,30 @@
     // hundred threads.
     absorb: "Exactly.",
     cases: [
-      { lang: "English",    said: "um so like can we push the call to four",          wrote: "Can we push the call to four?" },
-      { lang: "Hinglish",   said: "the deploy is done but abhi testing baaki hai",    wrote: "The deploy is done, but abhi testing baaki hai." },
-      { lang: "Hindi",      said: "हाँ वो फाइल मैंने भेज दी थी कल शाम को",                  wrote: "हाँ, वो फाइल मैंने कल शाम भेज दी थी।" },
-      { lang: "Tamil",      said: "நான் இப்போ கிளம்பறேன் கொஞ்சம் லேட் ஆகும்",              wrote: "நான் இப்போ கிளம்பறேன், கொஞ்சம் லேட் ஆகும்." },
-      { lang: "English",    said: "trensfer 2500 rupeez to ramesh tomorow",            wrote: "Transfer 2500 rupees to Ramesh tomorrow." },
-      { lang: "Bengali",    said: "আমি কাল অফিসে আসব না একটু কাজ আছে",                   wrote: "আমি কাল অফিসে আসব না, একটু কাজ আছে।" },
-      { lang: "Marathi",    said: "मी उद्या ऑफिसला येणार नाही जरा काम आहे",                wrote: "मी उद्या ऑफिसला येणार नाही, जरा काम आहे." },
-      { lang: "Spanish",    said: "eh o sea puedo llegar como a las siete",            wrote: "Puedo llegar como a las siete." },
-      { lang: "Telugu",     said: "నేను రేపు ఆఫీస్ కి రాను కొంచెం పని ఉంది",                  wrote: "నేను రేపు ఆఫీస్‌కి రాను, కొంచెం పని ఉంది." },
-      { lang: "Punjabi",    said: "ਮੈਂ ਕੱਲ੍ਹ ਨਹੀਂ ਆ ਸਕਦਾ ਥੋੜ੍ਹਾ ਕੰਮ ਹੈ",                       wrote: "ਮੈਂ ਕੱਲ੍ਹ ਨਹੀਂ ਆ ਸਕਦਾ, ਥੋੜ੍ਹਾ ਕੰਮ ਹੈ।" },
-      { lang: "Gujarati",   said: "હું કાલે ઓફિસે નહીં આવું થોડું કામ છે",                       wrote: "હું કાલે ઓફિસે નહીં આવું, થોડું કામ છે." },
-      { lang: "Kannada",    said: "ನಾನು ನಾಳೆ ಆಫೀಸಿಗೆ ಬರಲ್ಲ ಸ್ವಲ್ಪ ಕೆಲಸ ಇದೆ",               wrote: "ನಾನು ನಾಳೆ ಆಫೀಸಿಗೆ ಬರಲ್ಲ, ಸ್ವಲ್ಪ ಕೆಲಸ ಇದೆ." },
-      { lang: "Malayalam",  said: "ഞാൻ നാളെ ഓഫീസിൽ വരില്ല കുറച്ച് ജോലി ഉണ്ട്",            wrote: "ഞാൻ നാളെ ഓഫീസിൽ വരില്ല, കുറച്ച് ജോലി ഉണ്ട്." },
-      { lang: "Odia",       said: "ମୁଁ କାଲି ଅଫିସ ଆସିବି ନାହିଁ ଟିକେ କାମ ଅଛି",                   wrote: "ମୁଁ କାଲି ଅଫିସ ଆସିବି ନାହିଁ, ଟିକେ କାମ ଅଛି।" },
-      { lang: "French",     said: "euh ben je peux arriver vers sept heures je pense", wrote: "Je peux arriver vers sept heures, je pense." },
-      { lang: "Portuguese", said: "é tipo assim eu posso chegar por volta das sete",   wrote: "Eu posso chegar por volta das sete." },
-      { lang: "German",     said: "ähm also ich komme so gegen sieben glaube ich",     wrote: "Ich komme so gegen sieben, glaube ich." },
-      { lang: "Indonesian", said: "eh gimana ya saya bisa datang sekitar jam tujuh",   wrote: "Saya bisa datang sekitar jam tujuh." },
-      { lang: "Turkish",    said: "yani sey saat yedi gibi gelebilirim heralde",       wrote: "Yani saat yedi gibi gelebilirim, herhalde." },
-      { lang: "Filipino",   said: "ano eto nakaka pagod pero tapos na yung report",    wrote: "Nakakapagod, pero tapos na yung report." }
+      { said: "um so like can we push the call to four",          wrote: "Can we push the call to four?" },
+      { said: "the deploy is done but abhi testing baaki hai",    wrote: "The deploy is done, but abhi testing baaki hai." },
+      { said: "हाँ वो फाइल मैंने भेज दी थी कल शाम को",                  wrote: "हाँ, वो फाइल मैंने कल शाम भेज दी थी।" },
+      { said: "நான் இப்போ கிளம்பறேன் கொஞ்சம் லேட் ஆகும்",              wrote: "நான் இப்போ கிளம்பறேன், கொஞ்சம் லேட் ஆகும்." },
+      { said: "trensfer 2500 rupeez to ramesh tomorow",            wrote: "Transfer 2500 rupees to Ramesh tomorrow." },
+      { said: "আমি কাল অফিসে আসব না একটু কাজ আছে",                   wrote: "আমি কাল অফিসে আসব না, একটু কাজ আছে।" },
+      { said: "मी उद्या ऑफिसला येणार नाही जरा काम आहे",                wrote: "मी उद्या ऑफिसला येणार नाही, जरा काम आहे." },
+      { said: "eh o sea puedo llegar como a las siete",            wrote: "Puedo llegar como a las siete." },
+      { said: "నేను రేపు ఆఫీస్ కి రాను కొంచెం పని ఉంది",                  wrote: "నేను రేపు ఆఫీస్‌కి రాను, కొంచెం పని ఉంది." },
+      { said: "ਮੈਂ ਕੱਲ੍ਹ ਨਹੀਂ ਆ ਸਕਦਾ ਥੋੜ੍ਹਾ ਕੰਮ ਹੈ",                       wrote: "ਮੈਂ ਕੱਲ੍ਹ ਨਹੀਂ ਆ ਸਕਦਾ, ਥੋੜ੍ਹਾ ਕੰਮ ਹੈ।" },
+      { said: "હું કાલે ઓફિસે નહીં આવું થોડું કામ છે",                       wrote: "હું કાલે ઓફિસે નહીં આવું, થોડું કામ છે." },
+      { said: "ನಾನು ನಾಳೆ ಆಫೀಸಿಗೆ ಬರಲ್ಲ ಸ್ವಲ್ಪ ಕೆಲಸ ಇದೆ",               wrote: "ನಾನು ನಾಳೆ ಆಫೀಸಿಗೆ ಬರಲ್ಲ, ಸ್ವಲ್ಪ ಕೆಲಸ ಇದೆ." },
+      { said: "ഞാൻ നാളെ ഓഫീസിൽ വരില്ല കുറച്ച് ജോലി ഉണ്ട്",            wrote: "ഞാൻ നാളെ ഓഫീസിൽ വരില്ല, കുറച്ച് ജോലി ഉണ്ട്." },
+      { said: "ମୁଁ କାଲି ଅଫିସ ଆସିବି ନାହିଁ ଟିକେ କାମ ଅଛି",                   wrote: "ମୁଁ କାଲି ଅଫିସ ଆସିବି ନାହିଁ, ଟିକେ କାମ ଅଛି।" },
+      { said: "euh ben je peux arriver vers sept heures je pense", wrote: "Je peux arriver vers sept heures, je pense." },
+      { said: "é tipo assim eu posso chegar por volta das sete",   wrote: "Eu posso chegar por volta das sete." },
+      { said: "ähm also ich komme so gegen sieben glaube ich",     wrote: "Ich komme so gegen sieben, glaube ich." },
+      { said: "eh gimana ya saya bisa datang sekitar jam tujuh",   wrote: "Saya bisa datang sekitar jam tujuh." },
+      { said: "yani sey saat yedi gibi gelebilirim heralde",       wrote: "Yani saat yedi gibi gelebilirim, herhalde." },
+      { said: "ano eto nakaka pagod pero tapos na yung report",    wrote: "Nakakapagod, pero tapos na yung report." }
     ],
-    // Below the river: the reel's title, the tones, the facts. The tone
-    // names are the keyboard's own.
-    reel: { title: "Said. Written." },
+    // Below the river: the dust and the materials. The tone names are the
+    // keyboard's own.
+    morph: { said: "um so like can we push the call to four", wrote: "Can we push the call to four?", from: "what you said", to: "what you meant" },
     tone: {
       title: "Same words. Your tone.",
       said: "hey can u send the file tonight its kinda urgent",
@@ -491,7 +527,6 @@
         { name: "Excited", text: "Can you send the file tonight? Can't wait to dig in!" }
       ]
     },
-    facts: ["22 Indian languages", "Most of the world's", "Any app, any field", "Phone and desk"],
     download: { win: "Windows", mac: "macOS", linux: "Linux", ios: "iPhone", android: "Android", soon: "soon" }
   };
   var site = { downloads: {}, demo: false, maxSeconds: 15 };
@@ -1145,20 +1180,190 @@
   }
 
   /* ---------------------------------------------------------------------
-     BELOW THE RIVER
+     THE DUST
 
-     The reel and the tones play themselves — a pair every few seconds, the
-     hand first and the type after it, the sentence born in the accent and
-     cooling — and stop playing the moment a visitor picks a chip, for ten
-     seconds, so the thing they chose stays put. Nothing runs while the
+     One sentence sampled twice: as it was said, in the hand, and as it was
+     meant, in type. Every grain of the first has a place in the second —
+     paired left to right, so the start of the said line flows into the
+     start of the written one and the sentence reads as pouring into itself
+     rather than being shuffled. The scroll is the clock: the visitor holds
+     it, and can hold it halfway, where it is a cloud. Between the two the
+     grains fly on their own vectors and glow warm at the top of the arc,
+     then settle pale as print — born amber, cooled to the reading colour,
+     the same rule as everything else on this page.
+
+     Sampled at the size it is shown, on a hidden canvas, whenever the stage
+     changes size or the words arrive from the server. Drawn only while the
+     stage is on screen and only when the scroll has moved.               */
+  var morphEl = $("morph"), stick = morphEl.firstElementChild, dust = $("dust"), gd = dust.getContext("2d");
+  var capA = $("capA"), capB = $("capB");
+  var grains = null, mp = -1, mOn = false, mW = 0, mH = 0, mDPR = 1, lineA = null, lineB = null;
+
+  function wrapWords(ctx, text, maxW) {
+    var words = text.split(/\s+/), lines = [], cur = "";
+    words.forEach(function (w) {
+      var t = cur ? cur + " " + w : w;
+      if (ctx.measureText(t).width > maxW && cur) { lines.push(cur); cur = w; } else cur = t;
+    });
+    if (cur) lines.push(cur);
+    return lines;
+  }
+  /** The largest size at which the text sits in two lines at most. */
+  function layText(ctx, text, font, weight, maxW, start, minSize) {
+    var size = start, lines;
+    for (;;) {
+      ctx.font = weight + " " + size + "px " + font;
+      lines = wrapWords(ctx, text, maxW);
+      if (lines.length <= 2 || size <= minSize) break;
+      size -= 2;
+    }
+    return { font: ctx.font, size: size, lines: lines };
+  }
+  function drawLines(ctx, L, cx, cy, alpha, color) {
+    ctx.font = L.font; ctx.textAlign = "center"; ctx.textBaseline = "middle";
+    ctx.fillStyle = color; ctx.globalAlpha = alpha;
+    var lh = L.size * 1.18, y0 = cy - (L.lines.length - 1) * lh / 2;
+    for (var i = 0; i < L.lines.length; i++) ctx.fillText(L.lines[i], cx, y0 + i * lh);
+    ctx.globalAlpha = 1;
+  }
+  /** Where the ink is, as points on a 3px grid, left to right. */
+  function sampleLines(L, w, h) {
+    var off = document.createElement("canvas"); off.width = w; off.height = h;
+    var c = off.getContext("2d");
+    drawLines(c, L, w / 2, h / 2, 1, "#fff");
+    var d = c.getImageData(0, 0, w, h).data, pts = [], step = 3, r = seeded(5);
+    for (var y = 0; y < h; y += step) for (var x = 0; x < w; x += step) {
+      if (d[(y * w + x) * 4 + 3] > 110) pts.push([x + (r() - 0.5) * 1.6, y + (r() - 0.5) * 1.6]);
+    }
+    pts.sort(function (a, b) { return a[0] - b[0] || a[1] - b[1]; });
+    return pts;
+  }
+  function buildMorph() {
+    mW = stick.clientWidth; mH = stick.clientHeight;
+    if (!mW || !mH) return;
+    mDPR = Math.min(2, window.devicePixelRatio || 1);
+    dust.width = Math.round(mW * mDPR); dust.height = Math.round(mH * mDPR);
+    var maxW = Math.min(1100, mW * 0.86), big = Math.min(84, mW / 9);
+    lineA = layText(gd, C.morph.said, "'Caveat','Kalam',cursive", "400", maxW, big, 26);
+    lineB = layText(gd, C.morph.wrote, "'Newsreader',Georgia,serif", "400", maxW, big, 24);
+    var A = sampleLines(lineA, mW, mH), B = sampleLines(lineB, mW, mH);
+    if (!A.length || !B.length) { grains = null; return; }
+    var N = Math.min(3200, Math.max(A.length, B.length));
+    grains = [];
+    var r = seeded(7);
+    for (var i = 0; i < N; i++) {
+      var a = A[Math.floor(i * A.length / N)], b = B[Math.floor(i * B.length / N)];
+      // Each grain's own flight: a random vector, biased upward and to the
+      // right, so the cloud lifts and leans the way the river runs.
+      var ang = r() * 6.2832, mag = 20 + r() * r() * 150;
+      grains.push({ ax: a[0], ay: a[1], bx: b[0], by: b[1],
+                    dx: Math.cos(ang) * mag + 18, dy: Math.sin(ang) * mag - 34,
+                    s: 1.0 + r() * 1.7, o: r() });
+    }
+    mp = -1; drawMorph(true);
+  }
+  function morphProgress() {
+    var r = morphEl.getBoundingClientRect(), vh = window.innerHeight;
+    var p = -r.top / (r.height - vh);
+    return p < 0 ? 0 : p > 1 ? 1 : p;
+  }
+  var INKA = [243, 226, 198], INKB = [232, 162, 60];
+  function drawMorph(force) {
+    if (!grains) return;
+    var p = reduced ? 1 : morphProgress();
+    if (!force && p === mp) return;
+    mp = p;
+    gd.setTransform(mDPR, 0, 0, mDPR, 0, 0);
+    gd.clearRect(0, 0, mW, mH);
+    var t = p * p * (3 - 2 * p), k = Math.sin(Math.PI * t);
+    // The hand is crisp until the first grains lift; the type is crisp once
+    // the last ones have landed. Between, only grains.
+    var inA = Math.max(0, Math.min(1, (0.12 - p) / 0.08)), inB = Math.max(0, Math.min(1, (p - 0.88) / 0.08));
+    if (inA > 0) drawLines(gd, lineA, mW / 2, mH / 2, inA, "rgba(243,226,198,.62)");
+    if (inB > 0) drawLines(gd, lineB, mW / 2, mH / 2, inB, "#F3E2C6");
+    var ga = 1 - Math.max(inA, inB);
+    if (ga > 0.01) {
+      // Warm at the top of the arc, pale at rest: a grain in flight is alive.
+      var c = [0, 1, 2].map(function (i) { return Math.round(INKA[i] + (INKB[i] - INKA[i]) * k); });
+      gd.fillStyle = "rgb(" + c.join(",") + ")";
+      for (var i = 0; i < grains.length; i++) {
+        var g = grains[i];
+        // Not all at once: each grain leaves a little after the last and
+        // lands a little after it, so the sentence lifts off like a flock
+        // and comes down like one, instead of jumping as a block.
+        var ti = (t - g.o * 0.22) / 0.78; ti = ti < 0 ? 0 : ti > 1 ? 1 : ti;
+        var ki = Math.sin(Math.PI * ti);
+        var x = g.ax + (g.bx - g.ax) * ti + g.dx * ki, y = g.ay + (g.by - g.ay) * ti + g.dy * ki;
+        gd.globalAlpha = ga * (0.4 + 0.6 * g.o) * (1 - ki * 0.3);
+        gd.fillRect(x, y, g.s, g.s);
+      }
+      gd.globalAlpha = 1;
+    }
+    var lit = p > 0.5;
+    capB.classList.toggle("lit", lit); capA.classList.toggle("lit", !lit);
+  }
+  if (window.IntersectionObserver) {
+    new IntersectionObserver(function (es) { mOn = es[0].isIntersecting; if (mOn) drawMorph(true); }, { threshold: 0 }).observe(morphEl);
+  } else { mOn = true; }
+  var mraf = 0;
+  window.addEventListener("scroll", function () {
+    if (!mOn || mraf) return;
+    mraf = requestAnimationFrame(function () { mraf = 0; drawMorph(false); });
+  }, { passive: true });
+
+  /* ---------------------------------------------------------------------
+     THE MATERIALS
+
+     The tones play themselves — a new one every few seconds, born in the
+     accent and cooling — and stop the moment a visitor picks a chip, for
+     ten seconds, so the thing they chose stays put. Nothing runs while the
      section is off the screen or the tab is hidden, and under reduced
-     motion nothing runs at all: the chips still switch, instantly.  */
+     motion nothing runs at all: the chips still switch, instantly.
+
+     Each tone is a medium (see the css). The medium is chosen from the
+     tone's name, so a backend that renames or reorders them still lands
+     each on the right material, and an unknown one is set in print.     */
   function born(el) { el.classList.add("born"); void el.offsetWidth; el.classList.remove("born"); }
-  function showPair(saidEl, wroteEl, said, wrote, delay) {
-    saidEl.classList.remove("in"); wroteEl.classList.remove("in");
-    clearTimeout(saidEl._t); clearTimeout(wroteEl._t);
-    saidEl._t = setTimeout(function () { saidEl.textContent = said; saidEl.classList.add("in"); }, 60);
-    wroteEl._t = setTimeout(function () { wroteEl.textContent = wrote; born(wroteEl); wroteEl.classList.add("in"); }, reduced ? 60 : delay);
+  function material(name) {
+    var n = (name || "").toLowerCase();
+    return /casual|friend|chill/.test(n) ? "casual"
+         : /formal|profess|polite/.test(n) ? "formal"
+         : /excit|hype|energ|bold/.test(n) ? "excited" : "neutral";
+  }
+  function setMaterial(el, name, text) {
+    var kind = material(name);
+    el.className = "mat m-" + kind;
+    el.innerHTML = "";
+    if (kind === "excited") {
+      // Every letter on its own beat, inside its word so a line breaks
+      // between words and never inside one.
+      var d = 0;
+      text.split(/\s+/).forEach(function (w, i) {
+        if (!w) return;
+        if (i) el.appendChild(document.createTextNode(" "));
+        var ws = document.createElement("span"); ws.className = "w";
+        w.split("").forEach(function (ch) {
+          var s = document.createElement("span"); s.className = "l";
+          s.textContent = ch;
+          s.style.animationDelay = (d++ * 22) + "ms";
+          ws.appendChild(s);
+        });
+        el.appendChild(ws);
+      });
+    } else if (kind === "casual") {
+      // Every word set down at its own angle.
+      var r = seeded(11);
+      text.split(/\s+/).forEach(function (w, i) {
+        if (!w) return;
+        if (i) el.appendChild(document.createTextNode(" "));
+        var s = document.createElement("span");
+        s.textContent = w;
+        s.style.setProperty("--r", ((r() - 0.5) * 5).toFixed(2) + "deg");
+        el.appendChild(s);
+      });
+    } else {
+      el.textContent = text;
+    }
   }
   function chips(el, names, sel, onPick) {
     el.innerHTML = "";
@@ -1197,27 +1402,19 @@
     document.addEventListener("visibilitychange", function () { if (document.hidden) clearTimeout(t); else tick(); });
     return { pick: pick, restart: function () { show(i); tick(); }, at: function () { return i; } };
   }
-  var reel = player("reel", function (i) {
-    var c = C.cases[i];
-    showPair($("reelSaid"), $("reelWrote"), c.said, c.wrote, 1300);
-    selectChip($("reelChips"), i);
-  }, function () { return C.cases.length; }, 4800);
   var tones = player("tone", function (i) {
-    var w = $("toneWrote");
+    var w = $("toneWrote"), tn = C.tone.tones[i];
     w.classList.remove("in"); clearTimeout(w._t);
-    w._t = setTimeout(function () { w.textContent = C.tone.tones[i].text; born(w); w.classList.add("in"); }, 140);
+    w._t = setTimeout(function () { setMaterial(w, tn.name, tn.text); born(w); w.classList.add("in"); }, 160);
     selectChip($("toneChips"), i);
-  }, function () { return C.tone.tones.length; }, 3800);
+  }, function () { return C.tone.tones.length; }, 4200);
 
   function paintBelow() {
-    $("reelTitle").textContent = C.reel.title;
-    chips($("reelChips"), C.cases.map(function (c) { return c.lang; }), reel.at(), reel.pick);
+    capA.textContent = C.morph.from; capB.textContent = C.morph.to;
     $("toneTitle").textContent = C.tone.title;
     var s = $("toneSaid"); s.textContent = C.tone.said; s.classList.add("in");
     chips($("toneChips"), C.tone.tones.map(function (t) { return t.name; }), tones.at(), tones.pick);
-    var ul = $("facts"); ul.innerHTML = "";
-    C.facts.forEach(function (f) { var li = document.createElement("li"); li.textContent = f; ul.appendChild(li); });
-    reel.restart(); tones.restart();
+    tones.restart();
   }
 
   function applyCopy() {
@@ -1369,6 +1566,7 @@
     if (!reduced && !rraf) { last = 0; rraf = requestAnimationFrame(river); }
     placeControl();
     placePool();
+    buildMorph();
   }
   // The river measures text along a path, so it must not be laid out before
   // the face lands or every offset is computed for a fallback and jumps.
@@ -1377,7 +1575,7 @@
   var rt = 0;
   window.addEventListener("resize", function () {
     clearTimeout(rt);
-    rt = setTimeout(function () { sizeCanvas(); loadRiver(); placeControl(); measureGate(); }, 200);
+    rt = setTimeout(function () { sizeCanvas(); loadRiver(); placeControl(); measureGate(); buildMorph(); }, 200);
   });
 
   // The hand comes from the font host, and the canvas measures words in
@@ -1386,7 +1584,7 @@
   // is laid out again once the hand has arrived.
   if (document.fonts && document.fonts.load) {
     Promise.all([document.fonts.load("14px Caveat"), document.fonts.load("14px Kalam")])
-      .then(function () { if (!own) loadRiver(); measureGate(); }, function () {});
+      .then(function () { if (!own) loadRiver(); measureGate(); buildMorph(); }, function () {});
   }
 
   fetch(API + "/v1/site").then(function (r) { return r.json(); }).then(function (j) {
@@ -1398,6 +1596,7 @@
     }
     applyCopy();
     if (!own) { sizeCanvas(); loadRiver(); }        // the server may have sent other lines
+    buildMorph();
   }).catch(function () { /* the fallbacks are already on screen */ });
 })();
 </script>
