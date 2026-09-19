@@ -696,7 +696,7 @@
      typed by hand put the cut a few units off the glyph at one font size and
      a dozen off at another, and a thread visible inside the word reads as a
      mistake rather than as an arrival. */
-  var GATE = 768, hover = 0, hoverWant = 0;
+  var GATE = 768;
   function measureGate() {
     try {
       var bb = absorbEl.getBBox();
@@ -858,22 +858,32 @@
        mouth only has to dissolve the last of the threads in the few units
        before the first glyph, so that they run into it rather than stopping
        short of it in the dark. Anything wider reopens the gap. */
-    /* Held back on hover. Point at the word and the threads stop short of it
-       — the one place on the page where the thing that swallows everything
-       visibly refuses to. It is the same gate moved left, so it costs a
-       subtraction rather than a second code path, and it eases rather than
-       snapping because an instant recoil reads as a glitch. */
-    var G = GATE - hover * 190, MX = G - 10, MR = 26 + hover * 58;
+    /* THE DISSOLVE. One soft ellipse centred just inside the word, wide and
+       shallow so it hugs the way the threads actually arrive: horizontally,
+       nearly converged. It reaches FULL erase a good thirty units before the
+       glyph and falls to nothing a hundred and fifty out, so the mess thins
+       over a long run instead of being cut.
+
+       That is what was wrong before. The straight block did the real work and
+       the ellipse was only twenty-six units across, so a thread still bright
+       at the gate met a vertical edge and was sliced — smooth for most of
+       them, a clean straight cut for the bright ones, which is exactly the
+       frame the eye picks out. The block still runs from the gate rightward,
+       because a word is anchored at its start and tails hang past it, but it
+       is now drawn over pixels the ellipse has already taken to zero, so
+       there is no edge left for it to make. */
+    var MX = GATE + 16, MR = 72;
     g2.fillStyle = "#000";
-    g2.fillRect(G, VIS[1] - 300, (VIS[2] - G) + 300, (VIS[3] - VIS[1]) + 600);
+    g2.fillRect(GATE, VIS[1] - 300, (VIS[2] - GATE) + 300, (VIS[3] - VIS[1]) + 600);
 
     var grd = g2.createRadialGradient(MX, MID, 0, MX, MID, MR);
     grd.addColorStop(0, "rgba(0,0,0,1)");
-    grd.addColorStop(0.30, "rgba(0,0,0,1)");
+    grd.addColorStop(0.28, "rgba(0,0,0,1)");
+    grd.addColorStop(0.62, "rgba(0,0,0,0.40)");
     grd.addColorStop(1, "rgba(0,0,0,0)");
     g2.fillStyle = grd;
-    g2.save(); g2.translate(MX, MID); g2.scale(1, 0.78); g2.translate(-MX, -MID);
-    g2.fillRect(MX - MR, MID - MR - 30, MR * 2, MR * 2 + 60); g2.restore();
+    g2.save(); g2.translate(MX, MID); g2.scale(1, 0.62); g2.translate(-MX, -MID);
+    g2.fillRect(MX - MR, MID - MR, MR * 2, MR * 2); g2.restore();
     g2.globalCompositeOperation = "source-over";
   }
 
@@ -946,9 +956,7 @@
     absorbEl.setAttribute("transform",
       "translate(" + ABX + " " + MID + ") scale(" + k + ") translate(" + (-ABX) + " " + (-MID) + ")");
 
-    hover += (hoverWant - hover) * 0.12;               // recoil, eased
-    // Held back means nothing is merging, so the wash goes with it.
-    var want = live ? 1 : (0.16 + Math.min(1, (boost - 1) / 4.2) * 0.6) * (1 - hover);
+    var want = live ? 1 : 0.16 + Math.min(1, (boost - 1) / 4.2) * 0.6;
     tint += (want - tint) * 0.16;
     var c = [0, 1, 2].map(function (i) {
       return Math.round(INK[i] + (ACC[i] - INK[i]) * tint);
@@ -985,14 +993,6 @@
     my = ((e.clientY - r.top) / r.height - 0.5) * 20;
   });
   riverEl.addEventListener("pointerleave", function () { mx = 0; my = 0; });
-
-  /* Hover is a pointer thing. On touch there is no hover, and a tap that
-     pushed the waves away before opening the microphone would be a control
-     fighting itself. */
-  if (!coarse) {
-    $("mark").addEventListener("pointerenter", function () { hoverWant = 1; });
-    $("mark").addEventListener("pointerleave", function () { hoverWant = 0; });
-  }
 
   /* A second ownRiver lived here, left over from the lanes version. Function
      declarations hoist, so it silently REPLACED the real one above — and it

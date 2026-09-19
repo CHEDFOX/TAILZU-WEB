@@ -99,12 +99,29 @@ A hundred threads of handwritten speech arrive from every side — over the top,
 across the left, up from underneath — and one word swallows them.
 
 **There is no caret and no second stream.** The two sides of the picture were
-only ever two because something stood between them. The threads now run into
-the word itself: the mouth that dissolves them is small and sits just inside
-its first glyph, so the last of the mess fades out UNDER the letter rather
-than stopping short of it in the dark. Tuned by looking at the junction at 3x
-— at a mouth of 48 units there was a twenty-pixel notch, and the fix was to
-overlap the word with the fade rather than to butt them together.
+only ever two because something stood between them. The threads run into the
+word itself and dissolve as they arrive.
+
+**The dissolve is one soft ellipse centred ON the gate**, wide and shallow so
+it hugs the way the threads actually come in: horizontally, nearly converged.
+Its solid core swallows the last twenty units before the glyph and the fade
+runs about seventy units back from there, so the mess thins over a long run
+and still arrives at the letter.
+
+That matters because the first version had it backwards. A straight block did
+the real work and the ellipse was only twenty-six units across, so a thread
+still bright at the gate met a vertical edge and was sliced — smooth for most
+of them and a clean straight cut for the bright ones, which is exactly the
+frame the eye picks out. The straight block still runs from the gate rightward,
+because a word is anchored at its start and tails hang past it, but it is now
+drawn over pixels the ellipse has already taken to zero, so there is no edge
+left for it to make.
+
+Tuned by reading the brightness across the junction rather than by eye:
+`140 131 135 84 65 46 19 0` from x=690 to x=760. A ramp with no cliff in it,
+reaching nothing four units before the letter. Overshooting is just as easy to
+see — at a radius of 150 the threads died two hundred pixels short and left a
+hole where the merge should be.
 
 **The gate is the word's own left edge, measured and not typed.** Everything
 on the canvas stops there, so the threads merge into the stem of the first
@@ -267,18 +284,6 @@ swipe is a far worse trade — and never under reduced motion. The whole thing
 is over in well under a second and the way out is to keep doing exactly what
 you were already doing. Verified: four flicks are absorbed, the fifth scrolls.
 
-## Hover holds them back
-
-Point at the word and the threads stop short of it — the one place on the page
-where the thing that swallows everything visibly refuses to. It is the same
-gate moved left, so it costs a subtraction rather than a second code path, and
-it eases rather than snapping because an instant recoil reads as a glitch.
-Measured by ink density in the band just left of the word: 1449 at rest, 0 on
-hover, back on release.
-
-Pointer only. On touch there is no hover, and a tap that pushed the waves away
-before opening the microphone would be a control fighting itself.
-
 ## The amber is sacred
 
 It means one thing: **alive, right now**. It appears while the microphone is
@@ -290,8 +295,7 @@ job: the merging IS the live thing on this page.
 Nothing merely hovered, focused, selected or emphasised gets it. Those are the
 pale at full weight, which is the app's rule. A kept word on the card is
 underlined, not amber: a fact that survived is a record, not a thing still in
-play. Hold the waves back and the wash goes with them, because then nothing is
-merging.
+play.
 
 The word's fill is set per frame in script, so there is no CSS rule for it. An
 inline fill beats a class selector, and a rule that can never apply is worse
