@@ -11,6 +11,24 @@ carried them as HTML since before there was a site. Publishing a file of the
 same name here overrides the built-in page; deleting it brings the built-in
 page back, so the legal text is never unreachable.
 
+## The colours are the app's
+
+Not a palette for a website. `STATS_UI` in the backend's `catalog.ts` is the
+source: ground `#0F0D0B`, card `#1A1714`, ink `#F3E2C6`, rule at 10% of the
+ink, accent `#E8A23C`. Change one there and change it here to match.
+
+The ground is a warm near-black biased toward the accent's own hue, so the
+amber sits *in* it rather than on it. There is one reading colour and it is
+the amber's family; everything quieter is that same pale at a lower weight,
+never a second hue. That is why the amber still means something — and it means
+the same thing here as in the app: **what is still in play**. The line that
+leaves the caret, the word the sentence kept, the step that is running.
+
+There is no paper half any more. A light section would be a second visual
+world, and a colour cannot be sacred if the ground under it changes
+temperature. What lifts the card off the ground is the card's own step up in
+value and a hairline rule — the app's two moves, at a bigger size.
+
 ## The river
 
 A tangle of speech arrives from every side — over the top, across the left, up
@@ -19,9 +37,9 @@ from underneath — converging on the caret, and one line goes the other way.
 **The left is ugly on purpose.** Speech has no typography, so the curves have
 none: each takes whatever face the machine happens to have, at whatever size,
 with whatever tracking, some of it squeezed. Nothing is loaded from a font
-host, because the point is that these are the defaults nobody chose. Most sit
-a shade above the ground and a few come up almost to paper, so it has depth
-rather than being one even wash.
+host, because the point is that these are the defaults nobody chose. Every
+thread is the one ink at a lower weight — most near the ground, a few almost
+at full — so the left has depth without a second colour in it.
 
 **The right is not an example, it is the identity.** `SITE_UI.identity` is
 what leaves the caret when nobody has spoken: what the product is, in the only

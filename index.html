@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Tailzu</title>
 <meta name="description" content="Say it badly, send it perfect. Tailzu drops the filler and keeps every number, every name and the language you spoke it in. 22 Indian languages and most of the world's.">
-<meta name="theme-color" content="#100F0E">
+<meta name="theme-color" content="#0F0D0B">
 <meta property="og:title" content="Tailzu — say it badly, send it perfect">
 <meta property="og:description" content="Talk. It writes. No sign-up to try it.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -13,10 +13,18 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300..500;1,6..72,300..500&family=Instrument+Sans:wght@400;500&family=IBM+Plex+Mono:wght@400&display=swap">
 <style>
   :root {
-    --ink: #100F0E; --ink2: #171512; --rule: #262320;
-    --white: #F6F2EA; --grey: #9C968B; --dim: #5F5A52;
-    --paper: #F2EEE5; --pink: #E4DED1; --pmute: #6B6459; --pdim: #928B7E;
-    --amber: #E8A23C; --ember: #8A5310;
+    /* THE STATS PALETTE, unchanged from the app.
+       One material system across the product: a warm near-black biased toward
+       the accent's own hue, so the amber sits IN the ground rather than on it;
+       a card that is a step up from the ground rather than a hole in it; and
+       one reading colour, which is the amber's own family. Everything that
+       was a second colour here is now the same pale at a lower weight —
+       that is the app's rule, and it is why the amber still means something.
+       A paper half would have been a second visual world, and a colour cannot
+       be sacred if the ground under it changes temperature. */
+    --ink: #0F0D0B; --card: #1A1714; --rule: rgba(243,226,198,.10);
+    --white: #F3E2C6; --grey: rgba(243,226,198,.55); --dim: rgba(243,226,198,.36);
+    --amber: #E8A23C;
     --serif: 'Newsreader', Georgia, 'Times New Roman', serif;
     --sans: 'Instrument Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
     --mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
@@ -126,56 +134,62 @@
   .speak[aria-pressed="true"] { background: var(--amber); }
   /* The lanes run underneath the controls now, so the off state needs a
      ground of its own — a transparent pill over moving text is unreadable. */
-  .speak[disabled] { background: rgba(16,15,14,.82); color: var(--dim); box-shadow: inset 0 0 0 1px var(--rule); cursor: default; }
+  .speak[disabled] { background: rgba(15,13,11,.82); color: var(--dim); box-shadow: inset 0 0 0 1px var(--rule); cursor: default; }
   .speak svg { width: 16px; height: 16px; }
   .under { position: absolute; left: 50%; transform: translateX(-50%); top: calc(78% + 58px); width: max-content; max-width: 90vw; text-align: center; color: var(--dim); font-size: 13px; text-shadow: 0 0 12px var(--ink), 0 0 6px var(--ink), 0 0 3px var(--ink); }
   .under.err { color: var(--amber); }
 
-  /* ---- the sheet: dark gives way to paper ----------------------------- */
-  .sheet { position: relative; z-index: 2; background: var(--paper); color: #16150F; border-radius: 40px 40px 0 0; margin-top: -26px; padding: 96px 0 104px; }
+  /* ---- the sheet ------------------------------------------------------
+     The ground does not change. What lifts the card off it is the card's own
+     step up in value and a hairline rule, which is how the app separates
+     anything from anything — the same two moves, at a bigger size.         */
+  .sheet { position: relative; z-index: 2; background: var(--ink); color: var(--white); padding: 96px 0 104px; }
   .sheet h2 { margin: 0 auto 16px; max-width: 20em; text-align: center; font-family: var(--serif); font-weight: 400; font-size: clamp(30px, 4.2vw, 52px); line-height: 1.12; letter-spacing: -.02em; }
-  .sheet h2 i { font-style: italic; color: var(--ember); }
-  .sheet .eye { color: var(--pdim); text-align: center; display: block; margin-bottom: 20px; }
-  .sheet .lede2 { margin: 0 auto 64px; max-width: 44ch; text-align: center; color: var(--pmute); font-size: 16px; }
+  .sheet h2 i { font-style: italic; color: var(--amber); }
+  .sheet .eye { color: var(--dim); text-align: center; display: block; margin-bottom: 20px; }
+  .sheet .lede2 { margin: 0 auto 64px; max-width: 44ch; text-align: center; color: var(--grey); font-size: 16px; }
 
   .steps { display: grid; grid-template-columns: 250px 1fr; gap: 64px; align-items: start; }
   .rail { display: flex; flex-direction: column; gap: 2px; }
   .rail button {
     position: relative; text-align: left; border: 0; background: none; cursor: pointer;
-    padding: 13px 0 13px 20px; color: var(--pdim); font-family: var(--serif); font-size: 20px;
+    padding: 13px 0 13px 20px; color: var(--dim); font-family: var(--serif); font-size: 20px;
     transition: color .3s; line-height: 1.3;
   }
-  .rail button::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 2px; background: #DAD3C5; }
+  .rail button::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 2px; background: var(--rule); }
   /* The progress bar grows by SCALE, not by height. Transitioning height is a
      layout-inducing property, and a six-second one of those runs the layout
      engine on every frame it is alive — measured at two thirds of the page's
      frame rate, all of it spent nowhere near the thing that looked expensive. */
   .rail button::after {
     content: ""; position: absolute; left: 0; top: 0; width: 2px; height: 100%;
-    background: var(--ember); transform: scaleY(0); transform-origin: top;
+    background: var(--amber); transform: scaleY(0); transform-origin: top;
   }
-  .rail button[aria-selected="true"] { color: #16150F; }
+  .rail button[aria-selected="true"] { color: var(--white); }
   .rail button[aria-selected="true"]::after { transform: scaleY(1); transition: transform var(--dwell, 6000ms) linear; }
-  .rail p { margin: 0; padding: 0 0 4px 20px; color: var(--pmute); font-size: 14.5px; max-width: 30ch; }
+  .rail p { margin: 0; padding: 0 0 4px 20px; color: var(--grey); font-size: 14.5px; max-width: 30ch; }
 
   /* the transcript card */
-  .card { position: relative; background: #FBF9F4; border: 1px solid #E2DACA; border-radius: 22px; padding: 40px 42px 34px; min-height: 300px; overflow: hidden; }
-  .card .eye { text-align: left; color: var(--pdim); margin: 0 0 18px; }
-  .raw { margin: 0 0 30px; font-size: 21px; line-height: 1.85; color: #3C382F; }
+  .card { position: relative; background: var(--card); border: 1px solid var(--rule); border-radius: 22px; padding: 40px 42px 34px; min-height: 300px; overflow: hidden; }
+  .card .eye { text-align: left; color: var(--dim); margin: 0 0 18px; }
+  .raw { margin: 0 0 30px; font-size: 21px; line-height: 1.85; color: rgba(243,226,198,.72); }
   .raw span { transition: color .45s, opacity .45s, text-decoration-color .45s; }
-  .raw span.gone { color: var(--pdim); opacity: .42; text-decoration: line-through; text-decoration-color: #C9C0AE; text-decoration-thickness: 1px; }
-  .raw span.hit { color: var(--ember); }
-  .out { margin: 0; font-family: var(--serif); font-size: clamp(22px, 2.5vw, 30px); line-height: 1.4; color: #16150F; min-height: 1.4em; }
-  .out b { font-weight: 400; color: var(--ember); }
+  .raw span.gone { color: var(--dim); opacity: .42; text-decoration: line-through; text-decoration-color: rgba(243,226,198,.3); text-decoration-thickness: 1px; }
+  .raw span.hit { color: var(--amber); }
+  .out { margin: 0; font-family: var(--serif); font-size: clamp(22px, 2.5vw, 30px); line-height: 1.4; color: var(--white); min-height: 1.4em; }
+  .out b { font-weight: 400; color: var(--amber); }
   /* The rule and the reason share one row: the pill names what just happened
      to the line above it, and sits on the line that divides before from after. */
   .mid { display: flex; align-items: center; gap: 18px; margin: 0 0 26px; min-height: 30px; flex-wrap: wrap; }
-  .mid i { flex: 1 1 60px; height: 1px; background: #E8E1D2; }
+  .mid i { flex: 1 1 60px; height: 1px; background: var(--rule); }
   /* inline-block, not inline-flex: a flex container drops the whitespace
      between its children, which runs the pill's own words together. */
+  /* On the dark card a solid chip would be a third value in a system that has
+     two. A hairline outline separates it the way every rule on Stats does,
+     and leaves the amber inside it as the only bright thing in the row. */
   .pill {
     flex: 0 1 auto; display: inline-block; padding: 7px 15px;
-    border-radius: 999px; background: #16150F; color: var(--paper);
+    border-radius: 999px; box-shadow: inset 0 0 0 1px var(--rule); color: var(--grey);
     font-family: var(--mono); font-size: 10.5px; letter-spacing: .14em; text-transform: uppercase;
     opacity: 0; transform: translateY(6px); transition: opacity .35s, transform .35s;
   }
@@ -183,19 +197,21 @@
   .pill em { font-style: normal; color: var(--amber); }
 
   /* ---- download -------------------------------------------------------- */
-  .get { background: var(--paper); color: #16150F; padding: 0 0 104px; }
-  .getin { border-top: 1px solid #E2DACA; padding-top: 56px; display: flex; justify-content: space-between; align-items: flex-end; gap: 40px; flex-wrap: wrap; }
+  .get { background: var(--ink); color: var(--white); padding: 0 0 104px; }
+  .getin { border-top: 1px solid var(--rule); padding-top: 56px; display: flex; justify-content: space-between; align-items: flex-end; gap: 40px; flex-wrap: wrap; }
   .get h3 { margin: 0; font-family: var(--serif); font-weight: 400; font-size: clamp(28px, 3.6vw, 46px); line-height: 1.05; letter-spacing: -.02em; max-width: 14ch; }
-  .get .note { margin: 12px 0 0; color: var(--pdim); font-family: var(--mono); font-size: 11px; letter-spacing: .16em; }
+  .get .note { margin: 12px 0 0; color: var(--dim); font-family: var(--mono); font-size: 11px; letter-spacing: .16em; }
   .dl { display: flex; gap: 10px; flex-wrap: wrap; }
-  .dl a { display: inline-flex; align-items: center; height: 52px; padding: 0 26px; border-radius: 999px; border: 1px solid #DAD3C5; color: #3C382F; font-size: 13.5px; transition: border-color .2s, color .2s; }
-  .dl a:hover { border-color: #16150F; color: #16150F; }
-  .dl a.primary { background: #16150F; border-color: #16150F; color: var(--paper); font-weight: 500; }
-  .dl a.primary:hover { background: var(--ember); border-color: var(--ember); color: #FFF; }
+  .dl a { display: inline-flex; align-items: center; height: 52px; padding: 0 26px; border-radius: 999px; border: 1px solid var(--rule); color: var(--grey); font-size: 13.5px; transition: border-color .2s, color .2s; }
+  .dl a:hover { border-color: var(--grey); color: var(--white); }
+  /* The pale is the loud colour on a dark ground, the way the app's own
+     figures are lights. Amber on hover, because hover is the live state. */
+  .dl a.primary { background: var(--white); border-color: var(--white); color: var(--ink); font-weight: 500; }
+  .dl a.primary:hover { background: var(--amber); border-color: var(--amber); color: var(--ink); }
   .dl a.soon { opacity: .4; pointer-events: none; }
 
-  footer { background: var(--paper); color: var(--pdim); }
-  footer .in { border-top: 1px solid #E2DACA; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px; padding: 26px 0 40px; font-size: 13px; }
+  footer { background: var(--ink); color: var(--dim); }
+  footer .in { border-top: 1px solid var(--rule); display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px; padding: 26px 0 40px; font-size: 13px; }
   footer nav { display: flex; gap: 24px; }
 
   /* ---- motion ---------------------------------------------------------- */
@@ -478,11 +494,13 @@
       return ((t ^ t >>> 14) >>> 0) / 4294967296;
     };
   }
-  function shade(b) {
-    var lo = [30, 27, 24], hi = [198, 190, 175], o = [];
-    for (var i = 0; i < 3; i++) o.push(Math.round(lo[i] + (hi[i] - lo[i]) * b));
-    return "rgb(" + o.join(",") + ")";
-  }
+  /* ONE HUE, WEIGHT DOES THE WORK — the app's own rule, taken literally.
+     Every thread is the reading colour at a lower weight, the way the rings
+     on Stats are one pale at falling alpha. A second hue here would invite
+     the eye to look for meaning in it, and the only meaning on the left is
+     how far back a thing is. The top of the range still sits under the one
+     line going the other way, which is the only thing at full strength. */
+  function shade(b) { return "rgba(243,226,198," + (0.07 + 0.78 * b).toFixed(3) + ")"; }
 
   /** The curve as a polyline: position and heading at intervals of arc length,
    *  so a word can be placed by distance without solving the bezier again. */
@@ -697,15 +715,19 @@
     g2.fillStyle = f; g2.fillRect(-400, VB[1] * 0.90, VB[0] + 800, VB[1] * 0.10 + 300);
     g2.globalCompositeOperation = "source-over";
 
-    // The mouth: ink over the caret fading to nothing by the rim, so the mess
-    // dissolves INTO it rather than stopping at an edge.
-    var grd = g2.createRadialGradient(698, 284, 0, 698, 284, 190);
-    grd.addColorStop(0, "rgba(16,15,14,1)");
-    grd.addColorStop(0.42, "rgba(16,15,14,1)");
-    grd.addColorStop(1, "rgba(16,15,14,0)");
+    /* The mouth: ink centred ON the caret, not short of it. It was 190 units
+       wide and sitting twenty-two to its left, so its solid core began a
+       hundred units early and the threads died before they ever reached the
+       line — which is exactly what it looked like. Tight and centred now: the
+       threads run all the way in and go out at the cursor. */
+    var MX = 720, MR = 62;
+    var grd = g2.createRadialGradient(MX, MID, 0, MX, MID, MR);
+    grd.addColorStop(0, "rgba(15,13,11,1)");
+    grd.addColorStop(0.30, "rgba(15,13,11,1)");
+    grd.addColorStop(1, "rgba(15,13,11,0)");
     g2.fillStyle = grd;
-    g2.save(); g2.translate(698, 284); g2.scale(1, 0.62); g2.translate(-698, -284);
-    g2.fillRect(480, 84, 420, 400); g2.restore();
+    g2.save(); g2.translate(MX, MID); g2.scale(1, 0.78); g2.translate(-MX, -MID);
+    g2.fillRect(MX - MR, MID - MR - 30, MR * 2, MR * 2 + 60); g2.restore();
   }
 
   /* ---------------------------------------------------------------------
