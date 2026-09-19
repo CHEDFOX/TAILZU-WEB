@@ -10,7 +10,7 @@
 <meta property="og:description" content="Talk. It writes. No sign-up.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300..500;1,6..72,300..500&family=Instrument+Sans:wght@400;500&family=IBM+Plex+Mono:wght@400&family=Caveat:wght@400..700&family=Kalam:wght@400;700&family=Shrikhand&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300..500;1,6..72,300..500&family=Instrument+Sans:wght@400;500&family=IBM+Plex+Mono:wght@400&family=Caveat:wght@400..700&family=Kalam:wght@400;700&display=swap">
 <style>
   :root {
     /* THE STATS PALETTE, unchanged from the app.
@@ -77,15 +77,10 @@
   .mast nav a.cta { color: var(--ink); background: var(--white); padding: 9px 18px; border-radius: 999px; font-weight: 500; font-size: 13px; }
   .mast nav a.cta:hover { opacity: .82; }
 
-  /* ---- titles ----------------------------------------------------------
-     Three, none over four words, none in the accent. A title is a claim and
-     the thing under it is the proof, so each stays short enough to be read
-     after the proof rather than instead of it.                             */
-  /* Shrikhand: a fat, swinging display face drawn for Gujarati and Latin
-     together — the one funky thing on the page, and it is funky in the
-     product's own accent. Nothing else is set in it. */
-  .sheet h2 { margin: 0 auto 44px; text-align: center; font-family: 'Shrikhand', var(--serif); font-weight: 400; font-size: clamp(30px, 3.8vw, 50px); line-height: 1.1; letter-spacing: .01em; }
-  .get h3 { margin: 0 0 10px; font-family: var(--serif); font-weight: 400; font-size: clamp(26px, 3vw, 38px); line-height: 1.05; letter-spacing: -.02em; }
+  /* ---- the one title ---------------------------------------------------
+     Over the buttons, four words at most, not in the accent. Nothing over
+     the river: the river is the headline.                                 */
+  .get h3 { margin: 0 0 8px; font-family: var(--serif); font-weight: 400; font-size: clamp(24px, 2.6vw, 34px); line-height: 1.05; letter-spacing: -.02em; }
 
   /* ---- the ribbon ------------------------------------------------------
      There is no hero above this any more, so this IS the hero. Many in, one
@@ -105,7 +100,12 @@
      own ink at four per cent — warm light, no new colour — and it is what
      makes the caret the subject rather than one more mark among a hundred. */
   .river {
-    position: relative; margin-top: 26px; height: 520px; animation: fade 1.4s .35s both;
+    /* ONE SCREEN. There is no second viewport: the band, the title and the
+       buttons are the page. So the band gives up height on a short window
+       rather than pushing the buttons below the fold — sliced, a shorter
+       band is cropped top and bottom and the word stays centred, it does not
+       zoom. Floor at 380, which is where the entries start to be lost. */
+    position: relative; margin-top: 22px; height: clamp(380px, calc(100vh - 330px), 520px); animation: fade 1.4s .35s both;
     background: radial-gradient(58% 66% at 50% 54%, rgba(243,226,198,.042), transparent 70%);
   }
   /* No bands. Speech runs on the page itself, and the mask dissolves it into
@@ -165,99 +165,14 @@
      with a line under it apologising, is worse than no control. */
   .speak[hidden] { display: none; }
 
-  /* ---- the sheet ------------------------------------------------------
-     The ground does not change. What lifts the card off it is the card's own
-     step up in value and a hairline rule, which is how the app separates
-     anything from anything — the same two moves, at a bigger size.
-
-     THE CARD IS PINNED AND THE CLAIM ON IT CHANGES AS YOU GO PAST. One
-     viewport of scroll per claim: reading is the same gesture as advancing,
-     so nobody waits for a carousel and nobody misses one. The river already
-     answers the wheel; this is the same page answering it twice.           */
-  /* The wash lifts the middle of the section and settles back at both ends,
-     so the page breathes between the river and the downloads instead of
-     being one unbroken slab from the masthead to the footer. */
-  .sheet { position: relative; z-index: 2; color: var(--white);
-           background: linear-gradient(180deg, var(--ink) 0%, var(--wash) 42%, var(--wash) 64%, var(--ink) 100%); }
-  .track { height: 300vh; }
-  .stick { position: sticky; top: 0; min-height: 100vh; display: flex; align-items: center; }
-  .stick > .wrap { width: 100%; }
-
-  .steps { display: grid; grid-template-columns: 250px 1fr; gap: 64px; align-items: start; }
-  .rail { display: flex; flex-direction: column; gap: 2px; }
-  .rail button {
-    position: relative; text-align: left; border: 0; background: none; cursor: pointer;
-    padding: 13px 0 13px 20px; color: var(--dim); font-family: var(--serif); font-size: 20px;
-    transition: color .3s; line-height: 1.3;
-  }
-  .rail button::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 2px; background: var(--rule); }
-  /* The progress bar grows by SCALE, not by height. Transitioning height is a
-     layout-inducing property, and a six-second one of those runs the layout
-     engine on every frame it is alive — measured at two thirds of the page's
-     frame rate, all of it spent nowhere near the thing that looked expensive.
-
-     It is filled from scroll now, so it is a position rather than a timer:
-     it says how far through this claim you are, and it runs backwards when
-     you do. `timed` is the fallback for a window too short to pin in. */
-  .rail button::after {
-    content: ""; position: absolute; left: 0; top: 0; width: 2px; height: 100%;
-    background: var(--white); transform: scaleY(var(--fill, 0)); transform-origin: top;
-  }
-  .rail button[aria-selected="true"] { color: var(--white); }
-  .rail.timed button[aria-selected="true"]::after { transform: scaleY(1); transition: transform var(--dwell, 6000ms) linear; }
-  .rail p { margin: 0; padding: 0 0 4px 20px; color: var(--grey); font-size: 14.5px; max-width: 30ch; }
-
-  /* the transcript card */
-  /* LIT FROM ABOVE, like everything anybody has ever picked up.
-     A flat fill is a hole in the ground; a top edge catching the light and a
-     shadow pooling under it is an object sitting on it. The two ends of the
-     gradient straddle the app's own card value, so this is the same material
-     — it is only being lit. */
-  .card {
-    position: relative; border: 1px solid var(--rule); border-radius: 26px;
-    background: linear-gradient(180deg, #251F1A, #1C1815);
-    box-shadow: inset 0 1px 0 rgba(243,226,198,.08), 0 34px 80px -46px rgba(0,0,0,.9);
-    padding: 40px 42px 34px; min-height: 300px; overflow: hidden;
-  }
-  .card .eye { text-align: left; color: var(--dim); margin: 0 0 18px; }
-  .raw { margin: 0 0 30px; font-size: 21px; line-height: 1.85; color: rgba(243,226,198,.72); }
-  .raw span { transition: color .45s, opacity .45s, text-decoration-color .45s; }
-  /* One alpha, not an alpha times an opacity: the two compounded to .15 and
-     the words nobody is meant to keep became words nobody could read. They
-     still have to be legible — the claim is that THESE went. */
-  .raw span.gone { color: rgba(243,226,198,.42); text-decoration: line-through; text-decoration-color: rgba(243,226,198,.34); text-decoration-thickness: 1px; }
-  /* A kept word is the pale at full weight with a hairline under it, in both
-     lines, so "this did not move" reads the same before and after. Not the
-     accent: a fact that survived is a record, not a thing still in play. */
-  .raw span.hit, .out b { color: var(--white); text-decoration: underline; text-decoration-color: rgba(243,226,198,.38); text-decoration-thickness: 1px; text-underline-offset: .2em; }
-  .out { margin: 0; font-family: var(--serif); font-size: clamp(22px, 2.5vw, 30px); line-height: 1.4; color: var(--white); min-height: 1.4em; }
-  .out b { font-weight: 500; }
-  /* The rule and the reason share one row: the pill names what just happened
-     to the line above it, and sits on the line that divides before from after. */
-  .mid { display: flex; align-items: center; gap: 18px; margin: 0 0 26px; min-height: 30px; flex-wrap: wrap; }
-  .mid i { flex: 1 1 60px; height: 1px; background: var(--rule); }
-  /* inline-block, not inline-flex: a flex container drops the whitespace
-     between its children, which runs the pill's own words together. */
-  /* On the dark card a solid chip would be a third value in a system that has
-     two. A hairline outline separates it the way every rule on Stats does,
-     and leaves the amber inside it as the only bright thing in the row. */
-  .pill {
-    flex: 0 1 auto; display: inline-block; padding: 7px 15px;
-    border-radius: 999px; background: var(--raise); box-shadow: inset 0 0 0 1px var(--rule); color: var(--grey);
-    font-family: var(--mono); font-size: 10.5px; letter-spacing: .14em; text-transform: uppercase;
-    opacity: 0; transform: translateY(6px); transition: opacity .35s, transform .35s;
-  }
-  .pill.show { opacity: 1; transform: none; }
-  .pill em { font-style: normal; color: var(--white); }
-
   /* ---- download -------------------------------------------------------- */
   /* The page lands a shade lighter than it started. A dark page that gets
      darker to the bottom edge feels like falling off it. */
-  .get { background: linear-gradient(180deg, var(--ink), var(--wash)); color: var(--white); padding: 0 0 104px; }
+  .get { background: linear-gradient(180deg, var(--ink), var(--wash)); color: var(--white); padding: 0 0 44px; }
   /* Centre, not baseline: with the heading gone there is nothing left on the
      left to sit a baseline against, and the platform line alone hung under
      the buttons instead of beside them. */
-  .getin { border-top: 1px solid var(--rule); padding-top: 56px; display: flex; justify-content: space-between; align-items: flex-end; gap: 40px; flex-wrap: wrap; }
+  .getin { border-top: 1px solid var(--rule); padding-top: 36px; display: flex; justify-content: space-between; align-items: flex-end; gap: 40px; flex-wrap: wrap; }
   .get .note { margin: 0; color: var(--dim); font-family: var(--mono); font-size: 11px; letter-spacing: .16em; }
   .dl { display: flex; gap: 10px; flex-wrap: wrap; }
   /* Filled, not drawn on the void: an outline on a near-black ground is a
@@ -282,22 +197,7 @@
 
   @media (max-width: 900px) {
     .river { height: 380px; }
-    .steps { grid-template-columns: 1fr; gap: 34px; }
-    .rail { flex-direction: row; overflow-x: auto; gap: 0; }
-    .rail button { white-space: nowrap; padding: 10px 18px 12px; font-size: 17px; }
-    .rail button::before { left: 0; top: auto; bottom: 0; right: 0; width: auto; height: 2px; }
-    .rail button::after { left: 0; right: 0; top: auto; bottom: 0; width: auto; height: 2px; transform: scaleX(var(--fill, 0)); transform-origin: left; }
-    .rail.timed button[aria-selected="true"]::after { transform: scaleX(1); transition: transform var(--dwell, 6000ms) linear; }
-    .rail p { display: none; }
-    .card { padding: 30px 24px 28px; }
-    .pill { left: 24px; bottom: 112px; }
     .mast nav a:not(.cta) { display: none; }
-  }
-  /* Too short to pin anything in: the track collapses, the block flows, and
-     the script sees a span of zero and goes back to the timer. */
-  @media (max-height: 560px) {
-    .track { height: auto; }
-    .stick { position: static; min-height: 0; padding: 72px 0; }
   }
   @media (max-width: 560px) {
     .river { height: 320px; }
@@ -371,27 +271,6 @@
   </button>
 </div>
 
-<section class="sheet">
-  <!-- Three viewports of scroll, one card pinned in the middle of them. -->
-  <div class="track" id="track">
-    <div class="stick" id="stick">
-      <div class="wrap">
-        <h2 class="reveal" id="proof">Only the mess goes.</h2>
-        <div class="steps reveal">
-          <div class="rail" id="rail" role="tablist" aria-label="What it does"></div>
-          <div class="card">
-            <span class="eye">Said</span>
-            <p class="raw" id="raw"></p>
-            <div class="mid"><i></i><span class="pill" id="pill"></span></div>
-            <span class="eye">Wrote</span>
-            <p class="out" id="out"></p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
 <section class="get">
   <div class="wrap">
     <div class="getin reveal">
@@ -421,7 +300,7 @@
 
   // ---- copy: the backend's, with this as the fallback --------------------
   var C = {
-    proof: "Only the mess goes.", get: "Free to start.",
+    get: "Free to start.",
     cta: "Speak", ctaHeld: "Stop", writing: "Writing…", again: "Again",
     micDenied: "Mic blocked.",
     // The one word the whole field pours into. A word or two, never more:
@@ -449,21 +328,6 @@
       { said: "eh gimana ya saya bisa datang sekitar jam tujuh",   wrote: "Saya bisa datang sekitar jam tujuh." },
       { said: "yani sey saat yedi gibi gelebilirim heralde",       wrote: "Yani saat yedi gibi gelebilirim, herhalde." },
       { said: "ano eto nakaka pagod pero tapos na yung report",    wrote: "Nakakapagod, pero tapos na yung report." }
-    ],
-    // The three things the page argues, each shown rather than claimed.
-    steps: [
-      { tab: "Mess goes",      note: "Filler. False starts. Gone.",
-        said: "um so like i think we should probably move the review to thursday because the design is uh not done",
-        wrote: "I think we should move the review to Thursday — the design is not done.",
-        cut: ["um","so","like","probably","uh"], pill: "Filler cut" },
-      { tab: "Facts stay",     note: "Numbers, names, amounts. Never guessed.",
-        said: "trensfer 2500 rupeez to ramesh tomorow",
-        wrote: "Transfer 2500 rupees to Ramesh tomorrow.",
-        keep: ["2500","ramesh"], pill: "2500 and Ramesh untouched" },
-      { tab: "Language stays", note: "Two languages in. Two out.",
-        said: "the deploy is done but abhi testing baaki hai",
-        wrote: "The deploy is done, but abhi testing baaki hai.",
-        keep: ["abhi","testing","baaki","hai"], pill: "Never translated" }
     ],
     download: { win: "Windows", mac: "macOS", linux: "Linux", ios: "iPhone", android: "Android", soon: "soon" }
   };
@@ -937,7 +801,6 @@
     var y = window.pageYOffset || 0, d = Math.abs(y - lastY); lastY = y;
     if (y > 4) held = 0;        // the page has moved; the hold is spent for good
     boost = Math.min(9, boost + d * 0.045);
-    cardScroll();               // one listener, one read of the offset
   }, { passive: true });
 
   /* ---------------------------------------------------------------------
@@ -1014,169 +877,12 @@
      records something, which is the one path a page like this never takes
      while it is being built. */
 
-  /* =====================================================================
-     THE CARD
-     Three claims, each demonstrated on the same card: the raw line is marked
-     up word by word — struck through where it goes, amber where it must not
-     move — a pill names the reason, and the written line resolves under it.
-     ================================================================== */
-  var rail = $("rail"), rawEl = $("raw"), outEl = $("out"), pillEl = $("pill");
-  var step = 0, seq = [], dwell = 6400, running = false, arrived = false;
-
-  function words(s) { return s.split(/\s+/).filter(Boolean); }
-  function bare(s) { return s.toLowerCase().replace(/[^\p{L}\p{N}]/gu, ""); }
-
-  function paintRail() {
-    rail.innerHTML = "";
-    C.steps.forEach(function (s, i) {
-      var b = document.createElement("button");
-      b.type = "button"; b.textContent = s.tab;
-      b.setAttribute("role", "tab");
-      b.setAttribute("aria-selected", String(i === step));
-      // A tab still selects, but in scroll mode it selects by MOVING THE
-      // PAGE to where that claim lives. A control that jumped the card
-      // without moving the page would leave the scroll position lying.
-      b.onclick = function () { goToStep(i); };
-      var p = document.createElement("p"); p.textContent = s.note;
-      rail.appendChild(b);
-      if (i === step) rail.appendChild(p);
-    });
-  }
-
-  function clearSeq() { seq.forEach(clearTimeout); seq = []; }
-  function at(ms, fn) { seq.push(setTimeout(fn, ms)); }
-
-  function show(i) {
-    clearSeq();
-    arrived = false;
-    step = ((i % C.steps.length) + C.steps.length) % C.steps.length;
-    var s = C.steps[step];
-    paintRail();
-    // paintRail builds new buttons, so the bar has to be put back on the new
-    // one — otherwise it reads empty from the moment a claim arrives until
-    // the next scroll event, which is exactly when it should read full.
-    paintFill();
-    rail.style.setProperty("--dwell", dwell + "ms");
-
-    // The raw line, one span a word, so each can be marked on its own.
-    rawEl.innerHTML = "";
-    var W = words(s.said), spans = [];
-    W.forEach(function (w, k) {
-      var el = document.createElement("span");
-      el.textContent = w; rawEl.appendChild(el); spans.push(el);
-      if (k < W.length - 1) rawEl.appendChild(document.createTextNode(" "));
-    });
-    outEl.textContent = "";
-    pillEl.className = "pill";
-
-    if (reduced) { markAll(spans, s); written(s); pillEl.textContent = s.pill; pillEl.className = "pill show"; arrived = true; return; }
-
-    // Mark the words one at a time, so the reader watches it decide.
-    var cut = (s.cut || []).map(bare), keep = (s.keep || []).map(bare), n = 0;
-    spans.forEach(function (el) {
-      var b = bare(el.textContent);
-      if (cut.indexOf(b) >= 0) { at(420 + n * 150, function () { el.className = "gone"; }); n++; }
-      else if (keep.indexOf(b) >= 0) { at(420 + n * 150, function () { el.className = "hit"; }); n++; }
-    });
-    at(520 + n * 150, function () { pillEl.textContent = s.pill; pillEl.className = "pill show"; });
-    // The refinement has landed. Only now may the scroll move on — and if it
-    // already has, catch up to it, one claim at a time.
-    at(900 + n * 150, function () { written(s); arrived = true; cardScroll(); });
-    // Scroll is the clock wherever there is room to pin the card. The timer
-    // only runs where there is not — a window too short to hold it still.
-    if (running && span <= 0) at(dwell, function () { show(step + 1); });
-  }
-
-  /* ---------------------------------------------------------------------
-     SCROLL PICKS THE CLAIM
-
-     The track is three viewports tall and the card is pinned in the middle
-     of it, so how far you have scrolled through the track IS which claim is
-     on the card — forwards and backwards, at whatever speed you move. The
-     rail's bar stops being a countdown and becomes a position.
-
-     `span` is the scrollable part of the track. Where it is zero — a window
-     too short to pin anything in, so the css has collapsed the track — there
-     is nothing to read a position from and the timer takes over.        */
-  var trackEl = $("track"), stickEl = $("stick"), trackTop = 0, span = 0;
-
-  function measureTrack() {
-    trackTop = trackEl.getBoundingClientRect().top + (window.pageYOffset || 0);
-    span = trackEl.offsetHeight - stickEl.offsetHeight;
-    rail.className = span > 0 ? "rail" : "rail timed";
-  }
-
-  function goToStep(i) {
-    if (span <= 0) { show(i); return; }
-    var to = trackTop + (i + 0.5) / C.steps.length * span;
-    if (window.scrollTo) window.scrollTo({ top: to, behavior: reduced ? "auto" : "smooth" });
-  }
-
-  /** How far through the track, as a fraction of a claim. */
-  function at01() {
-    var p = ((window.pageYOffset || 0) - trackTop) / span;
-    return Math.max(0, Math.min(0.9999, p)) * C.steps.length;
-  }
-
-  function paintFill() {
-    var b = rail.querySelector('button[aria-selected="true"]');
-    if (!b) return;
-    if (!(span > 0)) { b.style.removeProperty("--fill"); return; }
-    var t = at01();
-    b.style.setProperty("--fill", (t - Math.floor(t)).toFixed(3));
-  }
-
-  function cardScroll() {
-    if (!(span > 0)) return;
-    var i = Math.floor(at01());
-    /* THE NEXT THING, NOT THE NEXT FILTER. Scrolling past a claim before its
-       refinement has landed used to jump straight to the following claim, so
-       a quick scroll showed three sentences being marked up and never one
-       being written. Forwards, the card now waits for the written line to
-       arrive, and then moves one claim at a time so none is skipped — the
-       arrival itself calls back here to catch up. Backwards is always free:
-       you have already seen it. */
-    if (i > step) {
-      if (!arrived) { paintFill(); return; }
-      i = step + 1;
-    }
-    if (i !== step) show(i); else paintFill();
-  }
-
-  /** The written line, with anything that had to survive left in amber. Built
-   *  from nodes rather than a string of markup: every word on this page is
-   *  copy the server sent, and copy is never markup. */
-  function written(s) {
-    var keep = (s.keep || []).map(bare);
-    outEl.textContent = "";
-    words(s.wrote).forEach(function (w, i) {
-      if (i) outEl.appendChild(document.createTextNode(" "));
-      if (keep.indexOf(bare(w)) >= 0) {
-        var b = document.createElement("b"); b.textContent = w; outEl.appendChild(b);
-      } else outEl.appendChild(document.createTextNode(w));
-    });
-  }
-  function markAll(spans, s) {
-    var cut = (s.cut || []).map(bare), keep = (s.keep || []).map(bare);
-    spans.forEach(function (el) {
-      var b = bare(el.textContent);
-      if (cut.indexOf(b) >= 0) el.className = "gone";
-      else if (keep.indexOf(b) >= 0) el.className = "hit";
-    });
-  }
-
   // ---- reveals & idling ---------------------------------------------------
   if (window.IntersectionObserver) {
     var io = new IntersectionObserver(function (es) {
       es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); } });
     }, { threshold: 0.12, rootMargin: "0px 0px -8% 0px" });
     [].forEach.call(document.querySelectorAll(".reveal"), function (el) { io.observe(el); });
-
-    // The card only starts once it is looked at, and stops when it is not.
-    new IntersectionObserver(function (es) {
-      running = es[0].isIntersecting;
-      if (running) show(step); else clearSeq();
-    }, { threshold: 0.3 }).observe($("rail").parentNode);
 
     // The river never stops while it is on screen, so it must stop when it
     // is not — this is the one thing on the page that costs a phone battery.
@@ -1187,7 +893,6 @@
     }, { threshold: 0 }).observe($("river"));
   } else {
     [].forEach.call(document.querySelectorAll(".reveal"), function (el) { el.classList.add("in"); });
-    running = true;
   }
 
   // ---- downloads ----------------------------------------------------------
@@ -1234,7 +939,6 @@
   }
 
   function applyCopy() {
-    $("proof").textContent = C.proof;
     $("getTitle").textContent = C.get;
     $("micLabel").textContent = C.cta;
     paintDownloads();
@@ -1360,8 +1064,7 @@
   // not. Re-measure whenever the band changes size, which covers the late
   // layout, the fonts arriving and the window being dragged.
   if (window.ResizeObserver) new ResizeObserver(placeControl).observe(riverEl);
-  window.addEventListener("load", function () { placeControl(); measureTrack(); cardScroll(); });
-  measureTrack();
+  window.addEventListener("load", placeControl);
   markEl.addEventListener("keydown", function (e) {
     if (e.key === "Enter" || e.key === " ") { e.preventDefault(); toggle(); }
   });
@@ -1371,13 +1074,11 @@
 
   // ---- boot ---------------------------------------------------------------
   applyCopy();
-  paintRail();
   function boot() {
     sizeCanvas();
     loadRiver();
     if (!reduced && !rraf) { last = 0; rraf = requestAnimationFrame(river); }
     placeControl();
-    show(0);
   }
   // The river measures text along a path, so it must not be laid out before
   // the face lands or every offset is computed for a fallback and jumps.
@@ -1386,7 +1087,7 @@
   var rt = 0;
   window.addEventListener("resize", function () {
     clearTimeout(rt);
-    rt = setTimeout(function () { sizeCanvas(); loadRiver(); placeControl(); measureTrack(); cardScroll(); measureGate(); }, 200);
+    rt = setTimeout(function () { sizeCanvas(); loadRiver(); placeControl(); measureGate(); }, 200);
   });
 
   // The hand comes from the font host, and the canvas measures words in
@@ -1406,7 +1107,7 @@
       site.maxSeconds = j.maxSeconds || 15;
     }
     applyCopy();
-    if (!own) { sizeCanvas(); loadRiver(); measureTrack(); show(0); cardScroll(); }   // the server may have sent other lines
+    if (!own) { sizeCanvas(); loadRiver(); }        // the server may have sent other lines
   }).catch(function () { /* the fallbacks are already on screen */ });
 })();
 </script>

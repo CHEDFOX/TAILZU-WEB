@@ -3,7 +3,7 @@
 One file. No build, no framework, no dependencies, no tracker.
 
 ```
-index.html      the landing page — the river, the card, and the live microphone
+index.html      the landing page — the river, the word, the buttons, the live microphone
 ```
 
 `/privacy`, `/terms` and `/download` are served by the backend, which has
@@ -306,54 +306,28 @@ waves, because it is the only place the amber is the brand's own.
 
 `tailzu-mark.svg` in the app repo is an older waveform mark and is not this.
 
-## The titles
+## The title
 
-Two, none over four words, none in the accent: `Only the mess goes.` over the
-card and `Free to start.` over the buttons. There is nothing over the river —
-the river is the headline. A title is a claim and the thing under it is the
-proof, so each stays short enough to be read after the proof rather than
-instead of it. A backend test holds every one to four words.
+One, four words at most, not in the accent: `Free to start.` over the
+buttons. There is nothing over the river — the river is the headline. A
+backend test holds it to four words.
 
-The one over the card is set in **Shrikhand**, a fat, swinging display face
-drawn for Gujarati and Latin together — the one funky thing on the page, and
-funky in the product's own accent. Nothing else is set in it.
+## One screen
 
-## The card
+There is no second viewport. The masthead, the river, one title and the
+download buttons are the whole page, and the footer under them is small.
 
-Three claims, each shown rather than asserted. The raw line is marked word by
-word — struck through where it goes, underlined where it must not move — a
-pill names the reason, and the written line resolves underneath.
+The card that used to sit under the river — three claims, each proved on a
+marked-up sentence, pinned through three viewports of scroll — is gone, and
+with it its copy (`proof`, `steps`), its face (Shrikhand), its scroll-picking,
+its timer fallback and its test. The river already shows twenty said→wrote
+pairs going past; a second section proving three more was the page arguing
+twice.
 
-**Scroll picks the claim.** The track is three viewports tall and the card is
-pinned in the middle of it, so how far you have scrolled through the track IS
-which claim is on the card — forwards and backwards, at whatever speed you
-move. Reading is the same gesture as advancing, so nobody waits for a carousel
-and nobody misses one. The rail's bar stopped being a countdown and became a
-position: it runs backwards when you do.
-
-**The next thing, not the next filter.** Scrolling past a claim before its
-refinement had landed used to jump straight to the following claim, so a quick
-scroll showed three sentences being marked up and never one being written.
-Forwards, the card now waits for the written line to arrive, then moves one
-claim at a time so none is skipped — the arrival itself calls back to catch up
-with wherever the scroll has got to. Backwards is always free: you have
-already seen it. Verified by jumping straight to the third claim's position:
-the card goes second, waits for its line, then third.
-
-A tab still selects, but it selects by moving the page to where that claim
-lives. A control that jumped the card without moving the page would leave the
-scroll position lying about what you are looking at.
-
-Where the window is too short to pin anything in, the css collapses the track,
-the script sees a scrollable span of zero and the old timer takes over. That
-check is the only thing deciding between the two, so there is no way for the
-page to end up in a state where neither runs.
-
-The words to mark are named in the backend (`steps[].cut` / `steps[].keep`)
-and matched on letters and digits only, lowercased, so `ramesh` marks
-`Ramesh.` in the sentence. A test checks every listed word actually appears in
-the line it belongs to: a word that matches nothing marks nothing, and the
-animation quietly stops making the claim.
+So the band gives up height on a short window rather than pushing the buttons
+below the fold: `clamp(380px, calc(100vh - 330px), 520px)`. Sliced, a shorter
+band is cropped top and bottom and the word stays centred — it does not zoom.
+The floor is where the entries start to be lost.
 
 ## Look at it
 
