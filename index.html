@@ -69,7 +69,8 @@
 
   /* ---- masthead ------------------------------------------------------- */
   .mast { position: relative; z-index: 6; display: flex; justify-content: space-between; align-items: center; padding: 26px 0; }
-  .mark { font-family: var(--serif); font-size: 23px; letter-spacing: .01em; }
+  .mark { display: inline-flex; align-items: center; }
+  .mark svg { height: 30px; width: auto; display: block; }
   .mast nav { display: flex; gap: 26px; align-items: center; }
   .mast nav a { color: var(--grey); font-size: 13.5px; transition: color .18s; }
   .mast nav a:hover { color: var(--white); }
@@ -312,7 +313,22 @@
 
 <div class="wrap">
   <header class="mast">
-    <a class="mark" href="/">Tailzu</a>
+    <!-- THE MARK, NOT THE NAME. The app icon, redrawn as a few shapes from
+         its own measured geometry so the one-file site stays one file and it
+         is crisp at any size: three squares, the hatched link, the line up
+         to the dot. It is the only place the amber is not about the waves,
+         because it is the only place the amber is the brand's own. -->
+    <a class="mark" href="/" aria-label="Tailzu">
+      <svg viewBox="170 228 680 512" aria-hidden="true">
+        <line x1="346" y1="402" x2="270" y2="598" stroke="#E9CBA2" stroke-width="9" stroke-linecap="round"/>
+        <line x1="444" y1="394" x2="554" y2="486" stroke="#E8A23C" stroke-width="30" stroke-dasharray="9 11"/>
+        <line x1="668" y1="478" x2="828" y2="243" stroke="#C77A3A" stroke-width="9" stroke-linecap="round"/>
+        <circle cx="828" cy="243" r="11" fill="#B06240"/>
+        <rect x="308" y="269" width="132" height="132" rx="28" fill="#F4F1EA"/>
+        <rect x="558" y="478" width="132" height="132" rx="28" fill="#F4F1EA"/>
+        <rect x="178" y="598" width="132" height="132" rx="28" fill="#F4F1EA"/>
+      </svg>
+    </a>
     <nav>
       <a href="/privacy">Privacy</a>
       <a href="/terms">Terms</a>

@@ -293,6 +293,19 @@ The word's fill is set per frame in script, so there is no CSS rule for it. An
 inline fill beats a class selector, and a rule that can never apply is worse
 than no rule at all.
 
+## The mark
+
+The masthead carries the app icon and not the name. It is the icon redrawn as
+seven shapes from its own measured geometry — the three squares' bounding
+boxes, the tick positions of the hatched link, the dot's centre and colour
+were read off `app/assets/icon.png` with a flood fill, not eyeballed — so the
+one-file site stays one file and the mark is crisp at any size. The hatching
+is a thick stroke with a short dash, which is what perpendicular ticks
+collapse to at thirty pixels. It is the only place the amber is not about the
+waves, because it is the only place the amber is the brand's own.
+
+`tailzu-mark.svg` in the app repo is an older waveform mark and is not this.
+
 ## The titles
 
 Two, none over four words, none in the accent: `Only the mess goes.` over the
