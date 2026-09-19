@@ -139,12 +139,10 @@
   }
   .speak:hover { opacity: .9; transform: translateX(-50%) translateY(-1px); }
   .speak[aria-pressed="true"] { background: var(--amber); }
-  /* The lanes run underneath the controls now, so the off state needs a
-     ground of its own — a transparent pill over moving text is unreadable. */
-  .speak[disabled] { background: rgba(15,13,11,.82); color: var(--dim); box-shadow: inset 0 0 0 1px var(--rule); cursor: default; }
   .speak svg { width: 16px; height: 16px; }
-  .under { position: absolute; left: 50%; transform: translateX(-50%); top: calc(78% + 58px); width: max-content; max-width: 90vw; text-align: center; color: var(--dim); font-size: 13px; text-shadow: 0 0 12px var(--ink), 0 0 6px var(--ink), 0 0 3px var(--ink); }
-  .under.err { color: var(--white); }
+  /* With the demo off there is no button at all. A control that does nothing,
+     with a line under it apologising, is worse than no control. */
+  .speak[hidden] { display: none; }
 
   /* ---- the sheet ------------------------------------------------------
      The ground does not change. What lifts the card off it is the card's own
@@ -336,7 +334,6 @@
     </svg>
     <span id="micLabel">Speak</span>
   </button>
-  <span class="under" id="under">No sign-up. It stops when you pause.</span>
 </div>
 
 <section class="sheet">
@@ -391,10 +388,7 @@
   var C = {
     headline: "Talk. It writes.", proof: "Only the mess goes.", get: "Free to start.",
     cta: "Speak", ctaHeld: "Stop", writing: "Writing…", again: "Again",
-    invite: "No sign-up. Stops when you pause.",
-    after: "That's it. Everywhere you type.",
-    demoOff: "Demo asleep. The apps aren't.",
-    micDenied: "Mic blocked. Allow it, try again.",
+    micDenied: "Mic blocked.",
     // What leaves the caret when nobody has spoken yet. Not a sample of the
     // product's output — a statement of what it is, running at reading speed
     // against thirteen lanes of noise.
@@ -1109,7 +1103,15 @@
     if (has(mine)) $("navdl").href = FILES[mine];
   }
 
-  function under(msg, bad) { $("under").textContent = msg; $("under").className = bad ? "under err" : "under"; }
+  /* The caption under the button is gone, so the button is the only place
+     left to say anything — which is the right number of places. It wears a
+     message for a moment and goes back to being a button. */
+  var sayT = 0;
+  function say(msg) {
+    clearTimeout(sayT);
+    micLabel.textContent = msg;
+    sayT = setTimeout(function () { micLabel.textContent = own ? C.again : C.cta; }, 3200);
+  }
 
   function applyCopy() {
     $("headline").textContent = C.headline;
@@ -1117,8 +1119,7 @@
     $("getTitle").textContent = C.get;
     $("micLabel").textContent = C.cta;
     paintDownloads();
-    if (!site.demo) { $("mic").disabled = true; under(C.demoOff); }
-    else if (!own) under(C.invite);
+    mic.hidden = !site.demo;
   }
 
   // ---- the microphone -----------------------------------------------------
@@ -1145,10 +1146,9 @@
       startedAt = Date.now(); heard = false; lastLoud = startedAt;
       mic.setAttribute("aria-pressed", "true"); micLabel.textContent = C.ctaHeld;
       riverEl.classList.add("on"); listening = true;
-      under(C.invite);
       level(s);
       hard = setTimeout(stop, site.maxSeconds * 1000);
-    }).catch(function () { under(C.micDenied, true); });
+    }).catch(function () { say(C.micDenied); });
   }
 
   function level(s) {
@@ -1194,23 +1194,25 @@
     var fd = new FormData();
     fd.append("audio", new Blob(chunks, { type: m }), "clip." + ext(m));
     fetch(API + "/v1/demo/transcribe", { method: "POST", body: fd }).then(function (r) {
-      if (r.status === 413) throw new Error("Keep it under " + site.maxSeconds + " seconds.");
-      if (r.status === 429) throw new Error("One moment — try again shortly.");
-      if (r.status === 404) throw new Error(C.demoOff);
-      if (!r.ok) throw new Error("Something went wrong. Try again.");
+      // Short, because they are worn by the button now.
+      if (r.status === 413) throw new Error("Too long.");
+      if (r.status === 429) throw new Error("Wait a moment.");
+      if (r.status === 404) throw new Error("Demo is off.");
+      if (!r.ok) throw new Error("Try again.");
       return r.json();
     }).then(function (j) {
       var s = (j.transcript || "").trim(), w = (j.cleanedText || "").trim();
-      if (!s && !w) throw new Error("Nothing heard. Try a little louder.");
+      if (!s && !w) throw new Error("Nothing heard.");
       own = true;
+      // Their sentence taking over the river IS the payoff. A line saying so
+      // underneath was the page narrating what it had just done.
       ownRiver(s, w || s);
-      under(C.after);
       done();
-    }).catch(function (e) { under(e.message || String(e), true); done(); });
+    }).catch(function (e) { done(); say(e.message || "Try again."); });
   }
 
   function toggle() {
-    if (mic.disabled) return;
+    if (mic.hidden) return;      // the caret is still clickable when it is
     if (mic.getAttribute("aria-pressed") === "true") stop(); else start();
   }
   mic.addEventListener("click", toggle);
@@ -1230,10 +1232,9 @@
     var cx = m.left + m.width / 2 - r.left;
     // Clamped, because a wider window scales the sliced svg up and pushes the
     // mark's foot past the bottom of the band — where the sheet, which is
-    // painted over it, would swallow the button and the line under it.
+    // painted over it, would swallow the button.
     var y = Math.min(m.bottom - r.top + 30, r.height - 118);
     mic.style.left = cx + "px"; mic.style.top = y + "px";
-    $("under").style.left = cx + "px"; $("under").style.top = (y + 60) + "px";
   }
   // Measured once is measured too early: the first call can land before the
   // band has its final box, and then the button sits somewhere the mark is

@@ -177,6 +177,15 @@ microphone open it stops blinking, turns amber and breathes with the voice,
 so the thing growing and shrinking is the point the words are about to be
 written at. Clicking it starts the microphone, and so does the button below.
 
+The button is the only place the page speaks. There is no caption under it:
+that it stops when you pause is what the button says once it reads Stop, that
+your sentence came back clean is visible in the river in your own words, and
+when the demo is resting there is no button at all — a control that does
+nothing, with a line under it apologising, is worse than no control. What is
+left, which is only ever an error, the button wears for a moment and then goes
+back to being a button. That is why those strings are short enough to fit on
+one.
+
 It sits at the centre of the viewBox, which is the centre of the band, so the
 button under it needs no arithmetic to line up.
 
