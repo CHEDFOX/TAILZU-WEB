@@ -28,6 +28,23 @@ what leaves the caret when nobody has spoken: what the product is, in the only
 face on the page anybody chose, at a quarter of the inbound pace. A visitor's
 own sentence replaces it the moment they press the button.
 
+### One phrase per thread, not a ribbon
+
+Each thread carries a single sentence and there is a beat of nothing before it
+comes round again. Filling every curve end to end is what a river does; a
+bombardment is separate things arriving.
+
+It is also the whole reason there can be sixty of them. The cost is linear in
+words drawn per frame, and a filled curve at thread weight is forty words
+where a phrase is seven — so the same frame buys six times the threads. Thin
+type alone does the opposite: smaller words mean MORE of them fit along the
+same curve, and the first attempt at thinning cost frame rate rather than
+buying it.
+
+Each thread also starts at its own phase. Without that they all set off
+together and arrive as one clump, which is what sixty threads look like when
+they are really one.
+
 ### Why the tangle is on a canvas
 
 It started as SVG `<textPath>` elements. Changing one's `startOffset` re-lays

@@ -452,11 +452,13 @@
      under its first letter. Setting a transform per glyph is five times the
      work for a difference nobody can see on curves this long and this shallow.
      ------------------------------------------------------------------- */
-  /* Fourteen. The cost of this is linear in the words drawn per frame —
-     measured on one machine: 112 words 53fps, 343 words 38fps, 735 words
-     19fps — and fourteen curves crossing from every side already reads as a
-     tangle. Raising it is one number; so is the frame rate it costs. */
-  var TANGLE = 14, END = [712, 284], VB = [1440, 520];
+  /* Sixty threads, each carrying one sentence rather than a filled ribbon.
+     The cost is linear in words drawn per frame, and a phrase is seven words
+     where a filled curve is forty — which is the trade that buys the count.
+     Measured on one machine: 44 threads 42fps, 60 threads 38fps, 76 threads
+     31fps, 92 threads 26fps. Raising it is one number, and so is the frame
+     rate it costs. */
+  var TANGLE = 60, END = [712, 284], VB = [1440, 520];
   var cv = $("tangle"), g2 = cv.getContext("2d");
   var FACES = [
     "'Comic Sans MS','Comic Neue',cursive", "'Courier New',Courier,monospace",
@@ -511,9 +513,9 @@
       var per = Math.ceil(TANGLE / 3), slot = Math.floor(k / 3);
       var u = (slot + 0.5) / per + (r() - 0.5) * 0.17, sx, sy;
       u = Math.max(0, Math.min(1, u));
-      if (k % 3 === 0)      { sx = -280 + u * 940; sy = -110 - r() * 70; }
+      if (k % 3 === 0)      { sx = -280 + u * 940; sy = -50 - r() * 60; }
       else if (k % 3 === 1) { sx = -300 - r() * 70; sy = -70 + u * 690; }
-      else                  { sx = -280 + u * 940; sy = 630 + r() * 80; }
+      else                  { sx = -280 + u * 940; sy = 570 + r() * 70; }
 
       var span = END[0] - sx;
       var P = [sx, sy,
@@ -521,51 +523,59 @@
                sx + span * (0.60 + r() * 0.20), END[1] + (r() - 0.5) * 14,
                END[0], END[1]];
 
-      var b = r(), bright = b > 0.92 ? 0.74 + r() * 0.24
-                          : b > 0.76 ? 0.34 + r() * 0.26
-                                     : 0.05 + r() * 0.20;
+      // Thin type needs more light than thick type to read at all: a 9px
+      // thread at the weight a 20px one could carry is a smudge.
+      var b = r(), bright = b > 0.90 ? 0.80 + r() * 0.20
+                          : b > 0.70 ? 0.46 + r() * 0.30
+                                     : 0.14 + r() * 0.28;
       LANES.push({
         pts: sample(P),
         face: FACES[k % FACES.length],
-        size: 10 + r() * 16,
+        size: 8 + r() * 7,          // threads, not slabs
         fill: shade(bright),
-        track: (r() - 0.45) * 1.0,   // some squeezed, none to mush
-        from: k * 3,
+        track: (r() - 0.42) * 0.55,  // gently squeezed; thin type mushes fast
+        from: k, gap: 1.10 + r() * 0.55,
         speed: 44 + r() * 100,
-        words: [], period: 1, off: 0
+        words: [], period: 1, off: 0, phase: r()   // spread, or they arrive as one clump
       });
     }
   })();
 
-  /** Split into words once, with their widths, and repeat until the run is
-   *  longer than the curve — a lane shorter than its own path drags a hole
-   *  along it. The period is one copy; drawing wraps on it, seamlessly. */
-  function lay(L, one) {
+  /**
+   * ONE PHRASE PER THREAD, NOT A RIBBON.
+   *
+   * Filling every curve end to end is what a river does; a bombardment is
+   * separate things arriving. It is also the whole performance story, because
+   * the cost of this is linear in words drawn per frame and a full curve at
+   * thread weight is forty words where a phrase is seven. Six times fewer
+   * words is six times the threads for the same frame — and six times the
+   * threads is what this is supposed to look like.
+   *
+   * The period is set longer than the curve, so each phrase crosses, leaves,
+   * and there is a beat of nothing before it comes round again.
+   */
+  function lay(L, one, gap) {
     g2.font = L.size.toFixed(1) + "px " + L.face;
     var space = g2.measureText(" ").width + L.track;
     var end = L.pts[L.pts.length - 1].s;
-    var parts = one.split(/\s+/).filter(Boolean), i, run = 0, widths = [];
-    for (i = 0; i < parts.length; i++) {
-      widths[i] = g2.measureText(parts[i]).width + L.track * parts[i].length;
-      run += widths[i] + space;
+    var parts = one.split(/\s+/).filter(Boolean);
+    L.words = []; var run = 0;
+    for (var i = 0; i < parts.length; i++) {
+      var w = g2.measureText(parts[i]).width + L.track * parts[i].length;
+      L.words.push({ t: parts[i], w: w, at: run });
+      run += w + space;
     }
-    var reps = run > 0 ? Math.max(1, Math.ceil(end / run)) : 1;
-    L.words = []; L.period = 0;
-    for (var rep = 0; rep < reps; rep++) {
-      for (i = 0; i < parts.length; i++) {
-        L.words.push({ t: parts[i], w: widths[i], at: L.period });
-        L.period += widths[i] + space;
-      }
-    }
-    if (!L.period) L.period = 1;
+    L.period = Math.max(run + end * 0.12, end * (gap === undefined ? 1.18 : gap));
+    if (!(L.period > 0)) L.period = 1;
   }
 
   function loadRiver() {
     var n = C.cases.length;
     LANES.forEach(function (L) {
-      // Each lane takes a different window of three, so no two are reading
-      // the same thing at the same time.
-      lay(L, [0, 1, 2].map(function (j) { return C.cases[(L.from + j) % n].said; }).join(SEP) + SEP);
+      // One sentence each, a different one per thread, so twenty languages
+      // are in the air at once and no two threads read the same thing.
+      lay(L, C.cases[L.from % n].said, L.gap);
+      L.off = L.phase * L.period;
     });
     fillOut(C.identity.join(SEP) + SEP);
   }
@@ -583,7 +593,7 @@
   }
 
   function ownRiver(said, wrote) {
-    LANES.forEach(function (L) { lay(L, said + SEP); L.off = 0; });
+    LANES.forEach(function (L) { lay(L, said, L.gap); L.off = 0; });
     fillOut(wrote + SEP); outOff = 0;      // theirs is the better argument
   }
 
@@ -654,13 +664,13 @@
 
     // The mouth: ink over the caret fading to nothing by the rim, so the mess
     // dissolves INTO it rather than stopping at an edge.
-    var grd = g2.createRadialGradient(700, 284, 0, 700, 284, 150);
+    var grd = g2.createRadialGradient(698, 284, 0, 698, 284, 190);
     grd.addColorStop(0, "rgba(16,15,14,1)");
     grd.addColorStop(0.42, "rgba(16,15,14,1)");
     grd.addColorStop(1, "rgba(16,15,14,0)");
     g2.fillStyle = grd;
-    g2.save(); g2.translate(700, 284); g2.scale(1, 0.66); g2.translate(-700, -284);
-    g2.fillRect(540, 134, 320, 300); g2.restore();
+    g2.save(); g2.translate(698, 284); g2.scale(1, 0.62); g2.translate(-698, -284);
+    g2.fillRect(480, 84, 420, 400); g2.restore();
   }
 
   /* ---------------------------------------------------------------------
