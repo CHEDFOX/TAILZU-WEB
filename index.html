@@ -51,25 +51,18 @@
   .mast nav a.cta { color: var(--ink); background: var(--white); padding: 9px 18px; border-radius: 999px; font-weight: 500; font-size: 13px; }
   .mast nav a.cta:hover { background: var(--amber); color: var(--ink); }
 
-  /* ---- hero ----------------------------------------------------------- */
-  .hero { position: relative; text-align: center; padding: 52px 0 0; }
-  .hero .eye { color: var(--dim); display: block; margin-bottom: 26px; animation: rise .8s cubic-bezier(.2,.85,.25,1) .05s both; }
-  h1 {
-    margin: 0 auto; max-width: 15ch; font-family: var(--serif); font-weight: 400;
-    font-size: clamp(46px, 7.6vw, 104px); line-height: 1.02; letter-spacing: -.022em;
-  }
-  h1 i { font-style: italic; color: var(--amber); }
-  h1 span { display: block; }
-  h1 span:nth-child(1) { animation: rise .95s cubic-bezier(.2,.85,.25,1) .12s both; }
-  h1 span:nth-child(2) { animation: rise .95s cubic-bezier(.2,.85,.25,1) .26s both; }
-  .lede { margin: 26px auto 0; max-width: 46ch; color: var(--grey); font-size: 17px; animation: rise .9s cubic-bezier(.2,.85,.25,1) .42s both; }
-
   /* ---- the ribbon ------------------------------------------------------
-     Three lanes of speech pour in from the left and one sentence leaves to
-     the right. Many in, one out — which is the shape of the product as well
-     as the shape of the picture. The button sits on the crossing, because
-     pressing it is what puts your own voice through the same funnel.       */
-  .river { position: relative; margin-top: -26px; height: 520px; animation: fade 1.4s .5s both; }
+     There is no hero above this any more, so this IS the hero. Many in, one
+     out — the shape of the product and the shape of the picture. The button
+     sits on the crossing, because pressing it puts your own voice through
+     the same funnel.
+
+     The height stays 520. It is tempting to grow it now that it is the first
+     thing, and growing it is wrong: the svg is SLICED, so a taller band does
+     not show more of the drawing, it zooms into the middle of it and crops
+     the sides. Tried at 660 — the threads lost their entry points off the
+     left edge and the one line going the other way ran off the right.      */
+  .river { position: relative; margin-top: 10px; height: 520px; animation: fade 1.4s .35s both; }
   /* No bands. Speech runs on the page itself, and the mask dissolves it into
      the ground at both edges rather than letting the viewport cut it off —
      so nothing on this page has a visible strip around it. The mask is on the
@@ -143,11 +136,7 @@
      The ground does not change. What lifts the card off it is the card's own
      step up in value and a hairline rule, which is how the app separates
      anything from anything — the same two moves, at a bigger size.         */
-  .sheet { position: relative; z-index: 2; background: var(--ink); color: var(--white); padding: 96px 0 104px; }
-  .sheet h2 { margin: 0 auto 16px; max-width: 20em; text-align: center; font-family: var(--serif); font-weight: 400; font-size: clamp(30px, 4.2vw, 52px); line-height: 1.12; letter-spacing: -.02em; }
-  .sheet h2 i { font-style: italic; color: var(--amber); }
-  .sheet .eye { color: var(--dim); text-align: center; display: block; margin-bottom: 20px; }
-  .sheet .lede2 { margin: 0 auto 64px; max-width: 44ch; text-align: center; color: var(--grey); font-size: 16px; }
+  .sheet { position: relative; z-index: 2; background: var(--ink); color: var(--white); padding: 84px 0 104px; }
 
   .steps { display: grid; grid-template-columns: 250px 1fr; gap: 64px; align-items: start; }
   .rail { display: flex; flex-direction: column; gap: 2px; }
@@ -198,9 +187,11 @@
 
   /* ---- download -------------------------------------------------------- */
   .get { background: var(--ink); color: var(--white); padding: 0 0 104px; }
-  .getin { border-top: 1px solid var(--rule); padding-top: 56px; display: flex; justify-content: space-between; align-items: flex-end; gap: 40px; flex-wrap: wrap; }
-  .get h3 { margin: 0; font-family: var(--serif); font-weight: 400; font-size: clamp(28px, 3.6vw, 46px); line-height: 1.05; letter-spacing: -.02em; max-width: 14ch; }
-  .get .note { margin: 12px 0 0; color: var(--dim); font-family: var(--mono); font-size: 11px; letter-spacing: .16em; }
+  /* Centre, not baseline: with the heading gone there is nothing left on the
+     left to sit a baseline against, and the platform line alone hung under
+     the buttons instead of beside them. */
+  .getin { border-top: 1px solid var(--rule); padding-top: 56px; display: flex; justify-content: space-between; align-items: center; gap: 40px; flex-wrap: wrap; }
+  .get .note { margin: 0; color: var(--dim); font-family: var(--mono); font-size: 11px; letter-spacing: .16em; }
   .dl { display: flex; gap: 10px; flex-wrap: wrap; }
   .dl a { display: inline-flex; align-items: center; height: 52px; padding: 0 26px; border-radius: 999px; border: 1px solid var(--rule); color: var(--grey); font-size: 13.5px; transition: border-color .2s, color .2s; }
   .dl a:hover { border-color: var(--grey); color: var(--white); }
@@ -215,13 +206,11 @@
   footer nav { display: flex; gap: 24px; }
 
   /* ---- motion ---------------------------------------------------------- */
-  @keyframes rise { from { opacity: 0; transform: translateY(26px); } to { opacity: 1; transform: none; } }
   @keyframes fade { from { opacity: 0; } to { opacity: 1; } }
   .reveal { opacity: 0; transform: translateY(26px); transition: opacity .9s cubic-bezier(.2,.85,.25,1), transform .9s cubic-bezier(.2,.85,.25,1); }
   .reveal.in { opacity: 1; transform: none; }
 
   @media (max-width: 900px) {
-    .hero { padding-top: 48px; }
     .river { height: 380px; }
     .steps { grid-template-columns: 1fr; gap: 34px; }
     .rail { flex-direction: row; overflow-x: auto; gap: 0; }
@@ -256,11 +245,11 @@
     </nav>
   </header>
 
-  <section class="hero">
-    <span class="eye" id="eyebrow">Dictation that writes, not transcribes</span>
-    <h1 id="headline"><span>Say it badly.</span><span><i>Send it perfect.</i></span></h1>
-    <p class="lede" id="lede">Nobody speaks in clean sentences. Tailzu drops the filler and keeps every number, every name, and the language you said it in.</p>
-  </section>
+  <!-- No headline, no eyebrow, no lede. The river says all three and says
+       them in the product's own voice: the mess goes in, one sentence comes
+       out, and the sentence states what this is. A heading above it would be
+       the page claiming in words what the picture underneath is already
+       demonstrating — and the weaker of the two would be read first. -->
 </div>
 
 <div class="river" id="river">
@@ -309,10 +298,8 @@
 
 <section class="sheet">
   <div class="wrap">
-    <span class="eye reveal">How it decides</span>
-    <h2 class="reveal">It takes out what you didn't mean.<br><i>Nothing else moves.</i></h2>
-    <p class="lede2 reveal">Most tools tidy a sentence until it sounds like the tool. Watch what this one touches — and, more to the point, what it refuses to.</p>
-
+    <!-- The rail names the three claims and the card proves each one on a
+         real sentence. A heading over it would say the same thing worse. -->
     <div class="steps reveal">
       <div class="rail" id="rail" role="tablist" aria-label="What it does"></div>
       <div class="card">
@@ -329,10 +316,10 @@
 <section class="get">
   <div class="wrap">
     <div class="getin reveal">
-      <div>
-        <h3 id="price">Free to 800 words a month.</h3>
-        <p class="note" id="platforms">MAC · WINDOWS · iPHONE · ANDROID</p>
-      </div>
+      <!-- The price is gone from here too. What the buttons are for is what
+           the buttons say; the free allowance belongs where somebody is
+           deciding to pay, not where they are deciding to try. -->
+      <p class="note" id="platforms">MAC · WINDOWS · iPHONE · ANDROID</p>
       <div class="dl" id="dl"></div>
     </div>
   </div>
@@ -355,15 +342,11 @@
 
   // ---- copy: the backend's, with this as the fallback --------------------
   var C = {
-    eyebrow: "Dictation that writes, not transcribes",
-    headline: "Say it badly.|Send it perfect.",
-    lede: $("lede").textContent,
     cta: "Use your own voice", ctaHeld: "Stop", writing: "Writing…", again: "Again",
     invite: "No sign-up. It stops when you pause.",
     after: "That is the whole product. It works everywhere you type.",
     demoOff: "The live demo is resting. The apps below are not.",
     micDenied: "Your browser blocked the microphone. Allow it and try again.",
-    price: "Free to {words} words a month.",
     // What leaves the caret when nobody has spoken yet. Not a sample of the
     // product's output — a statement of what it is, running at reading speed
     // against thirteen lanes of noise.
@@ -416,7 +399,7 @@
     ],
     download: { win: "Windows", mac: "macOS", linux: "Linux", ios: "iPhone", android: "Android", soon: "soon" }
   };
-  var site = { freeWords: 800, downloads: {}, demo: false, maxSeconds: 15 };
+  var site = { downloads: {}, demo: false, maxSeconds: 15 };
 
   /* =====================================================================
      THE RIVER
@@ -962,17 +945,7 @@
   function under(msg, bad) { $("under").textContent = msg; $("under").className = bad ? "under err" : "under"; }
 
   function applyCopy() {
-    $("eyebrow").textContent = C.eyebrow;
-    $("headline").innerHTML = "";
-    C.headline.split("|").forEach(function (line, i) {
-      var s = document.createElement("span");
-      if (i) { var em = document.createElement("i"); em.textContent = line; s.appendChild(em); }
-      else s.textContent = line;
-      $("headline").appendChild(s);
-    });
-    $("lede").textContent = C.lede;
     $("micLabel").textContent = C.cta;
-    $("price").textContent = C.price.replace("{words}", String(site.freeWords));
     paintDownloads();
     if (!site.demo) { $("mic").disabled = true; under(C.demoOff); }
     else if (!own) under(C.invite);
@@ -1128,7 +1101,6 @@
   fetch(API + "/v1/site").then(function (r) { return r.json(); }).then(function (j) {
     if (j && j.copy) { for (var k in j.copy) if (Object.prototype.hasOwnProperty.call(j.copy, k)) C[k] = j.copy[k]; }
     if (j) {
-      site.freeWords = j.freeWords || site.freeWords;
       site.downloads = j.downloads || {};
       site.demo = !!j.demo;
       site.maxSeconds = j.maxSeconds || 15;
