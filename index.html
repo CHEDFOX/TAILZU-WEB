@@ -106,22 +106,42 @@
        band is cropped top and bottom and the word stays centred, it does not
        zoom. Floor at 380, which is where the entries start to be lost. */
     position: relative; margin-top: 22px; height: clamp(380px, calc(100vh - 330px), 520px); animation: fade 1.4s .35s both;
-    background: radial-gradient(58% 66% at 50% 54%, rgba(243,226,198,.022), transparent 70%);
   }
-  /* THE LIGHT IS ALIVE. The pool used to be a gradient painted on the band,
-     which is a fixed thing. It is its own layer now, under the threads, and
+  /* THE LIGHT IS ALIVE. The pool is its own layer under the threads, and
      the script breathes it: it swells a little on a slow cycle, brightens
      for a beat each time a phrase reaches the word, and fills with the
      voice while the microphone is open. Opacity and transform only, so the
-     compositor moves a painted surface and nothing is rasterised twice. A
-     faint fixed base stays on the band so the light is never fully gone. */
+     compositor moves a painted surface and nothing is rasterised twice.
+
+     NOT AN OVAL. One radial with two stops is an oval painted on the ground,
+     and the eye finds its edge before it finds the word. This is light
+     instead: three sources laid over each other, each falling away on a
+     bell — six stops, most of them near nothing — so there is no radius at
+     which anything ends. A small hot core where the threads die into the
+     first letter, a wide dim halo round it, and a long low streak along
+     the line the threads arrive on. The whole thing leans a couple of
+     degrees with the flow, and the script keeps it centred on the word at
+     every window width, because the light belongs to the word and not to
+     the band. The element is far larger than the band so every fall-off
+     reaches its zero on its own, never against an edge. */
+  /* The light's room. It reaches above the band into the masthead and
+     below it under the title, and stops there: an absolutely placed thing
+     grows the document, and a page that scrolls on past its own footer into
+     the dark is the one thing a light must not do. The clip sits where every
+     fall-off is already at zero, so nothing is cut, only contained. */
+  .light { position: absolute; left: -10%; right: -10%; top: -90%; bottom: -40%; overflow: hidden; z-index: 0; pointer-events: none; }
   .pool {
-    position: absolute; left: -12%; top: -24%; width: 124%; height: 148%; z-index: 0; pointer-events: none;
-    /* Four stops rather than two, so the light has no edge: a two-stop
-       radial reads as an oval painted on the ground, and an oval is a shape
-       where there should only be a place that is brighter. */
-    background: radial-gradient(48% 46% at 50% 52%, rgba(243,226,198,.062), rgba(243,226,198,.03) 34%, rgba(243,226,198,.009) 60%, transparent 80%);
-    will-change: transform, opacity; opacity: .6;
+    position: absolute; left: 0; top: 0; width: 125%; height: 108%; pointer-events: none;
+    background:
+      radial-gradient(21% 17% at 46% 50%,
+        rgba(243,226,198,.088) 0%, rgba(243,226,198,.066) 16%, rgba(243,226,198,.038) 36%,
+        rgba(243,226,198,.016) 56%, rgba(243,226,198,.005) 76%, transparent 100%),
+      radial-gradient(46% 25% at 48% 51%,
+        rgba(243,226,198,.034) 0%, rgba(243,226,198,.024) 22%, rgba(243,226,198,.012) 46%,
+        rgba(243,226,198,.004) 70%, transparent 100%),
+      radial-gradient(64% 9% at 42% 50.5%,
+        rgba(243,226,198,.028) 0%, rgba(243,226,198,.012) 40%, rgba(243,226,198,.003) 72%, transparent 100%);
+    transform-origin: 46% 50%; will-change: transform, opacity; opacity: .8;
   }
   /* No bands. Speech runs on the page itself, and the mask dissolves it into
      the ground at both edges rather than letting the viewport cut it off —
@@ -189,11 +209,20 @@
   /* ---- download -------------------------------------------------------- */
   /* The page lands a shade lighter than it started. A dark page that gets
      darker to the bottom edge feels like falling off it. */
-  .get { background: linear-gradient(180deg, var(--ink), var(--wash)); color: var(--white); padding: 0 0 44px; }
+  /* Transparent at its top, so the light from the band spills under the
+     rule and across the title the way light falls off a lit thing onto the
+     table it stands on. An opaque section here cut the pool off in a
+     straight line, and that line was most of what made the light read as a
+     shape. */
+  .get { background: linear-gradient(180deg, transparent, var(--wash)); color: var(--white); padding: 0 0 44px; }
   /* Centre, not baseline: with the heading gone there is nothing left on the
      left to sit a baseline against, and the platform line alone hung under
      the buttons instead of beside them. */
-  .getin { border-top: 1px solid var(--rule); padding-top: 36px; display: flex; justify-content: space-between; align-items: flex-end; gap: 40px; flex-wrap: wrap; }
+  /* HAIRLINES THAT DISSOLVE. A rule from edge to edge is a drawn line; one
+     that fades out before it reaches either edge is a fold in the surface.
+     Same pale, same weight, no ends. */
+  .hair { background: linear-gradient(90deg, transparent, var(--rule) 14%, var(--rule) 86%, transparent) top / 100% 1px no-repeat; }
+  .getin { padding-top: 36px; display: flex; justify-content: space-between; align-items: flex-end; gap: 40px; flex-wrap: wrap; }
   .get .note { margin: 0; color: var(--dim); font-family: var(--mono); font-size: 11px; letter-spacing: .16em; }
   .dl { display: flex; gap: 10px; flex-wrap: wrap; }
   /* Filled, not drawn on the void: an outline on a near-black ground is a
@@ -213,7 +242,7 @@
   .dl a.soon { opacity: .4; pointer-events: none; }
 
   footer { background: var(--wash); color: var(--dim); }
-  footer .in { border-top: 1px solid var(--rule); display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px; padding: 26px 0 40px; font-size: 13px; }
+  footer .in { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px; padding: 26px 0 40px; font-size: 13px; }
   footer nav { display: flex; gap: 24px; }
 
   /* ---- material -------------------------------------------------------- */
@@ -294,7 +323,7 @@
 
 <div class="river" id="river">
   <!-- The pool of light, under everything, breathed by the script. -->
-  <div class="pool" id="pool" aria-hidden="true"></div>
+  <div class="light" id="light" aria-hidden="true"><div class="pool" id="pool"></div></div>
   <!-- The tangle is drawn on a canvas, not in the svg. Two dozen moving
        textPaths cost the page two thirds of its frame rate: changing one
        offset re-lays its whole string out along its curve, and that is a
@@ -329,7 +358,7 @@
 
 <section class="get">
   <div class="wrap">
-    <div class="getin reveal">
+    <div class="getin hair reveal">
       <div>
         <h3 id="getTitle">Free to start.</h3>
         <p class="note" id="platforms">MAC · WINDOWS · iPHONE · ANDROID</p>
@@ -340,7 +369,7 @@
 </section>
 
 <footer>
-  <div class="wrap"><div class="in">
+  <div class="wrap"><div class="in hair">
     <span>© 2026 Tailzu</span>
     <nav><a href="/privacy">Privacy</a><a href="/terms">Terms</a><a href="/download">Download</a></nav>
   </div></div>
@@ -916,8 +945,23 @@
   var pool = $("pool");
   function breathe(t) {
     var v = listening ? voice : 0;
-    pool.style.opacity = Math.min(1, 0.55 + glow * 0.5 + v * 0.6).toFixed(3);
-    pool.style.transform = "scale(" + (1 + 0.035 * Math.sin(t * 0.42) + glow * 0.06 + v * 0.1).toFixed(4) + ")";
+    pool.style.opacity = Math.min(1, 0.72 + glow * 0.38 + v * 0.5).toFixed(3);
+    // Leaning with the flow, and scaled about its own core rather than its
+    // box, so the breath is the light swelling and not a sheet sliding.
+    pool.style.transform = "rotate(-2.5deg) scale(" + (1 + 0.03 * Math.sin(t * 0.42) + glow * 0.05 + v * 0.09).toFixed(4) + ")";
+  }
+  /* The light belongs to the word. Its core sits a little left of the first
+     letter, where the threads die, at whatever place the sliced svg has put
+     the word for this window — so it is measured, like the button, and
+     re-measured whenever the band changes size. */
+  var light = $("light");
+  function placePool() {
+    var pw = pool.offsetWidth, ph = pool.offsetHeight;
+    if (!pw || !scale) return;
+    // The word's place in band pixels, then into the light's own box.
+    var gx = (GATE - VIS[0]) * scale - light.offsetLeft, gy = (MID - VIS[1]) * scale - light.offsetTop;
+    pool.style.left = (gx - pw * 0.46 + 16).toFixed(1) + "px";
+    pool.style.top = (gy - ph * 0.5).toFixed(1) + "px";
   }
 
   function river(now) {
@@ -1144,6 +1188,7 @@
     // painted over it, would swallow the button.
     var y = Math.min(m.bottom - r.top + 30, r.height - 118);
     mic.style.left = cx + "px"; mic.style.top = y + "px";
+    placePool();
   }
   // Measured once is measured too early: the first call can land before the
   // band has its final box, and then the button sits somewhere the mark is
@@ -1170,6 +1215,7 @@
     if (!reduced) { boost = 5.5; warm = 1; }
     if (!reduced && !rraf) { last = 0; rraf = requestAnimationFrame(river); }
     placeControl();
+    placePool();
   }
   // The river measures text along a path, so it must not be laid out before
   // the face lands or every offset is computed for a fallback and jumps.
