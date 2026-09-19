@@ -94,7 +94,7 @@
      like it. That contrast is the whole product in one picture. */
   .clean {
     font-family: var(--serif); font-size: 24px; font-weight: 400;
-    font-optical-sizing: auto; letter-spacing: .004em; fill: var(--white);
+    font-optical-sizing: auto; letter-spacing: .004em; fill: url(#fresh);
   }
   /* Both layers of the river sit on top of each other and drift together.
      will-change keeps them on their own layers, so the drift moves a painted
@@ -268,6 +268,16 @@
       <linearGradient id="emerge" gradientUnits="userSpaceOnUse" x1="728" y1="0" x2="792" y2="0">
         <stop offset="0" stop-color="#fff" stop-opacity="0"/>
         <stop offset="1" stop-color="#fff" stop-opacity="1"/>
+      </linearGradient>
+      <!-- BORN AMBER, SETTLING TO PALE. Amber marks what is still in play,
+           in the app and here: the words nearest the caret have just been
+           written, and they cool to the reading colour as they move away
+           and become the record. The one colour on the page with a meaning,
+           doing that meaning. -->
+      <linearGradient id="fresh" gradientUnits="userSpaceOnUse" x1="728" y1="0" x2="1080" y2="0">
+        <stop offset="0" style="stop-color: var(--amber)"/>
+        <stop offset="0.28" style="stop-color: var(--amber)"/>
+        <stop offset="1" style="stop-color: var(--white)"/>
       </linearGradient>
       <mask id="leaving"><rect x="716" y="-140" width="1200" height="800" fill="url(#emerge)"/></mask>
     </defs>
@@ -517,25 +527,50 @@
       else if (k % 3 === 1) { sx = -300 - r() * 70; sy = -70 + u * 690; }
       else                  { sx = -280 + u * 940; sy = 570 + r() * 70; }
 
-      var span = END[0] - sx;
-      var P = [sx, sy,
-               sx + span * (0.22 + r() * 0.24), -180 + r() * 860,
-               sx + span * (0.60 + r() * 0.20), END[1] + (r() - 0.5) * 14,
-               END[0], END[1]];
+      /* A CURRENT, NOT A SCATTER.
+         The middle control point used to be thrown anywhere on the page,
+         which gave crossings but also kinks — a thread that set off one way
+         and jerked another. Now each thread leaves its edge along its own
+         bearing to the caret, twisted by up to thirty degrees, with a long
+         first handle. That is what makes an arc instead of a kink: the
+         thread over-swings, then comes round. The second handle points
+         straight back out of the caret, so everything arrives level and
+         nothing is rotated where it meets the cursor. Threads still cross —
+         top meets bottom, and the twist sends neighbours across each other —
+         but they cross the way silk does, not the way string does. */
+      var dx = END[0] - sx, dy = END[1] - sy, dist = Math.sqrt(dx * dx + dy * dy);
+      var bear = Math.atan2(dy, dx) + (r() - 0.5) * 1.05;
+      var h1 = dist * (0.34 + r() * 0.34), h2 = dist * (0.22 + r() * 0.30);
+      // x must step rightward at every control point, or words hang upside
+      // down. A twist that would send the first handle backward is clamped.
+      var p1x = sx + Math.max(0.16, Math.cos(bear)) * h1, p1y = sy + Math.sin(bear) * h1;
+      var p2x = END[0] - h2, p2y = END[1] + (r() - 0.5) * 10;
+      if (p1x > p2x - 24) p1x = p2x - 24;
+      var P = [sx, sy, p1x, p1y, p2x, p2y, END[0], END[1]];
 
-      // Thin type needs more light than thick type to read at all: a 9px
-      // thread at the weight a 20px one could carry is a smudge.
-      var b = r(), bright = b > 0.90 ? 0.80 + r() * 0.20
-                          : b > 0.70 ? 0.46 + r() * 0.30
-                                     : 0.14 + r() * 0.28;
+      /* DEPTH IS ONE NUMBER.
+         Bright, big and fast are the same thing — near. Dim, small and slow
+         are the same thing — far. Rolled separately they cancelled: a bright
+         thread crawling behind a dim one racing past reads as noise, because
+         the eye is trying to build a space out of it and cannot. Coupled,
+         the field has a front and a back and the threads pass each other the
+         way things do. More of them are far than near, which is also how
+         things are. */
+      var b = r(), bright = b > 0.86 ? 0.80 + r() * 0.20
+                          : b > 0.58 ? 0.46 + r() * 0.30
+                                     : 0.16 + r() * 0.26;
       LANES.push({
         pts: sample(P),
         face: FACES[k % FACES.length],
-        size: 8 + r() * 7,          // threads, not slabs
+        size: 7.5 + bright * 7.5,
         fill: shade(bright),
         track: (r() - 0.42) * 0.55,  // gently squeezed; thin type mushes fast
         from: k, gap: 1.10 + r() * 0.55,
-        speed: 44 + r() * 100,
+        speed: 40 + bright * 108,
+        // A slow breath, different on every thread, biggest at the far edge
+        // and nothing at all by the caret. The field moves like something
+        // alive instead of like a diagram.
+        amp: 2 + r() * 4, sw: 0.22 + r() * 0.34, ph: r() * 6.2832,
         words: [], period: 1, off: 0, phase: r()   // spread, or they arrive as one clump
       });
     }
@@ -585,6 +620,10 @@
       L.off = L.phase * L.period;
     });
     fillOut(C.identity.join(SEP) + SEP);
+    // Reduced motion never starts the loop, and a loop that never starts
+    // never paints: the left half was simply blank. One still frame is the
+    // right answer — the picture without the movement, not no picture.
+    if (reduced) paint(0);
   }
 
   /** The one line going the other way stays in the svg: it is the only one
@@ -616,8 +655,9 @@
     ox = (w - VB[0] * scale) / 2; oy = (h - VB[1] * scale) / 2;
   }
 
-  function paint() {
+  function paint(t) {
     if (!cv.width) return;
+    t = (t || 0) / 1000;
     // Identity transform for the clear: cv.width is already in device pixels,
     // and clearing it under a DPR-scaled transform wipes four times the area.
     g2.setTransform(1, 0, 0, 1, 0, 0);
@@ -641,6 +681,10 @@
       g2.font = L.size.toFixed(1) + "px " + L.face;
       g2.fillStyle = L.fill;
       var base = -L.period + (L.off % L.period), p = 0;
+      // The breath: one sine per thread per frame, scaled to nothing by the
+      // caret so the mouth never moves. Folded into the translate, so it
+      // costs a multiply per piece and no extra call.
+      var sway = L.amp * Math.sin(t * L.sw + L.ph) / end;
 
       for (var copy = 0; copy < 2; copy++) {
         var shift = base + copy * L.period;
@@ -668,7 +712,7 @@
             while (g3 > 0 && pts[g3].s > sA) g3--;
             var qa = pts[g3];
             var cs = Math.cos(am), sn = Math.sin(am);
-            g2.setTransform(K * cs, K * sn, -K * sn, K * cs, K * qa.x + TX, K * qa.y + TY);
+            g2.setTransform(K * cs, K * sn, -K * sn, K * cs, K * qa.x + TX, K * (qa.y + sway * (end - qa.s)) + TY);
             g2.fillText(W.t.slice(c0, c1), 0, 0);
           }
         }
@@ -771,7 +815,7 @@
       var L = LANES[i];
       L.off = (L.off + L.speed * boost * dt / 1000) % L.period;
     }
-    paint();
+    paint(now);
 
     outOff = (outOff + OUT_SPEED * boost * dt / 1000) % outLen;
     tOut.setAttribute("startOffset", String(-outLen + outOff));

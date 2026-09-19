@@ -83,6 +83,29 @@ the drift transform, complex-script shaping, font switching, the radial
 gradient, page height — so if you change this, measure it rather than reason
 about it.
 
+### A current, not a scatter
+
+Each thread leaves its edge along its own bearing to the caret, twisted by up
+to thirty degrees, with a long first handle — so it over-swings and comes
+round in an arc rather than jerking. The second handle points straight back
+out of the caret, so everything arrives level. Threads still cross, but the
+way silk does, not the way string does. The middle control point used to be
+thrown anywhere on the page, and that gave kinks as often as crossings.
+
+**Depth is one number.** Bright, big and fast are the same thing — near. Dim,
+small and slow are the same thing — far. Rolled separately they cancelled
+each other and the eye could not build a space out of it. More threads are far
+than near, which is also how things are.
+
+**The breath.** One slow sine per thread, biggest at the far edge and nothing
+at all by the caret, folded into the translate so it costs a multiply per
+piece. The field moves like something alive instead of like a diagram.
+
+**Born amber.** The line leaving the caret is amber for its first few words
+and cools to the reading colour as it moves away — amber marks what is still
+in play, in the app and here, and the words just written are the one thing on
+the page that still is.
+
 ### The rules that keep a tangle from becoming a bug
 
 - Each curve's control points step rightward, which makes x monotonic. That is
