@@ -156,6 +156,13 @@ the page that still is.
   paid for the curve-following and then some.
 - The edges fade inside the canvas rather than through a CSS mask, so a
   surface that is redrawn every frame is not also re-masked every frame.
+- Nothing exists right of the caret on the canvas layer. A word is anchored at
+  its START, so one arriving at the cursor hangs its own width past it, and
+  every tail longer than the mouth's radius came out the far side and sat
+  there as a ghost of a left-hand thread on the right, where only the written
+  sentence belongs. The curves all end level at the caret, so a straight block
+  from it to the edge costs one fill and cannot cut anything short — its left
+  edge is buried inside the mouth's opaque core, so there is no seam.
 
 ## The caret
 

@@ -814,6 +814,19 @@
        line — which is exactly what it looked like. Tight and centred now: the
        threads run all the way in and go out at the cursor. */
     var MX = 720, MR = 62;
+
+    /* NOTHING EXISTS RIGHT OF THE CARET ON THIS LAYER.
+       A word is anchored at its START, so one arriving at the cursor hangs
+       its own width past it — and every tail longer than the mouth's radius
+       came out the far side and sat there as a ghost of a left-hand thread on
+       the right, where only the written sentence belongs. The curves all end
+       level at the caret, so a straight block from it to the edge costs one
+       fill and cannot cut anything short: its left edge is buried inside the
+       mouth's opaque core, so there is no seam to see. The written line is in
+       the svg above this and is untouched. */
+    g2.fillStyle = "#0F0D0B";
+    g2.fillRect(END[0], VIS[1] - 300, (VIS[2] - END[0]) + 300, (VIS[3] - VIS[1]) + 600);
+
     var grd = g2.createRadialGradient(MX, MID, 0, MX, MID, MR);
     grd.addColorStop(0, "rgba(15,13,11,1)");
     grd.addColorStop(0.30, "rgba(15,13,11,1)");
