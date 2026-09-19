@@ -214,7 +214,7 @@
      table it stands on. An opaque section here cut the pool off in a
      straight line, and that line was most of what made the light read as a
      shape. */
-  .get { background: linear-gradient(180deg, transparent, var(--wash)); color: var(--white); padding: 0 0 44px; }
+  .get { background: linear-gradient(180deg, transparent, var(--wash)); color: var(--white); padding: 100px 0 44px; }
   /* Centre, not baseline: with the heading gone there is nothing left on the
      left to sit a baseline against, and the platform line alone hung under
      the buttons instead of beside them. */
@@ -240,6 +240,39 @@
   .dl a.primary { background: linear-gradient(180deg, #F8EBD3, var(--white) 55%); border-color: var(--white); box-shadow: inset 0 1px 0 rgba(255,255,255,.55), 0 14px 34px -18px rgba(243,226,198,.35); color: var(--ink); font-weight: 500; }
   .dl a.primary:hover { opacity: .88; }
   .dl a.soon { opacity: .4; pointer-events: none; }
+
+  /* ---- below the river ------------------------------------------------- */
+  /* Three things, and each is shown before it is said. The titles are set
+     like the one over the buttons; the pairs are the river's two materials
+     at reading size — the mess by hand, the sentence in type — and the
+     sentence is born in the accent and cools to the reading colour, which is
+     the one rule the accent has on this page. */
+  .sec { padding: 108px 0 0; }
+  .sec h2 { margin: 0 0 30px; font-family: var(--serif); font-weight: 400; font-size: clamp(26px, 3vw, 40px); line-height: 1.05; letter-spacing: -.02em; text-wrap: balance; }
+  .pair { max-width: 820px; min-height: 148px; }
+  .said {
+    margin: 0 0 12px; font-family: 'Caveat', 'Kalam', cursive; font-size: clamp(24px, 2.6vw, 32px); line-height: 1.25; color: var(--dim);
+    opacity: 0; transform: translateY(6px); transition: opacity .5s, transform .5s;
+  }
+  .wrote {
+    margin: 0; font-family: var(--serif); font-weight: 380; font-size: clamp(30px, 3.6vw, 46px); line-height: 1.12; letter-spacing: -.018em; color: var(--white); text-wrap: balance;
+    opacity: 0; transform: translateY(8px); transition: opacity .55s, transform .55s, color 1.7s;
+  }
+  .said.in, .wrote.in { opacity: 1; transform: none; }
+  /* Born in the accent: the class is put on and taken off in the same
+     frame, so the colour starts amber and the transition carries it home. */
+  .wrote.born { color: var(--amber); transition: opacity .55s, transform .55s, color 0s; }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px 22px; margin-top: 34px; }
+  .chips button {
+    appearance: none; border: 0; background: none; padding: 6px 0; cursor: pointer;
+    font-family: var(--mono); font-size: 11px; letter-spacing: .18em; text-transform: uppercase; color: var(--dim);
+    border-bottom: 1px solid transparent; transition: color .2s, border-color .2s;
+  }
+  .chips button:hover { color: var(--white); }
+  .chips button[aria-selected="true"] { color: var(--white); border-bottom-color: var(--white); }
+  .facts { padding-top: 92px; }
+  .facts ul { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 10px 0; font-family: var(--mono); font-size: 11px; letter-spacing: .18em; text-transform: uppercase; color: var(--dim); }
+  .facts li + li::before { content: "·"; margin: 0 18px; color: var(--grey); }
 
   footer { background: var(--wash); color: var(--dim); }
   footer .in { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px; padding: 26px 0 40px; font-size: 13px; }
@@ -356,6 +389,35 @@
   </button>
 </div>
 
+<!-- BELOW THE RIVER. The reel: the twenty lines, one at a time, hand then
+     type. The tones: one line in each of the keyboard's own tones. The facts:
+     the only claims in words, and there are four. -->
+<section class="sec reveal" id="reel">
+  <div class="wrap">
+    <h2 id="reelTitle">Said. Written.</h2>
+    <div class="pair">
+      <p class="said" id="reelSaid"></p>
+      <p class="wrote" id="reelWrote"></p>
+    </div>
+    <div class="chips" id="reelChips" role="tablist" aria-label="Language"></div>
+  </div>
+</section>
+
+<section class="sec reveal" id="tone">
+  <div class="wrap">
+    <h2 id="toneTitle">Same words. Your tone.</h2>
+    <div class="pair">
+      <p class="said" id="toneSaid"></p>
+      <p class="wrote" id="toneWrote"></p>
+    </div>
+    <div class="chips" id="toneChips" role="tablist" aria-label="Tone"></div>
+  </div>
+</section>
+
+<section class="sec facts reveal">
+  <div class="wrap"><ul id="facts"></ul></div>
+</section>
+
 <section class="get">
   <div class="wrap">
     <div class="getin hair reveal">
@@ -395,27 +457,41 @@
     // hundred threads.
     absorb: "Exactly.",
     cases: [
-      { said: "um so like can we push the call to four",          wrote: "Can we push the call to four?" },
-      { said: "the deploy is done but abhi testing baaki hai",    wrote: "The deploy is done, but abhi testing baaki hai." },
-      { said: "हाँ वो फाइल मैंने भेज दी थी कल शाम को",                  wrote: "हाँ, वो फाइल मैंने कल शाम भेज दी थी।" },
-      { said: "நான் இப்போ கிளம்பறேன் கொஞ்சம் லேட் ஆகும்",              wrote: "நான் இப்போ கிளம்பறேன், கொஞ்சம் லேட் ஆகும்." },
-      { said: "trensfer 2500 rupeez to ramesh tomorow",            wrote: "Transfer 2500 rupees to Ramesh tomorrow." },
-      { said: "আমি কাল অফিসে আসব না একটু কাজ আছে",                   wrote: "আমি কাল অফিসে আসব না, একটু কাজ আছে।" },
-      { said: "मी उद्या ऑफिसला येणार नाही जरा काम आहे",                wrote: "मी उद्या ऑफिसला येणार नाही, जरा काम आहे." },
-      { said: "eh o sea puedo llegar como a las siete",            wrote: "Puedo llegar como a las siete." },
-      { said: "నేను రేపు ఆఫీస్ కి రాను కొంచెం పని ఉంది",                  wrote: "నేను రేపు ఆఫీస్‌కి రాను, కొంచెం పని ఉంది." },
-      { said: "ਮੈਂ ਕੱਲ੍ਹ ਨਹੀਂ ਆ ਸਕਦਾ ਥੋੜ੍ਹਾ ਕੰਮ ਹੈ",                       wrote: "ਮੈਂ ਕੱਲ੍ਹ ਨਹੀਂ ਆ ਸਕਦਾ, ਥੋੜ੍ਹਾ ਕੰਮ ਹੈ।" },
-      { said: "હું કાલે ઓફિસે નહીં આવું થોડું કામ છે",                       wrote: "હું કાલે ઓફિસે નહીં આવું, થોડું કામ છે." },
-      { said: "ನಾನು ನಾಳೆ ಆಫೀಸಿಗೆ ಬರಲ್ಲ ಸ್ವಲ್ಪ ಕೆಲಸ ಇದೆ",               wrote: "ನಾನು ನಾಳೆ ಆಫೀಸಿಗೆ ಬರಲ್ಲ, ಸ್ವಲ್ಪ ಕೆಲಸ ಇದೆ." },
-      { said: "ഞാൻ നാളെ ഓഫീസിൽ വരില്ല കുറച്ച് ജോലി ഉണ്ട്",            wrote: "ഞാൻ നാളെ ഓഫീസിൽ വരില്ല, കുറച്ച് ജോലി ഉണ്ട്." },
-      { said: "ମୁଁ କାଲି ଅଫିସ ଆସିବି ନାହିଁ ଟିକେ କାମ ଅଛି",                   wrote: "ମୁଁ କାଲି ଅଫିସ ଆସିବି ନାହିଁ, ଟିକେ କାମ ଅଛି।" },
-      { said: "euh ben je peux arriver vers sept heures je pense", wrote: "Je peux arriver vers sept heures, je pense." },
-      { said: "é tipo assim eu posso chegar por volta das sete",   wrote: "Eu posso chegar por volta das sete." },
-      { said: "ähm also ich komme so gegen sieben glaube ich",     wrote: "Ich komme so gegen sieben, glaube ich." },
-      { said: "eh gimana ya saya bisa datang sekitar jam tujuh",   wrote: "Saya bisa datang sekitar jam tujuh." },
-      { said: "yani sey saat yedi gibi gelebilirim heralde",       wrote: "Yani saat yedi gibi gelebilirim, herhalde." },
-      { said: "ano eto nakaka pagod pero tapos na yung report",    wrote: "Nakakapagod, pero tapos na yung report." }
+      { lang: "English",    said: "um so like can we push the call to four",          wrote: "Can we push the call to four?" },
+      { lang: "Hinglish",   said: "the deploy is done but abhi testing baaki hai",    wrote: "The deploy is done, but abhi testing baaki hai." },
+      { lang: "Hindi",      said: "हाँ वो फाइल मैंने भेज दी थी कल शाम को",                  wrote: "हाँ, वो फाइल मैंने कल शाम भेज दी थी।" },
+      { lang: "Tamil",      said: "நான் இப்போ கிளம்பறேன் கொஞ்சம் லேட் ஆகும்",              wrote: "நான் இப்போ கிளம்பறேன், கொஞ்சம் லேட் ஆகும்." },
+      { lang: "English",    said: "trensfer 2500 rupeez to ramesh tomorow",            wrote: "Transfer 2500 rupees to Ramesh tomorrow." },
+      { lang: "Bengali",    said: "আমি কাল অফিসে আসব না একটু কাজ আছে",                   wrote: "আমি কাল অফিসে আসব না, একটু কাজ আছে।" },
+      { lang: "Marathi",    said: "मी उद्या ऑफिसला येणार नाही जरा काम आहे",                wrote: "मी उद्या ऑफिसला येणार नाही, जरा काम आहे." },
+      { lang: "Spanish",    said: "eh o sea puedo llegar como a las siete",            wrote: "Puedo llegar como a las siete." },
+      { lang: "Telugu",     said: "నేను రేపు ఆఫీస్ కి రాను కొంచెం పని ఉంది",                  wrote: "నేను రేపు ఆఫీస్‌కి రాను, కొంచెం పని ఉంది." },
+      { lang: "Punjabi",    said: "ਮੈਂ ਕੱਲ੍ਹ ਨਹੀਂ ਆ ਸਕਦਾ ਥੋੜ੍ਹਾ ਕੰਮ ਹੈ",                       wrote: "ਮੈਂ ਕੱਲ੍ਹ ਨਹੀਂ ਆ ਸਕਦਾ, ਥੋੜ੍ਹਾ ਕੰਮ ਹੈ।" },
+      { lang: "Gujarati",   said: "હું કાલે ઓફિસે નહીં આવું થોડું કામ છે",                       wrote: "હું કાલે ઓફિસે નહીં આવું, થોડું કામ છે." },
+      { lang: "Kannada",    said: "ನಾನು ನಾಳೆ ಆಫೀಸಿಗೆ ಬರಲ್ಲ ಸ್ವಲ್ಪ ಕೆಲಸ ಇದೆ",               wrote: "ನಾನು ನಾಳೆ ಆಫೀಸಿಗೆ ಬರಲ್ಲ, ಸ್ವಲ್ಪ ಕೆಲಸ ಇದೆ." },
+      { lang: "Malayalam",  said: "ഞാൻ നാളെ ഓഫീസിൽ വരില്ല കുറച്ച് ജോലി ഉണ്ട്",            wrote: "ഞാൻ നാളെ ഓഫീസിൽ വരില്ല, കുറച്ച് ജോലി ഉണ്ട്." },
+      { lang: "Odia",       said: "ମୁଁ କାଲି ଅଫିସ ଆସିବି ନାହିଁ ଟିକେ କାମ ଅଛି",                   wrote: "ମୁଁ କାଲି ଅଫିସ ଆସିବି ନାହିଁ, ଟିକେ କାମ ଅଛି।" },
+      { lang: "French",     said: "euh ben je peux arriver vers sept heures je pense", wrote: "Je peux arriver vers sept heures, je pense." },
+      { lang: "Portuguese", said: "é tipo assim eu posso chegar por volta das sete",   wrote: "Eu posso chegar por volta das sete." },
+      { lang: "German",     said: "ähm also ich komme so gegen sieben glaube ich",     wrote: "Ich komme so gegen sieben, glaube ich." },
+      { lang: "Indonesian", said: "eh gimana ya saya bisa datang sekitar jam tujuh",   wrote: "Saya bisa datang sekitar jam tujuh." },
+      { lang: "Turkish",    said: "yani sey saat yedi gibi gelebilirim heralde",       wrote: "Yani saat yedi gibi gelebilirim, herhalde." },
+      { lang: "Filipino",   said: "ano eto nakaka pagod pero tapos na yung report",    wrote: "Nakakapagod, pero tapos na yung report." }
     ],
+    // Below the river: the reel's title, the tones, the facts. The tone
+    // names are the keyboard's own.
+    reel: { title: "Said. Written." },
+    tone: {
+      title: "Same words. Your tone.",
+      said: "hey can u send the file tonight its kinda urgent",
+      tones: [
+        { name: "Neutral", text: "Can you send the file tonight? It's fairly urgent." },
+        { name: "Casual",  text: "Hey, can you send the file tonight? Kinda urgent." },
+        { name: "Formal",  text: "Could you please send the file this evening? It is time-sensitive." },
+        { name: "Excited", text: "Can you send the file tonight? Can't wait to dig in!" }
+      ]
+    },
+    facts: ["22 Indian languages", "Most of the world's", "Any app, any field", "Phone and desk"],
     download: { win: "Windows", mac: "macOS", linux: "Linux", ios: "iPhone", android: "Android", soon: "soon" }
   };
   var site = { downloads: {}, demo: false, maxSeconds: 15 };
@@ -1068,10 +1144,87 @@
     sayT = setTimeout(function () { micLabel.textContent = own ? C.again : C.cta; }, 3200);
   }
 
+  /* ---------------------------------------------------------------------
+     BELOW THE RIVER
+
+     The reel and the tones play themselves — a pair every few seconds, the
+     hand first and the type after it, the sentence born in the accent and
+     cooling — and stop playing the moment a visitor picks a chip, for ten
+     seconds, so the thing they chose stays put. Nothing runs while the
+     section is off the screen or the tab is hidden, and under reduced
+     motion nothing runs at all: the chips still switch, instantly.  */
+  function born(el) { el.classList.add("born"); void el.offsetWidth; el.classList.remove("born"); }
+  function showPair(saidEl, wroteEl, said, wrote, delay) {
+    saidEl.classList.remove("in"); wroteEl.classList.remove("in");
+    clearTimeout(saidEl._t); clearTimeout(wroteEl._t);
+    saidEl._t = setTimeout(function () { saidEl.textContent = said; saidEl.classList.add("in"); }, 60);
+    wroteEl._t = setTimeout(function () { wroteEl.textContent = wrote; born(wroteEl); wroteEl.classList.add("in"); }, reduced ? 60 : delay);
+  }
+  function chips(el, names, sel, onPick) {
+    el.innerHTML = "";
+    names.forEach(function (n, i) {
+      var b = document.createElement("button");
+      b.type = "button"; b.setAttribute("role", "tab"); b.textContent = n;
+      b.setAttribute("aria-selected", i === sel ? "true" : "false");
+      b.addEventListener("click", function () { onPick(i); });
+      el.appendChild(b);
+    });
+  }
+  function selectChip(el, i) {
+    [].forEach.call(el.children, function (b, k) { b.setAttribute("aria-selected", k === i ? "true" : "false"); });
+  }
+  /** One self-playing block: a list, a way to show item i, and a beat. */
+  function player(sectionId, show, count, beat) {
+    var i = 0, t = 0, on = false, hold = 0;
+    function tick() {
+      clearTimeout(t);
+      if (reduced || !on || hold || document.hidden) return;
+      t = setTimeout(function () { i = (i + 1) % count(); show(i); tick(); }, beat);
+    }
+    function pick(k) {
+      // The beat already counting must die with the choice, or it lands a
+      // second later and swaps out the thing that was just picked.
+      clearTimeout(t);
+      i = k; show(i);
+      clearTimeout(hold); hold = setTimeout(function () { hold = 0; tick(); }, 10000);
+    }
+    if (window.IntersectionObserver) {
+      new IntersectionObserver(function (es) {
+        on = es[0].isIntersecting;
+        if (on) tick(); else clearTimeout(t);
+      }, { threshold: 0.25 }).observe($(sectionId));
+    } else { on = true; }
+    document.addEventListener("visibilitychange", function () { if (document.hidden) clearTimeout(t); else tick(); });
+    return { pick: pick, restart: function () { show(i); tick(); }, at: function () { return i; } };
+  }
+  var reel = player("reel", function (i) {
+    var c = C.cases[i];
+    showPair($("reelSaid"), $("reelWrote"), c.said, c.wrote, 1300);
+    selectChip($("reelChips"), i);
+  }, function () { return C.cases.length; }, 4800);
+  var tones = player("tone", function (i) {
+    var w = $("toneWrote");
+    w.classList.remove("in"); clearTimeout(w._t);
+    w._t = setTimeout(function () { w.textContent = C.tone.tones[i].text; born(w); w.classList.add("in"); }, 140);
+    selectChip($("toneChips"), i);
+  }, function () { return C.tone.tones.length; }, 3800);
+
+  function paintBelow() {
+    $("reelTitle").textContent = C.reel.title;
+    chips($("reelChips"), C.cases.map(function (c) { return c.lang; }), reel.at(), reel.pick);
+    $("toneTitle").textContent = C.tone.title;
+    var s = $("toneSaid"); s.textContent = C.tone.said; s.classList.add("in");
+    chips($("toneChips"), C.tone.tones.map(function (t) { return t.name; }), tones.at(), tones.pick);
+    var ul = $("facts"); ul.innerHTML = "";
+    C.facts.forEach(function (f) { var li = document.createElement("li"); li.textContent = f; ul.appendChild(li); });
+    reel.restart(); tones.restart();
+  }
+
   function applyCopy() {
     $("getTitle").textContent = C.get;
     $("micLabel").textContent = C.cta;
     paintDownloads();
+    paintBelow();
     mic.hidden = !site.demo;
   }
 
