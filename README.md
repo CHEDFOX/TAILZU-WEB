@@ -59,7 +59,7 @@ Each thread carries a single sentence and there is a beat of nothing before it
 comes round again. Filling every curve end to end is what a river does; a
 bombardment is separate things arriving.
 
-It is also the whole reason there can be sixty-four of them. The cost is linear in
+It is also the whole reason there can be a hundred of them. The cost is linear in
 words drawn per frame, and a filled curve at thread weight is forty words
 where a phrase is seven — so the same frame buys six times the threads. Thin
 type alone does the opposite: smaller words mean MORE of them fit along the
@@ -99,6 +99,23 @@ out of the caret, so everything arrives level. Threads still cross, but the
 way silk does, not the way string does. The middle control point used to be
 thrown anywhere on the page, and that gave kinks as often as crossings.
 
+**They come from off the screen.** Every start is well outside the frame and
+every thread is already at speed by the time it crosses the edge. Half enter
+along the left — the band runs the full width, so its left edge *is* the edge
+of the screen — and the quarter over the top and the quarter from beneath are
+held to the left of the frame, so they come in through the two corners rather
+than dropping in out of the middle of nowhere.
+
+The edge fades are hung on the VISIBLE rectangle rather than on the viewBox,
+and they are short. The drawing is sliced, so a fade at a fixed percentage of
+the viewBox lands somewhere inside the frame at most window sizes — and a
+thread that fades up inside the frame looks like it started there. The one
+wide fade left is on the right, where the sentence leaving the caret should
+dissolve into the page rather than run off a cliff.
+
+Threads spend longer off-screen now, so fewer words are drawn per frame at the
+same count: the same frame rate buys 104 threads where it bought 64.
+
 **Depth is one number.** Bright, big and fast are the same thing — near. Dim,
 small and slow are the same thing — far. Rolled separately they cancelled
 each other and the eye could not build a space out of it. More threads are far
@@ -120,9 +137,11 @@ the page that still is.
 - The last control point sits level with the caret, so nothing arrives at an
   angle and gets rotated where it meets the cursor.
 - The middle one is thrown anywhere, and that is where the crossing comes from.
-- Entry points go round-robin across the three edges and evenly along each.
-  Leaving the side to chance clusters them, and clusters them differently at
-  every count — the picture changed whenever the number did.
+- Entry points go round-robin across the edges and evenly along each, and the
+  two left-hand residues are offset half a slot from each other or they land
+  in pairs on the same line. Leaving the side to chance clusters them, and
+  clusters them differently at every count — the picture changed whenever the
+  number did.
 - Each run repeats until it is longer than its own curve, then wraps on one
   period. A lane shorter than its path drags a visible hole along it.
 - A word is a straight run of glyphs and the line under it is not, so the

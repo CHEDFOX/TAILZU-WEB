@@ -501,7 +501,7 @@
      Measured on one machine, after the transform work: 60 threads 48fps, 78
      threads 39fps, 96 threads 32fps, 116 threads 28fps. Raising it is one
      number, and so is the frame rate it costs. */
-  var TANGLE = 64, END = [712, 284], VB = [1440, 520];
+  var TANGLE = 104, END = [712, 284], VB = [1440, 520];
   var cv = $("tangle"), g2 = cv.getContext("2d");
   /* HANDWRITTEN. Speech is a person, and a person writes by hand — so the
      mess arrives in handwriting, and only the sentence leaving the caret is
@@ -560,12 +560,21 @@
       // jitter on top. Leaving the side to chance clusters them — and it
       // clusters differently at every count, so the picture changed whenever
       // the number did.
-      var per = Math.ceil(TANGLE / 3), slot = Math.floor(k / 3);
-      var u = (slot + 0.5) / per + (r() - 0.5) * 0.17, sx, sy;
+      /* THEY COME FROM OFF THE SCREEN, NOT FROM INSIDE IT.
+         Every start is well outside the frame and every thread is already
+         at speed by the time it crosses the edge. Half enter along the left
+         — the band runs the full width, so its left edge IS the edge of the
+         screen — and the quarter over the top and the quarter from beneath
+         are held to the left of the frame, so they come in through the two
+         corners rather than dropping in out of the middle of nowhere. */
+      var m = k % 4, per = Math.ceil(TANGLE / 4), slot = Math.floor(k / 4), sx, sy;
+      // The two left-hand residues are offset half a slot from each other, or
+      // they land in pairs on the same line.
+      var u = (slot + (m === 3 ? 1 : 0.5)) / per + (r() - 0.5) * 0.16;
       u = Math.max(0, Math.min(1, u));
-      if (k % 3 === 0)      { sx = -280 + u * 940; sy = -50 - r() * 60; }
-      else if (k % 3 === 1) { sx = -300 - r() * 70; sy = -70 + u * 690; }
-      else                  { sx = -280 + u * 940; sy = 570 + r() * 70; }
+      if (m === 1 || m === 3) { sx = -430 - r() * 240; sy = -150 + u * 820; }
+      else if (m === 0)       { sx = -430 + u * 640;   sy = -190 - r() * 150; }
+      else                    { sx = -430 + u * 640;   sy = 710 + r() * 150; }
 
       /* A CURRENT, NOT A SCATTER.
          The middle control point used to be thrown anywhere on the page,
@@ -686,6 +695,14 @@
   /** Slice, by hand, so the canvas shares the svg's coordinates exactly and
    *  the caret lands where the curves end. */
   var DPR = 1, scale = 1, ox = 0, oy = 0;
+  /* Which part of the viewBox the window is actually showing, in viewBox
+     units. The drawing is SLICED, so this is not the viewBox: at a wide
+     window the sides are cut off and at a tall one the ends are. The edge
+     fades are hung on this rather than on the viewBox, so they always sit
+     exactly at the edge of the screen — a fade at a fixed percentage of the
+     viewBox lands inside the frame at most window sizes, and a thread that
+     fades up inside the frame looks like it started there. */
+  var VIS = [0, 0, VB[0], VB[1]];
   function sizeCanvas() {
     var w = cv.clientWidth, h = cv.clientHeight;
     if (!w || !h) return;
@@ -693,6 +710,8 @@
     cv.width = Math.round(w * DPR); cv.height = Math.round(h * DPR);
     scale = Math.max(w / VB[0], h / VB[1]);
     ox = (w - VB[0] * scale) / 2; oy = (h - VB[1] * scale) / 2;
+    VIS[0] = -ox / scale; VIS[1] = -oy / scale;
+    VIS[2] = VIS[0] + w / scale; VIS[3] = VIS[1] + h / scale;
   }
 
   function paint(t) {
@@ -764,21 +783,29 @@
     /* The edges are faded HERE rather than by a css mask on the element. A
        compositor mask over a canvas that is redrawn every frame makes the
        browser re-rasterise the masked result every frame; doing it with four
-       gradient wipes costs a few fills and nothing else. */
+       gradient wipes costs a few fills and nothing else.
+
+       Hung on the VISIBLE rectangle, not the viewBox, and short: just enough
+       that a word is not sliced in half at the boundary, not so much that it
+       fades up inside the frame. A thread should already be at full strength
+       by the time you can see it, or it looks like it began there. */
+    var EL = VIS[0], ET = VIS[1], ER = VIS[2], EB = VIS[3], EW = 44, OV = 600;
     g2.globalCompositeOperation = "destination-out";
     var f;
-    f = g2.createLinearGradient(0, 0, VB[0] * 0.14, 0);
+    f = g2.createLinearGradient(EL, 0, EL + EW, 0);
     f.addColorStop(0, "#000"); f.addColorStop(1, "rgba(0,0,0,0)");
-    g2.fillStyle = f; g2.fillRect(-400, -300, VB[0] * 0.14 + 400, VB[1] + 600);
-    f = g2.createLinearGradient(VB[0] * 0.87, 0, VB[0], 0);
+    g2.fillStyle = f; g2.fillRect(EL - OV, ET - OV, EW + OV, (EB - ET) + OV * 2);
+    // The right is the one wide fade: the sentence leaving the caret should
+    // dissolve into the page rather than run off a cliff.
+    f = g2.createLinearGradient(ER - (ER - EL) * 0.13, 0, ER, 0);
     f.addColorStop(0, "rgba(0,0,0,0)"); f.addColorStop(1, "#000");
-    g2.fillStyle = f; g2.fillRect(VB[0] * 0.87, -300, VB[0] * 0.13 + 400, VB[1] + 600);
-    f = g2.createLinearGradient(0, 0, 0, VB[1] * 0.11);
+    g2.fillStyle = f; g2.fillRect(ER - (ER - EL) * 0.13, ET - OV, (ER - EL) * 0.13 + OV, (EB - ET) + OV * 2);
+    f = g2.createLinearGradient(0, ET, 0, ET + EW);
     f.addColorStop(0, "#000"); f.addColorStop(1, "rgba(0,0,0,0)");
-    g2.fillStyle = f; g2.fillRect(-400, -300, VB[0] + 800, VB[1] * 0.11 + 300);
-    f = g2.createLinearGradient(0, VB[1] * 0.90, 0, VB[1]);
+    g2.fillStyle = f; g2.fillRect(EL - OV, ET - OV, (ER - EL) + OV * 2, EW + OV);
+    f = g2.createLinearGradient(0, EB - EW, 0, EB);
     f.addColorStop(0, "rgba(0,0,0,0)"); f.addColorStop(1, "#000");
-    g2.fillStyle = f; g2.fillRect(-400, VB[1] * 0.90, VB[0] + 800, VB[1] * 0.10 + 300);
+    g2.fillStyle = f; g2.fillRect(EL - OV, EB - EW, (ER - EL) + OV * 2, EW + OV);
     g2.globalCompositeOperation = "source-over";
 
     /* The mouth: ink centred ON the caret, not short of it. It was 190 units
