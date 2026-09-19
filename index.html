@@ -811,18 +811,12 @@
   });
   riverEl.addEventListener("pointerleave", function () { mx = 0; my = 0; });
 
-  /** Their own words take every lane — pouring in from all three sides, out
-   *  as one sentence. Different speeds keep three copies from looking like a
-   *  bug: no two lanes ever show the same word in the same place. */
-  function ownRiver(said, wrote) {
-    LANES.forEach(function (L) {
-      // Their sentence outranks the identity line: it is the better argument.
-      fill(L, (L.identity ? wrote : said) + SEP);
-      L.off = 0;
-    });
-  }
-
-
+  /* A second ownRiver lived here, left over from the lanes version. Function
+     declarations hoist, so it silently REPLACED the real one above — and it
+     called fill(), which no longer exists, and read L.identity, which no
+     longer exists either. Nothing showed it: it only runs after a visitor
+     records something, which is the one path a page like this never takes
+     while it is being built. */
 
   /* =====================================================================
      THE CARD
