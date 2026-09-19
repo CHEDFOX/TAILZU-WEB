@@ -93,13 +93,20 @@ the same world with more air in it.
 
 ## The river
 
-A tangle of handwritten speech arrives from every side — over the top, across
-the left, up from underneath — converging on the caret, and one typeset line
-goes the other way.
+A hundred threads of handwritten speech arrive from every side — over the top,
+across the left, up from underneath — and one word swallows them.
+
+**There is no caret and no second stream.** The two sides of the picture were
+only ever two because something stood between them. The threads now run into
+the word itself: the mouth that dissolves them is small and sits just inside
+its first glyph, so the last of the mess fades out UNDER the letter rather
+than stopping short of it in the dark. Tuned by looking at the junction at 3x
+— at a mouth of 48 units there was a twenty-pixel notch, and the fix was to
+overlap the word with the fade rather than to butt them together.
 
 **The left is handwritten.** Speech is a person, and a person writes by
-hand — so the mess arrives in handwriting and only the sentence leaving the
-caret is set in type. Hand in, type out: that contrast is the product. Caveat
+hand — so the mess arrives in handwriting and only the word that swallows it
+is set in type. Hand in, type out: that contrast is the product. Caveat
 carries the Latin, Kalam sits behind it for the Devanagari, and every other
 script falls through, glyph by glyph, to whatever the machine has. One hand at
 several weights rather than a font menu. Every thread is the one ink at a
@@ -110,10 +117,19 @@ The hand comes from the font host, and the canvas measures words in whatever
 face it has at the time — so the river is laid out again once the hand has
 arrived, or every word sits in the wrong place.
 
-**The right is not an example, it is the identity.** `SITE_UI.identity` is
-what leaves the caret when nobody has spoken: what the product is, in the only
-face on the page anybody chose, at a quarter of the inbound pace. A visitor's
-own sentence replaces it the moment they press the button.
+**The word is `SITE_UI.absorb`, and it is one word or two.** It is set at the
+size of a thing that can swallow a hundred threads, so a third word does not
+fit on a laptop — and it has to be read at a glance or it is not a
+destination, it is just more text. A backend test holds it to two. It is the
+reading colour, because it is a settled result, and it goes amber only while
+the microphone is open, which is the one moment it is still in play. It swells
+a little with the voice then, scaled about its own left edge so it grows into
+the space it is filling rather than sliding away from the threads arriving at
+it — what the caret's height used to do, on the thing that replaced it.
+
+A visitor's own sentence replaces the word the moment they have spoken, fitted
+to whatever room the sliced viewBox leaves to the right of it. What it
+actually absorbed beats what it claims to.
 
 ### One phrase per thread, not a ribbon
 

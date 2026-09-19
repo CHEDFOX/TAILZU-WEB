@@ -114,17 +114,9 @@
      top and up from underneath, and a lane chopped off at the band's edge
      reads as a rendering fault rather than as speech arriving from off-stage.
      Two gradients intersected — the sides and the ends. */
-  .river #riverSvg {
-    -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 13%, #000 87%, transparent 100%),
-                        linear-gradient(180deg, transparent 0, #000 11%, #000 90%, transparent 100%);
-            mask-image: linear-gradient(90deg, transparent 0, #000 13%, #000 87%, transparent 100%),
-                        linear-gradient(180deg, transparent 0, #000 11%, #000 90%, transparent 100%);
-    -webkit-mask-composite: source-in;
-            mask-composite: intersect;
-  }
-  /* The caret must not fade with the rest: it sits at the centre, where both
-     gradients are solid, so it is unaffected — but the one line going the
-     other way does want the side fade, and gets it from the same mask. */
+  /* No mask on the svg any more. It existed to dissolve the outgoing line at
+     the edges, and there is no outgoing line — the word must not fade at all.
+     One less compositor mask over a surface that repaints every frame. */
 
   /* UGLY ON PURPOSE, and set in script rather than here: speech has no
      typography, so each lane takes whatever face the machine happens to have,
@@ -135,9 +127,10 @@
   /* One line, and every decision on it made on purpose: the optical size the
      face was cut for, a hair of tracking, and nothing else on the page set
      like it. That contrast is the whole product in one picture. */
-  .clean {
-    font-family: var(--serif); font-size: 24px; font-weight: 400;
-    font-optical-sizing: auto; letter-spacing: .004em; fill: url(#fresh);
+  .absorb {
+    font-family: var(--serif); font-size: 78px; font-weight: 400;
+    font-optical-sizing: auto; letter-spacing: -.022em; fill: var(--white);
+    transition: fill .25s;
   }
   /* Both layers of the river sit on top of each other and drift together.
      will-change keeps them on their own layers, so the drift moves a painted
@@ -146,15 +139,11 @@
   #tangle { z-index: 0; }
   #riverSvg { z-index: 1; }
 
-  /* The caret. 530ms on, 530ms off, which is the rate a real one blinks at —
-     any faster reads as an error state, any slower as a dying battery. */
   #mark { cursor: pointer; }
   #mark:focus-visible { outline: 2px solid var(--white); outline-offset: 10px; border-radius: 8px; }
-  .caret { fill: var(--white); animation: blink 1.06s steps(1) infinite; }
-  @keyframes blink { 0%, 49.9% { opacity: 1; } 50%, 100% { opacity: .1; } }
-  /* Open microphone: it stops blinking and holds, because now there is
-     something to wait for rather than nothing. */
-  .river.on .caret { animation: none; opacity: 1; fill: var(--amber); }
+  /* Amber only while the microphone is open — the one moment the word is
+     still in play rather than a settled result. */
+  .river.on .absorb { fill: var(--amber); }
 
   /* The control sits under the mark; its position is measured, not guessed,
      because the svg is sliced and the mark lands somewhere different at
@@ -343,38 +332,17 @@
   <canvas id="tangle" aria-hidden="true"></canvas>
 
   <svg id="riverSvg" viewBox="0 0 1440 520" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
-    <defs>
-      <path id="out1" d="M728 284 L1800 284"/>
-      <!-- The sentence forms as it leaves the caret instead of arriving whole
-           at a hard edge, which reads as sliding out from behind a sheet. -->
-      <linearGradient id="emerge" gradientUnits="userSpaceOnUse" x1="728" y1="0" x2="792" y2="0">
-        <stop offset="0" stop-color="#fff" stop-opacity="0"/>
-        <stop offset="1" stop-color="#fff" stop-opacity="1"/>
-      </linearGradient>
-      <!-- BORN AMBER, SETTLING TO PALE. Amber marks what is still in play,
-           in the app and here: the words nearest the caret have just been
-           written, and they cool to the reading colour as they move away
-           and become the record. The one colour on the page with a meaning,
-           doing that meaning. -->
-      <linearGradient id="fresh" gradientUnits="userSpaceOnUse" x1="728" y1="0" x2="980" y2="0">
-        <stop offset="0" style="stop-color: var(--amber)"/>
-        <stop offset="0.18" style="stop-color: var(--amber)"/>
-        <stop offset="1" style="stop-color: var(--white)"/>
-      </linearGradient>
-      <mask id="leaving"><rect x="716" y="-140" width="1200" height="800" fill="url(#emerge)"/></mask>
-    </defs>
-
-    <g mask="url(#leaving)">
-      <text class="clean" dy=".33em"><textPath href="#out1" id="tOut" startOffset="0"> </textPath></text>
-    </g>
-
-    <!-- THE CARET. Not an ornament standing in for the product: it is the
-         product. Everything Tailzu does ends at somebody's cursor, so the
-         cursor is what the speech runs into and what the sentence comes out
-         of. It blinks at the rate a real one does, and while the microphone
-         is open it stops blinking and breathes with the voice. -->
+    <!-- THE ABSORBER. There is no caret and no second stream: a hundred
+         threads of everybody's mess pour in from off the screen and are
+         swallowed by one word. That is the whole product in one picture and
+         it needs no divider down the middle to say so — the two sides were
+         only ever two because something stood between them.
+         Anchored at the convergence and running right, so it takes the side
+         the outgoing line used to have. It is the reading colour, because it
+         is the result and results are settled; it goes amber only while the
+         microphone is open, which is the one moment it is still in play. -->
     <g id="mark" role="button" tabindex="0" aria-label="Speak">
-      <rect id="caret" class="caret" x="716" y="248" width="8" height="72" rx="4"/>
+      <text id="absorb" class="absorb" x="684" y="284" dy=".33em">Exactly.</text>
     </g>
   </svg>
 
@@ -440,15 +408,10 @@
     headline: "Talk. It writes.", proof: "Only the mess goes.", get: "Free to start.",
     cta: "Speak", ctaHeld: "Stop", writing: "Writing…", again: "Again",
     micDenied: "Mic blocked.",
-    // What leaves the caret when nobody has spoken yet. Not a sample of the
-    // product's output — a statement of what it is, running at reading speed
-    // against thirteen lanes of noise.
-    identity: [
-      "Every word you meant.",
-      "None you didn't.",
-      "In your language.",
-      "Tailzu."
-    ],
+    // The one word the whole field pours into. A word or two, never more:
+    // it has to be read at a glance, at the size of the thing swallowing a
+    // hundred threads.
+    absorb: "Exactly.",
     cases: [
       { said: "um so like can we push the call to four",          wrote: "Can we push the call to four?" },
       { said: "the deploy is done but abhi testing baaki hai",    wrote: "The deploy is done, but abhi testing baaki hai." },
@@ -504,7 +467,6 @@
      sentence flows out. The page stops arguing and hands the argument over.
      ================================================================== */
   var own = null;                 // set once the visitor's own clip has run
-  var SEP = "   ·   ";
   var rraf = 0, last = 0, svgEl = $("riverSvg");
   var mx = 0, my = 0, tx = 0, ty = 0;
 
@@ -549,7 +511,7 @@
   var TANGLE = 104, END = [712, 284], VB = [1440, 520];
   var cv = $("tangle"), g2 = cv.getContext("2d");
   /* HANDWRITTEN. Speech is a person, and a person writes by hand — so the
-     mess arrives in handwriting, and only the sentence leaving the caret is
+     mess arrives in handwriting, and only the word that swallows it is
      set in type. That contrast is the product: hand in, type out.
      Caveat carries the Latin. Kalam sits behind it for the Devanagari, which
      Caveat does not have; every other script falls through, glyph by glyph,
@@ -713,28 +675,31 @@
       lay(L, C.cases[L.from % n].said, L.gap);
       L.off = L.phase * L.period;
     });
-    fillOut(C.identity.join(SEP) + SEP);
+    setAbsorb(C.absorb);
     // Reduced motion never starts the loop, and a loop that never starts
     // never paints: the left half was simply blank. One still frame is the
     // right answer — the picture without the movement, not no picture.
     if (reduced) paint(0);
   }
 
-  /** The one line going the other way stays in the svg: it is the only one
-   *  anybody reads, it wants the real face, and one textPath is affordable. */
-  var tOut = $("tOut"), outLen = 1, outOff = 0, OUT_SPEED = 26;
-  function fillOut(one) {
-    tOut.textContent = one;
-    var w = tOut.getComputedTextLength() || 1;
-    var need = Math.max(1, Math.ceil(($("out1").getTotalLength() || 1) / w));
-    var body = new Array(need + 1).join(one);
-    tOut.textContent = body + body;
-    outLen = tOut.getComputedTextLength() / 2 || 1;
+  /** THE WORD, FITTED. The svg is sliced, so how much room there is to the
+   *  right of the anchor depends on the window — and a visitor's own sentence
+   *  replaces the word once they have spoken, at whatever length they spoke.
+   *  Set big, measured, and shrunk only if it would run off. */
+  var absorbEl = $("absorb"), ABX = 684, ABSIZE = 78;
+  function setAbsorb(text) {
+    absorbEl.textContent = text;
+    absorbEl.setAttribute("font-size", ABSIZE);
+    var room = (VIS[2] > ABX ? VIS[2] : 1440) - ABX - 40;
+    var w = absorbEl.getComputedTextLength() || 0;
+    if (w > room && room > 0) {
+      absorbEl.setAttribute("font-size", Math.max(20, ABSIZE * room / w).toFixed(1));
+    }
   }
 
   function ownRiver(said, wrote) {
     LANES.forEach(function (L) { lay(L, said, L.gap); L.off = 0; });
-    fillOut(wrote + SEP); outOff = 0;      // theirs is the better argument
+    setAbsorb(wrote);            // what it absorbed, in their own words
   }
 
   /** Slice, by hand, so the canvas shares the svg's coordinates exactly and
@@ -840,11 +805,10 @@
     f = g2.createLinearGradient(EL, 0, EL + EW, 0);
     f.addColorStop(0, "#000"); f.addColorStop(1, "rgba(0,0,0,0)");
     g2.fillStyle = f; g2.fillRect(EL - OV, ET - OV, EW + OV, (EB - ET) + OV * 2);
-    // The right is the one wide fade: the sentence leaving the caret should
-    // dissolve into the page rather than run off a cliff.
-    f = g2.createLinearGradient(ER - (ER - EL) * 0.13, 0, ER, 0);
-    f.addColorStop(0, "rgba(0,0,0,0)"); f.addColorStop(1, "#000");
-    g2.fillStyle = f; g2.fillRect(ER - (ER - EL) * 0.13, ET - OV, (ER - EL) * 0.13 + OV, (EB - ET) + OV * 2);
+    // No right-hand fade any more. It softened the outgoing line, and there
+    // is no outgoing line — everything right of the convergence is erased
+    // outright a few lines below, so this was a gradient drawn every frame
+    // over a region that is already empty.
     f = g2.createLinearGradient(0, ET, 0, ET + EW);
     f.addColorStop(0, "#000"); f.addColorStop(1, "rgba(0,0,0,0)");
     g2.fillStyle = f; g2.fillRect(EL - OV, ET - OV, (ER - EL) + OV * 2, EW + OV);
@@ -872,7 +836,11 @@
        there cannot cut anything short, and it is buried inside the mouth's
        solid core so there is no seam. The written line is in the svg above
        this and is untouched. */
-    var MX = 720, MR = 62;
+    /* Smaller and shifted left, because the WORD hides the knot now. The
+       mouth only has to dissolve the last of the threads in the few units
+       before the first glyph, so that they run into it rather than stopping
+       short of it in the dark. Anything wider reopens the gap. */
+    var MX = 700, MR = 30;
     g2.fillStyle = "#000";
     g2.fillRect(END[0], VIS[1] - 300, (VIS[2] - END[0]) + 300, (VIS[3] - VIS[1]) + 600);
 
@@ -915,15 +883,19 @@
      It holds still and blinks while nothing is happening. With the microphone
      open it stops blinking, turns amber and breathes with the voice, so what
      grows and shrinks is the thing the words are about to be written at.   */
-  var caret = $("caret"), MID = 284, REST = 72, listening = false, voice = 0, level = 0;
+  var MID = 284, listening = false, voice = 0, level = 0;
 
-  function drawCaret(live) {
+  /* The word swells a little with the voice while the microphone is open —
+     what the caret's height used to do, on the thing that replaced it. Scaled
+     about its own left edge, so it grows into the space it is filling rather
+     than sliding away from the threads arriving at it. */
+  function drawAbsorb(live) {
     voice += ((live ? level : 0) - voice) * 0.22;      // eased, or it judders
-    var h = REST + voice * 86;
-    caret.setAttribute("y", (MID - h / 2).toFixed(1));
-    caret.setAttribute("height", h.toFixed(1));
+    var k = (1 + voice * 0.07).toFixed(4);
+    absorbEl.setAttribute("transform",
+      "translate(" + ABX + " " + MID + ") scale(" + k + ") translate(" + (-ABX) + " " + (-MID) + ")");
   }
-  drawCaret(false);
+  drawAbsorb(false);
 
   function river(now) {
     rraf = requestAnimationFrame(river);
@@ -937,10 +909,7 @@
     }
     paint(now);
 
-    outOff = (outOff + OUT_SPEED * boost * dt / 1000) % outLen;
-    tOut.setAttribute("startOffset", String(-outLen + outOff));
-
-    drawCaret(listening);
+    drawAbsorb(listening);
     // Both layers drift together, as a CSS transform rather than an attribute
     // — the browser can move a painted layer without repainting what is on it.
     tx += (mx - tx) * 0.06; ty += (my - ty) * 0.06;
