@@ -728,13 +728,15 @@
       return ((t ^ t >>> 14) >>> 0) / 4294967296;
     };
   }
-  /* ONE HUE, WEIGHT DOES THE WORK — the app's own rule, taken literally.
-     Every thread is the reading colour at a lower weight, the way the rings
-     on Stats are one pale at falling alpha. A second hue here would invite
-     the eye to look for meaning in it, and the only meaning on the left is
-     how far back a thing is. The top of the range still sits under the one
-     line going the other way, which is the only thing at full strength. */
-  function shade(b) { return "rgba(243,226,198," + (0.07 + 0.78 * b).toFixed(3) + ")"; }
+  /* COLOUR IN, ONE WORD OUT. The threads carry the page's own colours —
+     the saffron, rose, sky, teal, sun and lilac of the fields below — and
+     depth still does the rest: a near thread is bright and big and fast, a
+     far one dim and small and slow. A hundred colours of talk pour into a
+     single pale word, which is the whole product in one picture: mess in
+     every colour, one clean sentence out. The pale is kept for the word
+     alone so it stays the calm thing on the screen. */
+  var HUES = [[244,167,44], [228,88,123], [143,199,240], [63,184,166], [247,207,74], [185,167,242], [242,140,90], [155,227,193]];
+  function shade(b, hue) { return "rgba(" + hue.join(",") + "," + (0.16 + 0.74 * b).toFixed(3) + ")"; }
 
   /** The curve as a polyline: position and heading at intervals of arc length,
    *  so a word can be placed by distance without solving the bezier again. */
@@ -821,7 +823,7 @@
         face: FACES[k % FACES.length],
         bright: bright,             // kept: a near thread's arrival is felt more than a far one's
         size: 9 + bright * 8,       // a hand is small at its x-height; a shade up from the type
-        fill: shade(bright),
+        fill: shade(bright, HUES[Math.floor(r() * HUES.length)]),
         track: (r() - 0.5) * 0.3,   // a hand is not squeezed, only a little uneven
         from: k, gap: 1.10 + r() * 0.55,
         speed: 40 + bright * 108,
