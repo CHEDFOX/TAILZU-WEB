@@ -7,10 +7,10 @@
 <meta name="description" content="Talk. It writes. Every word you meant, none you didn't, in the language you said it. 22 Indian languages and most of the world's.">
 <meta name="theme-color" content="#0F0D0B">
 <meta property="og:title" content="Tailzu — say it badly, send it perfect">
-<meta property="og:description" content="Talk. It writes. No sign-up.">
+<meta property="og:description" content="Talk. It writes. In your language, in your tone, in any app.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300..500;1,6..72,300..500&family=Instrument+Sans:wght@400;500&family=IBM+Plex+Mono:wght@400&family=Caveat:wght@400..700&family=Kalam:wght@400;700&family=Bricolage+Grotesque:wght@800&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300..500;1,6..72,300..500&family=Instrument+Sans:wght@400;500&family=IBM+Plex+Mono:wght@400&family=Caveat:wght@400..700&family=Kalam:wght@400;700&display=swap">
 <style>
   :root {
     /* THE STATS PALETTE, unchanged from the app.
@@ -45,6 +45,18 @@
     --rule: rgba(243,226,198,.15);
     --white: #F3E2C6; --grey: rgba(243,226,198,.62); --dim: rgba(243,226,198,.52);
     --amber: #E8A23C;
+    /* THE COLOURS BELOW THE RIVER. The hero stays the app's dark, and the
+       page under it opens into colour: one field per section, each a full
+       hue on its own ground, so the scroll reads as a walk through rooms.
+       Saffron for the way it works, paper for the tones, indigo for the
+       apps, teal for the desk, sun for the price, paper for the questions.
+       Text on every field is measured: ink on the warm ones, white on the
+       deep ones, never a mid-tone on a mid-tone. */
+    --paper: #FBF8F2; --ink2: #1B1712; --ink2-soft: rgba(27,23,18,.66); --line: rgba(27,23,18,.12);
+    --saffron: #F4A72C; --saffron-deep: #B8650C;
+    --indigo: #2A2878; --indigo-deep: #17163F;
+    --teal: #167D71; --teal-deep: #0C4F47;
+    --sun: #F7CF4A; --rose: #E4587B; --sky: #DCEBF7; --leaf: #DDF3E3; --butter: #FFF3C2;
     --serif: 'Newsreader', Georgia, 'Times New Roman', serif;
     --sans: 'Instrument Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
     --mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
@@ -217,17 +229,18 @@
      table it stands on. An opaque section here cut the pool off in a
      straight line, and that line was most of what made the light read as a
      shape. */
-  .get { background: linear-gradient(180deg, transparent, var(--wash)); color: var(--white); padding: 100px 0 44px; }
-  /* Centre, not baseline: with the heading gone there is nothing left on the
-     left to sit a baseline against, and the platform line alone hung under
-     the buttons instead of beside them. */
+  /* The headline and the line under it sit here, on the dark, right after
+     the river, with the buttons — and then the page opens into colour. */
+  .get { background: linear-gradient(180deg, transparent, var(--wash)); color: var(--white); padding: 72px 0 72px; }
   /* HAIRLINES THAT DISSOLVE. A rule from edge to edge is a drawn line; one
      that fades out before it reaches either edge is a fold in the surface.
      Same pale, same weight, no ends. */
   .hair { background: linear-gradient(90deg, transparent, var(--rule) 14%, var(--rule) 86%, transparent) top / 100% 1px no-repeat; }
-  .getin { padding-top: 36px; display: flex; justify-content: space-between; align-items: flex-end; gap: 40px; flex-wrap: wrap; }
-  .get .note { margin: 0; color: var(--dim); font-family: var(--mono); font-size: 11px; letter-spacing: .16em; }
-  .dl { display: flex; gap: 10px; flex-wrap: wrap; }
+  .getin { padding-top: 44px; display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 40px 64px; align-items: end; }
+  .get h1 { margin: 0 0 18px; font-family: var(--serif); font-weight: 400; font-size: clamp(34px, 4.6vw, 62px); line-height: 1.02; letter-spacing: -.025em; text-wrap: balance; }
+  .get .lede { margin: 0; max-width: 560px; color: var(--grey); font-size: clamp(16px, 1.35vw, 19px); line-height: 1.55; text-wrap: pretty; }
+  .get .note { margin: 18px 0 0; color: var(--dim); font-family: var(--mono); font-size: 11px; letter-spacing: .16em; }
+  .dl { display: flex; gap: 10px; flex-wrap: wrap; justify-content: flex-end; }
   /* Filled, not drawn on the void: an outline on a near-black ground is a
      hole with a line round it, and four of them in a row read as a broken
      control. A soft raised surface makes them objects you could press. */
@@ -244,68 +257,83 @@
   .dl a.primary:hover { opacity: .88; }
   .dl a.soon { opacity: .4; pointer-events: none; }
 
-  /* ---- the dust ---------------------------------------------------------
-     A tall section with a stage pinned inside it: the scroll through the
-     section is the progress of the transformation, so the visitor holds it,
-     not a timer. Two and a half screens of scroll for one sentence — long
-     enough that the cloud can be looked at, short enough that nobody is
-     asked to work for it. The caption is the only text: two states, and
-     the one that is true is the one that is lit. */
-  .morph { position: relative; height: 250vh; margin-top: 40px; }
-  .stick { position: sticky; top: 0; height: 100vh; overflow: hidden; }
-  #dust { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
-  .cap { position: absolute; left: 0; right: 0; bottom: 9vh; margin: 0; text-align: center; font-family: var(--mono); font-size: 11px; letter-spacing: .22em; text-transform: uppercase; color: var(--dim); }
-  .cap span { position: absolute; left: 0; right: 0; transition: opacity .5s, color .5s; }
-  .cap span.lit { color: var(--white); }
-  .cap span:not(.lit) { opacity: .0; }
+  /* ---- the fields -------------------------------------------------------
+     Each section is a field of one colour, edge to edge, and the type on it
+     is set once for all of them: a small mono kicker, a serif title, a
+     sans line under it. What changes from field to field is the colour and
+     the thing shown. */
+  .band { padding: 104px 0; }
+  .band .kick { margin: 0 0 16px; font-family: var(--mono); font-size: 11px; letter-spacing: .22em; text-transform: uppercase; opacity: .72; }
+  .band h2 { margin: 0 0 18px; font-family: var(--serif); font-weight: 400; font-size: clamp(34px, 4.4vw, 60px); line-height: 1.02; letter-spacing: -.025em; text-wrap: balance; max-width: 14em; }
+  .band .lede { margin: 0; max-width: 560px; font-size: clamp(16px, 1.35vw, 19px); line-height: 1.55; text-wrap: pretty; }
+  .band .head { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 24px 64px; align-items: end; margin-bottom: 56px; }
+  .on-saffron { background: var(--saffron); color: var(--ink2); }
+  .on-paper { background: var(--paper); color: var(--ink2); }
+  .on-indigo { background: var(--indigo); color: #fff; }
+  .on-teal { background: var(--teal); color: #fff; }
+  .on-sun { background: var(--sun); color: var(--ink2); }
+  .on-saffron .lede, .on-paper .lede, .on-sun .lede { color: var(--ink2-soft); }
+  .on-indigo .lede, .on-teal .lede { color: rgba(255,255,255,.78); }
 
-  /* ---- the materials ----------------------------------------------------
-     One tone, one medium. The line the keyboard was given stays in the hand
-     it arrived in; the line it writes back is set in whatever the tone is
-     made of, and the words and the material change together. */
-  .tones { padding: 96px 0 0; }
-  .tones h2 { margin: 0 0 26px; font-family: var(--serif); font-weight: 400; font-size: clamp(26px, 3vw, 40px); line-height: 1.05; letter-spacing: -.02em; text-wrap: balance; }
-  .said { margin: 0 0 22px; font-family: 'Caveat', 'Kalam', cursive; font-size: clamp(24px, 2.6vw, 32px); line-height: 1.25; color: var(--dim); opacity: 0; transition: opacity .5s; }
-  .said.in { opacity: 1; }
-  .stage { min-height: 172px; display: flex; align-items: center; }
-  .mat { margin: 0; max-width: 900px; color: var(--white); opacity: 0; transition: opacity .45s, color 1.7s; }
-  .mat.in { opacity: 1; }
-  /* Born in the accent: the class is put on and taken off in the same
-     frame, so the colour starts amber and the transition carries it home. */
-  .mat.born { color: var(--amber); transition: opacity .45s, color 0s; }
-  /* PRINT. The page's own serif, a shade under regular, as the river's word. */
-  .m-neutral { font-family: var(--serif); font-weight: 380; font-size: clamp(30px, 3.8vw, 50px); line-height: 1.1; letter-spacing: -.018em; text-wrap: balance; }
-  /* MARKER. The hand, heavier, every word set down at its own angle, with
-     the ragged felt-tip edge from the filter above. */
-  .m-casual { font-family: 'Caveat', 'Kalam', cursive; font-weight: 600; font-size: clamp(34px, 4.6vw, 60px); line-height: 1.15; filter: url(#ink); }
-  .m-casual span { display: inline-block; transform: rotate(var(--r, 0deg)); }
-  /* THE PLATE. Capitals, spaced, and cut rather than filled: the letters are
-     hatched with the same diagonal that hatches the link in the mark, so
-     the formal tone is engraved on the page rather than printed on it. */
-  .m-formal {
-    font-family: var(--serif); font-weight: 500; font-size: clamp(22px, 2.9vw, 36px); line-height: 1.32; letter-spacing: .1em; text-transform: uppercase;
-    color: transparent;
-    background: repeating-linear-gradient(115deg, rgba(243,226,198,.94) 0 1.1px, rgba(243,226,198,.24) 1.1px 2.6px);
-    -webkit-background-clip: text; background-clip: text;
-  }
-  /* THE POSTER. A heavy grotesque, tight, leaning, every letter arriving on
-     its own beat — the one tone that is allowed to shout. */
-  .m-excited { font-family: 'Bricolage Grotesque', var(--sans); font-weight: 800; font-size: clamp(38px, 5.6vw, 72px); line-height: .96; letter-spacing: -.03em; text-transform: uppercase; transform: skewX(-4deg); }
-  .m-excited .w { display: inline-block; white-space: nowrap; }
-  .m-excited .l { display: inline-block; opacity: 0; transform: translateY(.35em); animation: pop .5s cubic-bezier(.2, .9, .25, 1) forwards; }
-  @keyframes pop { to { opacity: 1; transform: none; } }
-  .chips { display: flex; flex-wrap: wrap; gap: 6px 22px; margin-top: 34px; }
-  .chips button {
-    appearance: none; border: 0; background: none; padding: 6px 0; cursor: pointer;
-    font-family: var(--mono); font-size: 11px; letter-spacing: .18em; text-transform: uppercase; color: var(--dim);
-    border-bottom: 1px solid transparent; transition: color .2s, border-color .2s;
-  }
-  .chips button:hover { color: var(--white); }
-  .chips button[aria-selected="true"] { color: var(--white); border-bottom-color: var(--white); }
+  /* THE STEPS. Three, numbered, because they happen in this order. Big
+     numerals in the serif, so the order is the picture. */
+  .steps { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 28px; }
+  .step { border-top: 1.5px solid rgba(27,23,18,.35); padding-top: 22px; }
+  .step .n { font-family: var(--serif); font-size: 56px; line-height: 1; letter-spacing: -.03em; margin: 0 0 18px; }
+  .step h3 { margin: 0 0 10px; font-family: var(--sans); font-weight: 500; font-size: 20px; letter-spacing: -.01em; }
+  .step p { margin: 0; color: var(--ink2-soft); font-size: 16px; line-height: 1.55; }
 
-  footer { background: var(--wash); color: var(--dim); }
-  footer .in { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px; padding: 26px 0 40px; font-size: 13px; }
+  /* THE TONES. One line said, four cards written, each card the colour of
+     its tone: the words and the colour say the same thing. */
+  .said { margin: 0 0 26px; font-family: 'Caveat', 'Kalam', cursive; font-size: clamp(26px, 2.8vw, 36px); line-height: 1.25; color: var(--ink2-soft); }
+  .said::before { content: "you said: "; font-family: var(--mono); font-size: 11px; letter-spacing: .18em; text-transform: uppercase; vertical-align: middle; margin-right: 10px; opacity: .8; }
+  .tonegrid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
+  .tcard { border-radius: 18px; padding: 24px 24px 26px; min-height: 220px; display: flex; flex-direction: column; justify-content: space-between; transition: transform .25s cubic-bezier(.2,.8,.2,1); }
+  .tcard:hover { transform: translateY(-4px); }
+  .tcard .tn { font-family: var(--mono); font-size: 11px; letter-spacing: .2em; text-transform: uppercase; opacity: .8; }
+  .tcard p { margin: 22px 0 0; font-family: var(--serif); font-size: clamp(20px, 1.7vw, 24px); line-height: 1.25; letter-spacing: -.01em; text-wrap: pretty; }
+  .t0 { background: var(--sky); color: var(--ink2); }
+  .t1 { background: var(--rose); color: #fff; }
+  .t2 { background: var(--indigo); color: #fff; }
+  .t3 { background: var(--sun); color: var(--ink2); }
+
+  /* THE APPS. Four text fields as the apps draw them, each carrying a line
+     Tailzu wrote, so the claim "everywhere you type" is four places. */
+  .fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+  .field { border-radius: 18px; padding: 20px 22px; background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.14); }
+  .field .fn { font-family: var(--mono); font-size: 11px; letter-spacing: .2em; text-transform: uppercase; opacity: .72; margin-bottom: 14px; }
+  .bubble { display: inline-block; max-width: 92%; padding: 12px 16px; border-radius: 18px 18px 4px 18px; background: var(--leaf); color: var(--ink2); font-size: 16px; line-height: 1.4; }
+  .mail { background: #fff; color: var(--ink2); border-radius: 10px; padding: 14px 16px; font-size: 16px; line-height: 1.45; }
+  .mail .to { font-family: var(--mono); font-size: 11px; letter-spacing: .12em; color: var(--ink2-soft); margin-bottom: 8px; }
+  .memo { background: var(--butter); color: var(--ink2); border-radius: 10px; padding: 14px 16px; font-size: 16px; line-height: 1.45; font-family: var(--serif); }
+  .search { background: #fff; color: var(--ink2); border-radius: 999px; padding: 12px 18px; font-size: 16px; display: flex; align-items: center; gap: 12px; }
+  .search::before { content: ""; width: 14px; height: 14px; border: 2px solid var(--ink2-soft); border-radius: 50%; box-shadow: 5px 5px 0 -3px var(--ink2-soft); flex: none; }
+
+  /* THE DESK. One key, drawn. */
+  .desk { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 40px 64px; align-items: center; }
+  .key { justify-self: center; width: 180px; height: 180px; border-radius: 28px; background: linear-gradient(180deg, #fff, #E7EEEC); color: var(--teal-deep); box-shadow: 0 22px 0 #B9CCC8, 0 34px 60px -20px rgba(0,0,0,.45); display: grid; place-items: center; font-family: var(--mono); font-size: 13px; letter-spacing: .2em; text-transform: uppercase; transition: transform .12s, box-shadow .12s; }
+  .key:active { transform: translateY(14px); box-shadow: 0 8px 0 #B9CCC8, 0 20px 40px -20px rgba(0,0,0,.45); }
+  .key b { display: block; font-family: var(--serif); font-weight: 400; font-size: 64px; letter-spacing: 0; text-transform: none; line-height: 1; margin-bottom: 8px; }
+
+  /* THE PRICE. One number, big. */
+  .free { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 32px 64px; align-items: end; }
+  .free .big { font-family: var(--serif); font-size: clamp(64px, 9vw, 128px); line-height: .95; letter-spacing: -.04em; margin: 0; font-variant-numeric: tabular-nums; }
+  .free .big small { display: block; font-family: var(--mono); font-size: 11px; letter-spacing: .22em; text-transform: uppercase; margin-top: 14px; opacity: .72; }
+  .free .dl { justify-content: flex-start; margin-top: 22px; }
+  .on-sun .dl a { background: rgba(27,23,18,.08); border-color: rgba(27,23,18,.16); box-shadow: none; color: var(--ink2); }
+  .on-sun .dl a:hover { background: rgba(27,23,18,.14); }
+  .on-sun .dl a.primary { background: var(--ink2); border-color: var(--ink2); color: var(--sun); }
+
+  /* THE QUESTIONS. Real ones, with answers that fit on a card. */
+  .faq { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px 40px; }
+  .qa { border-top: 1px solid var(--line); padding: 22px 0 8px; }
+  .qa h3 { margin: 0 0 8px; font-family: var(--serif); font-weight: 400; font-size: 24px; letter-spacing: -.015em; }
+  .qa p { margin: 0; color: var(--ink2-soft); font-size: 16px; line-height: 1.55; }
+
+  footer { background: var(--ink); color: var(--dim); }
+  footer .in { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px; padding: 34px 0 44px; font-size: 13px; }
   footer nav { display: flex; gap: 24px; }
+  footer nav a:hover { color: var(--white); }
 
   /* ---- material -------------------------------------------------------- */
   /* GRAIN. A dark gradient on a screen is bands of colour, and bands are
@@ -324,7 +352,7 @@
     content: ""; position: fixed; left: 0; right: 0; top: 0; height: 42vh; z-index: 0; pointer-events: none;
     background: linear-gradient(180deg, rgba(243,226,198,.032), transparent);
   }
-  .wrap, .river, .get, footer { position: relative; z-index: 1; }
+  .wrap, .river, .get, .band, footer { position: relative; z-index: 1; }
 
   /* THE MARK IS ALIVE, QUIETLY. The hatched link is the product — one square
      becoming another — so the hatching travels along it, from the first
@@ -343,10 +371,18 @@
   @media (max-width: 900px) {
     .river { height: 380px; }
     .mast nav a:not(.cta) { display: none; }
+    .getin, .band .head, .desk, .free { grid-template-columns: minmax(0, 1fr); }
+    .dl { justify-content: flex-start; }
+    .steps { grid-template-columns: minmax(0, 1fr); gap: 18px; }
+    .tonegrid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .faq { grid-template-columns: minmax(0, 1fr); }
+    .band { padding: 76px 0; }
   }
   @media (max-width: 560px) {
     .river { height: 320px; }
     .speak span { font-size: 12.5px; }
+    .tonegrid, .fields { grid-template-columns: minmax(0, 1fr); }
+    .key { width: 150px; height: 150px; }
   }
   @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after { animation: none !important; transition: none !important; }
@@ -418,47 +454,14 @@
   </button>
 </div>
 
-<!-- BELOW THE RIVER: two set pieces, no features.
-
-     THE DUST. One sentence, the way it was said, in handwriting. Scroll, and
-     it breaks into a few thousand grains that fly and settle as the sentence
-     the way it was meant, in type. The visitor drives it with the scroll
-     and can stop it anywhere — halfway is a cloud, and a cloud that has not
-     landed yet is what keeps a hand on the wheel. Pointillism, then print.
-
-     THE MATERIALS. The same words in each of the keyboard's tones, and each
-     tone is a different medium, not just different words: print, marker,
-     an engraved plate, a poster. The words change and so does the thing
-     they are made of. -->
-<section class="morph" id="morph" aria-label="What you said, becoming what you meant">
-  <div class="stick">
-    <canvas id="dust" aria-hidden="true"></canvas>
-    <p class="cap" aria-hidden="true"><span id="capA">what you said</span><span id="capB">what you meant</span></p>
-  </div>
-</section>
-
-<section class="tones reveal" id="tone">
-  <div class="wrap">
-    <h2 id="toneTitle">Same words. Your tone.</h2>
-    <p class="said" id="toneSaid"></p>
-    <div class="stage"><p class="mat" id="toneWrote"></p></div>
-    <div class="chips" id="toneChips" role="tablist" aria-label="Tone"></div>
-  </div>
-</section>
-<!-- The marker's ink: a whisper of displacement, so a hand-written line has
-     the ragged edge a felt tip leaves and not the vector edge a font has. -->
-<svg width="0" height="0" style="position:absolute" aria-hidden="true">
-  <filter id="ink" x="-2%" y="-5%" width="104%" height="110%">
-    <feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="2" seed="3" result="n"/>
-    <feDisplacementMap in="SourceGraphic" in2="n" scale="2.4" xChannelSelector="R" yChannelSelector="G"/>
-  </filter>
-</svg>
-
+<!-- THE WORDS. Headline, one line, the buttons — on the dark, straight after
+     the river, before the page opens into colour. -->
 <section class="get">
   <div class="wrap">
     <div class="getin hair reveal">
       <div>
-        <h3 id="getTitle">Free to start.</h3>
+        <h1 id="heroTitle">Say it badly. Send it perfectly.</h1>
+        <p class="lede" id="heroLede">Talk the way you talk — half Hindi, half English, ums and all. Tailzu turns it into the sentence you meant, in your tone, in any app.</p>
         <p class="note" id="platforms">MAC · WINDOWS · iPHONE · ANDROID</p>
       </div>
       <div class="dl" id="dl"></div>
@@ -466,8 +469,80 @@
   </div>
 </section>
 
+<!-- THE FIELDS. Six of them, each one colour, each one thing:
+     how it works, the tones, the apps, the desk, the price, the questions.
+     Every word comes from the backend; these are the fallbacks. -->
+<section class="band on-saffron reveal" id="how">
+  <div class="wrap">
+    <div class="head">
+      <div><p class="kick" id="howKick">How it works</p><h2 id="howTitle">Talk. It writes.</h2></div>
+      <p class="lede" id="howLede">No commands, no script. Speak the way you speak and send what you meant.</p>
+    </div>
+    <div class="steps" id="steps"></div>
+  </div>
+</section>
+
+<section class="band on-paper reveal" id="tone">
+  <div class="wrap">
+    <div class="head">
+      <div><p class="kick" id="toneKick">Tone</p><h2 id="toneTitle">Same words. Your tone.</h2></div>
+      <p class="lede" id="toneLede">Pick a tone once and every message wears it. Change it in one tap when the room changes.</p>
+    </div>
+    <p class="said" id="toneSaid"></p>
+    <div class="tonegrid" id="toneGrid"></div>
+  </div>
+</section>
+
+<section class="band on-indigo reveal" id="apps">
+  <div class="wrap">
+    <div class="head">
+      <div><p class="kick" id="appsKick">Everywhere</p><h2 id="appsTitle">It's a keyboard. It works everywhere you type.</h2></div>
+      <p class="lede" id="appsLede">WhatsApp, Mail, Slack, Notes, the search bar. Anywhere a keyboard opens, Tailzu opens with it.</p>
+    </div>
+    <div class="fields" id="fields"></div>
+  </div>
+</section>
+
+<section class="band on-teal reveal" id="desk">
+  <div class="wrap">
+    <div class="desk">
+      <div>
+        <p class="kick" id="deskKick">On the desk</p>
+        <h2 id="deskTitle">Mac and Windows too.</h2>
+        <p class="lede" id="deskLede">Press a key, talk, let go. The words land wherever your cursor is — any app, any window.</p>
+      </div>
+      <div class="key" role="img" aria-label="A key"><span><b id="deskKey">F9</b><span id="deskKeyLabel">hold to talk</span></span></div>
+    </div>
+  </div>
+</section>
+
+<section class="band on-sun reveal" id="free">
+  <div class="wrap">
+    <div class="free">
+      <div>
+        <p class="kick" id="freeKick">Price</p>
+        <p class="big"><span id="freeN">800</span><small id="freeUnit">free words a month</small></p>
+      </div>
+      <div>
+        <h2 id="freeTitle">Free to start.</h2>
+        <p class="lede" id="freeLede">On us, every month. No card. Upgrade when you need more.</p>
+        <div class="dl" id="dl2"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="band on-paper reveal" id="questions">
+  <div class="wrap">
+    <div class="head">
+      <div><p class="kick" id="faqKick">Questions</p><h2 id="faqTitle">Asked, answered.</h2></div>
+    </div>
+    <div class="faq" id="faq"></div>
+  </div>
+</section>
+
 <footer>
-  <div class="wrap"><div class="in hair">
+  <div class="wrap"><div class="in">
     <span>© 2026 Tailzu</span>
     <nav><a href="/privacy">Privacy</a><a href="/terms">Terms</a><a href="/download">Download</a></nav>
   </div></div>
@@ -514,17 +589,59 @@
       { said: "yani sey saat yedi gibi gelebilirim heralde",       wrote: "Yani saat yedi gibi gelebilirim, herhalde." },
       { said: "ano eto nakaka pagod pero tapos na yung report",    wrote: "Nakakapagod, pero tapos na yung report." }
     ],
-    // Below the river: the dust and the materials. The tone names are the
-    // keyboard's own.
-    morph: { said: "um so like can we push the call to four", wrote: "Can we push the call to four?", from: "what you said", to: "what you meant" },
+    // THE WORDS BELOW THE RIVER. The backend's; these stand in until it
+    // answers. {n} is the free monthly word count the backend reports.
+    hero: {
+      title: "Say it badly. Send it perfectly.",
+      lede: "Talk the way you talk — half Hindi, half English, ums and all. Tailzu turns it into the sentence you meant, in your tone, in any app."
+    },
+    how: {
+      kick: "How it works", title: "Talk. It writes.",
+      lede: "No commands, no script. Speak the way you speak and send what you meant.",
+      steps: [
+        { title: "Speak", text: "Tap the mic on your keyboard and just talk. Mid-sentence changes of mind are fine." },
+        { title: "It listens in your language", text: "Twenty-two Indian languages and most of the world's. Mix two in one breath and it keeps both." },
+        { title: "It writes what you meant", text: "Fillers gone. Names and amounts untouched. A misheard word repaired. A sentence you would actually send." }
+      ]
+    },
     tone: {
-      title: "Same words. Your tone.",
+      kick: "Tone", title: "Same words. Your tone.",
+      lede: "Pick a tone once and every message wears it. Change it in one tap when the room changes.",
       said: "hey can u send the file tonight its kinda urgent",
       tones: [
         { name: "Neutral", text: "Can you send the file tonight? It's fairly urgent." },
         { name: "Casual",  text: "Hey, can you send the file tonight? Kinda urgent." },
         { name: "Formal",  text: "Could you please send the file this evening? It is time-sensitive." },
         { name: "Excited", text: "Can you send the file tonight? Can't wait to dig in!" }
+      ]
+    },
+    apps: {
+      kick: "Everywhere", title: "It's a keyboard. It works everywhere you type.",
+      lede: "WhatsApp, Mail, Slack, Notes, the search bar. Anywhere a keyboard opens, Tailzu opens with it.",
+      fields: [
+        { kind: "message", app: "Message", text: "Can we push the call to four?" },
+        { kind: "mail", app: "Mail", to: "To: Priya", text: "The deploy is done, but abhi testing baaki hai." },
+        { kind: "memo", app: "Notes", text: "Transfer 2500 rupees to Ramesh tomorrow." },
+        { kind: "search", app: "Search", text: "Flights to Goa, Friday evening" }
+      ]
+    },
+    desk: {
+      kick: "On the desk", title: "Mac and Windows too.",
+      lede: "Press a key, talk, let go. The words land wherever your cursor is — any app, any window.",
+      key: "F9", keyLabel: "hold to talk"
+    },
+    free: {
+      kick: "Price", unit: "free words a month", title: "Free to start.",
+      lede: "On us, every month. No card. Upgrade when you need more."
+    },
+    faq: {
+      kick: "Questions", title: "Asked, answered.",
+      items: [
+        { q: "Does it work in WhatsApp?", a: "Yes. Tailzu is a keyboard, so it works in every app on your phone — WhatsApp, Instagram, Mail, Notes, anything with a text field." },
+        { q: "Which languages?", a: "Twenty-two Indian languages and most of the world's. Mix two in one sentence and it keeps both." },
+        { q: "Does it change what I said?", a: "It cleans, it does not rewrite. Fillers go, facts stay, names and amounts are never touched. A tone changes how it sounds, not what it says." },
+        { q: "Is it free?", a: "Free to start, with {n} words a month. Upgrade when you need more." },
+        { q: "Phone or desk?", a: "Both. iPhone and Android as a keyboard. Mac and Windows as a key you press to talk." }
       ]
     },
     download: { win: "Windows", mac: "macOS", linux: "Linux", ios: "iPhone", android: "Android", soon: "soon" }
@@ -1166,6 +1283,7 @@
       if (!ok) a.setAttribute("aria-disabled", "true");
       el.appendChild(a);
     });
+    var el2 = $("dl2"); if (el2) el2.innerHTML = el.innerHTML;
     if (has(mine)) $("navdl").href = FILES[mine];
   }
 
@@ -1180,245 +1298,78 @@
   }
 
   /* ---------------------------------------------------------------------
-     THE DUST
+     THE FIELDS
 
-     One sentence sampled twice: as it was said, in the hand, and as it was
-     meant, in type. Every grain of the first has a place in the second —
-     paired left to right, so the start of the said line flows into the
-     start of the written one and the sentence reads as pouring into itself
-     rather than being shuffled. The scroll is the clock: the visitor holds
-     it, and can hold it halfway, where it is a cloud. Between the two the
-     grains fly on their own vectors and glow warm at the top of the arc,
-     then settle pale as print — born amber, cooled to the reading colour,
-     the same rule as everything else on this page.
-
-     Sampled at the size it is shown, on a hidden canvas, whenever the stage
-     changes size or the words arrive from the server. Drawn only while the
-     stage is on screen and only when the scroll has moved.               */
-  var morphEl = $("morph"), stick = morphEl.firstElementChild, dust = $("dust"), gd = dust.getContext("2d");
-  var capA = $("capA"), capB = $("capB");
-  var grains = null, mp = -1, mOn = false, mW = 0, mH = 0, mDPR = 1, lineA = null, lineB = null;
-
-  function wrapWords(ctx, text, maxW) {
-    var words = text.split(/\s+/), lines = [], cur = "";
-    words.forEach(function (w) {
-      var t = cur ? cur + " " + w : w;
-      if (ctx.measureText(t).width > maxW && cur) { lines.push(cur); cur = w; } else cur = t;
-    });
-    if (cur) lines.push(cur);
-    return lines;
+     Every word in them is the backend's (C); the page only lays them out.
+     Text goes in as text, never as markup, so a stray angle bracket in a
+     sentence prints rather than renders. {n} is the free word count the
+     backend reports beside the copy, so the number on the page is the one
+     the server is actually charging. */
+  function el(tag, cls, text) {
+    var e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (text != null) e.textContent = text;
+    return e;
   }
-  /** The largest size at which the text sits in two lines at most. */
-  function layText(ctx, text, font, weight, maxW, start, minSize) {
-    var size = start, lines;
-    for (;;) {
-      ctx.font = weight + " " + size + "px " + font;
-      lines = wrapWords(ctx, text, maxW);
-      if (lines.length <= 2 || size <= minSize) break;
-      size -= 2;
-    }
-    return { font: ctx.font, size: size, lines: lines };
-  }
-  function drawLines(ctx, L, cx, cy, alpha, color) {
-    ctx.font = L.font; ctx.textAlign = "center"; ctx.textBaseline = "middle";
-    ctx.fillStyle = color; ctx.globalAlpha = alpha;
-    var lh = L.size * 1.18, y0 = cy - (L.lines.length - 1) * lh / 2;
-    for (var i = 0; i < L.lines.length; i++) ctx.fillText(L.lines[i], cx, y0 + i * lh);
-    ctx.globalAlpha = 1;
-  }
-  /** Where the ink is, as points on a 3px grid, left to right. */
-  function sampleLines(L, w, h) {
-    var off = document.createElement("canvas"); off.width = w; off.height = h;
-    var c = off.getContext("2d");
-    drawLines(c, L, w / 2, h / 2, 1, "#fff");
-    var d = c.getImageData(0, 0, w, h).data, pts = [], step = 3, r = seeded(5);
-    for (var y = 0; y < h; y += step) for (var x = 0; x < w; x += step) {
-      if (d[(y * w + x) * 4 + 3] > 110) pts.push([x + (r() - 0.5) * 1.6, y + (r() - 0.5) * 1.6]);
-    }
-    pts.sort(function (a, b) { return a[0] - b[0] || a[1] - b[1]; });
-    return pts;
-  }
-  function buildMorph() {
-    mW = stick.clientWidth; mH = stick.clientHeight;
-    if (!mW || !mH) return;
-    mDPR = Math.min(2, window.devicePixelRatio || 1);
-    dust.width = Math.round(mW * mDPR); dust.height = Math.round(mH * mDPR);
-    var maxW = Math.min(1100, mW * 0.86), big = Math.min(84, mW / 9);
-    lineA = layText(gd, C.morph.said, "'Caveat','Kalam',cursive", "400", maxW, big, 26);
-    lineB = layText(gd, C.morph.wrote, "'Newsreader',Georgia,serif", "400", maxW, big, 24);
-    var A = sampleLines(lineA, mW, mH), B = sampleLines(lineB, mW, mH);
-    if (!A.length || !B.length) { grains = null; return; }
-    var N = Math.min(3200, Math.max(A.length, B.length));
-    grains = [];
-    var r = seeded(7);
-    for (var i = 0; i < N; i++) {
-      var a = A[Math.floor(i * A.length / N)], b = B[Math.floor(i * B.length / N)];
-      // Each grain's own flight: a random vector, biased upward and to the
-      // right, so the cloud lifts and leans the way the river runs.
-      var ang = r() * 6.2832, mag = 20 + r() * r() * 150;
-      grains.push({ ax: a[0], ay: a[1], bx: b[0], by: b[1],
-                    dx: Math.cos(ang) * mag + 18, dy: Math.sin(ang) * mag - 34,
-                    s: 1.0 + r() * 1.7, o: r() });
-    }
-    mp = -1; drawMorph(true);
-  }
-  function morphProgress() {
-    var r = morphEl.getBoundingClientRect(), vh = window.innerHeight;
-    var p = -r.top / (r.height - vh);
-    return p < 0 ? 0 : p > 1 ? 1 : p;
-  }
-  var INKA = [243, 226, 198], INKB = [232, 162, 60];
-  function drawMorph(force) {
-    if (!grains) return;
-    var p = reduced ? 1 : morphProgress();
-    if (!force && p === mp) return;
-    mp = p;
-    gd.setTransform(mDPR, 0, 0, mDPR, 0, 0);
-    gd.clearRect(0, 0, mW, mH);
-    var t = p * p * (3 - 2 * p), k = Math.sin(Math.PI * t);
-    // The hand is crisp until the first grains lift; the type is crisp once
-    // the last ones have landed. Between, only grains.
-    var inA = Math.max(0, Math.min(1, (0.12 - p) / 0.08)), inB = Math.max(0, Math.min(1, (p - 0.88) / 0.08));
-    if (inA > 0) drawLines(gd, lineA, mW / 2, mH / 2, inA, "rgba(243,226,198,.62)");
-    if (inB > 0) drawLines(gd, lineB, mW / 2, mH / 2, inB, "#F3E2C6");
-    var ga = 1 - Math.max(inA, inB);
-    if (ga > 0.01) {
-      // Warm at the top of the arc, pale at rest: a grain in flight is alive.
-      var c = [0, 1, 2].map(function (i) { return Math.round(INKA[i] + (INKB[i] - INKA[i]) * k); });
-      gd.fillStyle = "rgb(" + c.join(",") + ")";
-      for (var i = 0; i < grains.length; i++) {
-        var g = grains[i];
-        // Not all at once: each grain leaves a little after the last and
-        // lands a little after it, so the sentence lifts off like a flock
-        // and comes down like one, instead of jumping as a block.
-        var ti = (t - g.o * 0.22) / 0.78; ti = ti < 0 ? 0 : ti > 1 ? 1 : ti;
-        var ki = Math.sin(Math.PI * ti);
-        var x = g.ax + (g.bx - g.ax) * ti + g.dx * ki, y = g.ay + (g.by - g.ay) * ti + g.dy * ki;
-        gd.globalAlpha = ga * (0.4 + 0.6 * g.o) * (1 - ki * 0.3);
-        gd.fillRect(x, y, g.s, g.s);
-      }
-      gd.globalAlpha = 1;
-    }
-    var lit = p > 0.5;
-    capB.classList.toggle("lit", lit); capA.classList.toggle("lit", !lit);
-  }
-  if (window.IntersectionObserver) {
-    new IntersectionObserver(function (es) { mOn = es[0].isIntersecting; if (mOn) drawMorph(true); }, { threshold: 0 }).observe(morphEl);
-  } else { mOn = true; }
-  var mraf = 0;
-  window.addEventListener("scroll", function () {
-    if (!mOn || mraf) return;
-    mraf = requestAnimationFrame(function () { mraf = 0; drawMorph(false); });
-  }, { passive: true });
-
-  /* ---------------------------------------------------------------------
-     THE MATERIALS
-
-     The tones play themselves — a new one every few seconds, born in the
-     accent and cooling — and stop the moment a visitor picks a chip, for
-     ten seconds, so the thing they chose stays put. Nothing runs while the
-     section is off the screen or the tab is hidden, and under reduced
-     motion nothing runs at all: the chips still switch, instantly.
-
-     Each tone is a medium (see the css). The medium is chosen from the
-     tone's name, so a backend that renames or reorders them still lands
-     each on the right material, and an unknown one is set in print.     */
-  function born(el) { el.classList.add("born"); void el.offsetWidth; el.classList.remove("born"); }
-  function material(name) {
-    var n = (name || "").toLowerCase();
-    return /casual|friend|chill/.test(n) ? "casual"
-         : /formal|profess|polite/.test(n) ? "formal"
-         : /excit|hype|energ|bold/.test(n) ? "excited" : "neutral";
-  }
-  function setMaterial(el, name, text) {
-    var kind = material(name);
-    el.className = "mat m-" + kind;
-    el.innerHTML = "";
-    if (kind === "excited") {
-      // Every letter on its own beat, inside its word so a line breaks
-      // between words and never inside one.
-      var d = 0;
-      text.split(/\s+/).forEach(function (w, i) {
-        if (!w) return;
-        if (i) el.appendChild(document.createTextNode(" "));
-        var ws = document.createElement("span"); ws.className = "w";
-        w.split("").forEach(function (ch) {
-          var s = document.createElement("span"); s.className = "l";
-          s.textContent = ch;
-          s.style.animationDelay = (d++ * 22) + "ms";
-          ws.appendChild(s);
-        });
-        el.appendChild(ws);
-      });
-    } else if (kind === "casual") {
-      // Every word set down at its own angle.
-      var r = seeded(11);
-      text.split(/\s+/).forEach(function (w, i) {
-        if (!w) return;
-        if (i) el.appendChild(document.createTextNode(" "));
-        var s = document.createElement("span");
-        s.textContent = w;
-        s.style.setProperty("--r", ((r() - 0.5) * 5).toFixed(2) + "deg");
-        el.appendChild(s);
-      });
-    } else {
-      el.textContent = text;
-    }
-  }
-  function chips(el, names, sel, onPick) {
-    el.innerHTML = "";
-    names.forEach(function (n, i) {
-      var b = document.createElement("button");
-      b.type = "button"; b.setAttribute("role", "tab"); b.textContent = n;
-      b.setAttribute("aria-selected", i === sel ? "true" : "false");
-      b.addEventListener("click", function () { onPick(i); });
-      el.appendChild(b);
-    });
-  }
-  function selectChip(el, i) {
-    [].forEach.call(el.children, function (b, k) { b.setAttribute("aria-selected", k === i ? "true" : "false"); });
-  }
-  /** One self-playing block: a list, a way to show item i, and a beat. */
-  function player(sectionId, show, count, beat) {
-    var i = 0, t = 0, on = false, hold = 0;
-    function tick() {
-      clearTimeout(t);
-      if (reduced || !on || hold || document.hidden) return;
-      t = setTimeout(function () { i = (i + 1) % count(); show(i); tick(); }, beat);
-    }
-    function pick(k) {
-      // The beat already counting must die with the choice, or it lands a
-      // second later and swaps out the thing that was just picked.
-      clearTimeout(t);
-      i = k; show(i);
-      clearTimeout(hold); hold = setTimeout(function () { hold = 0; tick(); }, 10000);
-    }
-    if (window.IntersectionObserver) {
-      new IntersectionObserver(function (es) {
-        on = es[0].isIntersecting;
-        if (on) tick(); else clearTimeout(t);
-      }, { threshold: 0.25 }).observe($(sectionId));
-    } else { on = true; }
-    document.addEventListener("visibilitychange", function () { if (document.hidden) clearTimeout(t); else tick(); });
-    return { pick: pick, restart: function () { show(i); tick(); }, at: function () { return i; } };
-  }
-  var tones = player("tone", function (i) {
-    var w = $("toneWrote"), tn = C.tone.tones[i];
-    w.classList.remove("in"); clearTimeout(w._t);
-    w._t = setTimeout(function () { setMaterial(w, tn.name, tn.text); born(w); w.classList.add("in"); }, 160);
-    selectChip($("toneChips"), i);
-  }, function () { return C.tone.tones.length; }, 4200);
+  function fill(s) { return String(s).replace(/\{n\}/g, String(site.freeWords || 800)); }
+  function setText(id, s) { var e = $(id); if (e && s != null) e.textContent = fill(s); }
 
   function paintBelow() {
-    capA.textContent = C.morph.from; capB.textContent = C.morph.to;
-    $("toneTitle").textContent = C.tone.title;
-    var s = $("toneSaid"); s.textContent = C.tone.said; s.classList.add("in");
-    chips($("toneChips"), C.tone.tones.map(function (t) { return t.name; }), tones.at(), tones.pick);
-    tones.restart();
+    setText("heroTitle", C.hero.title); setText("heroLede", C.hero.lede);
+
+    setText("howKick", C.how.kick); setText("howTitle", C.how.title); setText("howLede", C.how.lede);
+    var steps = $("steps"); steps.innerHTML = "";
+    C.how.steps.forEach(function (s, i) {
+      var d = el("div", "step");
+      d.appendChild(el("p", "n", "0" + (i + 1)));
+      d.appendChild(el("h3", null, s.title));
+      d.appendChild(el("p", null, s.text));
+      steps.appendChild(d);
+    });
+
+    setText("toneKick", C.tone.kick); setText("toneTitle", C.tone.title); setText("toneLede", C.tone.lede);
+    setText("toneSaid", C.tone.said);
+    var tg = $("toneGrid"); tg.innerHTML = "";
+    C.tone.tones.forEach(function (t, i) {
+      var d = el("div", "tcard t" + (i % 4));
+      d.appendChild(el("span", "tn", t.name));
+      d.appendChild(el("p", null, t.text));
+      tg.appendChild(d);
+    });
+
+    setText("appsKick", C.apps.kick); setText("appsTitle", C.apps.title); setText("appsLede", C.apps.lede);
+    var fs = $("fields"); fs.innerHTML = "";
+    C.apps.fields.forEach(function (f) {
+      var d = el("div", "field");
+      d.appendChild(el("div", "fn", f.app));
+      if (f.kind === "mail") {
+        var m = el("div", "mail");
+        m.appendChild(el("div", "to", f.to || ""));
+        m.appendChild(el("div", null, f.text));
+        d.appendChild(m);
+      } else {
+        d.appendChild(el("div", f.kind === "message" ? "bubble" : f.kind === "memo" ? "memo" : "search", f.text));
+      }
+      fs.appendChild(d);
+    });
+
+    setText("deskKick", C.desk.kick); setText("deskTitle", C.desk.title); setText("deskLede", C.desk.lede);
+    setText("deskKey", C.desk.key); setText("deskKeyLabel", C.desk.keyLabel);
+
+    setText("freeKick", C.free.kick); setText("freeN", "{n}"); setText("freeUnit", C.free.unit);
+    setText("freeTitle", C.free.title); setText("freeLede", C.free.lede);
+
+    setText("faqKick", C.faq.kick); setText("faqTitle", C.faq.title);
+    var fq = $("faq"); fq.innerHTML = "";
+    C.faq.items.forEach(function (it) {
+      var d = el("div", "qa");
+      d.appendChild(el("h3", null, it.q));
+      d.appendChild(el("p", null, fill(it.a)));
+      fq.appendChild(d);
+    });
   }
 
   function applyCopy() {
-    $("getTitle").textContent = C.get;
     $("micLabel").textContent = C.cta;
     paintDownloads();
     paintBelow();
@@ -1566,7 +1517,6 @@
     if (!reduced && !rraf) { last = 0; rraf = requestAnimationFrame(river); }
     placeControl();
     placePool();
-    buildMorph();
   }
   // The river measures text along a path, so it must not be laid out before
   // the face lands or every offset is computed for a fallback and jumps.
@@ -1575,7 +1525,7 @@
   var rt = 0;
   window.addEventListener("resize", function () {
     clearTimeout(rt);
-    rt = setTimeout(function () { sizeCanvas(); loadRiver(); placeControl(); measureGate(); buildMorph(); }, 200);
+    rt = setTimeout(function () { sizeCanvas(); loadRiver(); placeControl(); measureGate(); }, 200);
   });
 
   // The hand comes from the font host, and the canvas measures words in
@@ -1584,7 +1534,7 @@
   // is laid out again once the hand has arrived.
   if (document.fonts && document.fonts.load) {
     Promise.all([document.fonts.load("14px Caveat"), document.fonts.load("14px Kalam")])
-      .then(function () { if (!own) loadRiver(); measureGate(); buildMorph(); }, function () {});
+      .then(function () { if (!own) loadRiver(); measureGate(); }, function () {});
   }
 
   fetch(API + "/v1/site").then(function (r) { return r.json(); }).then(function (j) {
@@ -1596,7 +1546,6 @@
     }
     applyCopy();
     if (!own) { sizeCanvas(); loadRiver(); }        // the server may have sent other lines
-    buildMorph();
   }).catch(function () { /* the fallbacks are already on screen */ });
 })();
 </script>
