@@ -13,46 +13,44 @@ page back, so the legal text is never unreachable.
 
 ## The river
 
-Seven lanes of speech pour in from the left, are swallowed at the caret, and
-one sentence leaves to the right. Many in, one out: the shape of the picture
-is the shape of the product.
+Thirteen lanes of speech arrive over the top edge, across the left, and up
+from underneath — speech does not queue politely from one side. They converge
+on the caret, and one line goes the other way.
 
 **The left is ugly on purpose.** Speech has no typography, so the lanes have
 none either — each is set in whatever face the machine happens to have, at
 whatever size, with no two agreeing: Comic Sans, Courier, Times, Verdana,
-Trebuchet, Georgia, Arial. Nothing there is loaded from a font host, because
-the whole point is that these are the defaults nobody chose. The right is one
-line with every decision on it made on purpose. That contrast is the argument.
+Trebuchet, Georgia, Arial, Lucida, Tahoma, Palatino. Nothing there is loaded
+from a font host, because the whole point is that these are the defaults
+nobody chose.
 
-The lanes arriving are curved and crowded; the one leaving is dead level, out
-of the middle of the caret. Every lane carries a `dy` of a third of an em,
-because a textPath puts the BASELINE on the path and without it the text
-floats a third of its own height above the line it is running along.
+**The right is not an example, it is the identity.** `SITE_UI.identity` is
+what leaves the caret when nobody has spoken: what the product is, in the only
+face on the page anybody chose, at a quarter of the inbound pace. Everything
+rushing in, one line leaving at reading speed. A visitor's own sentence
+replaces it the moment they press the button, because that is the better
+argument.
+
+No two inbound speeds match and none is a multiple of another, so the
+bombardment never falls into step with itself and starts reading as a pattern.
+They carry interleaved cases, so a dozen scripts are on screen at once.
+
+Every lane runs left to right and ends level at the caret: a path that doubles
+back hangs its own glyphs upside down, and one that arrives at an angle
+rotates the text where it meets the cursor. Each carries a `dy` of a third of
+an em, because a textPath puts the BASELINE on the path and without it the
+text floats above the line it is running along.
 
 Each lane's stream repeats until it is longer than the curve it runs on, then
 the whole thing is written twice. Doubling alone is not enough — a lane
-carrying three short sentences is shorter than its path, and the offset then
+carrying two short sentences is shorter than its path, and the offset then
 drags a visible hole along it. The repeat guarantees one period covers the
-curve; the doubling makes the wrap seamless, because the frame before the jump
-and the frame after it are the same picture.
+curve; the doubling makes the wrap seamless.
 
-No two lanes run at the same speed: equal speeds beat against each other and
-read as one repeating pattern rather than seven people talking at once. They
-carry interleaved cases rather than consecutive ones, so seven scripts are on
-screen at the same time.
-
-There are no bands behind the text. A mask on the `<svg>` — not on the
-container, so the caret over it stays crisp — dissolves both ends into the
-ground rather than letting the viewport cut them off, a radial ink gradient
-swallows the mess at the caret, and a gradient on the far side lets the
-sentence form as it leaves. Nothing glows.
-
-Every lane runs left to right on purpose. A path that doubles back hangs its
-own glyphs upside down, which is the first thing that goes wrong with this
-effect.
-
-Press the button and your own clip replaces the stream: the mess you actually
-said flows in, your sentence flows out, and the page stops arguing.
+The mask fades all four edges, not just the sides, because lanes now come over
+the top and up from underneath and a lane chopped at the band's edge reads as
+a rendering fault rather than as speech arriving from off-stage. It is on the
+`<svg>`, not the container, so the caret over it stays crisp.
 
 ## The caret
 

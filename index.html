@@ -61,30 +61,45 @@
      the right. Many in, one out — which is the shape of the product as well
      as the shape of the picture. The button sits on the crossing, because
      pressing it is what puts your own voice through the same funnel.       */
-  .river { position: relative; margin-top: -72px; height: 520px; animation: fade 1.4s .5s both; }
+  .river { position: relative; margin-top: -26px; height: 520px; animation: fade 1.4s .5s both; }
   /* No bands. Speech runs on the page itself, and the mask dissolves it into
      the ground at both edges rather than letting the viewport cut it off —
      so nothing on this page has a visible strip around it. The mask is on the
      svg, not the container, so the mark drawn over it stays crisp. */
+  /* Fades on all four edges now, not just the sides: the lanes come over the
+     top and up from underneath, and a lane chopped off at the band's edge
+     reads as a rendering fault rather than as speech arriving from off-stage.
+     Two gradients intersected — the sides and the ends. */
   .river svg {
     position: absolute; inset: 0; width: 100%; height: 100%; display: block;
-    -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 15%, #000 85%, transparent 100%);
-            mask-image: linear-gradient(90deg, transparent 0, #000 15%, #000 85%, transparent 100%);
+    -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 13%, #000 87%, transparent 100%),
+                        linear-gradient(180deg, transparent 0, #000 19%, #000 86%, transparent 100%);
+            mask-image: linear-gradient(90deg, transparent 0, #000 13%, #000 87%, transparent 100%),
+                        linear-gradient(180deg, transparent 0, #000 19%, #000 86%, transparent 100%);
+    -webkit-mask-composite: source-in;
+            mask-composite: intersect;
   }
-  /* UGLY ON PURPOSE. Speech has no typography, so the seven lanes have none
-     either: each is set in whatever face the machine happens to have, at
+  /* UGLY ON PURPOSE. Speech has no typography, so the thirteen lanes have
+     none either: each is set in whatever face the machine happens to have, at
      whatever size, with no two agreeing. Nothing here is loaded from a font
-     host — the whole point is that these are the defaults nobody chose. The
-     incoherence is the argument, and it is what the one line on the right
-     answers. */
+     host — the whole point is that these are the defaults nobody chose. They
+     are dimmer than they were, because thirteen of anything at the old weight
+     turns the left half into a grey wash. The incoherence is the argument,
+     and the one line on the right is the answer to it. */
   .mess { letter-spacing: 0; }
-  .u1 { font-family: 'Comic Sans MS', 'Comic Neue', cursive;      font-size: 15px;   fill: #56504A; }
-  .u2 { font-family: 'Courier New', Courier, monospace;           font-size: 16.5px; fill: #6A6257; }
-  .u3 { font-family: 'Times New Roman', Times, serif;             font-size: 19px;   fill: #5B554D; }
-  .u4 { font-family: Verdana, Geneva, sans-serif;                 font-size: 17px;   fill: #7C7466; }
-  .u5 { font-family: 'Trebuchet MS', 'Lucida Grande', sans-serif; font-size: 14px;   fill: #5E584F; }
-  .u6 { font-family: Georgia, 'Times New Roman', serif;           font-size: 18px;   fill: #665F55; }
-  .u7 { font-family: Arial, Helvetica, sans-serif;                font-size: 13.5px; fill: #514C45; }
+  .u1  { font-family: 'Comic Sans MS', 'Comic Neue', cursive;      font-size: 14px;   fill: #4E4943; }
+  .u2  { font-family: 'Courier New', Courier, monospace;           font-size: 15.5px; fill: #5F584E; }
+  .u3  { font-family: 'Times New Roman', Times, serif;             font-size: 18px;   fill: #514C45; }
+  .u4  { font-family: Verdana, Geneva, sans-serif;                 font-size: 16px;   fill: #6E675B; }
+  .u5  { font-family: 'Trebuchet MS', 'Lucida Grande', sans-serif; font-size: 13px;   fill: #4A453F; }
+  .u6  { font-family: Georgia, 'Times New Roman', serif;           font-size: 17px;   fill: #5A544B; }
+  .u7  { font-family: Arial, Helvetica, sans-serif;                font-size: 15px;   fill: #6A6358; }
+  .u8  { font-family: 'Lucida Console', Monaco, monospace;         font-size: 13.5px; fill: #4B453E; }
+  .u9  { font-family: Tahoma, Geneva, sans-serif;                  font-size: 14.5px; fill: #565049; }
+  .u10 { font-family: 'Palatino Linotype', Palatino, serif;        font-size: 16.5px; fill: #524C44; }
+  .u11 { font-family: 'Courier New', Courier, monospace;           font-size: 12.5px; fill: #453F3A; }
+  .u12 { font-family: 'Comic Sans MS', 'Comic Neue', cursive;      font-size: 16.5px; fill: #5C554C; }
+  .u13 { font-family: 'Times New Roman', Times, serif;             font-size: 13px;   fill: #443F39; }
 
   /* One line, and every decision on it made on purpose: the optical size the
      face was cut for, a hair of tracking, and nothing else on the page set
@@ -242,13 +257,24 @@
            inbound lanes arrive at (720, 260), which is the centre of this
            box, which is where the mark's first box sits at every window width. -->
       <!-- Seven lanes, every one arriving just left of the caret at (712, 284). -->
-      <path id="in1" d="M-220 16 C120 20 380 44 560 122 C642 158 682 236 712 284"/>
-      <path id="in2" d="M-220 104 C140 106 400 126 580 180 C652 202 692 246 712 284"/>
-      <path id="in3" d="M-220 190 C150 192 420 204 600 228 C662 238 696 262 712 284"/>
-      <path id="in4" d="M-220 288 C120 290 400 287 580 286 C652 285 692 285 712 284"/>
-      <path id="in5" d="M-220 376 C150 374 420 366 600 340 C662 332 696 308 712 284"/>
-      <path id="in6" d="M-220 460 C140 458 400 436 580 386 C652 366 692 322 712 284"/>
-      <path id="in7" d="M-220 516 C120 514 380 484 560 426 C642 400 682 330 712 284"/>
+      <!-- THIRTEEN. They arrive over the top edge, across the left, and up
+           from underneath — speech does not queue politely from one side.
+           Every one still runs left to right, because a path that doubles
+           back hangs its own glyphs upside down, and every one ends level at
+           (712, 284) so nothing is rotated where it meets the caret. -->
+      <path id="in1"  d="M-60 -60 C120 20 300 90 480 170 C580 214 660 258 712 284"/>
+      <path id="in2"  d="M200 -60 C300 20 420 110 540 180 C610 220 670 258 712 284"/>
+      <path id="in3"  d="M440 -60 C480 30 540 130 600 190 C640 230 682 264 712 284"/>
+      <path id="in4"  d="M-240 20 C60 40 320 96 520 170 C600 200 664 254 712 284"/>
+      <path id="in5"  d="M-240 120 C80 132 340 172 540 216 C614 232 672 262 712 284"/>
+      <path id="in6"  d="M-240 216 C100 222 360 240 550 258 C620 264 676 276 712 284"/>
+      <path id="in7"  d="M-240 284 C100 286 380 284 560 284 C630 284 678 284 712 284"/>
+      <path id="in8"  d="M-240 352 C100 346 360 328 550 310 C620 304 676 292 712 284"/>
+      <path id="in9"  d="M-240 448 C80 436 340 396 540 352 C614 336 672 306 712 284"/>
+      <path id="in10" d="M-240 548 C60 528 320 472 520 398 C600 368 664 314 712 284"/>
+      <path id="in11" d="M-60 620 C120 540 300 470 480 398 C580 358 660 310 712 284"/>
+      <path id="in12" d="M200 620 C300 540 420 450 540 388 C610 352 670 310 712 284"/>
+      <path id="in13" d="M440 620 C480 530 540 430 600 378 C640 342 682 304 712 284"/>
       <path id="out1" d="M728 284 L1800 284"/>
       <clipPath id="clipIn"><rect x="-300" y="-140" width="1014" height="800"/></clipPath>
       <!-- The mouth. Ink at full strength just before the caret, fading to
@@ -279,6 +305,12 @@
         <text class="mess u5" dy=".33em"><textPath href="#in5" id="t5" startOffset="0"> </textPath></text>
         <text class="mess u6" dy=".33em"><textPath href="#in6" id="t6" startOffset="0"> </textPath></text>
         <text class="mess u7" dy=".33em"><textPath href="#in7" id="t7" startOffset="0"> </textPath></text>
+        <text class="mess u8" dy=".33em"><textPath href="#in8" id="t8" startOffset="0"> </textPath></text>
+        <text class="mess u9" dy=".33em"><textPath href="#in9" id="t9" startOffset="0"> </textPath></text>
+        <text class="mess u10" dy=".33em"><textPath href="#in10" id="t10" startOffset="0"> </textPath></text>
+        <text class="mess u11" dy=".33em"><textPath href="#in11" id="t11" startOffset="0"> </textPath></text>
+        <text class="mess u12" dy=".33em"><textPath href="#in12" id="t12" startOffset="0"> </textPath></text>
+        <text class="mess u13" dy=".33em"><textPath href="#in13" id="t13" startOffset="0"> </textPath></text>
       </g>
       <g mask="url(#leaving)">
         <text class="clean" dy=".33em"><textPath href="#out1" id="tOut" startOffset="0"> </textPath></text>
@@ -368,6 +400,19 @@
     demoOff: "The live demo is resting. The apps below are not.",
     micDenied: "Your browser blocked the microphone. Allow it and try again.",
     price: "Free to {words} words a month.",
+    // What leaves the caret when nobody has spoken yet. Not a sample of the
+    // product's output — a statement of what it is, running at reading speed
+    // against thirteen lanes of noise.
+    identity: [
+      "Every word you meant.",
+      "Not one you didn't.",
+      "Your numbers stay numbers, your names stay names.",
+      "Your language stays yours.",
+      "Never translated, never transliterated.",
+      "Twenty-two Indian languages, and most of the world's.",
+      "It lands where your cursor is.",
+      "Tailzu."
+    ],
     cases: [
       { said: "um so like can we push the call to four",          wrote: "Can we push the call to four?" },
       { said: "the deploy is done but abhi testing baaki hai",    wrote: "The deploy is done, but abhi testing baaki hai." },
@@ -437,15 +482,32 @@
    * three scripts are on screen at once instead of three lanes of English
    * followed by three lanes of Devanagari.
    */
+  /**
+   * Thirteen lanes of speech and one of identity.
+   *
+   * No two inbound speeds match, and none of them is a multiple of another,
+   * so the bombardment never falls into step with itself and starts reading
+   * as a pattern. They are three to five times the old pace: the point is
+   * that more is arriving than anyone could keep up with.
+   *
+   * The outbound lane runs at a third of the slowest of them. That gap is
+   * deliberate — everything rushing in, one line leaving at reading speed.
+   */
   var LANES = [
-    { el: $("t1"), path: "in1", key: "said",  speed: 23, take: function (i) { return i % 7 === 0; }, len: 1, off: 0 },
-    { el: $("t2"), path: "in2", key: "said",  speed: 31, take: function (i) { return i % 7 === 1; }, len: 1, off: 0 },
-    { el: $("t3"), path: "in3", key: "said",  speed: 27, take: function (i) { return i % 7 === 2; }, len: 1, off: 0 },
-    { el: $("t4"), path: "in4", key: "said",  speed: 37, take: function (i) { return i % 7 === 3; }, len: 1, off: 0 },
-    { el: $("t5"), path: "in5", key: "said",  speed: 21, take: function (i) { return i % 7 === 4; }, len: 1, off: 0 },
-    { el: $("t6"), path: "in6", key: "said",  speed: 33, take: function (i) { return i % 7 === 5; }, len: 1, off: 0 },
-    { el: $("t7"), path: "in7", key: "said",  speed: 29, take: function (i) { return i % 7 === 6; }, len: 1, off: 0 },
-    { el: $("tOut"), path: "out1", key: "wrote", speed: 30, take: function () { return true; },       len: 1, off: 0 }
+    { el: $("t1"), path: "in1", key: "said", speed: 86, take: function (i) { return i % 13 === 0; }, len: 1, off: 0 },
+    { el: $("t2"), path: "in2", key: "said", speed: 74, take: function (i) { return i % 13 === 1; }, len: 1, off: 0 },
+    { el: $("t3"), path: "in3", key: "said", speed: 95, take: function (i) { return i % 13 === 2; }, len: 1, off: 0 },
+    { el: $("t4"), path: "in4", key: "said", speed: 61, take: function (i) { return i % 13 === 3; }, len: 1, off: 0 },
+    { el: $("t5"), path: "in5", key: "said", speed: 103, take: function (i) { return i % 13 === 4; }, len: 1, off: 0 },
+    { el: $("t6"), path: "in6", key: "said", speed: 68, take: function (i) { return i % 13 === 5; }, len: 1, off: 0 },
+    { el: $("t7"), path: "in7", key: "said", speed: 112, take: function (i) { return i % 13 === 6; }, len: 1, off: 0 },
+    { el: $("t8"), path: "in8", key: "said", speed: 57, take: function (i) { return i % 13 === 7; }, len: 1, off: 0 },
+    { el: $("t9"), path: "in9", key: "said", speed: 91, take: function (i) { return i % 13 === 8; }, len: 1, off: 0 },
+    { el: $("t10"), path: "in10", key: "said", speed: 79, take: function (i) { return i % 13 === 9; }, len: 1, off: 0 },
+    { el: $("t11"), path: "in11", key: "said", speed: 66, take: function (i) { return i % 13 === 10; }, len: 1, off: 0 },
+    { el: $("t12"), path: "in12", key: "said", speed: 99, take: function (i) { return i % 13 === 11; }, len: 1, off: 0 },
+    { el: $("t13"), path: "in13", key: "said", speed: 83, take: function (i) { return i % 13 === 12; }, len: 1, off: 0 },
+    { el: $("tOut"), path: "out1", key: "identity", speed: 26, take: function () { return true; }, len: 1, off: 0 }
   ];
 
   /**
@@ -469,8 +531,13 @@
   function loadRiver() {
     LANES.forEach(function (L) {
       if (!L.pathLen) L.pathLen = $(L.path).getTotalLength() || 1;
-      fill(L, C.cases.filter(function (c, i) { return L.take(i); })
-                     .map(function (c) { return c[L.key]; }).join(SEP) + SEP);
+      // The inbound lanes carry what people said. The outbound one does not
+      // carry what the product wrote back — it carries what the product IS.
+      var one = L.key === "identity"
+        ? C.identity.join(SEP) + SEP
+        : C.cases.filter(function (c, i) { return L.take(i); })
+                 .map(function (c) { return c[L.key]; }).join(SEP) + SEP;
+      fill(L, one);
     });
   }
 
@@ -498,7 +565,9 @@
 
      Not on touch. A phone has no wheel to intercept, and stealing a swipe is
      a far worse trade than stealing a scroll.                             */
-  var SURGE = [1, 5, 9, 15], pushes = 0, boost = 1, lastPush = 0;
+  // Smaller multipliers than before: the lanes already run three to five
+  // times faster, so the old ones turned a rush into a blur.
+  var SURGE = [1, 3, 5, 8], pushes = 0, boost = 1, lastPush = 0;
   var coarse = window.matchMedia && window.matchMedia("(pointer: coarse)").matches;
 
   window.addEventListener("wheel", function (e) {
@@ -575,7 +644,8 @@
    *  bug: no two lanes ever show the same word in the same place. */
   function ownRiver(said, wrote) {
     LANES.forEach(function (L) {
-      var t = L.key === "wrote" ? wrote : said;
+      // Their sentence outranks the identity line: it is the better argument.
+      var t = L.key === "identity" ? wrote : said;
       fill(L, t + SEP);
       L.off = 0;
     });
