@@ -77,9 +77,16 @@ about it.
   every count — the picture changed whenever the number did.
 - Each run repeats until it is longer than its own curve, then wraps on one
   period. A lane shorter than its path drags a visible hole along it.
-- Words are placed once each, at the angle under their first letter. A
-  transform per glyph is five times the work for a difference nobody can see
-  on curves this long.
+- A word is a straight run of glyphs and the line under it is not, so the
+  angle is taken at the word's MIDDLE rather than its start — that halves the
+  error for nothing — and a word whose heading turns more than about six
+  degrees across its own length is drawn in pieces. Only on the bends, which
+  is where the whole cost of fixing it lives. Drawn at one angle, a long word
+  on a tight bend leaves the curve and the joint with the next one reads as a
+  break in the line.
+- One `setTransform` per piece, not `save`/`translate`/`rotate`/`restore`.
+  Four calls become one, and it measured about twice as quick — which is what
+  paid for the curve-following and then some.
 - The edges fade inside the canvas rather than through a CSS mask, so a
   surface that is redrawn every frame is not also re-masked every frame.
 

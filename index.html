@@ -452,13 +452,13 @@
      under its first letter. Setting a transform per glyph is five times the
      work for a difference nobody can see on curves this long and this shallow.
      ------------------------------------------------------------------- */
-  /* Sixty threads, each carrying one sentence rather than a filled ribbon.
+  /* Eighty threads, each carrying one sentence rather than a filled ribbon.
      The cost is linear in words drawn per frame, and a phrase is seven words
      where a filled curve is forty — which is the trade that buys the count.
-     Measured on one machine: 44 threads 42fps, 60 threads 38fps, 76 threads
-     31fps, 92 threads 26fps. Raising it is one number, and so is the frame
-     rate it costs. */
-  var TANGLE = 60, END = [712, 284], VB = [1440, 520];
+     Measured on one machine, after the transform work: 60 threads 48fps, 78
+     threads 39fps, 96 threads 32fps, 116 threads 28fps. Raising it is one
+     number, and so is the frame rate it costs. */
+  var TANGLE = 80, END = [712, 284], VB = [1440, 520];
   var cv = $("tangle"), g2 = cv.getContext("2d");
   var FACES = [
     "'Comic Sans MS','Comic Neue',cursive", "'Courier New',Courier,monospace",
@@ -561,8 +561,15 @@
     var parts = one.split(/\s+/).filter(Boolean);
     L.words = []; var run = 0;
     for (var i = 0; i < parts.length; i++) {
-      var w = g2.measureText(parts[i]).width + L.track * parts[i].length;
-      L.words.push({ t: parts[i], w: w, at: run });
+      var t = parts[i], w = g2.measureText(t).width + L.track * t.length;
+      // Cumulative width per character, measured once. A word that has to be
+      // broken across a bend is then sliced without measuring anything again.
+      var cum = [0], c = 0;
+      for (var q = 0; q < t.length; q++) {
+        c += g2.measureText(t[q]).width + L.track;
+        cum.push(c);
+      }
+      L.words.push({ t: t, w: w, at: run, cum: cum });
       run += w + space;
     }
     L.period = Math.max(run + end * 0.12, end * (gap === undefined ? 1.18 : gap));
@@ -618,29 +625,57 @@
     g2.setTransform(DPR * scale, 0, 0, DPR * scale, DPR * ox, DPR * oy);
     g2.textBaseline = "middle";
 
+    var K = DPR * scale, TX = DPR * ox, TY = DPR * oy;
+
+    /* A word is a straight run of glyphs; the line under it is not. Drawn at
+       one angle, a long word on a tight bend leaves the curve and the joint
+       with the next one reads as a break in the line.
+       So the angle is taken at the word's MIDDLE rather than its start, which
+       halves the error for nothing, and a word whose heading changes by more
+       than about six degrees across its own length is drawn in pieces — only
+       on the bends, which is where the whole cost of fixing this lives.
+       One setTransform replaces save/translate/rotate/restore: four calls to
+       one, and measurably about twice as quick. */
     for (var i = 0; i < LANES.length; i++) {
-      var L = LANES[i], pts = L.pts, end = pts[pts.length - 1].s;
+      var L = LANES[i], pts = L.pts, nP = pts.length, end = pts[nP - 1].s;
       g2.font = L.size.toFixed(1) + "px " + L.face;
       g2.fillStyle = L.fill;
       var base = -L.period + (L.off % L.period), p = 0;
-      // Two copies of the run, so whichever the offset lands in covers the curve.
+
       for (var copy = 0; copy < 2; copy++) {
         var shift = base + copy * L.period;
         for (var j = 0; j < L.words.length; j++) {
-          var W = L.words[j], s2 = shift + W.at;
-          if (s2 + W.w < 0) continue;
-          if (s2 > end) break;
-          while (p < pts.length - 1 && pts[p].s < s2) p++;
-          while (p > 0 && pts[p].s > s2) p--;
-          var q = pts[p];
-          g2.save();
-          g2.translate(q.x, q.y); g2.rotate(q.a);
-          g2.fillText(W.t, 0, 0);
-          g2.restore();
+          var W = L.words[j], s0 = shift + W.at;
+          if (s0 + W.w < 0) continue;
+          if (s0 > end) break;
+          while (p < nP - 1 && pts[p].s < s0) p++;
+          while (p > 0 && pts[p].s > s0) p--;
+
+          // How far the heading turns across this word decides the pieces.
+          var q2 = p;
+          while (q2 < nP - 1 && pts[q2].s < s0 + W.w) q2++;
+          var turn = Math.abs(pts[q2].a - pts[p].a);
+          var pieces = turn > 0.105 ? Math.min(W.t.length, Math.ceil(turn / 0.105)) : 1;
+          var per = Math.ceil(W.t.length / pieces), h = p;
+
+          for (var c0 = 0; c0 < W.t.length; c0 += per) {
+            var c1 = Math.min(W.t.length, c0 + per);
+            var sA = s0 + W.cum[c0], sM = s0 + (W.cum[c0] + W.cum[c1]) / 2;
+            while (h < nP - 1 && pts[h].s < sM) h++;
+            while (h > 0 && pts[h].s > sM) h--;
+            var am = pts[h].a, g3 = h;
+            while (g3 < nP - 1 && pts[g3].s < sA) g3++;
+            while (g3 > 0 && pts[g3].s > sA) g3--;
+            var qa = pts[g3];
+            var cs = Math.cos(am), sn = Math.sin(am);
+            g2.setTransform(K * cs, K * sn, -K * sn, K * cs, K * qa.x + TX, K * qa.y + TY);
+            g2.fillText(W.t.slice(c0, c1), 0, 0);
+          }
         }
         p = 0;
       }
     }
+    g2.setTransform(K, 0, 0, K, TX, TY);
 
     /* The edges are faded HERE rather than by a css mask on the element. A
        compositor mask over a canvas that is redrawn every frame makes the
