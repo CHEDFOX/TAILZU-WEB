@@ -80,7 +80,7 @@
   /* ---- the one title ---------------------------------------------------
      Over the buttons, four words at most, not in the accent. Nothing over
      the river: the river is the headline.                                 */
-  .get h3 { margin: 0 0 8px; font-family: var(--serif); font-weight: 400; font-size: clamp(24px, 2.6vw, 34px); line-height: 1.05; letter-spacing: -.02em; }
+  .get h3 { margin: 0 0 8px; font-family: var(--serif); font-weight: 400; font-size: clamp(24px, 2.6vw, 34px); line-height: 1.05; letter-spacing: -.02em; text-wrap: balance; }
 
   /* ---- the ribbon ------------------------------------------------------
      There is no hero above this any more, so this IS the hero. Many in, one
@@ -106,7 +106,22 @@
        band is cropped top and bottom and the word stays centred, it does not
        zoom. Floor at 380, which is where the entries start to be lost. */
     position: relative; margin-top: 22px; height: clamp(380px, calc(100vh - 330px), 520px); animation: fade 1.4s .35s both;
-    background: radial-gradient(58% 66% at 50% 54%, rgba(243,226,198,.042), transparent 70%);
+    background: radial-gradient(58% 66% at 50% 54%, rgba(243,226,198,.022), transparent 70%);
+  }
+  /* THE LIGHT IS ALIVE. The pool used to be a gradient painted on the band,
+     which is a fixed thing. It is its own layer now, under the threads, and
+     the script breathes it: it swells a little on a slow cycle, brightens
+     for a beat each time a phrase reaches the word, and fills with the
+     voice while the microphone is open. Opacity and transform only, so the
+     compositor moves a painted surface and nothing is rasterised twice. A
+     faint fixed base stays on the band so the light is never fully gone. */
+  .pool {
+    position: absolute; left: -12%; top: -24%; width: 124%; height: 148%; z-index: 0; pointer-events: none;
+    /* Four stops rather than two, so the light has no edge: a two-stop
+       radial reads as an oval painted on the ground, and an oval is a shape
+       where there should only be a place that is brighter. */
+    background: radial-gradient(48% 46% at 50% 52%, rgba(243,226,198,.062), rgba(243,226,198,.03) 34%, rgba(243,226,198,.009) 60%, transparent 80%);
+    will-change: transform, opacity; opacity: .6;
   }
   /* No bands. Speech runs on the page itself, and the mask dissolves it into
      the ground at both edges rather than letting the viewport cut it off —
@@ -130,7 +145,10 @@
      face was cut for, a hair of tracking, and nothing else on the page set
      like it. That contrast is the whole product in one picture. */
   .absorb {
-    font-family: var(--serif); font-size: 78px; font-weight: 400;
+    /* A shade under the regular weight. At this size the thinner stem lets
+       the ground show through the letter, which is how a word set in a fine
+       serif reads as printed rather than painted. */
+    font-family: var(--serif); font-size: 78px; font-weight: 380;
     font-optical-sizing: auto; letter-spacing: -.022em; fill: var(--white);
     transition: fill .25s;
   }
@@ -138,10 +156,12 @@
      will-change keeps them on their own layers, so the drift moves a painted
      surface instead of asking for it to be painted again. */
   #tangle, #riverSvg { position: absolute; inset: 0; width: 100%; height: 100%; display: block; will-change: transform; }
-  #tangle { z-index: 0; }
-  #riverSvg { z-index: 1; }
+  #tangle { z-index: 1; }
+  #riverSvg { z-index: 2; }
 
-  #mark { cursor: pointer; }
+  /* The word arrives last: the field is already flowing when it fades up to
+     meet it, and the rush the script starts with is what it fades up into. */
+  #mark { cursor: pointer; animation: fade 1.5s .7s both; }
   #mark:focus-visible { outline: 2px solid var(--white); outline-offset: 10px; border-radius: 8px; }
   /* The word's fill is set per frame in script — it washes with the accent
      as the waves merge and goes to it outright with the microphone open — so
@@ -152,7 +172,8 @@
      because the svg is sliced and the mark lands somewhere different at
      every window width. */
   .speak {
-    position: absolute; left: 50%; top: 78%; transform: translateX(-50%);
+    /* Above the svg, which is a box the pointer can land on. */
+    position: absolute; z-index: 3; left: 50%; top: 78%; transform: translateX(-50%);
     display: inline-flex; align-items: center; gap: 9px; height: 46px; padding: 0 22px;
     border: 0; border-radius: 999px; background: var(--white); color: var(--ink);
     font-size: 13px; font-weight: 500; cursor: pointer; white-space: nowrap;
@@ -178,17 +199,50 @@
   /* Filled, not drawn on the void: an outline on a near-black ground is a
      hole with a line round it, and four of them in a row read as a broken
      control. A soft raised surface makes them objects you could press. */
-  .dl a { display: inline-flex; align-items: center; height: 52px; padding: 0 26px; border-radius: 999px; background: var(--raise); border: 1px solid rgba(243,226,198,.11); color: var(--grey); font-size: 13.5px; transition: background .2s, border-color .2s, color .2s; }
+  /* A hairline of light along the top edge is what separates a surface you
+     could press from a shape filled in. It is the same pale at six per
+     cent, and it is the only thing that makes these read as objects. */
+  .dl a { display: inline-flex; align-items: center; height: 52px; padding: 0 26px; border-radius: 999px; background: var(--raise); border: 1px solid rgba(243,226,198,.11); box-shadow: inset 0 1px 0 rgba(243,226,198,.07); color: var(--grey); font-size: 13.5px; transition: background .2s, border-color .2s, color .2s, transform .12s; }
   .dl a:hover { background: rgba(243,226,198,.1); border-color: rgba(243,226,198,.2); color: var(--white); }
+  .dl a:active { transform: translateY(1px); }
   /* The pale is the loud colour on a dark ground, the way the app's own
-     figures are lights. Amber on hover, because hover is the live state. */
-  .dl a.primary { background: var(--white); border-color: var(--white); color: var(--ink); font-weight: 500; }
-  .dl a.primary:hover { opacity: .85; }
+     figures are lights. Lit from above like the others, so it is a pressed
+     piece of the same material and not a white sticker. */
+  .dl a.primary { background: linear-gradient(180deg, #F8EBD3, var(--white) 55%); border-color: var(--white); box-shadow: inset 0 1px 0 rgba(255,255,255,.55), 0 14px 34px -18px rgba(243,226,198,.35); color: var(--ink); font-weight: 500; }
+  .dl a.primary:hover { opacity: .88; }
   .dl a.soon { opacity: .4; pointer-events: none; }
 
   footer { background: var(--wash); color: var(--dim); }
   footer .in { border-top: 1px solid var(--rule); display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px; padding: 26px 0 40px; font-size: 13px; }
   footer nav { display: flex; gap: 24px; }
+
+  /* ---- material -------------------------------------------------------- */
+  /* GRAIN. A dark gradient on a screen is bands of colour, and bands are
+     what cheap looks like. A whisper of noise over the whole page breaks
+     them up and gives the ground the tooth of paper. One tile of the page's
+     own pale, at four per cent, fixed, and nothing under it can feel it. */
+  .grain {
+    position: fixed; inset: 0; z-index: 9; pointer-events: none; opacity: .042;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .95 0 0 0 0 .89 0 0 0 0 .78 0 0 0 .6 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-size: 200px 200px;
+  }
+  /* LIGHT FROM ABOVE. The top of the page is a shade warmer than the bottom,
+     the way a room is lit from one side: it gives the masthead a place to
+     sit and the page a top and a bottom. Three per cent of the pale. */
+  body::before {
+    content: ""; position: fixed; left: 0; right: 0; top: 0; height: 42vh; z-index: 0; pointer-events: none;
+    background: linear-gradient(180deg, rgba(243,226,198,.032), transparent);
+  }
+  .wrap, .river, .get, footer { position: relative; z-index: 1; }
+
+  /* THE MARK IS ALIVE, QUIETLY. The hatched link is the product — one square
+     becoming another — so the hatching travels along it, from the first
+     square to the second, on a loop the eye can only just catch. The dot at
+     the end of the long line breathes. Nothing else on the mark moves. */
+  .mark .link { animation: signal 2.6s linear infinite; }
+  .mark .dot { transform-box: fill-box; transform-origin: center; animation: pip 3.8s ease-in-out infinite; }
+  @keyframes signal { to { stroke-dashoffset: -20; } }
+  @keyframes pip { 50% { transform: scale(1.45); opacity: .72; } }
 
   /* ---- motion ---------------------------------------------------------- */
   @keyframes fade { from { opacity: 0; } to { opacity: 1; } }
@@ -221,9 +275,9 @@
     <a class="mark" href="/" aria-label="Tailzu">
       <svg viewBox="170 228 680 512" aria-hidden="true">
         <line x1="346" y1="402" x2="270" y2="598" stroke="#E9CBA2" stroke-width="9" stroke-linecap="round"/>
-        <line x1="444" y1="394" x2="554" y2="486" stroke="#E8A23C" stroke-width="30" stroke-dasharray="9 11"/>
+        <line class="link" x1="444" y1="394" x2="554" y2="486" stroke="#E8A23C" stroke-width="30" stroke-dasharray="9 11"/>
         <line x1="668" y1="478" x2="828" y2="243" stroke="#C77A3A" stroke-width="9" stroke-linecap="round"/>
-        <circle cx="828" cy="243" r="11" fill="#B06240"/>
+        <circle class="dot" cx="828" cy="243" r="11" fill="#B06240"/>
         <rect x="308" y="269" width="132" height="132" rx="28" fill="#F4F1EA"/>
         <rect x="558" y="478" width="132" height="132" rx="28" fill="#F4F1EA"/>
         <rect x="178" y="598" width="132" height="132" rx="28" fill="#F4F1EA"/>
@@ -239,6 +293,8 @@
 </div>
 
 <div class="river" id="river">
+  <!-- The pool of light, under everything, breathed by the script. -->
+  <div class="pool" id="pool" aria-hidden="true"></div>
   <!-- The tangle is drawn on a canvas, not in the svg. Two dozen moving
        textPaths cost the page two thirds of its frame rate: changing one
        offset re-lays its whole string out along its curve, and that is a
@@ -289,6 +345,8 @@
     <nav><a href="/privacy">Privacy</a><a href="/terms">Terms</a><a href="/download">Download</a></nav>
   </div></div>
 </footer>
+
+<div class="grain" aria-hidden="true"></div>
 
 <script>
 (function () {
@@ -504,6 +562,7 @@
       LANES.push({
         pts: sample(P),
         face: FACES[k % FACES.length],
+        bright: bright,             // kept: a near thread's arrival is felt more than a far one's
         size: 9 + bright * 8,       // a hand is small at its x-height; a shade up from the type
         fill: shade(bright),
         track: (r() - 0.5) * 0.3,   // a hand is not squeezed, only a little uneven
@@ -825,14 +884,24 @@
      has moved at all. At rest it is barely tinted; at full rush it is most
      of the way to the accent; with the microphone open it is the accent
      outright, because that is the one state that is not about the waves. */
-  var INK = [243, 226, 198], ACC = [232, 162, 60], tint = 0;
+  /* AND IT DRINKS. Each time a phrase reaches the dissolve, the word warms
+     for a beat — more for a near thread than a far one — and the warmth
+     falls away in under half a second. A hundred threads at their own
+     paces make that a shimmer that never repeats, and it is the flow made
+     visible on the thing the flow is for. `warm` is the page's first
+     breath: the word is born amber and cools to the reading colour over
+     its first seconds, because just-born is the one state the accent is
+     for. */
+  var INK = [243, 226, 198], ACC = [232, 162, 60], tint = 0, glow = 0, warm = 0;
   function drawAbsorb(live) {
     voice += ((live ? level : 0) - voice) * 0.22;      // eased, or it judders
     var k = (1 + voice * 0.07).toFixed(4);
     absorbEl.setAttribute("transform",
       "translate(" + ABX + " " + MID + ") scale(" + k + ") translate(" + (-ABX) + " " + (-MID) + ")");
 
-    var want = live ? 1 : 0.16 + Math.min(1, (boost - 1) / 4.2) * 0.6;
+    var want = live ? 1 : 0.12 + glow * 0.3 + Math.min(1, (boost - 1) / 4.2) * 0.6;
+    if (warm > want) want = warm;
+    if (want > 1) want = 1;
     tint += (want - tint) * 0.16;
     var c = [0, 1, 2].map(function (i) {
       return Math.round(INK[i] + (ACC[i] - INK[i]) * tint);
@@ -841,19 +910,36 @@
   }
   drawAbsorb(false);
 
+  /* THE POOL BREATHES. A slow swell nobody could time, a lift for every
+     arrival, and the voice filling it while the microphone is open. Two
+     properties the compositor owns, so this costs the frame nothing. */
+  var pool = $("pool");
+  function breathe(t) {
+    var v = listening ? voice : 0;
+    pool.style.opacity = Math.min(1, 0.55 + glow * 0.5 + v * 0.6).toFixed(3);
+    pool.style.transform = "scale(" + (1 + 0.035 * Math.sin(t * 0.42) + glow * 0.06 + v * 0.1).toFixed(4) + ")";
+  }
+
   function river(now) {
     rraf = requestAnimationFrame(river);
     if (!last) last = now;
     var dt = Math.min(64, now - last); last = now;
     boost += (1 - boost) * Math.min(1, dt / 620);      // falls back to a walk
+    glow *= Math.pow(0.5, dt / 420);                    // half a beat, and it is gone
+    warm *= Math.pow(0.5, dt / 1200);                   // the first breath, slower
 
     for (var i = 0; i < LANES.length; i++) {
-      var L = LANES[i];
+      var L = LANES[i], was = L.off;
       L.off = (L.off + L.speed * boost * dt / 1000) % L.period;
+      // The visible phrase's first word sits at L.off along its curve. The
+      // frame it enters the dissolve, the word drinks.
+      var gs = L.pts[L.pts.length - 1].s - FADE;
+      if (was < gs && L.off >= gs) glow = Math.min(1, glow + 0.04 + L.bright * 0.16);
     }
     paint(now);
 
     drawAbsorb(listening);
+    breathe(now / 1000);
     // Both layers drift together, as a CSS transform rather than an attribute
     // — the browser can move a painted layer without repainting what is on it.
     tx += (mx - tx) * 0.06; ty += (my - ty) * 0.06;
@@ -1077,6 +1163,11 @@
   function boot() {
     sizeCanvas();
     loadRiver();
+    // THE ARRIVAL. The field comes in at a rush and settles to its walk
+    // over the first second and a half, and the word fades up into that
+    // rush already warm. The page opens on something happening, not on a
+    // diagram that then starts.
+    if (!reduced) { boost = 5.5; warm = 1; }
     if (!reduced && !rraf) { last = 0; rraf = requestAnimationFrame(river); }
     placeControl();
   }
