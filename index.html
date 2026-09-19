@@ -4,10 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Tailzu</title>
-<meta name="description" content="Say it badly, send it perfect. Tailzu drops the filler and keeps every number, every name and the language you spoke it in. 22 Indian languages and most of the world's.">
+<meta name="description" content="Talk. It writes. Every word you meant, none you didn't, in the language you said it. 22 Indian languages and most of the world's.">
 <meta name="theme-color" content="#0F0D0B">
 <meta property="og:title" content="Tailzu — say it badly, send it perfect">
-<meta property="og:description" content="Talk. It writes. No sign-up to try it.">
+<meta property="og:description" content="Talk. It writes. No sign-up.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300..500;1,6..72,300..500&family=Instrument+Sans:wght@400;500&family=IBM+Plex+Mono:wght@400&display=swap">
@@ -281,7 +281,7 @@
          cursor is what the speech runs into and what the sentence comes out
          of. It blinks at the rate a real one does, and while the microphone
          is open it stops blinking and breathes with the voice. -->
-    <g id="mark" role="button" tabindex="0" aria-label="Use your own voice">
+    <g id="mark" role="button" tabindex="0" aria-label="Speak">
       <rect id="caret" class="caret" x="716" y="248" width="8" height="72" rx="4"/>
     </g>
   </svg>
@@ -291,7 +291,7 @@
       <rect x="9" y="3" width="6" height="11" rx="3"></rect>
       <path d="M5 11a7 7 0 0 0 14 0"></path><path d="M12 18v3M9 21h6"></path>
     </svg>
-    <span id="micLabel">Use your own voice</span>
+    <span id="micLabel">Speak</span>
   </button>
   <span class="under" id="under">No sign-up. It stops when you pause.</span>
 </div>
@@ -303,10 +303,10 @@
     <div class="steps reveal">
       <div class="rail" id="rail" role="tablist" aria-label="What it does"></div>
       <div class="card">
-        <span class="eye">What you said</span>
+        <span class="eye">Said</span>
         <p class="raw" id="raw"></p>
         <div class="mid"><i></i><span class="pill" id="pill"></span></div>
-        <span class="eye">What it wrote</span>
+        <span class="eye">Wrote</span>
         <p class="out" id="out"></p>
       </div>
     </div>
@@ -342,22 +342,21 @@
 
   // ---- copy: the backend's, with this as the fallback --------------------
   var C = {
-    cta: "Use your own voice", ctaHeld: "Stop", writing: "Writing…", again: "Again",
-    invite: "No sign-up. It stops when you pause.",
-    after: "That is the whole product. It works everywhere you type.",
-    demoOff: "The live demo is resting. The apps below are not.",
-    micDenied: "Your browser blocked the microphone. Allow it and try again.",
+    cta: "Speak", ctaHeld: "Stop", writing: "Writing…", again: "Again",
+    invite: "No sign-up. Stops when you pause.",
+    after: "That's it. Everywhere you type.",
+    demoOff: "Demo asleep. The apps aren't.",
+    micDenied: "Mic blocked. Allow it, try again.",
     // What leaves the caret when nobody has spoken yet. Not a sample of the
     // product's output — a statement of what it is, running at reading speed
     // against thirteen lanes of noise.
     identity: [
       "Every word you meant.",
-      "Not one you didn't.",
-      "Your numbers stay numbers, your names stay names.",
+      "None you didn't.",
+      "Numbers stay numbers. Names stay names.",
       "Your language stays yours.",
-      "Never translated, never transliterated.",
-      "Twenty-two Indian languages, and most of the world's.",
-      "It lands where your cursor is.",
+      "22 Indian languages. Most of the world's.",
+      "Lands at your cursor.",
       "Tailzu."
     ],
     cases: [
@@ -384,18 +383,18 @@
     ],
     // The three things the page argues, each shown rather than claimed.
     steps: [
-      { tab: "The mess goes",      note: "Filler, false starts, the sentence you began and abandoned.",
+      { tab: "Mess goes",      note: "Filler. False starts. Gone.",
         said: "um so like i think we should probably move the review to thursday because the design is uh not done",
         wrote: "I think we should move the review to Thursday — the design is not done.",
-        cut: ["um","so","like","probably","uh"], pill: "Filler and false starts" },
-      { tab: "The facts stay",     note: "A number, a name or an amount is never guessed at.",
+        cut: ["um","so","like","probably","uh"], pill: "Filler cut" },
+      { tab: "Facts stay",     note: "Numbers, names, amounts. Never guessed.",
         said: "trensfer 2500 rupeez to ramesh tomorow",
         wrote: "Transfer 2500 rupees to Ramesh tomorrow.",
-        keep: ["2500","ramesh"], pill: "Misheard words repaired · 2500 and Ramesh untouched" },
-      { tab: "Your language stays", note: "Two languages in one sentence come back as two languages.",
+        keep: ["2500","ramesh"], pill: "2500 and Ramesh untouched" },
+      { tab: "Language stays", note: "Two languages in. Two out.",
         said: "the deploy is done but abhi testing baaki hai",
         wrote: "The deploy is done, but abhi testing baaki hai.",
-        keep: ["abhi","testing","baaki","hai"], pill: "Never translated, never transliterated" }
+        keep: ["abhi","testing","baaki","hai"], pill: "Never translated" }
     ],
     download: { win: "Windows", mac: "macOS", linux: "Linux", ios: "iPhone", android: "Android", soon: "soon" }
   };
