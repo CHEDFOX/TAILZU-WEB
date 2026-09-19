@@ -14,8 +14,10 @@ page back, so the legal text is never unreachable.
 ## The colours are the app's
 
 Not a palette for a website. `STATS_UI` in the backend's `catalog.ts` is the
-source: ground `#0F0D0B`, card `#1A1714`, ink `#F3E2C6`, rule at 10% of the
-ink, accent `#E8A23C`. Change one there and change it here to match.
+source of the ground `#0F0D0B`, the ink `#F3E2C6` and the accent `#E8A23C`.
+Change one there and change it here to match. The surfaces between and above
+the ground are the site's own and are set out below; they are the same hue,
+further up.
 
 The ground is a warm near-black biased toward the accent's own hue, so the
 amber sits *in* it rather than on it. There is one reading colour and it is
@@ -34,6 +36,35 @@ whatever its colours are. `--dim` is .52 (4.71:1, AA for small text) and
 `--grey` is .62 (6.26:1). Same hue, same family, nothing new — the page just
 stops whispering. `scratchpad/contrast.js` prints the table; if you lower one
 of these, print it again.
+
+### Three surfaces, not two
+
+The app has a ground and a card, and two values over a whole page is what made
+this hard rather than calm: everything was either the void or the one thing on
+it. A page is also read further away and on a brighter screen than a phone in
+the hand, where the same values sit darker and flatter. So the ground stays
+exactly the app's and the ladder is built upward from it:
+
+```
+--ink    #0F0D0B   the app's ground, unchanged
+--wash   #141110   whole sections — the sheet's middle, the downloads, the footer
+--card   #211C17   the card
+--raise  ink at 5.5%  the small things that sit ON a surface: pills, chips
+```
+
+`#211C17` is the ceiling and not a preference: above it `--dim` drops under
+4.5:1 and the labels stop clearing AA. Run `scratchpad/contrast.js` against any
+surface you are thinking of before you use it.
+
+The wash lifts the middle of the sheet and settles back at both ends, so the
+page breathes between the river and the downloads instead of being one
+unbroken slab from the masthead to the footer — and it lands a shade lighter
+than it started, because a dark page that gets darker to the bottom edge feels
+like falling off it.
+
+The download buttons are filled rather than drawn on the void. An outline on a
+near-black ground is a hole with a line round it, and four of them in a row
+read as a broken control.
 
 ### Light, not more colour
 
@@ -54,10 +85,11 @@ ground. They used to fill with the ground colour, which was the same thing
 while the ground was flat, and it is not any more — painting flat ink over the
 right half of the pool cut a hard vertical edge down the middle of it.
 
-There is no paper half any more. A light section would be a second visual
-world, and a colour cannot be sacred if the ground under it changes
-temperature. What lifts the card off the ground is the card's own step up in
-value and a hairline rule — the app's two moves, at a bigger size.
+There is still no paper half. Lighter is not the same as light: every surface
+here is the same warm near-black further up the ladder, so the ground never
+changes temperature and the amber never stops meaning what it means. A light
+section would have been a second visual world; a third step on one ladder is
+the same world with more air in it.
 
 ## The river
 

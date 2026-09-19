@@ -29,7 +29,20 @@
        an unfinished one whatever its colours are. .52 is 4.71:1 and clears AA
        for small text; .62 is 6.26:1. Same hue, same family, nothing new —
        the page just stops whispering. */
-    --ink: #0F0D0B; --card: #1A1714; --rule: rgba(243,226,198,.13);
+    /* THREE SURFACES, NOT TWO — the same hue, further up.
+       The app has a ground and a card, and two values over a whole page is
+       what made this hard rather than calm: everything was either the void
+       or the one thing on it. A page is also read further away and on a
+       brighter screen than a phone in the hand, where the same values sit
+       darker and flatter. So the ground stays exactly the app's and the
+       ladder is built upward from it — a wash for whole sections, a surface
+       for the card, a raise for the small things that sit on the card.
+
+       #211C17 is the ceiling, not a preference: above it --dim drops under
+       4.5:1 and the labels stop clearing AA. scratchpad/contrast.js prints
+       the table for any surface you are thinking of. */
+    --ink: #0F0D0B; --wash: #141110; --card: #211C17; --raise: rgba(243,226,198,.055);
+    --rule: rgba(243,226,198,.15);
     --white: #F3E2C6; --grey: rgba(243,226,198,.62); --dim: rgba(243,226,198,.52);
     --amber: #E8A23C;
     --serif: 'Newsreader', Georgia, 'Times New Roman', serif;
@@ -169,7 +182,11 @@
      viewport of scroll per claim: reading is the same gesture as advancing,
      so nobody waits for a carousel and nobody misses one. The river already
      answers the wheel; this is the same page answering it twice.           */
-  .sheet { position: relative; z-index: 2; background: var(--ink); color: var(--white); }
+  /* The wash lifts the middle of the section and settles back at both ends,
+     so the page breathes between the river and the downloads instead of
+     being one unbroken slab from the masthead to the footer. */
+  .sheet { position: relative; z-index: 2; color: var(--white);
+           background: linear-gradient(180deg, var(--ink) 0%, var(--wash) 42%, var(--wash) 64%, var(--ink) 100%); }
   .track { height: 300vh; }
   .stick { position: sticky; top: 0; min-height: 100vh; display: flex; align-items: center; }
   .stick > .wrap { width: 100%; }
@@ -205,9 +222,9 @@
      gradient straddle the app's own card value, so this is the same material
      — it is only being lit. */
   .card {
-    position: relative; border: 1px solid var(--rule); border-radius: 22px;
-    background: linear-gradient(180deg, #1D1A16, #171410);
-    box-shadow: inset 0 1px 0 rgba(243,226,198,.07), 0 30px 70px -40px rgba(0,0,0,.95);
+    position: relative; border: 1px solid var(--rule); border-radius: 26px;
+    background: linear-gradient(180deg, #251F1A, #1C1815);
+    box-shadow: inset 0 1px 0 rgba(243,226,198,.08), 0 34px 80px -46px rgba(0,0,0,.9);
     padding: 40px 42px 34px; min-height: 300px; overflow: hidden;
   }
   .card .eye { text-align: left; color: var(--dim); margin: 0 0 18px; }
@@ -234,7 +251,7 @@
      and leaves the amber inside it as the only bright thing in the row. */
   .pill {
     flex: 0 1 auto; display: inline-block; padding: 7px 15px;
-    border-radius: 999px; box-shadow: inset 0 0 0 1px var(--rule); color: var(--grey);
+    border-radius: 999px; background: var(--raise); box-shadow: inset 0 0 0 1px var(--rule); color: var(--grey);
     font-family: var(--mono); font-size: 10.5px; letter-spacing: .14em; text-transform: uppercase;
     opacity: 0; transform: translateY(6px); transition: opacity .35s, transform .35s;
   }
@@ -242,22 +259,27 @@
   .pill em { font-style: normal; color: var(--white); }
 
   /* ---- download -------------------------------------------------------- */
-  .get { background: var(--ink); color: var(--white); padding: 0 0 104px; }
+  /* The page lands a shade lighter than it started. A dark page that gets
+     darker to the bottom edge feels like falling off it. */
+  .get { background: linear-gradient(180deg, var(--ink), var(--wash)); color: var(--white); padding: 0 0 104px; }
   /* Centre, not baseline: with the heading gone there is nothing left on the
      left to sit a baseline against, and the platform line alone hung under
      the buttons instead of beside them. */
   .getin { border-top: 1px solid var(--rule); padding-top: 56px; display: flex; justify-content: space-between; align-items: flex-end; gap: 40px; flex-wrap: wrap; }
   .get .note { margin: 0; color: var(--dim); font-family: var(--mono); font-size: 11px; letter-spacing: .16em; }
   .dl { display: flex; gap: 10px; flex-wrap: wrap; }
-  .dl a { display: inline-flex; align-items: center; height: 52px; padding: 0 26px; border-radius: 999px; border: 1px solid rgba(243,226,198,.20); color: var(--grey); font-size: 13.5px; transition: border-color .2s, color .2s; }
-  .dl a:hover { border-color: var(--grey); color: var(--white); }
+  /* Filled, not drawn on the void: an outline on a near-black ground is a
+     hole with a line round it, and four of them in a row read as a broken
+     control. A soft raised surface makes them objects you could press. */
+  .dl a { display: inline-flex; align-items: center; height: 52px; padding: 0 26px; border-radius: 999px; background: var(--raise); border: 1px solid rgba(243,226,198,.11); color: var(--grey); font-size: 13.5px; transition: background .2s, border-color .2s, color .2s; }
+  .dl a:hover { background: rgba(243,226,198,.1); border-color: rgba(243,226,198,.2); color: var(--white); }
   /* The pale is the loud colour on a dark ground, the way the app's own
      figures are lights. Amber on hover, because hover is the live state. */
   .dl a.primary { background: var(--white); border-color: var(--white); color: var(--ink); font-weight: 500; }
   .dl a.primary:hover { opacity: .85; }
   .dl a.soon { opacity: .4; pointer-events: none; }
 
-  footer { background: var(--ink); color: var(--dim); }
+  footer { background: var(--wash); color: var(--dim); }
   footer .in { border-top: 1px solid var(--rule); display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px; padding: 26px 0 40px; font-size: 13px; }
   footer nav { display: flex; gap: 24px; }
 
