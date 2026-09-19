@@ -149,8 +149,16 @@
   /* ---- the sheet ------------------------------------------------------
      The ground does not change. What lifts the card off it is the card's own
      step up in value and a hairline rule, which is how the app separates
-     anything from anything — the same two moves, at a bigger size.         */
-  .sheet { position: relative; z-index: 2; background: var(--ink); color: var(--white); padding: 84px 0 104px; }
+     anything from anything — the same two moves, at a bigger size.
+
+     THE CARD IS PINNED AND THE CLAIM ON IT CHANGES AS YOU GO PAST. One
+     viewport of scroll per claim: reading is the same gesture as advancing,
+     so nobody waits for a carousel and nobody misses one. The river already
+     answers the wheel; this is the same page answering it twice.           */
+  .sheet { position: relative; z-index: 2; background: var(--ink); color: var(--white); }
+  .track { height: 300vh; }
+  .stick { position: sticky; top: 0; min-height: 100vh; display: flex; align-items: center; }
+  .stick > .wrap { width: 100%; }
 
   .steps { display: grid; grid-template-columns: 250px 1fr; gap: 64px; align-items: start; }
   .rail { display: flex; flex-direction: column; gap: 2px; }
@@ -163,13 +171,17 @@
   /* The progress bar grows by SCALE, not by height. Transitioning height is a
      layout-inducing property, and a six-second one of those runs the layout
      engine on every frame it is alive — measured at two thirds of the page's
-     frame rate, all of it spent nowhere near the thing that looked expensive. */
+     frame rate, all of it spent nowhere near the thing that looked expensive.
+
+     It is filled from scroll now, so it is a position rather than a timer:
+     it says how far through this claim you are, and it runs backwards when
+     you do. `timed` is the fallback for a window too short to pin in. */
   .rail button::after {
     content: ""; position: absolute; left: 0; top: 0; width: 2px; height: 100%;
-    background: var(--white); transform: scaleY(0); transform-origin: top;
+    background: var(--white); transform: scaleY(var(--fill, 0)); transform-origin: top;
   }
   .rail button[aria-selected="true"] { color: var(--white); }
-  .rail button[aria-selected="true"]::after { transform: scaleY(1); transition: transform var(--dwell, 6000ms) linear; }
+  .rail.timed button[aria-selected="true"]::after { transform: scaleY(1); transition: transform var(--dwell, 6000ms) linear; }
   .rail p { margin: 0; padding: 0 0 4px 20px; color: var(--grey); font-size: 14.5px; max-width: 30ch; }
 
   /* the transcript card */
@@ -233,12 +245,18 @@
     .rail { flex-direction: row; overflow-x: auto; gap: 0; }
     .rail button { white-space: nowrap; padding: 10px 18px 12px; font-size: 17px; }
     .rail button::before { left: 0; top: auto; bottom: 0; right: 0; width: auto; height: 2px; }
-    .rail button::after { left: 0; right: 0; top: auto; bottom: 0; width: auto; height: 2px; transform: scaleX(0); transform-origin: left; }
-    .rail button[aria-selected="true"]::after { transform: scaleX(1); transition: transform var(--dwell, 6000ms) linear; }
+    .rail button::after { left: 0; right: 0; top: auto; bottom: 0; width: auto; height: 2px; transform: scaleX(var(--fill, 0)); transform-origin: left; }
+    .rail.timed button[aria-selected="true"]::after { transform: scaleX(1); transition: transform var(--dwell, 6000ms) linear; }
     .rail p { display: none; }
     .card { padding: 30px 24px 28px; }
     .pill { left: 24px; bottom: 112px; }
     .mast nav a:not(.cta) { display: none; }
+  }
+  /* Too short to pin anything in: the track collapses, the block flows, and
+     the script sees a span of zero and goes back to the timer. */
+  @media (max-height: 560px) {
+    .track { height: auto; }
+    .stick { position: static; min-height: 0; padding: 72px 0; }
   }
   @media (max-width: 560px) {
     .river { height: 320px; }
@@ -322,16 +340,21 @@
 </div>
 
 <section class="sheet">
-  <div class="wrap">
-    <h2 class="reveal" id="proof">Only the mess goes.</h2>
-    <div class="steps reveal">
-      <div class="rail" id="rail" role="tablist" aria-label="What it does"></div>
-      <div class="card">
-        <span class="eye">Said</span>
-        <p class="raw" id="raw"></p>
-        <div class="mid"><i></i><span class="pill" id="pill"></span></div>
-        <span class="eye">Wrote</span>
-        <p class="out" id="out"></p>
+  <!-- Three viewports of scroll, one card pinned in the middle of them. -->
+  <div class="track" id="track">
+    <div class="stick" id="stick">
+      <div class="wrap">
+        <h2 class="reveal" id="proof">Only the mess goes.</h2>
+        <div class="steps reveal">
+          <div class="rail" id="rail" role="tablist" aria-label="What it does"></div>
+          <div class="card">
+            <span class="eye">Said</span>
+            <p class="raw" id="raw"></p>
+            <div class="mid"><i></i><span class="pill" id="pill"></span></div>
+            <span class="eye">Wrote</span>
+            <p class="out" id="out"></p>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -789,6 +812,7 @@
   window.addEventListener("scroll", function () {
     var y = window.pageYOffset || 0, d = Math.abs(y - lastY); lastY = y;
     boost = Math.min(9, boost + d * 0.045);
+    cardScroll();               // one listener, one read of the offset
   }, { passive: true });
 
   /* ---------------------------------------------------------------------
@@ -869,7 +893,10 @@
       b.type = "button"; b.textContent = s.tab;
       b.setAttribute("role", "tab");
       b.setAttribute("aria-selected", String(i === step));
-      b.onclick = function () { show(i); };
+      // A tab still selects, but in scroll mode it selects by MOVING THE
+      // PAGE to where that claim lives. A control that jumped the card
+      // without moving the page would leave the scroll position lying.
+      b.onclick = function () { goToStep(i); };
       var p = document.createElement("p"); p.textContent = s.note;
       rail.appendChild(b);
       if (i === step) rail.appendChild(p);
@@ -884,6 +911,10 @@
     step = ((i % C.steps.length) + C.steps.length) % C.steps.length;
     var s = C.steps[step];
     paintRail();
+    // paintRail builds new buttons, so the bar has to be put back on the new
+    // one — otherwise it reads empty from the moment a claim arrives until
+    // the next scroll event, which is exactly when it should read full.
+    paintFill();
     rail.style.setProperty("--dwell", dwell + "ms");
 
     // The raw line, one span a word, so each can be marked on its own.
@@ -908,7 +939,54 @@
     });
     at(520 + n * 150, function () { pillEl.textContent = s.pill; pillEl.className = "pill show"; });
     at(900 + n * 150, function () { written(s); });
-    if (running) at(dwell, function () { show(step + 1); });
+    // Scroll is the clock wherever there is room to pin the card. The timer
+    // only runs where there is not — a window too short to hold it still.
+    if (running && span <= 0) at(dwell, function () { show(step + 1); });
+  }
+
+  /* ---------------------------------------------------------------------
+     SCROLL PICKS THE CLAIM
+
+     The track is three viewports tall and the card is pinned in the middle
+     of it, so how far you have scrolled through the track IS which claim is
+     on the card — forwards and backwards, at whatever speed you move. The
+     rail's bar stops being a countdown and becomes a position.
+
+     `span` is the scrollable part of the track. Where it is zero — a window
+     too short to pin anything in, so the css has collapsed the track — there
+     is nothing to read a position from and the timer takes over.        */
+  var trackEl = $("track"), stickEl = $("stick"), trackTop = 0, span = 0;
+
+  function measureTrack() {
+    trackTop = trackEl.getBoundingClientRect().top + (window.pageYOffset || 0);
+    span = trackEl.offsetHeight - stickEl.offsetHeight;
+    rail.className = span > 0 ? "rail" : "rail timed";
+  }
+
+  function goToStep(i) {
+    if (span <= 0) { show(i); return; }
+    var to = trackTop + (i + 0.5) / C.steps.length * span;
+    if (window.scrollTo) window.scrollTo({ top: to, behavior: reduced ? "auto" : "smooth" });
+  }
+
+  /** How far through the track, as a fraction of a claim. */
+  function at01() {
+    var p = ((window.pageYOffset || 0) - trackTop) / span;
+    return Math.max(0, Math.min(0.9999, p)) * C.steps.length;
+  }
+
+  function paintFill() {
+    var b = rail.querySelector('button[aria-selected="true"]');
+    if (!b) return;
+    if (!(span > 0)) { b.style.removeProperty("--fill"); return; }
+    var t = at01();
+    b.style.setProperty("--fill", (t - Math.floor(t)).toFixed(3));
+  }
+
+  function cardScroll() {
+    if (!(span > 0)) return;
+    var i = Math.floor(at01());
+    if (i !== step) show(i); else paintFill();
   }
 
   /** The written line, with anything that had to survive left in amber. Built
@@ -1122,7 +1200,8 @@
   // not. Re-measure whenever the band changes size, which covers the late
   // layout, the fonts arriving and the window being dragged.
   if (window.ResizeObserver) new ResizeObserver(placeControl).observe(riverEl);
-  window.addEventListener("load", placeControl);
+  window.addEventListener("load", function () { placeControl(); measureTrack(); cardScroll(); });
+  measureTrack();
   markEl.addEventListener("keydown", function (e) {
     if (e.key === "Enter" || e.key === " ") { e.preventDefault(); toggle(); }
   });
@@ -1147,7 +1226,7 @@
   var rt = 0;
   window.addEventListener("resize", function () {
     clearTimeout(rt);
-    rt = setTimeout(function () { sizeCanvas(); loadRiver(); placeControl(); }, 200);
+    rt = setTimeout(function () { sizeCanvas(); loadRiver(); placeControl(); measureTrack(); cardScroll(); }, 200);
   });
 
   // The hand comes from the font host, and the canvas measures words in
@@ -1167,7 +1246,7 @@
       site.maxSeconds = j.maxSeconds || 15;
     }
     applyCopy();
-    if (!own) { sizeCanvas(); loadRiver(); show(0); }        // the server may have sent other lines
+    if (!own) { sizeCanvas(); loadRiver(); measureTrack(); show(0); cardScroll(); }   // the server may have sent other lines
   }).catch(function () { /* the fallbacks are already on screen */ });
 })();
 </script>

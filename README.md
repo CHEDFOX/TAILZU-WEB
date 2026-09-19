@@ -185,8 +185,24 @@ holds every one to four words.
 ## The card
 
 Three claims, each shown rather than asserted. The raw line is marked word by
-word — struck through where it goes, amber where it must not move — a pill
-names the reason, and the written line resolves underneath.
+word — struck through where it goes, underlined where it must not move — a
+pill names the reason, and the written line resolves underneath.
+
+**Scroll picks the claim.** The track is three viewports tall and the card is
+pinned in the middle of it, so how far you have scrolled through the track IS
+which claim is on the card — forwards and backwards, at whatever speed you
+move. Reading is the same gesture as advancing, so nobody waits for a carousel
+and nobody misses one. The rail's bar stopped being a countdown and became a
+position: it runs backwards when you do.
+
+A tab still selects, but it selects by moving the page to where that claim
+lives. A control that jumped the card without moving the page would leave the
+scroll position lying about what you are looking at.
+
+Where the window is too short to pin anything in, the css collapses the track,
+the script sees a scrollable span of zero and the old timer takes over. That
+check is the only thing deciding between the two, so there is no way for the
+page to end up in a state where neither runs.
 
 The words to mark are named in the backend (`steps[].cut` / `steps[].keep`)
 and matched on letters and digits only, lowercased, so `ramesh` marks
