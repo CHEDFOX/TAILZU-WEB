@@ -10,7 +10,7 @@
 <meta property="og:description" content="Talk. It writes. No sign-up.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300..500;1,6..72,300..500&family=Instrument+Sans:wght@400;500&family=IBM+Plex+Mono:wght@400&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300..500;1,6..72,300..500&family=Instrument+Sans:wght@400;500&family=IBM+Plex+Mono:wght@400&family=Caveat:wght@400..700&family=Kalam:wght@400;700&display=swap">
 <style>
   :root {
     /* THE STATS PALETTE, unchanged from the app.
@@ -38,7 +38,12 @@
   }
   a { color: inherit; text-decoration: none; }
   button { font-family: inherit; }
-  :focus-visible { outline: 2px solid var(--amber); outline-offset: 4px; }
+  /* THE AMBER IS SACRED. It appears in three places and they are one
+     meaning: the caret while the microphone is open, the button while it is
+     open, and the words just born at the caret. Alive, right now. Nothing
+     that is merely hovered, focused, selected or emphasised gets it —
+     those are done with the pale at full weight, which is the app's rule. */
+  :focus-visible { outline: 2px solid var(--white); outline-offset: 4px; }
   .wrap { max-width: 1140px; margin: 0 auto; padding: 0 28px; }
   .eye { font-family: var(--mono); font-size: 11px; letter-spacing: .2em; text-transform: uppercase; }
 
@@ -49,7 +54,16 @@
   .mast nav a { color: var(--grey); font-size: 13.5px; transition: color .18s; }
   .mast nav a:hover { color: var(--white); }
   .mast nav a.cta { color: var(--ink); background: var(--white); padding: 9px 18px; border-radius: 999px; font-weight: 500; font-size: 13px; }
-  .mast nav a.cta:hover { background: var(--amber); color: var(--ink); }
+  .mast nav a.cta:hover { opacity: .82; }
+
+  /* ---- titles ----------------------------------------------------------
+     Three, none over four words, none in the accent. A title is a claim and
+     the thing under it is the proof, so each stays short enough to be read
+     after the proof rather than instead of it.                             */
+  .hero { text-align: center; padding: 30px 0 0; }
+  h1 { margin: 0 auto; font-family: var(--serif); font-weight: 400; font-size: clamp(38px, 5.4vw, 68px); line-height: 1.05; letter-spacing: -.022em; text-wrap: balance; }
+  .sheet h2 { margin: 0 auto 44px; text-align: center; font-family: var(--serif); font-weight: 400; font-size: clamp(28px, 3.4vw, 44px); line-height: 1.1; letter-spacing: -.02em; }
+  .get h3 { margin: 0 0 10px; font-family: var(--serif); font-weight: 400; font-size: clamp(26px, 3vw, 38px); line-height: 1.05; letter-spacing: -.02em; }
 
   /* ---- the ribbon ------------------------------------------------------
      There is no hero above this any more, so this IS the hero. Many in, one
@@ -62,7 +76,7 @@
      not show more of the drawing, it zooms into the middle of it and crops
      the sides. Tried at 660 — the threads lost their entry points off the
      left edge and the one line going the other way ran off the right.      */
-  .river { position: relative; margin-top: 10px; height: 520px; animation: fade 1.4s .35s both; }
+  .river { position: relative; margin-top: 4px; height: 520px; animation: fade 1.4s .35s both; }
   /* No bands. Speech runs on the page itself, and the mask dissolves it into
      the ground at both edges rather than letting the viewport cut it off —
      so nothing on this page has a visible strip around it. The mask is on the
@@ -106,7 +120,7 @@
   /* The caret. 530ms on, 530ms off, which is the rate a real one blinks at —
      any faster reads as an error state, any slower as a dying battery. */
   #mark { cursor: pointer; }
-  #mark:focus-visible { outline: 2px solid var(--amber); outline-offset: 10px; border-radius: 8px; }
+  #mark:focus-visible { outline: 2px solid var(--white); outline-offset: 10px; border-radius: 8px; }
   .caret { fill: var(--white); animation: blink 1.06s steps(1) infinite; }
   @keyframes blink { 0%, 49.9% { opacity: 1; } 50%, 100% { opacity: .1; } }
   /* Open microphone: it stops blinking and holds, because now there is
@@ -123,14 +137,14 @@
     font-size: 13px; font-weight: 500; cursor: pointer; white-space: nowrap;
     transition: background .18s, transform .18s; -webkit-tap-highlight-color: transparent;
   }
-  .speak:hover { background: var(--amber); transform: translateX(-50%) translateY(-1px); }
+  .speak:hover { opacity: .9; transform: translateX(-50%) translateY(-1px); }
   .speak[aria-pressed="true"] { background: var(--amber); }
   /* The lanes run underneath the controls now, so the off state needs a
      ground of its own — a transparent pill over moving text is unreadable. */
   .speak[disabled] { background: rgba(15,13,11,.82); color: var(--dim); box-shadow: inset 0 0 0 1px var(--rule); cursor: default; }
   .speak svg { width: 16px; height: 16px; }
   .under { position: absolute; left: 50%; transform: translateX(-50%); top: calc(78% + 58px); width: max-content; max-width: 90vw; text-align: center; color: var(--dim); font-size: 13px; text-shadow: 0 0 12px var(--ink), 0 0 6px var(--ink), 0 0 3px var(--ink); }
-  .under.err { color: var(--amber); }
+  .under.err { color: var(--white); }
 
   /* ---- the sheet ------------------------------------------------------
      The ground does not change. What lifts the card off it is the card's own
@@ -152,7 +166,7 @@
      frame rate, all of it spent nowhere near the thing that looked expensive. */
   .rail button::after {
     content: ""; position: absolute; left: 0; top: 0; width: 2px; height: 100%;
-    background: var(--amber); transform: scaleY(0); transform-origin: top;
+    background: var(--white); transform: scaleY(0); transform-origin: top;
   }
   .rail button[aria-selected="true"] { color: var(--white); }
   .rail button[aria-selected="true"]::after { transform: scaleY(1); transition: transform var(--dwell, 6000ms) linear; }
@@ -164,9 +178,12 @@
   .raw { margin: 0 0 30px; font-size: 21px; line-height: 1.85; color: rgba(243,226,198,.72); }
   .raw span { transition: color .45s, opacity .45s, text-decoration-color .45s; }
   .raw span.gone { color: var(--dim); opacity: .42; text-decoration: line-through; text-decoration-color: rgba(243,226,198,.3); text-decoration-thickness: 1px; }
-  .raw span.hit { color: var(--amber); }
+  /* A kept word is the pale at full weight with a hairline under it, in both
+     lines, so "this did not move" reads the same before and after. Not the
+     accent: a fact that survived is a record, not a thing still in play. */
+  .raw span.hit, .out b { color: var(--white); text-decoration: underline; text-decoration-color: rgba(243,226,198,.38); text-decoration-thickness: 1px; text-underline-offset: .2em; }
   .out { margin: 0; font-family: var(--serif); font-size: clamp(22px, 2.5vw, 30px); line-height: 1.4; color: var(--white); min-height: 1.4em; }
-  .out b { font-weight: 400; color: var(--amber); }
+  .out b { font-weight: 500; }
   /* The rule and the reason share one row: the pill names what just happened
      to the line above it, and sits on the line that divides before from after. */
   .mid { display: flex; align-items: center; gap: 18px; margin: 0 0 26px; min-height: 30px; flex-wrap: wrap; }
@@ -183,14 +200,14 @@
     opacity: 0; transform: translateY(6px); transition: opacity .35s, transform .35s;
   }
   .pill.show { opacity: 1; transform: none; }
-  .pill em { font-style: normal; color: var(--amber); }
+  .pill em { font-style: normal; color: var(--white); }
 
   /* ---- download -------------------------------------------------------- */
   .get { background: var(--ink); color: var(--white); padding: 0 0 104px; }
   /* Centre, not baseline: with the heading gone there is nothing left on the
      left to sit a baseline against, and the platform line alone hung under
      the buttons instead of beside them. */
-  .getin { border-top: 1px solid var(--rule); padding-top: 56px; display: flex; justify-content: space-between; align-items: center; gap: 40px; flex-wrap: wrap; }
+  .getin { border-top: 1px solid var(--rule); padding-top: 56px; display: flex; justify-content: space-between; align-items: flex-end; gap: 40px; flex-wrap: wrap; }
   .get .note { margin: 0; color: var(--dim); font-family: var(--mono); font-size: 11px; letter-spacing: .16em; }
   .dl { display: flex; gap: 10px; flex-wrap: wrap; }
   .dl a { display: inline-flex; align-items: center; height: 52px; padding: 0 26px; border-radius: 999px; border: 1px solid var(--rule); color: var(--grey); font-size: 13.5px; transition: border-color .2s, color .2s; }
@@ -198,7 +215,7 @@
   /* The pale is the loud colour on a dark ground, the way the app's own
      figures are lights. Amber on hover, because hover is the live state. */
   .dl a.primary { background: var(--white); border-color: var(--white); color: var(--ink); font-weight: 500; }
-  .dl a.primary:hover { background: var(--amber); border-color: var(--amber); color: var(--ink); }
+  .dl a.primary:hover { opacity: .85; }
   .dl a.soon { opacity: .4; pointer-events: none; }
 
   footer { background: var(--ink); color: var(--dim); }
@@ -245,11 +262,9 @@
     </nav>
   </header>
 
-  <!-- No headline, no eyebrow, no lede. The river says all three and says
-       them in the product's own voice: the mess goes in, one sentence comes
-       out, and the sentence states what this is. A heading above it would be
-       the page claiming in words what the picture underneath is already
-       demonstrating — and the weaker of the two would be read first. -->
+  <!-- Three words. The river underneath is the proof, and a title short
+       enough is read after the proof rather than instead of it. -->
+  <section class="hero"><h1 id="headline">Talk. It writes.</h1></section>
 </div>
 
 <div class="river" id="river">
@@ -308,8 +323,7 @@
 
 <section class="sheet">
   <div class="wrap">
-    <!-- The rail names the three claims and the card proves each one on a
-         real sentence. A heading over it would say the same thing worse. -->
+    <h2 class="reveal" id="proof">Only the mess goes.</h2>
     <div class="steps reveal">
       <div class="rail" id="rail" role="tablist" aria-label="What it does"></div>
       <div class="card">
@@ -326,10 +340,10 @@
 <section class="get">
   <div class="wrap">
     <div class="getin reveal">
-      <!-- The price is gone from here too. What the buttons are for is what
-           the buttons say; the free allowance belongs where somebody is
-           deciding to pay, not where they are deciding to try. -->
-      <p class="note" id="platforms">MAC · WINDOWS · iPHONE · ANDROID</p>
+      <div>
+        <h3 id="getTitle">Free to start.</h3>
+        <p class="note" id="platforms">MAC · WINDOWS · iPHONE · ANDROID</p>
+      </div>
       <div class="dl" id="dl"></div>
     </div>
   </div>
@@ -352,6 +366,7 @@
 
   // ---- copy: the backend's, with this as the fallback --------------------
   var C = {
+    headline: "Talk. It writes.", proof: "Only the mess goes.", get: "Free to start.",
     cta: "Speak", ctaHeld: "Stop", writing: "Writing…", again: "Again",
     invite: "No sign-up. Stops when you pause.",
     after: "That's it. Everywhere you type.",
@@ -463,15 +478,20 @@
      Measured on one machine, after the transform work: 60 threads 48fps, 78
      threads 39fps, 96 threads 32fps, 116 threads 28fps. Raising it is one
      number, and so is the frame rate it costs. */
-  var TANGLE = 80, END = [712, 284], VB = [1440, 520];
+  var TANGLE = 64, END = [712, 284], VB = [1440, 520];
   var cv = $("tangle"), g2 = cv.getContext("2d");
+  /* HANDWRITTEN. Speech is a person, and a person writes by hand — so the
+     mess arrives in handwriting, and only the sentence leaving the caret is
+     set in type. That contrast is the product: hand in, type out.
+     Caveat carries the Latin. Kalam sits behind it for the Devanagari, which
+     Caveat does not have; every other script falls through, glyph by glyph,
+     to whatever the machine has — the canvas does that on its own. One hand
+     at several weights rather than twelve faces: the variety is in the
+     pressure of the pen, not in the font menu. */
   var FACES = [
-    "'Comic Sans MS','Comic Neue',cursive", "'Courier New',Courier,monospace",
-    "'Times New Roman',Times,serif",        "Verdana,Geneva,sans-serif",
-    "'Trebuchet MS','Lucida Grande',sans-serif", "Georgia,'Times New Roman',serif",
-    "Arial,Helvetica,sans-serif",           "'Lucida Console',Monaco,monospace",
-    "Tahoma,Geneva,sans-serif",             "'Palatino Linotype',Palatino,serif",
-    "'Arial Black',Gadget,sans-serif",      "'Brush Script MT','Comic Sans MS',cursive"
+    { w: "400", f: "'Caveat','Kalam',cursive" }, { w: "500", f: "'Caveat','Kalam',cursive" },
+    { w: "600", f: "'Caveat','Kalam',cursive" }, { w: "700", f: "'Caveat','Kalam',cursive" },
+    { w: "400", f: "'Kalam','Caveat',cursive" }, { w: "700", f: "'Kalam','Caveat',cursive" }
   ];
 
   /** Fixed seed: scattered, but the same scatter every time. */
@@ -559,9 +579,9 @@
       LANES.push({
         pts: sample(P),
         face: FACES[k % FACES.length],
-        size: 7.5 + bright * 7.5,
+        size: 9 + bright * 8,       // a hand is small at its x-height; a shade up from the type
         fill: shade(bright),
-        track: (r() - 0.42) * 0.55,  // gently squeezed; thin type mushes fast
+        track: (r() - 0.5) * 0.3,   // a hand is not squeezed, only a little uneven
         from: k, gap: 1.10 + r() * 0.55,
         speed: 40 + bright * 108,
         // A slow breath, different on every thread, biggest at the far edge
@@ -587,7 +607,7 @@
    * and there is a beat of nothing before it comes round again.
    */
   function lay(L, one, gap) {
-    g2.font = L.size.toFixed(1) + "px " + L.face;
+    g2.font = L.face.w + " " + L.size.toFixed(1) + "px " + L.face.f;
     var space = g2.measureText(" ").width + L.track;
     var end = L.pts[L.pts.length - 1].s;
     var parts = one.split(/\s+/).filter(Boolean);
@@ -675,7 +695,7 @@
        one, and measurably about twice as quick. */
     for (var i = 0; i < LANES.length; i++) {
       var L = LANES[i], pts = L.pts, nP = pts.length, end = pts[nP - 1].s;
-      g2.font = L.size.toFixed(1) + "px " + L.face;
+      g2.font = L.face.w + " " + L.size.toFixed(1) + "px " + L.face.f;
       g2.fillStyle = L.fill;
       var base = -L.period + (L.off % L.period), p = 0;
       // The breath: one sine per thread per frame, scaled to nothing by the
@@ -754,33 +774,22 @@
   }
 
   /* ---------------------------------------------------------------------
-     THE SURGE
+     SCROLL DRIVES THE CURRENT
 
-     The first few scrolls from the top drive the river instead of the page:
-     each one kicks the flow into a rush that falls back, and after the third
-     the page scrolls normally and never does this again.
+     The river walks on its own and rushes when the page moves: every pixel
+     of scroll, either way, is poured into the flow, and it falls back over
+     about half a second once the page is still. Nothing is intercepted and
+     nothing is trapped — the page scrolls exactly as it always did, the
+     river answers it. Touch gets it for free, because a swipe is a scroll.
 
-     Held to three, only from the very top, and never on a scroll upward,
-     because a page that will not move when you ask it to is broken — the
-     whole thing is over in about a second and the way out is to keep doing
-     what you were already doing. Not on touch: a phone has no wheel to
-     intercept, and stealing a swipe is a far worse trade.
-
-     Small multipliers, because the tangle already runs fast; at the old ones
-     a rush became a blur.                                                 */
-  var SURGE = [1, 3, 5, 8], pushes = 0, boost = 1, lastPush = 0;
-  var coarse = window.matchMedia && window.matchMedia("(pointer: coarse)").matches;
-
-  window.addEventListener("wheel", function (e) {
-    if (reduced || coarse || pushes >= 3) return;      // released for good
-    if ((window.pageYOffset || 0) > 40) return;        // only from the top
-    if (e.deltaY <= 0) return;                         // never trap a scroll up
-    e.preventDefault();
-    var now = performance.now();
-    if (now - lastPush < 420) return;                  // one flick is one push
-    lastPush = now;
-    boost = SURGE[++pushes];
-  }, { passive: false });
+     This replaces the three-push surge, which took the first scrolls for
+     itself and gave the page back afterwards. A page that will not move
+     when asked is broken, however briefly; this one always moves.        */
+  var boost = 1, lastY = window.pageYOffset || 0;
+  window.addEventListener("scroll", function () {
+    var y = window.pageYOffset || 0, d = Math.abs(y - lastY); lastY = y;
+    boost = Math.min(9, boost + d * 0.045);
+  }, { passive: true });
 
   /* ---------------------------------------------------------------------
      THE CARET
@@ -985,6 +994,9 @@
   function under(msg, bad) { $("under").textContent = msg; $("under").className = bad ? "under err" : "under"; }
 
   function applyCopy() {
+    $("headline").textContent = C.headline;
+    $("proof").textContent = C.proof;
+    $("getTitle").textContent = C.get;
     $("micLabel").textContent = C.cta;
     paintDownloads();
     if (!site.demo) { $("mic").disabled = true; under(C.demoOff); }
@@ -1137,6 +1149,15 @@
     clearTimeout(rt);
     rt = setTimeout(function () { sizeCanvas(); loadRiver(); placeControl(); }, 200);
   });
+
+  // The hand comes from the font host, and the canvas measures words in
+  // whatever face it has at the time. A phrase laid out in the fallback and
+  // drawn in the real hand has every word in the wrong place, so the river
+  // is laid out again once the hand has arrived.
+  if (document.fonts && document.fonts.load) {
+    Promise.all([document.fonts.load("14px Caveat"), document.fonts.load("14px Kalam")])
+      .then(function () { if (!own) loadRiver(); }, function () {});
+  }
 
   fetch(API + "/v1/site").then(function (r) { return r.json(); }).then(function (j) {
     if (j && j.copy) { for (var k in j.copy) if (Object.prototype.hasOwnProperty.call(j.copy, k)) C[k] = j.copy[k]; }

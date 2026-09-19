@@ -31,15 +31,22 @@ value and a hairline rule — the app's two moves, at a bigger size.
 
 ## The river
 
-A tangle of speech arrives from every side — over the top, across the left, up
-from underneath — converging on the caret, and one line goes the other way.
+A tangle of handwritten speech arrives from every side — over the top, across
+the left, up from underneath — converging on the caret, and one typeset line
+goes the other way.
 
-**The left is ugly on purpose.** Speech has no typography, so the curves have
-none: each takes whatever face the machine happens to have, at whatever size,
-with whatever tracking, some of it squeezed. Nothing is loaded from a font
-host, because the point is that these are the defaults nobody chose. Every
-thread is the one ink at a lower weight — most near the ground, a few almost
-at full — so the left has depth without a second colour in it.
+**The left is handwritten.** Speech is a person, and a person writes by
+hand — so the mess arrives in handwriting and only the sentence leaving the
+caret is set in type. Hand in, type out: that contrast is the product. Caveat
+carries the Latin, Kalam sits behind it for the Devanagari, and every other
+script falls through, glyph by glyph, to whatever the machine has. One hand at
+several weights rather than a font menu. Every thread is the one ink at a
+lower weight — most near the ground, a few almost at full — so the left has
+depth without a second colour in it.
+
+The hand comes from the font host, and the canvas measures words in whatever
+face it has at the time — so the river is laid out again once the hand has
+arrived, or every word sits in the wrong place.
 
 **The right is not an example, it is the identity.** `SITE_UI.identity` is
 what leaves the caret when nobody has spoken: what the product is, in the only
@@ -52,7 +59,7 @@ Each thread carries a single sentence and there is a beat of nothing before it
 comes round again. Filling every curve end to end is what a river does; a
 bombardment is separate things arriving.
 
-It is also the whole reason there can be sixty of them. The cost is linear in
+It is also the whole reason there can be sixty-four of them. The cost is linear in
 words drawn per frame, and a filled curve at thread weight is forty words
 where a phrase is seven — so the same frame buys six times the threads. Thin
 type alone does the opposite: smaller words mean MORE of them fit along the
@@ -147,17 +154,33 @@ written at. Clicking it starts the microphone, and so does the button below.
 It sits at the centre of the viewBox, which is the centre of the band, so the
 button under it needs no arithmetic to line up.
 
-## The surge
+## Scroll drives the current
 
-The first three scrolls from the top drive the river instead of the page. Each
-one kicks the flow into a rush that falls back over about half a second, and
-after the third the page scrolls normally and never does it again.
+The river walks on its own and rushes when the page moves: every pixel of
+scroll, either way, is poured into the flow, and it falls back over about half
+a second once the page is still. Nothing is intercepted and nothing is trapped
+— the page scrolls exactly as it always did, the river answers it. Touch gets
+it for free, because a swipe is a scroll.
 
-It is held to three, and only from the very top, and never on a scroll upward,
-because a page that will not move when you ask it to is broken. The whole
-thing is over in about a second and the way out is to keep doing what you were
-already doing. It does not run on touch: a phone has no wheel to intercept,
-and stealing a swipe is a far worse trade than stealing a scroll.
+This replaced a three-push surge that took the first scrolls for itself. A
+page that will not move when asked is broken, however briefly.
+
+## The amber is sacred
+
+It appears in three places and they are one meaning: the caret while the
+microphone is open, the button while it is open, and the words just born at
+the caret. Alive, right now. Nothing merely hovered, focused, selected or
+emphasised gets it — those are the pale at full weight, which is the app's
+rule. A kept word on the card is underlined, not amber: a fact that survived
+is a record, not a thing still in play.
+
+## The titles
+
+Three, none over four words, none in the accent: `Talk. It writes.` over the
+river, `Only the mess goes.` over the card, `Free to start.` over the buttons.
+A title is a claim and the thing under it is the proof, so each stays short
+enough to be read after the proof rather than instead of it. A backend test
+holds every one to four words.
 
 ## The card
 
