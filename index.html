@@ -22,8 +22,15 @@
        that is the app's rule, and it is why the amber still means something.
        A paper half would have been a second visual world, and a colour cannot
        be sacred if the ground under it changes temperature. */
-    --ink: #0F0D0B; --card: #1A1714; --rule: rgba(243,226,198,.10);
-    --white: #F3E2C6; --grey: rgba(243,226,198,.55); --dim: rgba(243,226,198,.36);
+    /* The quiet end is set by CONTRAST, not by taste. Measured against this
+       ground: .36 is 2.84:1, under even the 3:1 floor for large text — which
+       is why the labels, the platform line, the footer and the unselected
+       tabs all read as faded rather than as quiet, and a faded page reads as
+       an unfinished one whatever its colours are. .52 is 4.71:1 and clears AA
+       for small text; .62 is 6.26:1. Same hue, same family, nothing new —
+       the page just stops whispering. */
+    --ink: #0F0D0B; --card: #1A1714; --rule: rgba(243,226,198,.13);
+    --white: #F3E2C6; --grey: rgba(243,226,198,.62); --dim: rgba(243,226,198,.52);
     --amber: #E8A23C;
     --serif: 'Newsreader', Georgia, 'Times New Roman', serif;
     --sans: 'Instrument Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
@@ -76,7 +83,16 @@
      not show more of the drawing, it zooms into the middle of it and crops
      the sides. Tried at 660 — the threads lost their entry points off the
      left edge and the one line going the other way ran off the right.      */
-  .river { position: relative; margin-top: 4px; height: 520px; animation: fade 1.4s .35s both; }
+  /* A POOL OF LIGHT AT THE CARET.
+     The eye goes to the brightest place before it reads anything, so the
+     brightest place should be where the thing happens. A flat ground gives it
+     nowhere to go and the whole band reads as evenly busy. This is the page's
+     own ink at four per cent — warm light, no new colour — and it is what
+     makes the caret the subject rather than one more mark among a hundred. */
+  .river {
+    position: relative; margin-top: 4px; height: 520px; animation: fade 1.4s .35s both;
+    background: radial-gradient(58% 66% at 50% 54%, rgba(243,226,198,.042), transparent 70%);
+  }
   /* No bands. Speech runs on the page itself, and the mask dissolves it into
      the ground at both edges rather than letting the viewport cut it off —
      so nothing on this page has a visible strip around it. The mask is on the
@@ -183,11 +199,24 @@
   .rail p { margin: 0; padding: 0 0 4px 20px; color: var(--grey); font-size: 14.5px; max-width: 30ch; }
 
   /* the transcript card */
-  .card { position: relative; background: var(--card); border: 1px solid var(--rule); border-radius: 22px; padding: 40px 42px 34px; min-height: 300px; overflow: hidden; }
+  /* LIT FROM ABOVE, like everything anybody has ever picked up.
+     A flat fill is a hole in the ground; a top edge catching the light and a
+     shadow pooling under it is an object sitting on it. The two ends of the
+     gradient straddle the app's own card value, so this is the same material
+     — it is only being lit. */
+  .card {
+    position: relative; border: 1px solid var(--rule); border-radius: 22px;
+    background: linear-gradient(180deg, #1D1A16, #171410);
+    box-shadow: inset 0 1px 0 rgba(243,226,198,.07), 0 30px 70px -40px rgba(0,0,0,.95);
+    padding: 40px 42px 34px; min-height: 300px; overflow: hidden;
+  }
   .card .eye { text-align: left; color: var(--dim); margin: 0 0 18px; }
   .raw { margin: 0 0 30px; font-size: 21px; line-height: 1.85; color: rgba(243,226,198,.72); }
   .raw span { transition: color .45s, opacity .45s, text-decoration-color .45s; }
-  .raw span.gone { color: var(--dim); opacity: .42; text-decoration: line-through; text-decoration-color: rgba(243,226,198,.3); text-decoration-thickness: 1px; }
+  /* One alpha, not an alpha times an opacity: the two compounded to .15 and
+     the words nobody is meant to keep became words nobody could read. They
+     still have to be legible — the claim is that THESE went. */
+  .raw span.gone { color: rgba(243,226,198,.42); text-decoration: line-through; text-decoration-color: rgba(243,226,198,.34); text-decoration-thickness: 1px; }
   /* A kept word is the pale at full weight with a hairline under it, in both
      lines, so "this did not move" reads the same before and after. Not the
      accent: a fact that survived is a record, not a thing still in play. */
@@ -220,7 +249,7 @@
   .getin { border-top: 1px solid var(--rule); padding-top: 56px; display: flex; justify-content: space-between; align-items: flex-end; gap: 40px; flex-wrap: wrap; }
   .get .note { margin: 0; color: var(--dim); font-family: var(--mono); font-size: 11px; letter-spacing: .16em; }
   .dl { display: flex; gap: 10px; flex-wrap: wrap; }
-  .dl a { display: inline-flex; align-items: center; height: 52px; padding: 0 26px; border-radius: 999px; border: 1px solid var(--rule); color: var(--grey); font-size: 13.5px; transition: border-color .2s, color .2s; }
+  .dl a { display: inline-flex; align-items: center; height: 52px; padding: 0 26px; border-radius: 999px; border: 1px solid rgba(243,226,198,.20); color: var(--grey); font-size: 13.5px; transition: border-color .2s, color .2s; }
   .dl a:hover { border-color: var(--grey); color: var(--white); }
   /* The pale is the loud colour on a dark ground, the way the app's own
      figures are lights. Amber on hover, because hover is the live state. */
@@ -305,9 +334,9 @@
            written, and they cool to the reading colour as they move away
            and become the record. The one colour on the page with a meaning,
            doing that meaning. -->
-      <linearGradient id="fresh" gradientUnits="userSpaceOnUse" x1="728" y1="0" x2="1080" y2="0">
+      <linearGradient id="fresh" gradientUnits="userSpaceOnUse" x1="728" y1="0" x2="980" y2="0">
         <stop offset="0" style="stop-color: var(--amber)"/>
-        <stop offset="0.28" style="stop-color: var(--amber)"/>
+        <stop offset="0.18" style="stop-color: var(--amber)"/>
         <stop offset="1" style="stop-color: var(--white)"/>
       </linearGradient>
       <mask id="leaving"><rect x="716" y="-140" width="1200" height="800" fill="url(#emerge)"/></mask>
@@ -800,34 +829,39 @@
     f = g2.createLinearGradient(0, EB - EW, 0, EB);
     f.addColorStop(0, "rgba(0,0,0,0)"); f.addColorStop(1, "#000");
     g2.fillStyle = f; g2.fillRect(EL - OV, EB - EW, (ER - EL) + OV * 2, EW + OV);
-    g2.globalCompositeOperation = "source-over";
+    /* The mouth, and the block beyond it, ERASE rather than paint ground.
+       They used to fill with the ground colour, which was the same thing
+       while the ground was flat — and it is not any more. There is a pool of
+       warm light under this band now, and painting flat ink over its right
+       half cut a hard vertical edge straight down the middle of it. Erasing
+       lets the light through, so the threads dissolve into the glow instead
+       of into a patch of paint that happens to match.
 
-    /* The mouth: ink centred ON the caret, not short of it. It was 190 units
+       The mouth is centred ON the caret, not short of it. It was 190 units
        wide and sitting twenty-two to its left, so its solid core began a
        hundred units early and the threads died before they ever reached the
-       line — which is exactly what it looked like. Tight and centred now: the
-       threads run all the way in and go out at the cursor. */
-    var MX = 720, MR = 62;
+       line — which is exactly what it looked like. Tight and centred now.
 
-    /* NOTHING EXISTS RIGHT OF THE CARET ON THIS LAYER.
-       A word is anchored at its START, so one arriving at the cursor hangs
-       its own width past it — and every tail longer than the mouth's radius
-       came out the far side and sat there as a ghost of a left-hand thread on
-       the right, where only the written sentence belongs. The curves all end
-       level at the caret, so a straight block from it to the edge costs one
-       fill and cannot cut anything short: its left edge is buried inside the
-       mouth's opaque core, so there is no seam to see. The written line is in
-       the svg above this and is untouched. */
-    g2.fillStyle = "#0F0D0B";
+       The block is there because a word is anchored at its START, so one
+       arriving at the cursor hangs its own width past it, and every tail
+       longer than the mouth's radius came out the far side as a ghost of a
+       left-hand thread on the right, where only the written sentence
+       belongs. The curves all end level at the caret, so a straight edge
+       there cannot cut anything short, and it is buried inside the mouth's
+       solid core so there is no seam. The written line is in the svg above
+       this and is untouched. */
+    var MX = 720, MR = 62;
+    g2.fillStyle = "#000";
     g2.fillRect(END[0], VIS[1] - 300, (VIS[2] - END[0]) + 300, (VIS[3] - VIS[1]) + 600);
 
     var grd = g2.createRadialGradient(MX, MID, 0, MX, MID, MR);
-    grd.addColorStop(0, "rgba(15,13,11,1)");
-    grd.addColorStop(0.30, "rgba(15,13,11,1)");
-    grd.addColorStop(1, "rgba(15,13,11,0)");
+    grd.addColorStop(0, "rgba(0,0,0,1)");
+    grd.addColorStop(0.30, "rgba(0,0,0,1)");
+    grd.addColorStop(1, "rgba(0,0,0,0)");
     g2.fillStyle = grd;
     g2.save(); g2.translate(MX, MID); g2.scale(1, 0.78); g2.translate(-MX, -MID);
     g2.fillRect(MX - MR, MID - MR - 30, MR * 2, MR * 2 + 60); g2.restore();
+    g2.globalCompositeOperation = "source-over";
   }
 
   /* ---------------------------------------------------------------------

@@ -24,6 +24,36 @@ never a second hue. That is why the amber still means something — and it means
 the same thing here as in the app: **what is still in play**. The line that
 leaves the caret, the word the sentence kept, the step that is running.
 
+### The quiet end is set by contrast, not by taste
+
+Measured against this ground, the pale at .36 alpha is **2.84:1** — under even
+the 3:1 floor for large text. That one number was carrying the labels, the
+platform line, the footer and the unselected tabs, and it is why the page read
+as faded rather than as quiet. A faded page reads as an unfinished one
+whatever its colours are. `--dim` is .52 (4.71:1, AA for small text) and
+`--grey` is .62 (6.26:1). Same hue, same family, nothing new — the page just
+stops whispering. `scratchpad/contrast.js` prints the table; if you lower one
+of these, print it again.
+
+### Light, not more colour
+
+Two things carry the attraction, and neither is a second hue:
+
+**A pool of light at the caret.** The eye goes to the brightest place before
+it reads anything, so the brightest place should be where the thing happens. A
+flat ground gives it nowhere to go and the whole band reads as evenly busy.
+The pool is the page's own ink at four per cent, behind the canvas.
+
+**The card is lit from above**, like everything anybody has ever picked up: a
+top edge catching the light, a shadow pooling under it. The two ends of its
+gradient straddle the app's own card value, so it is the same material — it is
+only being lit.
+
+That is also why the mouth and the block beyond it ERASE rather than paint
+ground. They used to fill with the ground colour, which was the same thing
+while the ground was flat, and it is not any more — painting flat ink over the
+right half of the pool cut a hard vertical edge down the middle of it.
+
 There is no paper half any more. A light section would be a second visual
 world, and a colour cannot be sacred if the ground under it changes
 temperature. What lifts the card off the ground is the card's own step up in
