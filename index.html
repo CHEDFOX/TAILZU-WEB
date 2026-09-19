@@ -10,7 +10,7 @@
 <meta property="og:description" content="Talk. It writes. No sign-up.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300..500;1,6..72,300..500&family=Instrument+Sans:wght@400;500&family=IBM+Plex+Mono:wght@400&family=Caveat:wght@400..700&family=Kalam:wght@400;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300..500;1,6..72,300..500&family=Instrument+Sans:wght@400;500&family=IBM+Plex+Mono:wght@400&family=Caveat:wght@400..700&family=Kalam:wght@400;700&family=Shrikhand&display=swap">
 <style>
   :root {
     /* THE STATS PALETTE, unchanged from the app.
@@ -80,9 +80,10 @@
      Three, none over four words, none in the accent. A title is a claim and
      the thing under it is the proof, so each stays short enough to be read
      after the proof rather than instead of it.                             */
-  .hero { text-align: center; padding: 30px 0 0; }
-  h1 { margin: 0 auto; font-family: var(--serif); font-weight: 400; font-size: clamp(38px, 5.4vw, 68px); line-height: 1.05; letter-spacing: -.022em; text-wrap: balance; }
-  .sheet h2 { margin: 0 auto 44px; text-align: center; font-family: var(--serif); font-weight: 400; font-size: clamp(28px, 3.4vw, 44px); line-height: 1.1; letter-spacing: -.02em; }
+  /* Shrikhand: a fat, swinging display face drawn for Gujarati and Latin
+     together — the one funky thing on the page, and it is funky in the
+     product's own accent. Nothing else is set in it. */
+  .sheet h2 { margin: 0 auto 44px; text-align: center; font-family: 'Shrikhand', var(--serif); font-weight: 400; font-size: clamp(30px, 3.8vw, 50px); line-height: 1.1; letter-spacing: .01em; }
   .get h3 { margin: 0 0 10px; font-family: var(--serif); font-weight: 400; font-size: clamp(26px, 3vw, 38px); line-height: 1.05; letter-spacing: -.02em; }
 
   /* ---- the ribbon ------------------------------------------------------
@@ -103,7 +104,7 @@
      own ink at four per cent — warm light, no new colour — and it is what
      makes the caret the subject rather than one more mark among a hundred. */
   .river {
-    position: relative; margin-top: 4px; height: 520px; animation: fade 1.4s .35s both;
+    position: relative; margin-top: 26px; height: 520px; animation: fade 1.4s .35s both;
     background: radial-gradient(58% 66% at 50% 54%, rgba(243,226,198,.042), transparent 70%);
   }
   /* No bands. Speech runs on the page itself, and the mask dissolves it into
@@ -319,9 +320,6 @@
     </nav>
   </header>
 
-  <!-- Three words. The river underneath is the proof, and a title short
-       enough is read after the proof rather than instead of it. -->
-  <section class="hero"><h1 id="headline">Talk. It writes.</h1></section>
 </div>
 
 <div class="river" id="river">
@@ -407,7 +405,7 @@
 
   // ---- copy: the backend's, with this as the fallback --------------------
   var C = {
-    headline: "Talk. It writes.", proof: "Only the mess goes.", get: "Free to start.",
+    proof: "Only the mess goes.", get: "Free to start.",
     cta: "Speak", ctaHeld: "Stop", writing: "Writing…", again: "Again",
     micDenied: "Mic blocked.",
     // The one word the whole field pours into. A word or two, never more:
@@ -602,9 +600,15 @@
       // x must step rightward at every control point, or words hang upside
       // down. A twist that would send the first handle backward is clamped.
       var p1x = sx + Math.max(0.16, Math.cos(bear)) * h1, p1y = sy + Math.sin(bear) * h1;
-      var p2x = END[0] - h2, p2y = END[1] + (r() - 0.5) * 10;
+      /* ACROSS THE LETTER, NOT ONTO A POINT. A hundred curves ending on one
+         pixel pile up into a bright knot there, and a knot being erased is
+         what "cheap" looks like. Spread over the height of the first glyph
+         they arrive along its whole stem, and the letter reads as drinking
+         them in rather than as a dot being wiped. */
+      var ey = END[1] + (r() - 0.5) * 48;
+      var p2x = END[0] - h2, p2y = ey + (r() - 0.5) * 6;
       if (p1x > p2x - 24) p1x = p2x - 24;
-      var P = [sx, sy, p1x, p1y, p2x, p2y, END[0], END[1]];
+      var P = [sx, sy, p1x, p1y, p2x, p2y, END[0], ey];
 
       /* DEPTH IS ONE NUMBER.
          Bright, big and fast are the same thing — near. Dim, small and slow
@@ -696,7 +700,7 @@
      typed by hand put the cut a few units off the glyph at one font size and
      a dozen off at another, and a thread visible inside the word reads as a
      mistake rather than as an arrival. */
-  var GATE = 768;
+  var GATE = 768, FADE = 150;
   function measureGate() {
     try {
       var bb = absorbEl.getBBox();
@@ -767,7 +771,8 @@
       var L = LANES[i], pts = L.pts, nP = pts.length, end = pts[nP - 1].s;
       g2.font = L.face.w + " " + L.size.toFixed(1) + "px " + L.face.f;
       g2.fillStyle = L.fill;
-      var base = -L.period + (L.off % L.period), p = 0;
+      var base = -L.period + (L.off % L.period), p = 0, curA = 1;
+      g2.globalAlpha = 1;
       // The breath: one sine per thread per frame, scaled to nothing by the
       // caret so the mouth never moves. Folded into the translate, so it
       // costs a multiply per piece and no extra call.
@@ -795,6 +800,17 @@
             while (h < nP - 1 && pts[h].s < sM) h++;
             while (h > 0 && pts[h].s > sM) h--;
             var am = pts[h].a, g3 = h;
+            /* THE DISSOLVE IS ALONG EACH THREAD, NOT A SHAPE ON THE SCREEN.
+               A piece thins with ITS OWN distance to the gate, eased, so
+               every thread fades out along its own path over the last
+               hundred and fifty units and reaches nothing exactly at the
+               letter. A screen-space ellipse could only ever approximate
+               that, and where it was wrong it was wrong as a visible edge.
+               Taken at the piece's midpoint, so a long piece straddling the
+               gate is not drawn bright because its first letter was. */
+            var dg = (GATE - pts[h].x) / FADE, al = dg >= 1 ? 1 : dg <= 0 ? 0 : dg * dg * (3 - 2 * dg);
+            if (al === 0) continue;
+            if (al !== curA) { g2.globalAlpha = al; curA = al; }
             while (g3 < nP - 1 && pts[g3].s < sA) g3++;
             while (g3 > 0 && pts[g3].s > sA) g3--;
             var qa = pts[g3];
@@ -806,6 +822,7 @@
         p = 0;
       }
     }
+    g2.globalAlpha = 1;
     g2.setTransform(K, 0, 0, K, TX, TY);
 
     /* The edges are faded HERE rather than by a css mask on the element. A
@@ -858,32 +875,12 @@
        mouth only has to dissolve the last of the threads in the few units
        before the first glyph, so that they run into it rather than stopping
        short of it in the dark. Anything wider reopens the gap. */
-    /* THE DISSOLVE. One soft ellipse centred just inside the word, wide and
-       shallow so it hugs the way the threads actually arrive: horizontally,
-       nearly converged. It reaches FULL erase a good thirty units before the
-       glyph and falls to nothing a hundred and fifty out, so the mess thins
-       over a long run instead of being cut.
-
-       That is what was wrong before. The straight block did the real work and
-       the ellipse was only twenty-six units across, so a thread still bright
-       at the gate met a vertical edge and was sliced — smooth for most of
-       them, a clean straight cut for the bright ones, which is exactly the
-       frame the eye picks out. The block still runs from the gate rightward,
-       because a word is anchored at its start and tails hang past it, but it
-       is now drawn over pixels the ellipse has already taken to zero, so
-       there is no edge left for it to make. */
-    var MX = GATE + 16, MR = 72;
+    /* Past the gate, nothing. A word is anchored at its start so its tail
+       hangs past the anchor, and by the gate every piece is already at zero
+       alpha — this is a guarantee, not a visible cut. There is no ellipse any
+       more: the dissolve is done per piece, along each thread, above. */
     g2.fillStyle = "#000";
     g2.fillRect(GATE, VIS[1] - 300, (VIS[2] - GATE) + 300, (VIS[3] - VIS[1]) + 600);
-
-    var grd = g2.createRadialGradient(MX, MID, 0, MX, MID, MR);
-    grd.addColorStop(0, "rgba(0,0,0,1)");
-    grd.addColorStop(0.28, "rgba(0,0,0,1)");
-    grd.addColorStop(0.62, "rgba(0,0,0,0.40)");
-    grd.addColorStop(1, "rgba(0,0,0,0)");
-    g2.fillStyle = grd;
-    g2.save(); g2.translate(MX, MID); g2.scale(1, 0.62); g2.translate(-MX, -MID);
-    g2.fillRect(MX - MR, MID - MR, MR * 2, MR * 2); g2.restore();
     g2.globalCompositeOperation = "source-over";
   }
 
@@ -1008,7 +1005,7 @@
      move — a pill names the reason, and the written line resolves under it.
      ================================================================== */
   var rail = $("rail"), rawEl = $("raw"), outEl = $("out"), pillEl = $("pill");
-  var step = 0, seq = [], dwell = 6400, running = false;
+  var step = 0, seq = [], dwell = 6400, running = false, arrived = false;
 
   function words(s) { return s.split(/\s+/).filter(Boolean); }
   function bare(s) { return s.toLowerCase().replace(/[^\p{L}\p{N}]/gu, ""); }
@@ -1035,6 +1032,7 @@
 
   function show(i) {
     clearSeq();
+    arrived = false;
     step = ((i % C.steps.length) + C.steps.length) % C.steps.length;
     var s = C.steps[step];
     paintRail();
@@ -1055,7 +1053,7 @@
     outEl.textContent = "";
     pillEl.className = "pill";
 
-    if (reduced) { markAll(spans, s); written(s); pillEl.textContent = s.pill; pillEl.className = "pill show"; return; }
+    if (reduced) { markAll(spans, s); written(s); pillEl.textContent = s.pill; pillEl.className = "pill show"; arrived = true; return; }
 
     // Mark the words one at a time, so the reader watches it decide.
     var cut = (s.cut || []).map(bare), keep = (s.keep || []).map(bare), n = 0;
@@ -1065,7 +1063,9 @@
       else if (keep.indexOf(b) >= 0) { at(420 + n * 150, function () { el.className = "hit"; }); n++; }
     });
     at(520 + n * 150, function () { pillEl.textContent = s.pill; pillEl.className = "pill show"; });
-    at(900 + n * 150, function () { written(s); });
+    // The refinement has landed. Only now may the scroll move on — and if it
+    // already has, catch up to it, one claim at a time.
+    at(900 + n * 150, function () { written(s); arrived = true; cardScroll(); });
     // Scroll is the clock wherever there is room to pin the card. The timer
     // only runs where there is not — a window too short to hold it still.
     if (running && span <= 0) at(dwell, function () { show(step + 1); });
@@ -1113,6 +1113,17 @@
   function cardScroll() {
     if (!(span > 0)) return;
     var i = Math.floor(at01());
+    /* THE NEXT THING, NOT THE NEXT FILTER. Scrolling past a claim before its
+       refinement has landed used to jump straight to the following claim, so
+       a quick scroll showed three sentences being marked up and never one
+       being written. Forwards, the card now waits for the written line to
+       arrive, and then moves one claim at a time so none is skipped — the
+       arrival itself calls back here to catch up. Backwards is always free:
+       you have already seen it. */
+    if (i > step) {
+      if (!arrived) { paintFill(); return; }
+      i = step + 1;
+    }
     if (i !== step) show(i); else paintFill();
   }
 
@@ -1207,7 +1218,6 @@
   }
 
   function applyCopy() {
-    $("headline").textContent = C.headline;
     $("proof").textContent = C.proof;
     $("getTitle").textContent = C.get;
     $("micLabel").textContent = C.cta;

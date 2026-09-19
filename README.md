@@ -102,34 +102,26 @@ across the left, up from underneath — and one word swallows them.
 only ever two because something stood between them. The threads run into the
 word itself and dissolve as they arrive.
 
-**The dissolve is one soft ellipse centred ON the gate**, wide and shallow so
-it hugs the way the threads actually come in: horizontally, nearly converged.
-Its solid core swallows the last twenty units before the glyph and the fade
-runs about seventy units back from there, so the mess thins over a long run
-and still arrives at the letter.
+**They arrive across the letter, not onto a point.** A hundred curves ending
+on one pixel pile up into a bright knot there, and a knot being erased is what
+"cheap" looks like. The endpoints are spread over the height of the first
+glyph, so the threads come in along its whole stem and the letter reads as
+drinking them in rather than as a dot being wiped.
 
-That matters because the first version had it backwards. A straight block did
-the real work and the ellipse was only twenty-six units across, so a thread
-still bright at the gate met a vertical edge and was sliced — smooth for most
-of them and a clean straight cut for the bright ones, which is exactly the
-frame the eye picks out. The straight block still runs from the gate rightward,
-because a word is anchored at its start and tails hang past it, but it is now
-drawn over pixels the ellipse has already taken to zero, so there is no edge
-left for it to make.
+**The dissolve is along each thread, not a shape on the screen.** Every piece
+of every word thins with ITS OWN distance to the gate, eased, over the last
+hundred and fifty units, and reaches nothing exactly at the letter. A
+screen-space ellipse could only ever approximate that, and wherever it was
+wrong it was wrong as a visible edge — a thread still bright at the gate met
+a straight cut. Taken at the piece's midpoint, so a long piece straddling the
+gate is not drawn bright because its first letter was. Pieces at zero are not
+drawn at all. There is no ellipse any more; the straight block past the gate
+remains only as a guarantee, drawn over pixels that are already at zero.
 
-Tuned by reading the brightness across the junction rather than by eye:
-`140 131 135 84 65 46 19 0` from x=690 to x=760. A ramp with no cliff in it,
-reaching nothing four units before the letter. Overshooting is just as easy to
-see — at a radius of 150 the threads died two hundred pixels short and left a
-hole where the merge should be.
-
-**The gate is the word's own left edge, measured and not typed.** Everything
-on the canvas stops there, so the threads merge into the stem of the first
-letter and nothing is drawn past it. A number typed by hand put the cut a few
-units off the glyph at one font size and a dozen off at another, and a thread
-visible inside the word reads as a mistake rather than as an arrival. The
-convergence moves with the word for the same reason: the curves have to END
-where it starts, or the gap comes straight back.
+**The gate is the word's own left edge, measured and not typed.** A number
+typed by hand put the cut a few units off the glyph at one font size and a
+dozen off at another. The convergence moves with the word for the same reason:
+the curves have to END where it starts, or the gap comes straight back.
 
 **The left is handwritten.** Speech is a person, and a person writes by
 hand — so the mess arrives in handwriting and only the word that swallows it
@@ -303,11 +295,15 @@ than no rule at all.
 
 ## The titles
 
-Three, none over four words, none in the accent: `Talk. It writes.` over the
-river, `Only the mess goes.` over the card, `Free to start.` over the buttons.
-A title is a claim and the thing under it is the proof, so each stays short
-enough to be read after the proof rather than instead of it. A backend test
-holds every one to four words.
+Two, none over four words, none in the accent: `Only the mess goes.` over the
+card and `Free to start.` over the buttons. There is nothing over the river —
+the river is the headline. A title is a claim and the thing under it is the
+proof, so each stays short enough to be read after the proof rather than
+instead of it. A backend test holds every one to four words.
+
+The one over the card is set in **Shrikhand**, a fat, swinging display face
+drawn for Gujarati and Latin together — the one funky thing on the page, and
+funky in the product's own accent. Nothing else is set in it.
 
 ## The card
 
@@ -321,6 +317,15 @@ which claim is on the card — forwards and backwards, at whatever speed you
 move. Reading is the same gesture as advancing, so nobody waits for a carousel
 and nobody misses one. The rail's bar stopped being a countdown and became a
 position: it runs backwards when you do.
+
+**The next thing, not the next filter.** Scrolling past a claim before its
+refinement had landed used to jump straight to the following claim, so a quick
+scroll showed three sentences being marked up and never one being written.
+Forwards, the card now waits for the written line to arrive, then moves one
+claim at a time so none is skipped — the arrival itself calls back to catch up
+with wherever the scroll has got to. Backwards is always free: you have
+already seen it. Verified by jumping straight to the third claim's position:
+the card goes second, waits for its line, then third.
 
 A tab still selects, but it selects by moving the page to where that claim
 lives. A control that jumped the card without moving the page would leave the
