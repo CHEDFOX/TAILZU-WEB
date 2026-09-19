@@ -23,8 +23,9 @@ The ground is a warm near-black biased toward the accent's own hue, so the
 amber sits *in* it rather than on it. There is one reading colour and it is
 the amber's family; everything quieter is that same pale at a lower weight,
 never a second hue. That is why the amber still means something — and it means
-the same thing here as in the app: **what is still in play**. The line that
-leaves the caret, the word the sentence kept, the step that is running.
+the same thing here as in the app: **what is still in play**. The word while
+the waves are merging into it, the microphone while it is open, the step that
+is running.
 
 ### The quiet end is set by contrast, not by taste
 
@@ -70,10 +71,11 @@ read as a broken control.
 
 Two things carry the attraction, and neither is a second hue:
 
-**A pool of light at the caret.** The eye goes to the brightest place before
-it reads anything, so the brightest place should be where the thing happens. A
-flat ground gives it nowhere to go and the whole band reads as evenly busy.
-The pool is the page's own ink at four per cent, behind the canvas.
+**A pool of light where the threads converge.** The eye goes to the brightest
+place before it reads anything, so the brightest place should be where the
+thing happens. A flat ground gives it nowhere to go and the whole band reads
+as evenly busy. The pool is the page's own ink at four per cent, behind the
+canvas.
 
 **The card is lit from above**, like everything anybody has ever picked up: a
 top edge catching the light, a shadow pooling under it. The two ends of its
@@ -104,6 +106,14 @@ than stopping short of it in the dark. Tuned by looking at the junction at 3x
 — at a mouth of 48 units there was a twenty-pixel notch, and the fix was to
 overlap the word with the fade rather than to butt them together.
 
+**The gate is the word's own left edge, measured and not typed.** Everything
+on the canvas stops there, so the threads merge into the stem of the first
+letter and nothing is drawn past it. A number typed by hand put the cut a few
+units off the glyph at one font size and a dozen off at another, and a thread
+visible inside the word reads as a mistake rather than as an arrival. The
+convergence moves with the word for the same reason: the curves have to END
+where it starts, or the gap comes straight back.
+
 **The left is handwritten.** Speech is a person, and a person writes by
 hand — so the mess arrives in handwriting and only the word that swallows it
 is set in type. Hand in, type out: that contrast is the product. Caveat
@@ -120,12 +130,14 @@ arrived, or every word sits in the wrong place.
 **The word is `SITE_UI.absorb`, and it is one word or two.** It is set at the
 size of a thing that can swallow a hundred threads, so a third word does not
 fit on a laptop — and it has to be read at a glance or it is not a
-destination, it is just more text. A backend test holds it to two. It is the
-reading colour, because it is a settled result, and it goes amber only while
-the microphone is open, which is the one moment it is still in play. It swells
-a little with the voice then, scaled about its own left edge so it grows into
-the space it is filling rather than sliding away from the threads arriving at
-it — what the caret's height used to do, on the thing that replaced it.
+destination, it is just more text. A backend test holds it to two.
+
+It carries a soft wash of the accent while the waves are merging into it, and
+the wash deepens with how fast they are arriving — so a scroll is visible on
+the word before the page has moved at all. With the microphone open it is the
+accent outright and swells with the voice, scaled about its own left edge so
+it grows into the space it is filling rather than sliding away from the
+threads arriving at it.
 
 A visitor's own sentence replaces the word the moment they have spoken, fitted
 to whatever room the sliced viewBox leaves to the right of it. What it
@@ -170,10 +182,10 @@ about it.
 
 ### A current, not a scatter
 
-Each thread leaves its edge along its own bearing to the caret, twisted by up
+Each thread leaves its edge along its own bearing to the word, twisted by up
 to thirty degrees, with a long first handle — so it over-swings and comes
 round in an arc rather than jerking. The second handle points straight back
-out of the caret, so everything arrives level. Threads still cross, but the
+out of the word, so everything arrives level. Threads still cross, but the
 way silk does, not the way string does. The middle control point used to be
 thrown anywhere on the page, and that gave kinks as often as crossings.
 
@@ -188,8 +200,8 @@ The edge fades are hung on the VISIBLE rectangle rather than on the viewBox,
 and they are short. The drawing is sliced, so a fade at a fixed percentage of
 the viewBox lands somewhere inside the frame at most window sizes — and a
 thread that fades up inside the frame looks like it started there. The one
-wide fade left is on the right, where the sentence leaving the caret should
-dissolve into the page rather than run off a cliff.
+There is no right-hand fade at all: everything past the convergence is erased
+outright, so a gradient there would be drawn every frame over empty pixels.
 
 Threads spend longer off-screen now, so fewer words are drawn per frame at the
 same count: the same frame rate buys 104 threads where it bought 64.
@@ -200,19 +212,14 @@ each other and the eye could not build a space out of it. More threads are far
 than near, which is also how things are.
 
 **The breath.** One slow sine per thread, biggest at the far edge and nothing
-at all by the caret, folded into the translate so it costs a multiply per
+at all by the word, folded into the translate so it costs a multiply per
 piece. The field moves like something alive instead of like a diagram.
-
-**Born amber.** The line leaving the caret is amber for its first few words
-and cools to the reading colour as it moves away — amber marks what is still
-in play, in the app and here, and the words just written are the one thing on
-the page that still is.
 
 ### The rules that keep a tangle from becoming a bug
 
 - Each curve's control points step rightward, which makes x monotonic. That is
   the only thing standing between this and upside-down words.
-- The last control point sits level with the caret, so nothing arrives at an
+- The last control point sits level with the word, so nothing arrives at an
   angle and gets rotated where it meets the cursor.
 - The middle one is thrown anywhere, and that is where the crossing comes from.
 - Entry points go round-robin across the edges and evenly along each, and the
@@ -234,58 +241,61 @@ the page that still is.
   paid for the curve-following and then some.
 - The edges fade inside the canvas rather than through a CSS mask, so a
   surface that is redrawn every frame is not also re-masked every frame.
-- Nothing exists right of the caret on the canvas layer. A word is anchored at
+- Nothing exists right of the gate on the canvas layer. A word is anchored at
   its START, so one arriving at the cursor hangs its own width past it, and
   every tail longer than the mouth's radius came out the far side and sat
-  there as a ghost of a left-hand thread on the right, where only the written
-  sentence belongs. The curves all end level at the caret, so a straight block
+  there as a ghost of a left-hand thread past the word. The curves all end level at the word, so a straight block
   from it to the edge costs one fill and cannot cut anything short — its left
   edge is buried inside the mouth's opaque core, so there is no seam.
 
-## The caret
+## The waves take the scroll first, then the page moves
 
-Where a logo or a device would go there is a text cursor. Everything this
-product does ends at somebody's cursor, so the cursor is what the speech runs
-into and what the sentence comes out of — not an object standing in for the
-product, the product's own destination.
+From the very top, the first 460 pixels of downward scroll are poured into the
+flow instead of into the document: you push, the river answers, and only once
+that budget is spent does the page start to move. After that it is ordinary
+scrolling and never does it again. Past the hold the coupling is permanent and
+free — every pixel of scroll, either way, feeds the flow, and it falls back
+over about half a second once the page is still.
 
-It blinks at 530ms on, 530ms off, which is the rate a real one blinks at; any
-faster reads as an error state, any slower as a dying battery. With the
-microphone open it stops blinking, turns amber and breathes with the voice,
-so the thing growing and shrinking is the point the words are about to be
-written at. Clicking it starts the microphone, and so does the button below.
+A budget in **pixels**, not a count of flicks: a trackpad sends thirty small
+events where a mouse wheel sends three, and counting events made the hold four
+times longer on one than on the other.
 
-The button is the only place the page speaks. There is no caption under it:
-that it stops when you pause is what the button says once it reads Stop, that
-your sentence came back clean is visible in the river in your own words, and
-when the demo is resting there is no button at all — a control that does
-nothing, with a line under it apologising, is worse than no control. What is
-left, which is only ever an error, the button wears for a moment and then goes
-back to being a button. That is why those strings are short enough to fit on
-one.
+The guards are what keep it from being hostile: only from the very top, only
+downward, never on touch — a phone has no wheel to intercept and stealing a
+swipe is a far worse trade — and never under reduced motion. The whole thing
+is over in well under a second and the way out is to keep doing exactly what
+you were already doing. Verified: four flicks are absorbed, the fifth scrolls.
 
-It sits at the centre of the viewBox, which is the centre of the band, so the
-button under it needs no arithmetic to line up.
+## Hover holds them back
 
-## Scroll drives the current
+Point at the word and the threads stop short of it — the one place on the page
+where the thing that swallows everything visibly refuses to. It is the same
+gate moved left, so it costs a subtraction rather than a second code path, and
+it eases rather than snapping because an instant recoil reads as a glitch.
+Measured by ink density in the band just left of the word: 1449 at rest, 0 on
+hover, back on release.
 
-The river walks on its own and rushes when the page moves: every pixel of
-scroll, either way, is poured into the flow, and it falls back over about half
-a second once the page is still. Nothing is intercepted and nothing is trapped
-— the page scrolls exactly as it always did, the river answers it. Touch gets
-it for free, because a swipe is a scroll.
-
-This replaced a three-push surge that took the first scrolls for itself. A
-page that will not move when asked is broken, however briefly.
+Pointer only. On touch there is no hover, and a tap that pushed the waves away
+before opening the microphone would be a control fighting itself.
 
 ## The amber is sacred
 
-It appears in three places and they are one meaning: the caret while the
-microphone is open, the button while it is open, and the words just born at
-the caret. Alive, right now. Nothing merely hovered, focused, selected or
-emphasised gets it — those are the pale at full weight, which is the app's
-rule. A kept word on the card is underlined, not amber: a fact that survived
-is a record, not a thing still in play.
+It means one thing: **alive, right now**. It appears while the microphone is
+open — on the button and on the word — and, softly, on the word whenever the
+waves are merging into it, deepening with how fast they arrive. That last one
+is a wash rather than the colour outright, and it is the accent doing its own
+job: the merging IS the live thing on this page.
+
+Nothing merely hovered, focused, selected or emphasised gets it. Those are the
+pale at full weight, which is the app's rule. A kept word on the card is
+underlined, not amber: a fact that survived is a record, not a thing still in
+play. Hold the waves back and the wash goes with them, because then nothing is
+merging.
+
+The word's fill is set per frame in script, so there is no CSS rule for it. An
+inline fill beats a class selector, and a rule that can never apply is worse
+than no rule at all.
 
 ## The titles
 
