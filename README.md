@@ -13,44 +13,58 @@ page back, so the legal text is never unreachable.
 
 ## The river
 
-Thirteen lanes of speech arrive over the top edge, across the left, and up
-from underneath — speech does not queue politely from one side. They converge
-on the caret, and one line goes the other way.
+A tangle of speech arrives from every side — over the top, across the left, up
+from underneath — converging on the caret, and one line goes the other way.
 
-**The left is ugly on purpose.** Speech has no typography, so the lanes have
-none either — each is set in whatever face the machine happens to have, at
-whatever size, with no two agreeing: Comic Sans, Courier, Times, Verdana,
-Trebuchet, Georgia, Arial, Lucida, Tahoma, Palatino. Nothing there is loaded
-from a font host, because the whole point is that these are the defaults
-nobody chose.
+**The left is ugly on purpose.** Speech has no typography, so the curves have
+none: each takes whatever face the machine happens to have, at whatever size,
+with whatever tracking, some of it squeezed. Nothing is loaded from a font
+host, because the point is that these are the defaults nobody chose. Most sit
+a shade above the ground and a few come up almost to paper, so it has depth
+rather than being one even wash.
 
 **The right is not an example, it is the identity.** `SITE_UI.identity` is
 what leaves the caret when nobody has spoken: what the product is, in the only
-face on the page anybody chose, at a quarter of the inbound pace. Everything
-rushing in, one line leaving at reading speed. A visitor's own sentence
-replaces it the moment they press the button, because that is the better
-argument.
+face on the page anybody chose, at a quarter of the inbound pace. A visitor's
+own sentence replaces it the moment they press the button.
 
-No two inbound speeds match and none is a multiple of another, so the
-bombardment never falls into step with itself and starts reading as a pattern.
-They carry interleaved cases, so a dozen scripts are on screen at once.
+### Why the tangle is on a canvas
 
-Every lane runs left to right and ends level at the caret: a path that doubles
-back hangs its own glyphs upside down, and one that arrives at an angle
-rotates the text where it meets the cursor. Each carries a `dy` of a third of
-an em, because a textPath puts the BASELINE on the path and without it the
-text floats above the line it is running along.
+It started as SVG `<textPath>` elements. Changing one's `startOffset` re-lays
+its whole string out along its curve, and that is a layout the browser cannot
+skip — freezing the offsets alone took the page from 23fps back to 59.
 
-Each lane's stream repeats until it is longer than the curve it runs on, then
-the whole thing is written twice. Doubling alone is not enough — a lane
-carrying two short sentences is shorter than its path, and the offset then
-drags a visible hole along it. The repeat guarantees one period covers the
-curve; the doubling makes the wrap seamless.
+The canvas version is not free either. Its cost is linear in the words drawn
+per frame, measured on one machine: 112 words 53fps, 343 words 38fps, 735
+words 19fps. `TANGLE` is therefore a number chosen by measurement, not by
+taste — raise it and you are spending frame rate. Fourteen curves crossing
+from every side already reads as a tangle.
 
-The mask fades all four edges, not just the sides, because lanes now come over
-the top and up from underneath and a lane chopped at the band's edge reads as
-a rendering fault rather than as speech arriving from off-stage. It is on the
-`<svg>`, not the container, so the caret over it stays crisp.
+Worth knowing if you touch this: an isolated benchmark drawing the same word
+count, at the same canvas size, in the same faces and the same scripts, runs
+at 60fps. The gap between that and the page is not explained. Several
+plausible culprits were ruled out by measurement — the mask, layer promotion,
+the drift transform, complex-script shaping, font switching, the radial
+gradient, page height — so if you change this, measure it rather than reason
+about it.
+
+### The rules that keep a tangle from becoming a bug
+
+- Each curve's control points step rightward, which makes x monotonic. That is
+  the only thing standing between this and upside-down words.
+- The last control point sits level with the caret, so nothing arrives at an
+  angle and gets rotated where it meets the cursor.
+- The middle one is thrown anywhere, and that is where the crossing comes from.
+- Entry points go round-robin across the three edges and evenly along each.
+  Leaving the side to chance clusters them, and clusters them differently at
+  every count — the picture changed whenever the number did.
+- Each run repeats until it is longer than its own curve, then wraps on one
+  period. A lane shorter than its path drags a visible hole along it.
+- Words are placed once each, at the angle under their first letter. A
+  transform per glyph is five times the work for a difference nobody can see
+  on curves this long.
+- The edges fade inside the canvas rather than through a CSS mask, so a
+  surface that is redrawn every frame is not also re-masked every frame.
 
 ## The caret
 

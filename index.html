@@ -70,36 +70,23 @@
      top and up from underneath, and a lane chopped off at the band's edge
      reads as a rendering fault rather than as speech arriving from off-stage.
      Two gradients intersected — the sides and the ends. */
-  .river svg {
-    position: absolute; inset: 0; width: 100%; height: 100%; display: block;
+  .river #riverSvg {
     -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 13%, #000 87%, transparent 100%),
-                        linear-gradient(180deg, transparent 0, #000 19%, #000 86%, transparent 100%);
+                        linear-gradient(180deg, transparent 0, #000 11%, #000 90%, transparent 100%);
             mask-image: linear-gradient(90deg, transparent 0, #000 13%, #000 87%, transparent 100%),
-                        linear-gradient(180deg, transparent 0, #000 19%, #000 86%, transparent 100%);
+                        linear-gradient(180deg, transparent 0, #000 11%, #000 90%, transparent 100%);
     -webkit-mask-composite: source-in;
             mask-composite: intersect;
   }
-  /* UGLY ON PURPOSE. Speech has no typography, so the thirteen lanes have
-     none either: each is set in whatever face the machine happens to have, at
-     whatever size, with no two agreeing. Nothing here is loaded from a font
-     host — the whole point is that these are the defaults nobody chose. They
-     are dimmer than they were, because thirteen of anything at the old weight
-     turns the left half into a grey wash. The incoherence is the argument,
-     and the one line on the right is the answer to it. */
-  .mess { letter-spacing: 0; }
-  .u1  { font-family: 'Comic Sans MS', 'Comic Neue', cursive;      font-size: 14px;   fill: #4E4943; }
-  .u2  { font-family: 'Courier New', Courier, monospace;           font-size: 15.5px; fill: #5F584E; }
-  .u3  { font-family: 'Times New Roman', Times, serif;             font-size: 18px;   fill: #514C45; }
-  .u4  { font-family: Verdana, Geneva, sans-serif;                 font-size: 16px;   fill: #6E675B; }
-  .u5  { font-family: 'Trebuchet MS', 'Lucida Grande', sans-serif; font-size: 13px;   fill: #4A453F; }
-  .u6  { font-family: Georgia, 'Times New Roman', serif;           font-size: 17px;   fill: #5A544B; }
-  .u7  { font-family: Arial, Helvetica, sans-serif;                font-size: 15px;   fill: #6A6358; }
-  .u8  { font-family: 'Lucida Console', Monaco, monospace;         font-size: 13.5px; fill: #4B453E; }
-  .u9  { font-family: Tahoma, Geneva, sans-serif;                  font-size: 14.5px; fill: #565049; }
-  .u10 { font-family: 'Palatino Linotype', Palatino, serif;        font-size: 16.5px; fill: #524C44; }
-  .u11 { font-family: 'Courier New', Courier, monospace;           font-size: 12.5px; fill: #453F3A; }
-  .u12 { font-family: 'Comic Sans MS', 'Comic Neue', cursive;      font-size: 16.5px; fill: #5C554C; }
-  .u13 { font-family: 'Times New Roman', Times, serif;             font-size: 13px;   fill: #443F39; }
+  /* The caret must not fade with the rest: it sits at the centre, where both
+     gradients are solid, so it is unaffected — but the one line going the
+     other way does want the side fade, and gets it from the same mask. */
+
+  /* UGLY ON PURPOSE, and set in script rather than here: speech has no
+     typography, so each lane takes whatever face the machine happens to have,
+     at whatever size, with whatever tracking — some of it squeezed until the
+     words run together. Nothing is loaded from a font host, because the point
+     is that these are the defaults nobody chose. */
 
   /* One line, and every decision on it made on purpose: the optical size the
      face was cut for, a hair of tracking, and nothing else on the page set
@@ -108,7 +95,12 @@
     font-family: var(--serif); font-size: 24px; font-weight: 400;
     font-optical-sizing: auto; letter-spacing: .004em; fill: var(--white);
   }
-  #drift { transition: transform .5s cubic-bezier(.2,.8,.3,1); }
+  /* Both layers of the river sit on top of each other and drift together.
+     will-change keeps them on their own layers, so the drift moves a painted
+     surface instead of asking for it to be painted again. */
+  #tangle, #riverSvg { position: absolute; inset: 0; width: 100%; height: 100%; display: block; will-change: transform; }
+  #tangle { z-index: 0; }
+  #riverSvg { z-index: 1; }
 
   /* The caret. 530ms on, 530ms off, which is the rate a real one blinks at —
      any faster reads as an error state, any slower as a dying battery. */
@@ -154,9 +146,16 @@
     transition: color .3s; line-height: 1.3;
   }
   .rail button::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 2px; background: #DAD3C5; }
-  .rail button::after { content: ""; position: absolute; left: 0; top: 0; width: 2px; height: 0; background: var(--ember); }
+  /* The progress bar grows by SCALE, not by height. Transitioning height is a
+     layout-inducing property, and a six-second one of those runs the layout
+     engine on every frame it is alive — measured at two thirds of the page's
+     frame rate, all of it spent nowhere near the thing that looked expensive. */
+  .rail button::after {
+    content: ""; position: absolute; left: 0; top: 0; width: 2px; height: 100%;
+    background: var(--ember); transform: scaleY(0); transform-origin: top;
+  }
   .rail button[aria-selected="true"] { color: #16150F; }
-  .rail button[aria-selected="true"]::after { height: 100%; transition: height var(--dwell, 6000ms) linear; }
+  .rail button[aria-selected="true"]::after { transform: scaleY(1); transition: transform var(--dwell, 6000ms) linear; }
   .rail p { margin: 0; padding: 0 0 4px 20px; color: var(--pmute); font-size: 14.5px; max-width: 30ch; }
 
   /* the transcript card */
@@ -212,8 +211,8 @@
     .rail { flex-direction: row; overflow-x: auto; gap: 0; }
     .rail button { white-space: nowrap; padding: 10px 18px 12px; font-size: 17px; }
     .rail button::before { left: 0; top: auto; bottom: 0; right: 0; width: auto; height: 2px; }
-    .rail button::after { left: 0; top: auto; bottom: 0; width: 0; height: 2px; }
-    .rail button[aria-selected="true"]::after { height: 2px; width: 100%; transition: width var(--dwell, 6000ms) linear; }
+    .rail button::after { left: 0; right: 0; top: auto; bottom: 0; width: auto; height: 2px; transform: scaleX(0); transform-origin: left; }
+    .rail button[aria-selected="true"]::after { transform: scaleX(1); transition: transform var(--dwell, 6000ms) linear; }
     .rail p { display: none; }
     .card { padding: 30px 24px 28px; }
     .pill { left: 24px; bottom: 112px; }
@@ -249,41 +248,16 @@
 </div>
 
 <div class="river" id="river">
+  <!-- The tangle is drawn on a canvas, not in the svg. Two dozen moving
+       textPaths cost the page two thirds of its frame rate: changing one
+       offset re-lays its whole string out along its curve, and that is a
+       layout the browser cannot skip. Measured — freezing the offsets alone
+       took it from 23fps back to 59. -->
+  <canvas id="tangle" aria-hidden="true"></canvas>
+
   <svg id="riverSvg" viewBox="0 0 1440 520" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
     <defs>
-      <!-- THREE IN, ONE OUT. Every lane runs left to right, because that is
-           the direction text reads and the direction the product runs — a
-           path that doubles back hangs its own glyphs upside down. All three
-           inbound lanes arrive at (720, 260), which is the centre of this
-           box, which is where the mark's first box sits at every window width. -->
-      <!-- Seven lanes, every one arriving just left of the caret at (712, 284). -->
-      <!-- THIRTEEN. They arrive over the top edge, across the left, and up
-           from underneath — speech does not queue politely from one side.
-           Every one still runs left to right, because a path that doubles
-           back hangs its own glyphs upside down, and every one ends level at
-           (712, 284) so nothing is rotated where it meets the caret. -->
-      <path id="in1"  d="M-60 -60 C120 20 300 90 480 170 C580 214 660 258 712 284"/>
-      <path id="in2"  d="M200 -60 C300 20 420 110 540 180 C610 220 670 258 712 284"/>
-      <path id="in3"  d="M440 -60 C480 30 540 130 600 190 C640 230 682 264 712 284"/>
-      <path id="in4"  d="M-240 20 C60 40 320 96 520 170 C600 200 664 254 712 284"/>
-      <path id="in5"  d="M-240 120 C80 132 340 172 540 216 C614 232 672 262 712 284"/>
-      <path id="in6"  d="M-240 216 C100 222 360 240 550 258 C620 264 676 276 712 284"/>
-      <path id="in7"  d="M-240 284 C100 286 380 284 560 284 C630 284 678 284 712 284"/>
-      <path id="in8"  d="M-240 352 C100 346 360 328 550 310 C620 304 676 292 712 284"/>
-      <path id="in9"  d="M-240 448 C80 436 340 396 540 352 C614 336 672 306 712 284"/>
-      <path id="in10" d="M-240 548 C60 528 320 472 520 398 C600 368 664 314 712 284"/>
-      <path id="in11" d="M-60 620 C120 540 300 470 480 398 C580 358 660 310 712 284"/>
-      <path id="in12" d="M200 620 C300 540 420 450 540 388 C610 352 670 310 712 284"/>
-      <path id="in13" d="M440 620 C480 530 540 430 600 378 C640 342 682 304 712 284"/>
       <path id="out1" d="M728 284 L1800 284"/>
-      <clipPath id="clipIn"><rect x="-300" y="-140" width="1014" height="800"/></clipPath>
-      <!-- The mouth. Ink at full strength just before the caret, fading to
-           nothing by the rim, so the mess dissolves INTO it rather than being
-           chopped off at a clip edge. -->
-      <radialGradient id="mouth">
-        <stop offset="26%" stop-color="#100F0E" stop-opacity="1"/>
-        <stop offset="100%" stop-color="#100F0E" stop-opacity="0"/>
-      </radialGradient>
       <!-- The sentence forms as it leaves the caret instead of arriving whole
            at a hard edge, which reads as sliding out from behind a sheet. -->
       <linearGradient id="emerge" gradientUnits="userSpaceOnUse" x1="728" y1="0" x2="792" y2="0">
@@ -293,43 +267,17 @@
       <mask id="leaving"><rect x="716" y="-140" width="1200" height="800" fill="url(#emerge)"/></mask>
     </defs>
 
-    <g id="drift">
-      <g clip-path="url(#clipIn)">
-        <!-- dy carries the glyphs down onto the line. A textPath sets the
-             BASELINE on the path, so without it every lane floats a third of
-             its own height above the line it is supposed to run along. -->
-        <text class="mess u1" dy=".33em"><textPath href="#in1" id="t1" startOffset="0"> </textPath></text>
-        <text class="mess u2" dy=".33em"><textPath href="#in2" id="t2" startOffset="0"> </textPath></text>
-        <text class="mess u3" dy=".33em"><textPath href="#in3" id="t3" startOffset="0"> </textPath></text>
-        <text class="mess u4" dy=".33em"><textPath href="#in4" id="t4" startOffset="0"> </textPath></text>
-        <text class="mess u5" dy=".33em"><textPath href="#in5" id="t5" startOffset="0"> </textPath></text>
-        <text class="mess u6" dy=".33em"><textPath href="#in6" id="t6" startOffset="0"> </textPath></text>
-        <text class="mess u7" dy=".33em"><textPath href="#in7" id="t7" startOffset="0"> </textPath></text>
-        <text class="mess u8" dy=".33em"><textPath href="#in8" id="t8" startOffset="0"> </textPath></text>
-        <text class="mess u9" dy=".33em"><textPath href="#in9" id="t9" startOffset="0"> </textPath></text>
-        <text class="mess u10" dy=".33em"><textPath href="#in10" id="t10" startOffset="0"> </textPath></text>
-        <text class="mess u11" dy=".33em"><textPath href="#in11" id="t11" startOffset="0"> </textPath></text>
-        <text class="mess u12" dy=".33em"><textPath href="#in12" id="t12" startOffset="0"> </textPath></text>
-        <text class="mess u13" dy=".33em"><textPath href="#in13" id="t13" startOffset="0"> </textPath></text>
-      </g>
-      <g mask="url(#leaving)">
-        <text class="clean" dy=".33em"><textPath href="#out1" id="tOut" startOffset="0"> </textPath></text>
-      </g>
+    <g mask="url(#leaving)">
+      <text class="clean" dy=".33em"><textPath href="#out1" id="tOut" startOffset="0"> </textPath></text>
     </g>
 
-    <!-- Outside the drift. Speech moves under the hand; the thing it passes
-         through does not, or the still point of the picture is not still. -->
-    <g>
-      <ellipse cx="700" cy="284" rx="112" ry="72" fill="url(#mouth)"/>
-
-      <!-- THE CARET. Not an ornament standing in for the product: it is the
-           product. Everything Tailzu does ends at somebody's cursor, so the
-           cursor is what the speech runs into and what the sentence comes
-           out of. It blinks at the rate a real one does, and while the
-           microphone is open it stops blinking and breathes with the voice. -->
-      <g id="mark" role="button" tabindex="0" aria-label="Use your own voice">
-        <rect id="caret" class="caret" x="716" y="248" width="8" height="72" rx="4"/>
-      </g>
+    <!-- THE CARET. Not an ornament standing in for the product: it is the
+         product. Everything Tailzu does ends at somebody's cursor, so the
+         cursor is what the speech runs into and what the sentence comes out
+         of. It blinks at the rate a real one does, and while the microphone
+         is open it stops blinking and breathes with the voice. -->
+    <g id="mark" role="button" tabindex="0" aria-label="Use your own voice">
+      <rect id="caret" class="caret" x="716" y="248" width="8" height="72" rx="4"/>
     </g>
   </svg>
 
@@ -469,7 +417,7 @@
      ================================================================== */
   var own = null;                 // set once the visitor's own clip has run
   var SEP = "   ·   ";
-  var rraf = 0, last = 0, drift = $("drift");
+  var rraf = 0, last = 0, svgEl = $("riverSvg");
   var mx = 0, my = 0, tx = 0, ty = 0;
 
   /**
@@ -482,91 +430,254 @@
    * three scripts are on screen at once instead of three lanes of English
    * followed by three lanes of Devanagari.
    */
-  /**
-   * Thirteen lanes of speech and one of identity.
-   *
-   * No two inbound speeds match, and none of them is a multiple of another,
-   * so the bombardment never falls into step with itself and starts reading
-   * as a pattern. They are three to five times the old pace: the point is
-   * that more is arriving than anyone could keep up with.
-   *
-   * The outbound lane runs at a third of the slowest of them. That gap is
-   * deliberate — everything rushing in, one line leaving at reading speed.
-   */
-  var LANES = [
-    { el: $("t1"), path: "in1", key: "said", speed: 86, take: function (i) { return i % 13 === 0; }, len: 1, off: 0 },
-    { el: $("t2"), path: "in2", key: "said", speed: 74, take: function (i) { return i % 13 === 1; }, len: 1, off: 0 },
-    { el: $("t3"), path: "in3", key: "said", speed: 95, take: function (i) { return i % 13 === 2; }, len: 1, off: 0 },
-    { el: $("t4"), path: "in4", key: "said", speed: 61, take: function (i) { return i % 13 === 3; }, len: 1, off: 0 },
-    { el: $("t5"), path: "in5", key: "said", speed: 103, take: function (i) { return i % 13 === 4; }, len: 1, off: 0 },
-    { el: $("t6"), path: "in6", key: "said", speed: 68, take: function (i) { return i % 13 === 5; }, len: 1, off: 0 },
-    { el: $("t7"), path: "in7", key: "said", speed: 112, take: function (i) { return i % 13 === 6; }, len: 1, off: 0 },
-    { el: $("t8"), path: "in8", key: "said", speed: 57, take: function (i) { return i % 13 === 7; }, len: 1, off: 0 },
-    { el: $("t9"), path: "in9", key: "said", speed: 91, take: function (i) { return i % 13 === 8; }, len: 1, off: 0 },
-    { el: $("t10"), path: "in10", key: "said", speed: 79, take: function (i) { return i % 13 === 9; }, len: 1, off: 0 },
-    { el: $("t11"), path: "in11", key: "said", speed: 66, take: function (i) { return i % 13 === 10; }, len: 1, off: 0 },
-    { el: $("t12"), path: "in12", key: "said", speed: 99, take: function (i) { return i % 13 === 11; }, len: 1, off: 0 },
-    { el: $("t13"), path: "in13", key: "said", speed: 83, take: function (i) { return i % 13 === 12; }, len: 1, off: 0 },
-    { el: $("tOut"), path: "out1", key: "identity", speed: 26, take: function () { return true; }, len: 1, off: 0 }
+  /* ---------------------------------------------------------------------
+     THE TANGLE, on canvas
+
+     Speech does not arrive in lanes, so there are two dozen curves thrown
+     from a fixed seed — the same mess on every load, tunable by one number.
+     Three rules keep a tangle from becoming a bug:
+
+       · the control points step rightward, which makes x monotonic and is
+         the only thing standing between this and upside-down words;
+       · the last control point sits level with the caret, so nothing arrives
+         at an angle and gets rotated where it meets the cursor;
+       · the middle one is thrown anywhere at all, and that is where the
+         crossing and the knotting come from.
+
+     Light and dark is the other half. Most curves sit a shade above the
+     ground and a few come up almost to paper, so the left has depth rather
+     than one even wash of grey.
+
+     WORDS, NOT LETTERS. Each word is placed once, at the angle of the curve
+     under its first letter. Setting a transform per glyph is five times the
+     work for a difference nobody can see on curves this long and this shallow.
+     ------------------------------------------------------------------- */
+  /* Fourteen. The cost of this is linear in the words drawn per frame —
+     measured on one machine: 112 words 53fps, 343 words 38fps, 735 words
+     19fps — and fourteen curves crossing from every side already reads as a
+     tangle. Raising it is one number; so is the frame rate it costs. */
+  var TANGLE = 14, END = [712, 284], VB = [1440, 520];
+  var cv = $("tangle"), g2 = cv.getContext("2d");
+  var FACES = [
+    "'Comic Sans MS','Comic Neue',cursive", "'Courier New',Courier,monospace",
+    "'Times New Roman',Times,serif",        "Verdana,Geneva,sans-serif",
+    "'Trebuchet MS','Lucida Grande',sans-serif", "Georgia,'Times New Roman',serif",
+    "Arial,Helvetica,sans-serif",           "'Lucida Console',Monaco,monospace",
+    "Tahoma,Geneva,sans-serif",             "'Palatino Linotype',Palatino,serif",
+    "'Arial Black',Gadget,sans-serif",      "'Brush Script MT','Comic Sans MS',cursive"
   ];
 
-  /**
-   * Repeat until the lane is longer than the curve it runs on, then write the
-   * whole thing twice.
-   *
-   * Doubling alone is not enough: a lane carrying three short sentences is
-   * shorter than the path, and the offset then drags a visible hole along it.
-   * The repeat guarantees one period covers the curve; the doubling makes the
-   * wrap seamless, because the frame before the jump and the frame after it
-   * are then the same picture.
-   */
-  function fill(L, one) {
-    L.el.textContent = one;
-    var w = L.el.getComputedTextLength() || 1;
-    var body = new Array(Math.max(1, Math.ceil(L.pathLen / w)) + 1).join(one);
-    L.el.textContent = body + body;
-    L.len = L.el.getComputedTextLength() / 2 || 1;
+  /** Fixed seed: scattered, but the same scatter every time. */
+  function seeded(a) {
+    return function () {
+      a |= 0; a = a + 0x6D2B79F5 | 0;
+      var t = Math.imul(a ^ a >>> 15, 1 | a);
+      t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+      return ((t ^ t >>> 14) >>> 0) / 4294967296;
+    };
+  }
+  function shade(b) {
+    var lo = [30, 27, 24], hi = [198, 190, 175], o = [];
+    for (var i = 0; i < 3; i++) o.push(Math.round(lo[i] + (hi[i] - lo[i]) * b));
+    return "rgb(" + o.join(",") + ")";
+  }
+
+  /** The curve as a polyline: position and heading at intervals of arc length,
+   *  so a word can be placed by distance without solving the bezier again. */
+  function sample(P) {
+    var pts = [], N = 160, prev = null, s = 0;
+    for (var i = 0; i <= N; i++) {
+      var t = i / N, u = 1 - t;
+      var x = u*u*u*P[0] + 3*u*u*t*P[2] + 3*u*t*t*P[4] + t*t*t*P[6];
+      var y = u*u*u*P[1] + 3*u*u*t*P[3] + 3*u*t*t*P[5] + t*t*t*P[7];
+      if (prev) s += Math.sqrt((x - prev[0]) * (x - prev[0]) + (y - prev[1]) * (y - prev[1]));
+      pts.push({ x: x, y: y, s: s }); prev = [x, y];
+    }
+    for (i = 0; i < pts.length; i++) {
+      var a2 = pts[Math.max(0, i - 1)], b2 = pts[Math.min(pts.length - 1, i + 1)];
+      pts[i].a = Math.atan2(b2.y - a2.y, b2.x - a2.x);
+    }
+    return pts;
+  }
+
+  var LANES = [];
+  (function build() {
+    var r = seeded(20260919);
+    for (var k = 0; k < TANGLE; k++) {
+      // Round-robin across the three edges and evenly along each, with a
+      // jitter on top. Leaving the side to chance clusters them — and it
+      // clusters differently at every count, so the picture changed whenever
+      // the number did.
+      var per = Math.ceil(TANGLE / 3), slot = Math.floor(k / 3);
+      var u = (slot + 0.5) / per + (r() - 0.5) * 0.17, sx, sy;
+      u = Math.max(0, Math.min(1, u));
+      if (k % 3 === 0)      { sx = -280 + u * 940; sy = -110 - r() * 70; }
+      else if (k % 3 === 1) { sx = -300 - r() * 70; sy = -70 + u * 690; }
+      else                  { sx = -280 + u * 940; sy = 630 + r() * 80; }
+
+      var span = END[0] - sx;
+      var P = [sx, sy,
+               sx + span * (0.22 + r() * 0.24), -180 + r() * 860,
+               sx + span * (0.60 + r() * 0.20), END[1] + (r() - 0.5) * 14,
+               END[0], END[1]];
+
+      var b = r(), bright = b > 0.92 ? 0.74 + r() * 0.24
+                          : b > 0.76 ? 0.34 + r() * 0.26
+                                     : 0.05 + r() * 0.20;
+      LANES.push({
+        pts: sample(P),
+        face: FACES[k % FACES.length],
+        size: 10 + r() * 16,
+        fill: shade(bright),
+        track: (r() - 0.45) * 1.0,   // some squeezed, none to mush
+        from: k * 3,
+        speed: 44 + r() * 100,
+        words: [], period: 1, off: 0
+      });
+    }
+  })();
+
+  /** Split into words once, with their widths, and repeat until the run is
+   *  longer than the curve — a lane shorter than its own path drags a hole
+   *  along it. The period is one copy; drawing wraps on it, seamlessly. */
+  function lay(L, one) {
+    g2.font = L.size.toFixed(1) + "px " + L.face;
+    var space = g2.measureText(" ").width + L.track;
+    var end = L.pts[L.pts.length - 1].s;
+    var parts = one.split(/\s+/).filter(Boolean), i, run = 0, widths = [];
+    for (i = 0; i < parts.length; i++) {
+      widths[i] = g2.measureText(parts[i]).width + L.track * parts[i].length;
+      run += widths[i] + space;
+    }
+    var reps = run > 0 ? Math.max(1, Math.ceil(end / run)) : 1;
+    L.words = []; L.period = 0;
+    for (var rep = 0; rep < reps; rep++) {
+      for (i = 0; i < parts.length; i++) {
+        L.words.push({ t: parts[i], w: widths[i], at: L.period });
+        L.period += widths[i] + space;
+      }
+    }
+    if (!L.period) L.period = 1;
   }
 
   function loadRiver() {
+    var n = C.cases.length;
     LANES.forEach(function (L) {
-      if (!L.pathLen) L.pathLen = $(L.path).getTotalLength() || 1;
-      // The inbound lanes carry what people said. The outbound one does not
-      // carry what the product wrote back — it carries what the product IS.
-      var one = L.key === "identity"
-        ? C.identity.join(SEP) + SEP
-        : C.cases.filter(function (c, i) { return L.take(i); })
-                 .map(function (c) { return c[L.key]; }).join(SEP) + SEP;
-      fill(L, one);
+      // Each lane takes a different window of three, so no two are reading
+      // the same thing at the same time.
+      lay(L, [0, 1, 2].map(function (j) { return C.cases[(L.from + j) % n].said; }).join(SEP) + SEP);
     });
+    fillOut(C.identity.join(SEP) + SEP);
   }
 
-  /**
-   * Sliding a lane's offset through exactly one period and jumping back is
-   * invisible: the frame before the jump and the frame after it are the same
-   * picture. Starting at minus one period keeps the whole path covered, so no
-   * lane is ever empty at either end.
-   *
-   * The group also drifts — a little toward the pointer, a little against the
-   * scroll. It is small on purpose: enough that the thing feels alive under
-   * the hand, not so much that anybody catches it moving.
-   */
+  /** The one line going the other way stays in the svg: it is the only one
+   *  anybody reads, it wants the real face, and one textPath is affordable. */
+  var tOut = $("tOut"), outLen = 1, outOff = 0, OUT_SPEED = 26;
+  function fillOut(one) {
+    tOut.textContent = one;
+    var w = tOut.getComputedTextLength() || 1;
+    var need = Math.max(1, Math.ceil(($("out1").getTotalLength() || 1) / w));
+    var body = new Array(need + 1).join(one);
+    tOut.textContent = body + body;
+    outLen = tOut.getComputedTextLength() / 2 || 1;
+  }
+
+  function ownRiver(said, wrote) {
+    LANES.forEach(function (L) { lay(L, said + SEP); L.off = 0; });
+    fillOut(wrote + SEP); outOff = 0;      // theirs is the better argument
+  }
+
+  /** Slice, by hand, so the canvas shares the svg's coordinates exactly and
+   *  the caret lands where the curves end. */
+  var DPR = 1, scale = 1, ox = 0, oy = 0;
+  function sizeCanvas() {
+    var w = cv.clientWidth, h = cv.clientHeight;
+    if (!w || !h) return;
+    DPR = Math.min(2, window.devicePixelRatio || 1);
+    cv.width = Math.round(w * DPR); cv.height = Math.round(h * DPR);
+    scale = Math.max(w / VB[0], h / VB[1]);
+    ox = (w - VB[0] * scale) / 2; oy = (h - VB[1] * scale) / 2;
+  }
+
+  function paint() {
+    if (!cv.width) return;
+    // Identity transform for the clear: cv.width is already in device pixels,
+    // and clearing it under a DPR-scaled transform wipes four times the area.
+    g2.setTransform(1, 0, 0, 1, 0, 0);
+    g2.clearRect(0, 0, cv.width, cv.height);
+    g2.setTransform(DPR * scale, 0, 0, DPR * scale, DPR * ox, DPR * oy);
+    g2.textBaseline = "middle";
+
+    for (var i = 0; i < LANES.length; i++) {
+      var L = LANES[i], pts = L.pts, end = pts[pts.length - 1].s;
+      g2.font = L.size.toFixed(1) + "px " + L.face;
+      g2.fillStyle = L.fill;
+      var base = -L.period + (L.off % L.period), p = 0;
+      // Two copies of the run, so whichever the offset lands in covers the curve.
+      for (var copy = 0; copy < 2; copy++) {
+        var shift = base + copy * L.period;
+        for (var j = 0; j < L.words.length; j++) {
+          var W = L.words[j], s2 = shift + W.at;
+          if (s2 + W.w < 0) continue;
+          if (s2 > end) break;
+          while (p < pts.length - 1 && pts[p].s < s2) p++;
+          while (p > 0 && pts[p].s > s2) p--;
+          var q = pts[p];
+          g2.save();
+          g2.translate(q.x, q.y); g2.rotate(q.a);
+          g2.fillText(W.t, 0, 0);
+          g2.restore();
+        }
+        p = 0;
+      }
+    }
+
+    /* The edges are faded HERE rather than by a css mask on the element. A
+       compositor mask over a canvas that is redrawn every frame makes the
+       browser re-rasterise the masked result every frame; doing it with four
+       gradient wipes costs a few fills and nothing else. */
+    g2.globalCompositeOperation = "destination-out";
+    var f;
+    f = g2.createLinearGradient(0, 0, VB[0] * 0.14, 0);
+    f.addColorStop(0, "#000"); f.addColorStop(1, "rgba(0,0,0,0)");
+    g2.fillStyle = f; g2.fillRect(-400, -300, VB[0] * 0.14 + 400, VB[1] + 600);
+    f = g2.createLinearGradient(VB[0] * 0.87, 0, VB[0], 0);
+    f.addColorStop(0, "rgba(0,0,0,0)"); f.addColorStop(1, "#000");
+    g2.fillStyle = f; g2.fillRect(VB[0] * 0.87, -300, VB[0] * 0.13 + 400, VB[1] + 600);
+    f = g2.createLinearGradient(0, 0, 0, VB[1] * 0.11);
+    f.addColorStop(0, "#000"); f.addColorStop(1, "rgba(0,0,0,0)");
+    g2.fillStyle = f; g2.fillRect(-400, -300, VB[0] + 800, VB[1] * 0.11 + 300);
+    f = g2.createLinearGradient(0, VB[1] * 0.90, 0, VB[1]);
+    f.addColorStop(0, "rgba(0,0,0,0)"); f.addColorStop(1, "#000");
+    g2.fillStyle = f; g2.fillRect(-400, VB[1] * 0.90, VB[0] + 800, VB[1] * 0.10 + 300);
+    g2.globalCompositeOperation = "source-over";
+
+    // The mouth: ink over the caret fading to nothing by the rim, so the mess
+    // dissolves INTO it rather than stopping at an edge.
+    var grd = g2.createRadialGradient(700, 284, 0, 700, 284, 150);
+    grd.addColorStop(0, "rgba(16,15,14,1)");
+    grd.addColorStop(0.42, "rgba(16,15,14,1)");
+    grd.addColorStop(1, "rgba(16,15,14,0)");
+    g2.fillStyle = grd;
+    g2.save(); g2.translate(700, 284); g2.scale(1, 0.66); g2.translate(-700, -284);
+    g2.fillRect(540, 134, 320, 300); g2.restore();
+  }
+
   /* ---------------------------------------------------------------------
      THE SURGE
 
-     The first few scrolls from the top of the page drive the river instead of
-     the page: each one kicks the flow into a rush that falls back, and after
-     the third the page scrolls normally and never does this again.
+     The first few scrolls from the top drive the river instead of the page:
+     each one kicks the flow into a rush that falls back, and after the third
+     the page scrolls normally and never does this again.
 
-     Held to three, and only from the very top, and never on a scroll upward,
+     Held to three, only from the very top, and never on a scroll upward,
      because a page that will not move when you ask it to is broken — the
-     whole thing is over in about a second, and the way out is to keep doing
-     exactly what you were already doing.
+     whole thing is over in about a second and the way out is to keep doing
+     what you were already doing. Not on touch: a phone has no wheel to
+     intercept, and stealing a swipe is a far worse trade.
 
-     Not on touch. A phone has no wheel to intercept, and stealing a swipe is
-     a far worse trade than stealing a scroll.                             */
-  // Smaller multipliers than before: the lanes already run three to five
-  // times faster, so the old ones turned a rush into a blur.
+     Small multipliers, because the tangle already runs fast; at the old ones
+     a rush became a blur.                                                 */
   var SURGE = [1, 3, 5, 8], pushes = 0, boost = 1, lastPush = 0;
   var coarse = window.matchMedia && window.matchMedia("(pointer: coarse)").matches;
 
@@ -581,35 +692,6 @@
     boost = SURGE[++pushes];
   }, { passive: false });
 
-  function river(now) {
-    rraf = requestAnimationFrame(river);
-    if (!last) last = now;
-    var dt = Math.min(64, now - last); last = now;
-    boost += (1 - boost) * Math.min(1, dt / 620);      // falls back to a walk
-    LANES.forEach(function (L) {
-      // The observer can start this before the text has been measured, and a
-      // remainder by zero is NaN — which, once in `off`, stays there through
-      // every later frame and freezes the lane for good.
-      if (!(L.len > 0)) return;
-      if (!(L.off >= 0)) L.off = 0;
-      L.off = (L.off + L.speed * boost * dt / 1000) % L.len;
-      L.el.setAttribute("startOffset", String(-L.len + L.off));
-    });
-    drawCaret(listening);
-    tx += (mx - tx) * 0.06; ty += (my - ty) * 0.06;
-    var s = Math.max(-40, Math.min(40, (window.pageYOffset || 0) * 0.06));
-    drift.setAttribute("transform", "translate(" + tx.toFixed(1) + "," + (ty - s).toFixed(1) + ")");
-  }
-
-  /* ---------------------------------------------------------------------
-     THE HATCH
-
-     The run of ticks between the second and third box is the only part of
-     the mark that moves on its own. At rest a slow swell travels along it,
-     from the box that thinks toward the box the sentence leaves by — the
-     signal crossing. While the microphone is open the same ticks are the
-     level meter, so the thing you are watching is your own voice rather
-     than a decoration pretending to be one.                              */
   /* ---------------------------------------------------------------------
      THE CARET
 
@@ -620,7 +702,7 @@
      It holds still and blinks while nothing is happening. With the microphone
      open it stops blinking, turns amber and breathes with the voice, so what
      grows and shrinks is the thing the words are about to be written at.   */
-  var caret = $("caret"), MID = 284, REST = 72, listening = false, voice = 0;
+  var caret = $("caret"), MID = 284, REST = 72, listening = false, voice = 0, level = 0;
 
   function drawCaret(live) {
     voice += ((live ? level : 0) - voice) * 0.22;      // eased, or it judders
@@ -628,8 +710,31 @@
     caret.setAttribute("y", (MID - h / 2).toFixed(1));
     caret.setAttribute("height", h.toFixed(1));
   }
-  var level = 0;
   drawCaret(false);
+
+  function river(now) {
+    rraf = requestAnimationFrame(river);
+    if (!last) last = now;
+    var dt = Math.min(64, now - last); last = now;
+    boost += (1 - boost) * Math.min(1, dt / 620);      // falls back to a walk
+
+    for (var i = 0; i < LANES.length; i++) {
+      var L = LANES[i];
+      L.off = (L.off + L.speed * boost * dt / 1000) % L.period;
+    }
+    paint();
+
+    outOff = (outOff + OUT_SPEED * boost * dt / 1000) % outLen;
+    tOut.setAttribute("startOffset", String(-outLen + outOff));
+
+    drawCaret(listening);
+    // Both layers drift together, as a CSS transform rather than an attribute
+    // — the browser can move a painted layer without repainting what is on it.
+    tx += (mx - tx) * 0.06; ty += (my - ty) * 0.06;
+    var sc = Math.max(-40, Math.min(40, (window.pageYOffset || 0) * 0.06));
+    var d = "translate(" + tx.toFixed(1) + "px," + (ty - sc).toFixed(1) + "px)";
+    cv.style.transform = d; svgEl.style.transform = d;
+  }
 
   var riverEl = $("river");
   riverEl.addEventListener("pointermove", function (e) {
@@ -645,11 +750,11 @@
   function ownRiver(said, wrote) {
     LANES.forEach(function (L) {
       // Their sentence outranks the identity line: it is the better argument.
-      var t = L.key === "identity" ? wrote : said;
-      fill(L, t + SEP);
+      fill(L, (L.identity ? wrote : said) + SEP);
       L.off = 0;
     });
   }
+
 
 
   /* =====================================================================
@@ -943,6 +1048,7 @@
   applyCopy();
   paintRail();
   function boot() {
+    sizeCanvas();
     loadRiver();
     if (!reduced && !rraf) { last = 0; rraf = requestAnimationFrame(river); }
     placeControl();
@@ -955,7 +1061,7 @@
   var rt = 0;
   window.addEventListener("resize", function () {
     clearTimeout(rt);
-    rt = setTimeout(function () { loadRiver(); placeControl(); }, 200);
+    rt = setTimeout(function () { sizeCanvas(); loadRiver(); placeControl(); }, 200);
   });
 
   fetch(API + "/v1/site").then(function (r) { return r.json(); }).then(function (j) {
@@ -967,7 +1073,7 @@
       site.maxSeconds = j.maxSeconds || 15;
     }
     applyCopy();
-    if (!own) { loadRiver(); show(0); }        // the server may have sent other lines
+    if (!own) { sizeCanvas(); loadRiver(); show(0); }        // the server may have sent other lines
   }).catch(function () { /* the fallbacks are already on screen */ });
 })();
 </script>
