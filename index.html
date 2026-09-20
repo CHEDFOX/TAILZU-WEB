@@ -2044,65 +2044,73 @@
   }
 
   /* =====================================================================
-     THE GLITCH. Any text the cursor crosses flickers into ones and zeros
-     and resolves back, left to right, in under a second — the page is made
-     of the machine's material and lets you see it for a moment. Spaces
-     stay, so the shape of the line holds. Every text, including what the
-     page is writing itself: if the page rewrites a line mid-run, the run
-     simply lets go. Never on touch, never under reduced motion.
+     THE GLITCH. The word under the cursor flickers into ones and zeros
+     and resolves back, left to right, in half a second — the page is made
+     of the machine's material and lets you see it for a moment. One word
+     at a time: the one the cursor is on, not the line it sits in, so a
+     sweep across a sentence leaves a trail. Every text, including what
+     the page is writing itself: a write that lands mid-run waits for the
+     run to let go. Never on touch, never under reduced motion.
      ================================================================== */
   var GLITCH_AT = "h1,h2,h3,p,li,a,button,span,b,i,em,strong,td,th,label,dt,dd,.k,.key,.gut";
-  /* Two marks: `glitchOn` while a run holds an element — which is also
-     what buffers the page's writes into it — and `cooling` for a moment
-     afterwards, because swapping an element's children under the cursor
-     fires mouseover again and would otherwise loop. */
+  /* `glitchOn` counts the runs holding an element — which is also what
+     buffers the page's writes into it until the last one is over. */
   var glitchOn = typeof WeakMap === "function" ? new WeakMap() : null;
-  var cooling = glitchOn ? new WeakMap() : null;
-  function textNodesOf(root) {
-    var out = [], walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, null, false), nd;
-    while ((nd = walker.nextNode())) {
-      if (!/\S/.test(nd.nodeValue)) continue;
-      var pe = nd.parentElement;
-      if (!pe || pe.closest("svg, script, style, .glw")) continue;
-      out.push(nd);
-    }
-    return out;
+  /* The word under a point: the text node and the span of non-space
+     characters around the caret the browser puts there. The caret sits
+     between characters, so the character under the cursor is the one
+     after it or, at the end of a word, the one before. Hovering beside
+     a short line snaps the caret to its end; the rectangle check throws
+     those away. */
+  function wordAt(x, y) {
+    var node, off;
+    if (document.caretPositionFromPoint) {
+      var c = document.caretPositionFromPoint(x, y); if (!c) return null;
+      node = c.offsetNode; off = c.offset;
+    } else if (document.caretRangeFromPoint) {
+      var r = document.caretRangeFromPoint(x, y); if (!r) return null;
+      node = r.startContainer; off = r.startOffset;
+    } else return null;
+    if (!node || node.nodeType !== 3) return null;
+    var pe = node.parentElement;
+    if (!pe || pe.classList.contains("glb") || pe.closest("svg, script, style")) return null;
+    var elm = pe.closest(GLITCH_AT); if (!elm) return null;
+    var t = node.nodeValue;
+    if (!/\S/.test(t.charAt(off))) { if (off > 0 && /\S/.test(t.charAt(off - 1))) off--; else return null; }
+    var a = off, b = off;
+    while (a > 0 && /\S/.test(t.charAt(a - 1))) a--;
+    while (b < t.length && /\S/.test(t.charAt(b))) b++;
+    var rg = document.createRange(); rg.setStart(node, a); rg.setEnd(node, b);
+    var box = rg.getBoundingClientRect();
+    if (x < box.left - 2 || x > box.right + 2 || y < box.top - 2 || y > box.bottom + 2) return null;
+    return { node: node, a: a, b: b, elm: elm };
   }
   /* THE LINE NEVER MOVES. Digits are not the width of letters, so swapping
-     them in plain text would push words along and wrap a line that was
-     not wrapped. So every word goes into a box of its own exact width,
+     them in plain text would push the words along and wrap a line that
+     was not wrapped. So the word goes into a box of its own exact width,
      measured once before the first flicker, and the digits are drawn
-     inside that box — narrower, they leave a hair of room; wider, they are
-     clipped. The spaces between the boxes are the original spaces, so the
-     line breaks exactly where it did. When the run is over the original
-     text node goes back, untouched. */
-  function glitch(elm) {
-    if (!glitchOn || glitchOn.get(elm) || cooling.get(elm)) return;
-    var nodes = textNodesOf(elm); if (!nodes.length) return;
-    var total = 0; nodes.forEach(function (nd) { total += nd.nodeValue.length; });
-    glitchOn.set(elm, true);
-    var words = [], wraps = [], off = 0;
-    nodes.forEach(function (nd) {
-      var wrap = document.createElement("span"); wrap.className = "glw";
-      nd.nodeValue.split(/(\s+)/).forEach(function (tok) {
-        if (!tok) return;
-        if (/^\s+$/.test(tok)) { wrap.appendChild(document.createTextNode(tok)); off += tok.length; return; }
-        var b = document.createElement("span"); b.className = "glb"; b.textContent = tok;
-        wrap.appendChild(b); words.push({ el: b, s: tok, off: off }); off += tok.length;
-      });
-      nd.parentNode.replaceChild(wrap, nd); wraps.push({ wrap: wrap, nd: nd });
-    });
-    words.forEach(function (w) { w.w = w.el.getBoundingClientRect().width; });
-    words.forEach(function (w) { w.el.style.width = w.w.toFixed(2) + "px"; w.el.classList.add("held"); });
-    var dur = Math.min(900, 360 + total * 8), t0 = 0, lastFlip = 0, rnd = [];
-    function flip() { rnd = words.map(function (w) { return w.s.replace(/./g, function () { return Math.random() < 0.5 ? "0" : "1"; }); }); }
+     inside that box — narrower, they leave a hair of room; wider, they
+     are clipped. When the run is over the word goes back as text, and
+     the text nodes it was cut from are joined again. */
+  function glitchWord(w) {
+    var elm = w.elm, nd = w.node, tok = nd.nodeValue.slice(w.a, w.b);
+    if (!tok) return;
+    nd.splitText(w.b);
+    var mid = nd.splitText(w.a);
+    var box = document.createElement("span"); box.className = "glb"; box.textContent = tok;
+    mid.parentNode.replaceChild(box, mid);
+    box.style.width = box.getBoundingClientRect().width.toFixed(2) + "px";
+    box.classList.add("held");
+    glitchOn.set(elm, (glitchOn.get(elm) || 0) + 1);
+    var dur = Math.min(720, 240 + tok.length * 44), t0 = 0, lastFlip = 0, rnd = "";
+    function flip() { rnd = tok.replace(/./g, function () { return Math.random() < 0.5 ? "0" : "1"; }); }
     flip();
     function undo() {
-      wraps.forEach(function (x) { if (x.wrap.parentNode) x.wrap.parentNode.replaceChild(x.nd, x.wrap); });
-      glitchOn.delete(elm);
-      flushPending();              // whatever the page wanted to write, now
-      cooling.set(elm, 1);
-      setTimeout(function () { cooling.delete(elm); }, 400);
+      var host = box.parentNode;
+      if (host) { host.replaceChild(document.createTextNode(tok), box); host.normalize(); }
+      var n = (glitchOn.get(elm) || 1) - 1;
+      if (n > 0) glitchOn.set(elm, n);
+      else { glitchOn.delete(elm); flushPending(); }   // whatever the page wanted to write, now
     }
     (function step(now) {
       if (!t0) t0 = now;
@@ -2110,20 +2118,22 @@
       if (now - lastFlip > 46) { flip(); lastFlip = now; }
       // Resolved from the left, a little ahead of time, so the last
       // characters do not linger as digits.
-      var front = Math.floor(total * k * 1.12);
-      words.forEach(function (w, i) {
-        var out = "";
-        for (var c = 0; c < w.s.length; c++) out += (w.off + c < front) ? w.s[c] : rnd[i][c];
-        w.el.textContent = out;
-      });
+      var front = Math.min(tok.length, Math.floor(tok.length * k * 1.12));
+      box.textContent = tok.slice(0, front) + rnd.slice(front);
       if (k < 1) requestAnimationFrame(step); else undo();
     })(performance.now());
   }
   if (!reduced && !coarse && glitchOn) {
-    document.addEventListener("mouseover", function (e) {
-      var t = e.target && e.target.closest ? e.target.closest(GLITCH_AT) : null;
-      if (t) glitch(t);
-    });
+    var moveRaf = 0, mx = 0, my = 0;
+    document.addEventListener("mousemove", function (e) {
+      mx = e.clientX; my = e.clientY;
+      if (moveRaf) return;
+      moveRaf = requestAnimationFrame(function () {
+        moveRaf = 0;
+        var w = wordAt(mx, my);
+        if (w) glitchWord(w);
+      });
+    }, { passive: true });
   }
 
   // ---- boot ---------------------------------------------------------------
