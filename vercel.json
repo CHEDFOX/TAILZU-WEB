@@ -1,0 +1,9 @@
+{
+  "rewrites": [
+    { "source": "/v1/:path*", "destination": "https://api.tailzu.space/v1/:path*" },
+    { "source": "/download", "destination": "https://api.tailzu.space/download" },
+    { "source": "/downloads/:path*", "destination": "https://api.tailzu.space/downloads/:path*" },
+    { "source": "/privacy", "destination": "https://api.tailzu.space/privacy" },
+    { "source": "/terms", "destination": "https://api.tailzu.space/terms" }
+  ]
+}
