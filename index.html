@@ -129,81 +129,73 @@
      nowhere to go and the whole band reads as evenly busy. This is the page's
      own ink at four per cent — warm light, no new colour — and it is what
      makes the caret the subject rather than one more mark among a hundred. */
-  /* THE HERO IS THE PRODUCT DOING ITS ONE THING, at hero size. A line as
-     somebody actually said it — ums, Hinglish, a typo, in their own hand
-     and colour — and under it the line it became. One idea, one place for
-     the eye. The current runs behind it at a whisper: every language in
-     the air, none of it competing with the sentence in front. */
+  /* THE HERO IS ONE SENTENCE THAT REWRITES ITSELF.
+     A line as somebody said it — ums, Hinglish, a typo, in their own hand
+     and colour — and then, in the same place, the line it became, set in
+     type. The words themselves travel: each kept word flies from where it
+     was handwritten to where it is typeset and lands as the letterform,
+     while the fillers fall away. Nothing else is on the screen but a small
+     caption and a way in. The current runs behind it at a whisper. */
   .hero {
-    position: relative; overflow: hidden; margin: 0; padding: 22px 0 48px;
-    min-height: clamp(480px, 76vh, 680px); display: grid; align-items: center;
+    position: relative; overflow: hidden; margin: 0; padding: 30px 0 56px;
+    min-height: clamp(520px, 82vh, 760px); display: grid; grid-template-columns: minmax(0, 1fr); align-items: center;
     animation: fade 1.2s .2s both;
   }
-  /* min-width 0: the language line below is one long nowrap track, and a
-     grid item's automatic minimum would otherwise grow the whole column to
-     its width on a phone. */
-  .hero { grid-template-columns: minmax(0, 1fr); }
   .hero .wrap { position: relative; z-index: 2; width: 100%; min-width: 0; }
-  .langs { min-width: 0; }
-  /* An editorial grid: the labels live in the margin, the lines in the
-     column. "You said" and the language beside the spoken line; the state,
-     rolling, beside the written one; a hairline between the two. */
-  .stage { position: relative; max-width: 1100px; display: grid; grid-template-columns: 176px minmax(0, 1fr); column-gap: 36px; align-items: start; }
-  .stage .gut { display: flex; flex-direction: column; gap: 9px; font-family: var(--mono); font-size: 11px; letter-spacing: .22em; text-transform: uppercase; color: var(--dim); transition: opacity .38s, transform .38s; }
-  .stage .g1 { padding-top: clamp(12px, 1.9vw, 27px); }
-  .stage .g2 { padding-top: clamp(6px, 2.1vw, 32px); }
-  .stage .lang { color: var(--grey); }
-  .stage .rule { grid-column: 1 / -1; height: 1px; background: rgba(243,226,198,.14); margin: 28px 0 30px; }
-  /* THE SPOKEN LINE. A hand, not a face: each word lands with its own
-     tilt and its own colour, the way speech arrives — alive, uneven, and
-     nobody's typography. */
+  .stage { position: relative; max-width: 1000px; margin: 0 auto; text-align: center; }
+  /* The caption: the language, and the word for what is happening to it.
+     The only small text on the screen. */
+  .cap { margin: 0 0 clamp(26px, 3.4vw, 44px); display: flex; justify-content: center; align-items: center; gap: 14px; font-family: var(--mono); font-size: 11px; letter-spacing: .24em; text-transform: uppercase; color: var(--dim); transition: opacity .38s; }
+  .cap .lang { color: var(--grey); }
+  .cap .sep { opacity: .5; }
+  /* THE LINE. Both versions live in one box, one over the other, so the
+     sentence never moves down the page as it changes. The box is as tall
+     as the tallest line either of them needs, measured in ems of the
+     written face, so nothing below it ever jumps. */
+  .line { position: relative; min-height: 2.4em; font-size: clamp(30px, 4.6vw, 62px); display: grid; align-items: center; }
+  .spoken, .written { grid-area: 1 / 1; margin: 0; display: flex; flex-wrap: wrap; justify-content: center; align-items: baseline; }
+  /* A hand, not a face: each word lands with its own tilt and its own
+     colour, the way speech arrives — alive, uneven, nobody's typography. */
   .spoken {
-    margin: 0; min-height: 1.3em; display: flex; flex-wrap: wrap; gap: .05em .42em;
-    font-family: 'Caveat', 'Kalam', cursive; font-weight: 600; font-size: clamp(32px, 4.1vw, 58px); line-height: 1.22;
-    transition: opacity .6s, transform .38s;
+    gap: .06em .34em; font-family: 'Caveat', 'Kalam', cursive; font-weight: 600; font-size: .86em; line-height: 1.26;
   }
   .spoken .w {
-    display: inline-block; opacity: 0; transform: translateY(12px) rotate(var(--tilt, 0deg));
+    display: inline-block; opacity: 0; transform: translateY(10px) rotate(var(--tilt, 0deg));
     text-decoration-thickness: 2px; text-underline-offset: .1em; text-decoration-color: transparent;
-    transition: opacity .3s, transform .5s cubic-bezier(.2,.8,.2,1), color .5s, text-decoration-color .5s;
+    transition: opacity .3s, transform .5s cubic-bezier(.2,.8,.2,1), color .4s, text-decoration-color .4s;
   }
-  .spoken .w.in { opacity: 1; transform: translateY(0) rotate(var(--tilt, 0deg)); animation: float 3.6s ease-in-out infinite alternate; animation-delay: var(--ph, 0s); }
-  @keyframes float { to { translate: 0 -3px; } }
+  .spoken .w.in { opacity: 1; transform: translateY(0) rotate(var(--tilt, 0deg)); }
   /* MEANT. The fillers are struck and the typos get the squiggle everyone
-     has seen under their own spelling — and then the clean line arrives
-     without either. The two marks the whole world already knows. */
-  .spoken .w.drop { opacity: .32; text-decoration-line: line-through; text-decoration-color: currentColor; }
+     has seen under their own spelling. The two marks the world knows. */
+  .spoken .w.drop { opacity: .34; text-decoration-line: line-through; text-decoration-color: currentColor; }
   .spoken .w.fix { text-decoration-line: underline; text-decoration-style: wavy; text-decoration-color: var(--rose); }
-  /* And then the typo is fixed where it stands: the word changes to what
-     it should have been, and the squiggle turns into a clean green line. */
+  /* And then the typo is fixed where it stands: the word becomes what it
+     should have been and the squiggle turns into a clean green line. */
   .spoken .w.fixed { text-decoration-line: underline; text-decoration-style: solid; text-decoration-color: #6EE7A8; }
-  .spoken.done { opacity: .55; }
-  /* THE STATE: the story, one word at a time, rolling — heard, meant,
-     written, sent — with the keyboard's own wave beside it. */
-  .state { display: inline-flex; align-items: center; gap: 12px; }
-  .state .wave i { background: var(--amber); }
-  .state.done .wave i { background: #6EE7A8; animation: none; height: 30%; }
-  .state .tick { display: none; width: 15px; height: 15px; color: #6EE7A8; }
-  .state.done .tick { display: block; }
-  /* THE WRITTEN LINE. Type, where the spoken line was a hand: that contrast
-     is the product. The newest letters are warm and cool into the pale as
-     the line goes on — born warm, like everything else on this page. */
+  /* WRITTEN. Type, where the spoken line was a hand: that contrast is the
+     product, and it happens in one place. */
   .written {
-    margin: 0; min-height: 2.2em; font-family: var(--serif); font-weight: 380; font-optical-sizing: auto;
-    font-size: clamp(40px, 6.3vw, 98px); line-height: 1.06; letter-spacing: -.024em; color: var(--white); text-wrap: balance;
-    transition: opacity .38s, transform .38s;
+    gap: 0 .26em; font-family: var(--serif); font-weight: 380; font-optical-sizing: auto;
+    line-height: 1.1; letter-spacing: -.022em; color: var(--white);
   }
-  .written .hl { color: #FFDCA6; }
-  .written .car { width: 3px; height: .92em; vertical-align: -.1em; }
-  .stage.out .gut, .stage.out .spoken, .stage.out .written { opacity: 0; transform: translateY(-12px); }
-  .hero .speak { margin-top: 30px; }
-  /* THE LANGUAGES, in a line along the bottom: every one the page will
-     play, the one playing lit, the line sliding so it is always in view.
-     A visitor sees theirs coming. */
-  .langs { margin-top: 46px; overflow: hidden; -webkit-mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent); mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent); }
-  .langtrack { display: flex; gap: 34px; white-space: nowrap; padding: 0 8%; font-family: var(--mono); font-size: 11px; letter-spacing: .22em; text-transform: uppercase; color: var(--dim); transition: transform .9s cubic-bezier(.2,.8,.2,1); will-change: transform; }
-  .langtrack span { transition: color .4s; }
-  .langtrack span.on { color: var(--white); }
+  .written .w { display: inline-block; opacity: 0; transform: translateY(6px); transition: opacity .34s, transform .44s cubic-bezier(.2,.8,.2,1); }
+  .written .w.in { opacity: 1; transform: none; }
+  /* THE FLIGHT. While the line is turning into type, each kept word is
+     copied into this layer at the place it was handwritten and animated to
+     the place it is typeset, growing to the typeset word's own width as it
+     fades — so the word you said becomes the word that was written, rather
+     than one line swapping for another. */
+  .fly { position: absolute; inset: 0; pointer-events: none; z-index: 3; }
+  .fly span {
+    position: absolute; display: inline-block; white-space: nowrap; transform-origin: left center;
+    font-family: 'Caveat', 'Kalam', cursive; font-weight: 600; line-height: 1.26;
+    transform: translate(0, 0) scale(1); opacity: 1;
+    transition: transform .62s cubic-bezier(.3,.75,.2,1), opacity .62s ease-in;
+  }
+  .stage.out .cap, .stage.out .line { opacity: 0; transition: opacity .34s; }
+  .herodl { margin: clamp(30px, 4vw, 52px) 0 0; text-align: center; }
+  .on-violet .get-it, .hero .get-it { background: var(--white); color: var(--ink); }
+  .hero .speak { margin-top: 26px; }
   /* THE LIGHT IS ALIVE. The pool is its own layer under the threads, and
      the script breathes it: it swells a little on a slow cycle, brightens
      for a beat each time a phrase reaches the word, and fills with the
@@ -261,20 +253,18 @@
   /* One line, and every decision on it made on purpose: the optical size the
      face was cut for, a hair of tracking, and nothing else on the page set
      like it. That contrast is the whole product in one picture. */
-  /* THE SLOT is one line tall and clips: the state words roll through it.
-     Its font size is the word's, so the roll distance is written in ems. */
-  .slot {
-    position: relative; display: block; height: 1.2em; overflow: hidden;
-    font-family: var(--serif); font-style: italic; font-weight: 400; font-size: 24px; line-height: 1.1;
-    letter-spacing: 0; text-transform: none; color: var(--grey);
-  }
+  /* THE SLOT is one line tall and clips: the state words roll through it,
+     at the caption's own size. */
+  .slot { position: relative; display: block; height: 1.25em; overflow: hidden; color: var(--white); }
   .roll { display: block; }
   #ghostwrap { position: absolute; left: 0; top: 0; }
   .absorb { display: inline-block; white-space: nowrap; }
-  #tangle { position: absolute; inset: 0; width: 100%; height: 100%; display: block; opacity: .34; z-index: 1; }
+  #tangle { position: absolute; inset: 0; width: 100%; height: 100%; display: block; opacity: .3; z-index: 1; }
+  /* Calm ground under the sentence, centred on it: the current stays alive
+     at the edges of the screen and is hushed where the words are. */
   .plate {
-    position: absolute; z-index: 1; left: -10%; top: 4%; width: 86%; height: 92%; pointer-events: none;
-    background: radial-gradient(ellipse at 44% 50%, rgba(28,22,64,.97) 0%, rgba(28,22,64,.88) 30%, rgba(28,22,64,.5) 56%, rgba(28,22,64,0) 74%);
+    position: absolute; z-index: 1; left: -5%; top: 0; width: 110%; height: 100%; pointer-events: none;
+    background: radial-gradient(ellipse 52% 46% at 50% 50%, rgba(28,22,64,.97) 0%, rgba(28,22,64,.9) 34%, rgba(28,22,64,.52) 60%, rgba(28,22,64,0) 80%);
   }
   /* THE SWAP is a roll. Inside a window one line tall, the old word rises
      out of the top and the new one rises in from the bottom, on the same
@@ -437,9 +427,13 @@
   /* What remains after the cut: the mic, alone in the keyboard. */
   .keyless { position: absolute; inset: 0; display: grid; place-items: center; transform: translateY(40px); opacity: 0; transition: transform .45s cubic-bezier(.2,.8,.2,1) .15s, opacity .3s .15s; }
   .kb.small .keyless { transform: none; opacity: 1; }
-  .kmic { width: 58px; height: 58px; border-radius: 50%; background: var(--ink); color: var(--white); display: grid; place-items: center; box-shadow: 0 12px 26px -12px rgba(0,0,0,.6); transition: background .25s, color .25s, transform .25s; }
-  .kmic svg { width: 24px; height: 24px; }
-  .keyless.live .kmic { background: var(--amber); color: var(--ink); transform: scale(1.08); }
+  .kmic { position: relative; overflow: hidden; width: 58px; height: 58px; border-radius: 50%; background: var(--ink); display: grid; place-items: center; box-shadow: 0 12px 26px -12px rgba(0,0,0,.6); transition: background .25s, transform .25s; }
+  /* The app's own key: the mark at rest, and while it is listening the
+     mark itself comes apart — its pixels are the particles. */
+  .kmic .mk { width: 72%; height: 72%; display: block; transition: opacity .16s; }
+  .kmic canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .kmic.burst .mk { opacity: 0; }
+  .keyless.live .kmic { background: var(--amber); transform: scale(1.08); }
   .k { position: relative; flex: 1 1 0; min-width: 0; height: 42px; border-radius: 6px; background: #fff; box-shadow: 0 1px 0 #898A8D; display: grid; place-items: center; font-family: var(--sans); font-size: 17px; color: #000; transition: transform .08s, background .08s; }
   .k.wide { flex: 1.5 1 0; background: #ABB0BA; font-size: 12px; }
   .k.space { flex: 5 1 0; font-size: 12px; color: #444; }
@@ -594,10 +588,7 @@
   .reveal.in { opacity: 1; transform: none; }
 
   @media (max-width: 900px) {
-    .hero { min-height: clamp(440px, 66vh, 600px); padding: 14px 0 40px; }
-    .stage { grid-template-columns: minmax(0, 1fr); }
-    .stage .gut { flex-direction: row; align-items: center; gap: 14px; padding-top: 0; margin-bottom: 12px; }
-    .stage .rule { margin: 22px 0 18px; }
+    .hero { min-height: clamp(460px, 74vh, 620px); padding: 14px 0 44px; }
     .plate { left: -20%; width: 140%; }
     .band .head, .desk, .apps { grid-template-columns: minmax(0, 1fr); }
     .logos { right: 20px; bottom: 22px; }
@@ -608,9 +599,8 @@
     .band { padding: 76px 0; }
   }
   @media (max-width: 560px) {
-    .spoken { font-size: 28px; gap: .05em .34em; }
-    .slot { font-size: 19px; }
-    .written { font-size: 36px; }
+    .line { font-size: 28px; min-height: 3.2em; }
+    .cap { gap: 10px; letter-spacing: .18em; }
     .speak span { font-size: 12.5px; }
     .tonegrid { grid-template-columns: minmax(0, 1fr); }
     .k { height: 38px; font-size: 15px; }
@@ -658,21 +648,16 @@
        are and stays alive at the edges. -->
   <div class="plate" aria-hidden="true"></div>
   <div class="wrap">
-    <!-- THE SENTENCE. A line as somebody said it, and the line it became,
-         in four beats named by the four words of the story. The stage is
-         the control too: with the demo on, pressing it opens the mic. -->
+    <!-- THE SENTENCE. A line as somebody said it, and — in the same
+         place, by the same words — the line it became. The stage is the
+         control too: with the demo on, pressing it opens the mic. -->
     <div class="stage" id="mark" role="button" tabindex="0" aria-label="Speak">
-      <div class="gut g1"><span id="labSaid">You said</span><span class="lang" id="lang"></span></div>
-      <p class="spoken" id="said" dir="auto"></p>
-      <div class="rule" aria-hidden="true"></div>
-      <div class="gut g2">
-        <span class="state" id="state">
-          <span class="wave"><i></i><i></i><i></i><i></i></span>
-          <span class="slot"><span class="roll" id="ghostwrap"><span class="absorb ghost" id="absorbOld" aria-hidden="true"></span></span><span class="roll" id="wordwrap"><span class="absorb" id="absorb">Heard.</span></span></span>
-          <svg class="tick" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>
-        </span>
+      <p class="cap"><span class="lang" id="lang"></span><span class="sep">/</span><span class="slot"><span class="roll" id="ghostwrap"><span class="absorb ghost" id="absorbOld" aria-hidden="true"></span></span><span class="roll" id="wordwrap"><span class="absorb" id="absorb">Heard.</span></span></span></p>
+      <div class="line" id="line">
+        <p class="spoken" id="said" dir="auto"></p>
+        <p class="written" id="wrote" dir="auto"></p>
+        <div class="fly" id="fly" aria-hidden="true"></div>
       </div>
-      <p class="written" id="wrote" dir="auto"><span id="wroteText"></span><span class="car off" id="wroteCar"></span></p>
     </div>
     <button class="speak" id="mic" aria-pressed="false">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -681,7 +666,7 @@
       </svg>
       <span id="micLabel">Speak</span>
     </button>
-    <div class="langs" id="langs" aria-hidden="true"><div class="langtrack" id="langtrack"></div></div>
+    <p class="herodl"><a class="get-it" data-dl href="/download">Download</a></p>
   </div>
 </section>
 
@@ -752,7 +737,18 @@
         <div class="kb" id="kb">
           <div class="rows" id="kbRows"></div>
           <!-- What is left when the keys are cut: the mic. -->
-          <div class="keyless" id="keyless"><span class="kmic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"></rect><path d="M5 11a7 7 0 0 0 14 0M12 18v3"></path></svg></span>          </div>
+          <div class="keyless" id="keyless"><span class="kmic" id="kmic">
+            <svg class="mk" viewBox="170 228 680 512" aria-hidden="true">
+              <line x1="346" y1="402" x2="270" y2="598" stroke="#E9CBA2" stroke-width="9" stroke-linecap="round"/>
+              <line x1="444" y1="394" x2="554" y2="486" stroke="#E8A23C" stroke-width="30" stroke-dasharray="9 11"/>
+              <line x1="668" y1="478" x2="828" y2="243" stroke="#C77A3A" stroke-width="9" stroke-linecap="round"/>
+              <circle cx="828" cy="243" r="11" fill="#B06240"/>
+              <rect x="308" y="269" width="132" height="132" rx="28" fill="#F4F1EA"/>
+              <rect x="558" y="478" width="132" height="132" rx="28" fill="#F4F1EA"/>
+              <rect x="178" y="598" width="132" height="132" rx="28" fill="#F4F1EA"/>
+            </svg>
+            <canvas id="micDots" aria-hidden="true"></canvas>
+          </span>          </div>
         </div>
       </div>
       <ul class="applist" id="applist"></ul>
@@ -1297,7 +1293,7 @@
   /* The hero's current, in colour, keeping time for the pool; and one per
      screen below it, in that screen's own lighter shade — ink at a whisper
      on the light fields, pale at a whisper on the dark — calmer and fewer. */
-  var hero = Current($("tangle"), { count: 44, tick: function (dt, now) { glow *= Math.pow(0.5, dt / 420); breathe(now / 1000); } });
+  var hero = Current($("tangle"), { count: 36, tick: function (dt, now) { glow *= Math.pow(0.5, dt / 420); breathe(now / 1000); } });
   var currents = [hero], ownSaid = "";
   [].forEach.call(document.querySelectorAll("canvas.current"), function (c, i) {
     var ink = c.getAttribute("data-shade") === "ink";
@@ -1550,7 +1546,6 @@
   function applyCopy() {
     $("micLabel").textContent = C.cta;
     setText("labSaid", C.hero && C.hero.said);
-    paintLangs();
     paintDownloads();
     paintBelow();
     mic.hidden = !site.demo;
@@ -1687,11 +1682,14 @@
      anywhere has watched their own. The visitor's own recording, when the
      demo is on, ends the loop: their sentence, held.
      ================================================================== */
-  var stageEl = $("mark"), saidEl = $("said"), wroteLine = $("wrote"), wroteEl = $("wroteText"), carEl = $("wroteCar"),
-      langEl = $("lang"), stateEl = $("state"),
+  var stageEl = $("mark"), saidEl = $("said"), wroteLine = $("wrote"), lineEl = $("line"), flyEl = $("fly"),
+      langEl = $("lang"),
       wrapEl = $("wordwrap"), ghostWrap = $("ghostwrap"), absorbEl = $("absorb"), ghostEl = $("absorbOld");
   var caseI = 0, sgen = 0, stm = 0, staged = false, seen = true, current = null;
 
+  /** Set text on a node the page is animating. */
+  function liveText(node, s) { live(node, function () { node.textContent = s; }); }
+  /** The same, for a line being typed with its newest letters lit. */
   function litInto(node, full, n) {
     live(node, function () {
       node.innerHTML = "";
@@ -1700,10 +1698,8 @@
       if (n > 0) node.appendChild(el("span", "hl", full.slice(cut)));
     });
   }
-  /** Set text on a node the page is animating. */
-  function liveText(node, s) { live(node, function () { node.textContent = s; }); }
   function beats() { var a = C.absorbs || []; return a.length >= 4 ? a : ["Heard.", "Meant.", "Written.", "Sent."]; }
-  /* The state word rolls, like a line on a departures board. */
+  /* The caption's word rolls, like a line on a departures board. */
   function roll(text) {
     if (absorbEl.textContent === text) return;
     ghostEl.textContent = absorbEl.textContent;
@@ -1722,78 +1718,70 @@
     }
     return prev[n];
   }
-  /* What became of each spoken word: kept as it was, fixed (a typo, a near
-     miss), or dropped (a filler). Kept is an exact match after case and
-     punctuation; fixed is within a letter or two of something in the
-     written line. A line where nothing matches — a script written without
-     spaces, a sentence recast whole — is all fixed and nothing dropped: it
-     was never thrown away, it was rewritten. */
+  /* What became of each spoken word, and WHICH written word it became.
+     Kept is an exact match after case and punctuation; fixed is within a
+     letter or two of a written word — a typo, a near miss; the rest are
+     fillers. A short word is never a near miss: "so" is not a typo of
+     "to", it is a filler. A line where nothing matches — a script written
+     without spaces, a sentence recast whole — is all rewritten and nothing
+     dropped: it was never thrown away. */
   function classify(parts, wrote) {
-    var raw = wrote.split(/\s+/).filter(Boolean), ws = raw.map(norm), set = {};
-    ws.forEach(function (x) { set[x] = 1; });
+    var raw = wrote.split(/\s+/).filter(Boolean), ws = raw.map(norm), taken = {};
     var out = parts.map(function (w) {
-      var n = norm(w); if (!n || set[n]) return { k: "keep" };
-      // A short word is never a near miss of another: "so" is not a typo
-      // of "to", it is a filler. Only a word long enough to be misspelt
-      // can have been.
-      if (n.length < 4) return { k: "drop" };
-      var lim = Math.max(1, Math.floor(n.length / 3));
-      for (var i = 0; i < ws.length; i++) {
-        if (Math.abs(ws[i].length - n.length) <= lim && lev(n, ws[i]) <= lim) {
-          // The word it becomes, with the sentence's own punctuation left
-          // off: the fix is the spelling, the full stop is the line's.
-          return { k: "fix", to: raw[i].replace(/^[\p{P}\p{S}]+|[\p{P}\p{S}]+$/gu, "") };
+      var nw = norm(w), i;
+      if (!nw) return { k: "drop", j: -1 };
+      for (i = 0; i < ws.length; i++) if (!taken[i] && ws[i] === nw) { taken[i] = 1; return { k: "keep", j: i }; }
+      if (nw.length < 4) return { k: "drop", j: -1 };
+      var lim = Math.max(1, Math.floor(nw.length / 3));
+      for (i = 0; i < ws.length; i++) {
+        if (taken[i]) continue;
+        if (Math.abs(ws[i].length - nw.length) <= lim && lev(nw, ws[i]) <= lim) {
+          taken[i] = 1;
+          // The word it becomes, without the sentence's own punctuation:
+          // the fix is the spelling, the full stop belongs to the line.
+          return { k: "fix", j: i, to: raw[i].replace(/^[\p{P}\p{S}]+|[\p{P}\p{S}]+$/gu, "") };
         }
       }
-      return { k: "drop" };
+      return { k: "drop", j: -1 };
     });
-    if (!out.some(function (x) { return x.k !== "drop"; })) out = out.map(function () { return { k: "fix" }; });
+    if (!out.some(function (x) { return x.k !== "drop"; })) out = out.map(function () { return { k: "fix", j: -1 }; });
     return out;
-  }
-  /* The languages along the bottom, built once from the cases; the one
-     playing lit, and the line slid so it sits in view. */
-  var langsEl = $("langs"), langTrack = $("langtrack");
-  function paintLangs() {
-    langTrack.innerHTML = "";
-    var seen = {};
-    C.cases.forEach(function (cs) { if (cs.lang && !seen[cs.lang]) { seen[cs.lang] = 1; langTrack.appendChild(el("span", null, cs.lang)); } });
-  }
-  function markLang(name) {
-    var on = null;
-    [].forEach.call(langTrack.children, function (sp) { var is = sp.textContent === name; sp.classList.toggle("on", is); if (is) on = sp; });
-    if (!on) return;
-    var x = on.offsetLeft + on.offsetWidth / 2 - langsEl.clientWidth / 2;
-    x = Math.max(0, Math.min(Math.max(0, langTrack.scrollWidth - langsEl.clientWidth), x));
-    langTrack.style.transform = "translateX(" + (-x).toFixed(1) + "px)";
   }
   function later(ms, fn) { var g = sgen; stm = setTimeout(function () { if (g === sgen) fn(); }, ms); }
 
   function play(cs, hold) {
     var g = ++sgen; clearTimeout(stm); current = cs;
-    stageEl.classList.remove("out"); stateEl.classList.remove("done");
-    langEl.textContent = cs.lang || ""; wroteEl.textContent = ""; carEl.classList.add("off");
-    saidEl.classList.remove("done"); saidEl.innerHTML = "";
-    var parts = cs.said.split(/\s+/).filter(Boolean), kinds = classify(parts, cs.wrote), spans = [], B = beats();
+    stageEl.classList.remove("out");
+    liveText(langEl, cs.lang || "");
+    saidEl.style.visibility = ""; flyEl.innerHTML = "";
+    var parts = cs.said.split(/\s+/).filter(Boolean), kinds = classify(parts, cs.wrote), B = beats();
+    var wparts = cs.wrote.split(/\s+/).filter(Boolean), spans = [], wspans = [];
+
+    // Both lines are built at once and stacked; only one is ever lit.
+    saidEl.innerHTML = "";
     parts.forEach(function (w, i) {
       var sp = el("span", "w", w);
-      sp.style.setProperty("--tilt", (((i * 7 + caseI * 13) % 11 - 5) * 0.32).toFixed(2) + "deg");
-      sp.style.setProperty("--ph", (-((i * 0.53) % 3.6)).toFixed(2) + "s");
+      sp.style.setProperty("--tilt", (((i * 7 + caseI * 13) % 11 - 5) * 0.34).toFixed(2) + "deg");
       sp.style.color = "rgb(" + HUES[(i * 3 + caseI) % HUES.length].join(",") + ")";
       saidEl.appendChild(sp); spans.push(sp);
     });
-    markLang(cs.lang || "");
+    wroteLine.innerHTML = "";
+    wparts.forEach(function (w) { var sp = el("span", "w", w); wroteLine.appendChild(sp); wspans.push(sp); });
+
     if (reduced) {   // the last frame, standing
-      spans.forEach(function (sp, k) { sp.classList.add("in"); if (kinds[k].k === "drop") sp.classList.add("drop"); if (kinds[k].to) { sp.textContent = kinds[k].to; sp.classList.add("fixed"); } });
-      absorbEl.textContent = B[3]; litInto(wroteEl, cs.wrote, 0); stateEl.classList.add("done"); saidEl.classList.add("done");
+      spans.forEach(function (sp) { sp.style.display = "none"; });
+      wspans.forEach(function (sp) { sp.classList.add("in"); });
+      absorbEl.textContent = B[3];
       return;
     }
     roll(B[0]);
     var i = 0;
     (function hear() {
       if (g !== sgen) return;
-      if (i < spans.length) { spans[i++].classList.add("in"); later((i === 1 ? 260 : 110) + Math.random() * 120, hear); return; }
-      later(460, meant);
+      if (i < spans.length) { spans[i++].classList.add("in"); later((i === 1 ? 240 : 100) + Math.random() * 110, hear); return; }
+      later(440, meant);
     })();
+
     function meant() {
       roll(B[1]);
       spans.forEach(function (sp, k) { if (kinds[k].k !== "keep") sp.classList.add(kinds[k].k); });
@@ -1801,26 +1789,58 @@
       // Then the typos are fixed where they stand.
       later(560, function () {
         spans.forEach(function (sp, k) { if (kinds[k].to) { sp.textContent = kinds[k].to; sp.classList.remove("fix"); sp.classList.add("fixed"); } });
-        later(520, written);
+        later(560, written);
       });
     }
+
+    /* WRITTEN. Not a swap: the words fly. Each kept word is copied into
+       the flight layer at the place it was handwritten, the handwritten
+       line is hidden, and the copy is animated to the place its typeset
+       word sits — scaled to that word's own width — while it fades and the
+       letterform fades up under it. The fillers fall. Measured, not
+       guessed: both lines are laid out in the same box, so one rectangle
+       each is all this needs. */
     function written() {
-      roll(B[2]); carEl.classList.remove("off"); glow = 1; placePool();
-      var j = 0, full = cs.wrote;
-      (function type() {
-        if (g !== sgen) return;
-        if (j < full.length) { j++; litInto(wroteEl, full.slice(0, j), Math.min(j, 12)); later(full[j - 1] === " " ? 44 : 16 + Math.random() * 24, type); return; }
-        litInto(wroteEl, full, 0); later(260, sent);
-      })();
+      roll(B[2]); glow = 1;
+      var box = lineEl.getBoundingClientRect();
+      var from = spans.map(function (sp) { return sp.getBoundingClientRect(); });
+      var to = wspans.map(function (sp) { return sp.getBoundingClientRect(); });
+      var size = getComputedStyle(spans[0] || saidEl).fontSize;
+      saidEl.style.visibility = "hidden";
+      spans.forEach(function (sp, k) {
+        var r = from[k]; if (!r.width) return;
+        var c = el("span", null, sp.textContent);
+        c.style.left = (r.left - box.left).toFixed(1) + "px";
+        c.style.top = (r.top - box.top).toFixed(1) + "px";
+        c.style.fontSize = size; c.style.color = sp.style.color;
+        flyEl.appendChild(c);
+        var j = kinds[k].j, t = j >= 0 ? to[j] : null;
+        requestAnimationFrame(function () {
+          requestAnimationFrame(function () {
+            if (g !== sgen) return;
+            if (t && t.width) {
+              c.style.transform = "translate(" + (t.left - r.left).toFixed(1) + "px," + (t.top + t.height / 2 - r.top - r.height / 2).toFixed(1) + "px) scale(" + (t.width / r.width).toFixed(3) + ")";
+            } else {
+              c.style.transform = "translate(0," + (r.height * 0.55).toFixed(1) + "px) scale(.86)";
+            }
+            c.style.opacity = "0";
+          });
+        });
+      });
+      // The letterforms arrive under the flight, left to right.
+      wspans.forEach(function (sp, k) { setTimeout(function () { if (g === sgen) sp.classList.add("in"); }, 180 + k * 26); });
+      later(1100, function () { flyEl.innerHTML = ""; sent(); });
     }
+
     function sent() {
-      roll(B[3]); carEl.classList.add("off"); stateEl.classList.add("done"); saidEl.classList.add("done");
+      roll(B[3]);
       if (hold) return;
-      later(2300, function () { stageEl.classList.add("out"); later(420, next); });
+      later(2400, function () { stageEl.classList.add("out"); later(420, next); });
     }
   }
-  function next() { if (own) return; caseI = (caseI + 1) % C.cases.length; play(C.cases[caseI]); }
-  function resumeStage() { if (staged) return; staged = true; play(own && current ? current : C.cases[caseI], !!own); }
+  function resetStage() { saidEl.style.visibility = ""; flyEl.innerHTML = ""; }
+  function next() { if (own) return; resetStage(); caseI = (caseI + 1) % C.cases.length; play(C.cases[caseI]); }
+  function resumeStage() { if (staged) return; staged = true; resetStage(); play(own && current ? current : C.cases[caseI], !!own); }
   function pauseStage() { staged = false; sgen++; clearTimeout(stm); }
   document.addEventListener("visibilitychange", function () { if (document.hidden) pauseStage(); else if (seen) resumeStage(); });
 
@@ -1947,12 +1967,12 @@
         klater(920, function () {
           kbEl.classList.add("small"); kbEl.style.height = KB_SMALL + "px";
           klater(700, function () {
-            keyless.classList.add("live");
+            keyless.classList.add("live"); micDots.start();
             var rest = text.slice(i).split(" "), j = 0;
             klater(520, function say() {
               if (g !== kgen) return;
               if (j < rest.length) { j++; liveText(slot.t, text.slice(0, i) + rest.slice(0, j).join(" ")); klater(95, say); return; }
-              keyless.classList.remove("live"); slot.c.classList.add("off");
+              keyless.classList.remove("live"); micDots.stop(); slot.c.classList.add("off");
               klater(2400, function () { appI++; playApp(); });
             });
           });
@@ -1960,6 +1980,129 @@
       });
     })();
   }
+  /* =====================================================================
+     THE MIC COMES APART — the app's own, brought over exactly.
+
+     The keyboard's mic key does not pulse or glow. The brand mark's own
+     opaque pixels are sampled, each becomes a dot, and on the first word
+     they burst outward and go on knocking about inside the circle for as
+     long as it is listening; when it stops they spring back into the mark.
+     The numbers are the app's: the mark drawn into a 44-unit grid inset 6
+     and aspect-fit, every pixel over alpha 90 a candidate, even-stride
+     sampled down to sixty; velocity outward through the dot's own place,
+     twisted by up to half a radian, at 55 to 110 points a second; the wall
+     reflects about the radial normal; equal-mass elastic collisions
+     between dots; drag 0.99 a frame under a floor of 24 points a second,
+     so the swarm never settles; and on stop a damped spring home at
+     stiffness 26, damping 0.8, snapping under 0.8 of a point or after six
+     tenths of a second. Scaled to whatever size the circle is here.
+     ================================================================== */
+  function markPoints(size, count) {
+    // The mark, drawn into its own grid, and its opaque pixels sampled.
+    var G = 44, inset = 6, box = G - inset * 2, c = document.createElement("canvas");
+    c.width = c.height = G;
+    var x = c.getContext("2d"), VB = [170, 228, 680, 512];
+    var k = Math.min(box / VB[2], box / VB[3]);
+    x.translate((G - VB[2] * k) / 2 - VB[0] * k, (G - VB[3] * k) / 2 - VB[1] * k);
+    x.scale(k, k);
+    x.strokeStyle = x.fillStyle = "#fff"; x.lineCap = "round";
+    x.lineWidth = 9;  x.beginPath(); x.moveTo(346, 402); x.lineTo(270, 598); x.stroke();
+    x.lineWidth = 30; x.setLineDash([9, 11]); x.beginPath(); x.moveTo(444, 394); x.lineTo(554, 486); x.stroke(); x.setLineDash([]);
+    x.lineWidth = 9;  x.beginPath(); x.moveTo(668, 478); x.lineTo(828, 243); x.stroke();
+    x.beginPath(); x.arc(828, 243, 11, 0, 6.2832); x.fill();
+    [[308, 269], [558, 478], [178, 598]].forEach(function (r) {
+      x.beginPath();
+      if (x.roundRect) x.roundRect(r[0], r[1], 132, 132, 28); else x.rect(r[0], r[1], 132, 132);
+      x.fill();
+    });
+    var d = x.getImageData(0, 0, G, G).data, all = [];
+    for (var py = 0; py < G; py++) for (var px = 0; px < G; px++) if (d[(py * G + px) * 4 + 3] > 90) all.push([px, py]);
+    if (!all.length) return [];
+    var step = Math.max(1, Math.floor(all.length / count)), out = [], s = size / G;
+    for (var i = 0; i < all.length && out.length < count; i += step) out.push([all[i][0] * s, all[i][1] * s]);
+    return out;
+  }
+  function MicDots(canvas, host) {
+    var g = canvas.getContext("2d"), dots = [], raf = 0, last = 0, size = 0, R = 0, DR = 1.3, home = [], back = false, backAt = 0, DPR = 1;
+    function fit() {
+      var w = canvas.clientWidth || 58;
+      DPR = Math.min(2, window.devicePixelRatio || 1);
+      if (size === w && canvas.width) return;
+      size = w; R = w / 2; DR = Math.max(0.9, w / 44);
+      canvas.width = Math.round(w * DPR); canvas.height = Math.round(w * DPR);
+      home = markPoints(w, 60);
+    }
+    function start() {
+      fit(); if (!home.length) return;
+      back = false; host.classList.add("burst");
+      var c = R, sc = size / 44;
+      dots = home.map(function (h) {
+        var dx = h[0] - c, dy = h[1] - c, len = Math.sqrt(dx * dx + dy * dy), a;
+        if (len > 0.5) { dx /= len; dy /= len; } else { a = Math.random() * 6.2832; dx = Math.cos(a); dy = Math.sin(a); }
+        var j = (Math.random() - 0.5), rx = dx * Math.cos(j) - dy * Math.sin(j), ry = dx * Math.sin(j) + dy * Math.cos(j);
+        var burst = (55 + Math.random() * 55) * sc;
+        return { x: h[0], y: h[1], vx: rx * burst, vy: ry * burst, hx: h[0], hy: h[1] };
+      });
+      if (!raf && !reduced) { last = 0; raf = requestAnimationFrame(step); }
+    }
+    function stop() { if (!dots.length) { host.classList.remove("burst"); return; } back = true; backAt = 0; }
+    function step(now) {
+      raf = requestAnimationFrame(step);
+      if (!last) last = now;
+      var dt = Math.min(1 / 30, (now - last) / 1000); last = now;
+      var i, j, d, c = R, lim = R - DR, floor = 24 * (size / 44), most = 0;
+      if (back) {
+        backAt += dt;
+        for (i = 0; i < dots.length; i++) {
+          d = dots[i];
+          d.vx = (d.vx + (d.hx - d.x) * 26 * dt) * 0.8;
+          d.vy = (d.vy + (d.hy - d.y) * 26 * dt) * 0.8;
+          d.x += d.vx * dt; d.y += d.vy * dt;
+          most = Math.max(most, Math.abs(d.hx - d.x), Math.abs(d.hy - d.y));
+        }
+        if (most < 0.8 || backAt > 0.6) {   // home, or near enough: the crisp mark takes over
+          dots = []; host.classList.remove("burst");
+          g.setTransform(1, 0, 0, 1, 0, 0); g.clearRect(0, 0, canvas.width, canvas.height);
+          cancelAnimationFrame(raf); raf = 0; return;
+        }
+      } else {
+        for (i = 0; i < dots.length; i++) {
+          d = dots[i];
+          d.x += d.vx * dt; d.y += d.vy * dt;
+          // The wall reflects about the radial normal.
+          var ox = d.x - c, oy = d.y - c, len = Math.sqrt(ox * ox + oy * oy);
+          if (len > lim && len > 0) {
+            var nx = ox / len, ny = oy / len, vn = d.vx * nx + d.vy * ny;
+            d.vx -= 2 * vn * nx; d.vy -= 2 * vn * ny;
+            d.x = c + nx * lim; d.y = c + ny * lim;
+          }
+          // Drag, under a floor, so the swarm never settles.
+          d.vx *= 0.99; d.vy *= 0.99;
+          var sp = Math.sqrt(d.vx * d.vx + d.vy * d.vy);
+          if (sp > 0 && sp < floor) { d.vx = d.vx / sp * floor; d.vy = d.vy / sp * floor; }
+        }
+        // Equal-mass elastic collisions.
+        var minD = 2 * DR;
+        for (i = 0; i < dots.length; i++) for (j = i + 1; j < dots.length; j++) {
+          var a = dots[i], b = dots[j], dx = b.x - a.x, dy = b.y - a.y, dd = Math.sqrt(dx * dx + dy * dy);
+          if (dd >= minD || dd === 0) continue;
+          var ux = dx / dd, uy = dy / dd, push = (minD - dd) / 2;
+          a.x -= ux * push; a.y -= uy * push; b.x += ux * push; b.y += uy * push;
+          var rvn = (b.vx - a.vx) * ux + (b.vy - a.vy) * uy;
+          if (rvn < 0) { a.vx += rvn * ux; a.vy += rvn * uy; b.vx -= rvn * ux; b.vy -= rvn * uy; }
+        }
+      }
+      g.setTransform(DPR, 0, 0, DPR, 0, 0);
+      g.clearRect(0, 0, size, size);
+      g.fillStyle = "#0F0D0B";
+      for (i = 0; i < dots.length; i++) {
+        g.beginPath(); g.arc(dots[i].x, dots[i].y, DR, 0, 6.2832); g.fill();
+      }
+    }
+    return { start: start, stop: stop };
+  }
+  var micDots = MicDots($("micDots"), $("kmic"));
+
   function resumeKeys() {
     if (keysOn) return; keysOn = true;
     if (rowsEl.children.length) playApp();
@@ -1968,7 +2111,7 @@
     keysOn = false; kgen++; clearTimeout(ktm);
     [].forEach.call(document.querySelectorAll(".k.down, .k.hold"), function (k) { k.classList.remove("down"); k.classList.remove("hold"); });
     if (micKey) micKey.classList.remove("live");
-    keyless.classList.remove("live");
+    keyless.classList.remove("live"); micDots.stop();
   }
 
   /* A RUN OWNS ITS ELEMENT. Half the text on this page is being written
