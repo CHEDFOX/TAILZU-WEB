@@ -1,0 +1,1841 @@
+<!doctype html>
+<html lang="en" data-api="">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tailzu</title>
+<meta name="description" content="Talk. It writes. Every word you meant, none you didn't, in the language you said it. 22 Indian languages and most of the world's.">
+<meta name="theme-color" content="#0F0D0B">
+<meta property="og:title" content="Tailzu — say it badly, send it perfect">
+<meta property="og:description" content="Talk. It writes. In your language, in your tone, in any app.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300..500;1,6..72,300..500&family=Instrument+Sans:wght@400;500&family=IBM+Plex+Mono:wght@400&family=Caveat:wght@400..700&family=Kalam:wght@400;700&display=swap">
+<style>
+  :root {
+    /* THE STATS PALETTE, unchanged from the app.
+       One material system across the product: a warm near-black biased toward
+       the accent's own hue, so the amber sits IN the ground rather than on it;
+       a card that is a step up from the ground rather than a hole in it; and
+       one reading colour, which is the amber's own family. Everything that
+       was a second colour here is now the same pale at a lower weight —
+       that is the app's rule, and it is why the amber still means something.
+       A paper half would have been a second visual world, and a colour cannot
+       be sacred if the ground under it changes temperature. */
+    /* The quiet end is set by CONTRAST, not by taste. Measured against this
+       ground: .36 is 2.84:1, under even the 3:1 floor for large text — which
+       is why the labels, the platform line, the footer and the unselected
+       tabs all read as faded rather than as quiet, and a faded page reads as
+       an unfinished one whatever its colours are. .52 is 4.71:1 and clears AA
+       for small text; .62 is 6.26:1. Same hue, same family, nothing new —
+       the page just stops whispering. */
+    /* THREE SURFACES, NOT TWO — the same hue, further up.
+       The app has a ground and a card, and two values over a whole page is
+       what made this hard rather than calm: everything was either the void
+       or the one thing on it. A page is also read further away and on a
+       brighter screen than a phone in the hand, where the same values sit
+       darker and flatter. So the ground stays exactly the app's and the
+       ladder is built upward from it — a wash for whole sections, a surface
+       for the card, a raise for the small things that sit on the card.
+
+       #211C17 is the ceiling, not a preference: above it --dim drops under
+       4.5:1 and the labels stop clearing AA. scratchpad/contrast.js prints
+       the table for any surface you are thinking of. */
+    --ink: #0F0D0B; --wash: #141110; --card: #211C17; --raise: rgba(243,226,198,.055);
+    --rule: rgba(243,226,198,.15);
+    --white: #F3E2C6; --grey: rgba(243,226,198,.62); --dim: rgba(243,226,198,.52);
+    --amber: #E8A23C;
+    /* THE COLOURS BELOW THE RIVER. The hero stays the app's dark, and the
+       page under it opens into colour: one field per section, each a full
+       hue on its own ground, so the scroll reads as a walk through rooms.
+       Saffron for the way it works, paper for the tones, indigo for the
+       apps, teal for the desk, sun for the price, paper for the questions.
+       Text on every field is measured: ink on the warm ones, white on the
+       deep ones, never a mid-tone on a mid-tone. */
+    --paper: #FBF8F2; --ink2: #1B1712; --ink2-soft: rgba(27,23,18,.66); --line: rgba(27,23,18,.12);
+    --saffron: #F4A72C; --saffron-deep: #B8650C;
+    --indigo: #2A2878; --indigo-deep: #17163F;
+    --teal: #167D71; --teal-deep: #0C4F47;
+    --sun: #F7CF4A; --rose: #E4587B; --sky: #DCEBF7; --leaf: #DDF3E3; --butter: #FFF3C2;
+    --serif: 'Newsreader', Georgia, 'Times New Roman', serif;
+    --sans: 'Instrument Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+    --mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  }
+  * { box-sizing: border-box; }
+  /* clip, not hidden: hidden still lets a script scroll the page sideways
+     to reach something that hangs past the edge, and this page hangs light
+     and dust past both. clip cannot be scrolled at all. */
+  html { background: var(--ink); overflow-x: hidden; overflow-x: clip; }
+  body {
+    margin: 0; background: var(--ink); color: var(--white);
+    font-family: var(--sans); font-size: 16px; line-height: 1.65;
+    -webkit-font-smoothing: antialiased; overflow-x: hidden; overflow-x: clip;
+  }
+  a { color: inherit; text-decoration: none; }
+  button { font-family: inherit; }
+  /* THE AMBER IS SACRED. It appears in three places and they are one
+     meaning: the caret while the microphone is open, the button while it is
+     open, and the words just born at the caret. Alive, right now. Nothing
+     that is merely hovered, focused, selected or emphasised gets it —
+     those are done with the pale at full weight, which is the app's rule. */
+  :focus-visible { outline: 2px solid var(--white); outline-offset: 4px; }
+  .wrap { max-width: 1140px; margin: 0 auto; padding: 0 28px; }
+  .eye { font-family: var(--mono); font-size: 11px; letter-spacing: .2em; text-transform: uppercase; }
+
+  /* ---- masthead ------------------------------------------------------- */
+  .mast { position: relative; z-index: 6; display: flex; justify-content: space-between; align-items: center; padding: 26px 0; }
+  .mark { display: inline-flex; align-items: center; }
+  .mark svg { height: 30px; width: auto; display: block; }
+  .mast nav { display: flex; gap: 26px; align-items: center; }
+  .mast nav a { color: var(--grey); font-size: 13.5px; transition: color .18s; }
+  .mast nav a:hover { color: var(--white); }
+  .mast nav a.cta { color: var(--ink); background: var(--white); padding: 9px 18px; border-radius: 999px; font-weight: 500; font-size: 13px; }
+  .mast nav a.cta:hover { opacity: .82; }
+
+  /* ---- the one title ---------------------------------------------------
+     Over the buttons, four words at most, not in the accent. Nothing over
+     the river: the river is the headline.                                 */
+  .get h3 { margin: 0 0 8px; font-family: var(--serif); font-weight: 400; font-size: clamp(24px, 2.6vw, 34px); line-height: 1.05; letter-spacing: -.02em; text-wrap: balance; }
+
+  /* ---- the ribbon ------------------------------------------------------
+     There is no hero above this any more, so this IS the hero. Many in, one
+     out — the shape of the product and the shape of the picture. The button
+     sits on the crossing, because pressing it puts your own voice through
+     the same funnel.
+
+     The height stays 520. It is tempting to grow it now that it is the first
+     thing, and growing it is wrong: the svg is SLICED, so a taller band does
+     not show more of the drawing, it zooms into the middle of it and crops
+     the sides. Tried at 660 — the threads lost their entry points off the
+     left edge and the one line going the other way ran off the right.      */
+  /* A POOL OF LIGHT AT THE CARET.
+     The eye goes to the brightest place before it reads anything, so the
+     brightest place should be where the thing happens. A flat ground gives it
+     nowhere to go and the whole band reads as evenly busy. This is the page's
+     own ink at four per cent — warm light, no new colour — and it is what
+     makes the caret the subject rather than one more mark among a hundred. */
+  .river {
+    /* ONE SCREEN. There is no second viewport: the band, the title and the
+       buttons are the page. So the band gives up height on a short window
+       rather than pushing the buttons below the fold — sliced, a shorter
+       band is cropped top and bottom and the word stays centred, it does not
+       zoom. Floor at 380, which is where the entries start to be lost. */
+    position: relative; margin-top: 22px; margin-bottom: 64px; height: clamp(380px, calc(100vh - 330px), 520px); animation: fade 1.4s .35s both;
+  }
+  /* THE LIGHT IS ALIVE. The pool is its own layer under the threads, and
+     the script breathes it: it swells a little on a slow cycle, brightens
+     for a beat each time a phrase reaches the word, and fills with the
+     voice while the microphone is open. Opacity and transform only, so the
+     compositor moves a painted surface and nothing is rasterised twice.
+
+     NOT AN OVAL. One radial with two stops is an oval painted on the ground,
+     and the eye finds its edge before it finds the word. This is light
+     instead: three sources laid over each other, each falling away on a
+     bell — six stops, most of them near nothing — so there is no radius at
+     which anything ends. A small hot core where the threads die into the
+     first letter, a wide dim halo round it, and a long low streak along
+     the line the threads arrive on. The whole thing leans a couple of
+     degrees with the flow, and the script keeps it centred on the word at
+     every window width, because the light belongs to the word and not to
+     the band. The element is far larger than the band so every fall-off
+     reaches its zero on its own, never against an edge. */
+  /* The light's room. It reaches above the band into the masthead and
+     below it under the title, and stops there: an absolutely placed thing
+     grows the document, and a page that scrolls on past its own footer into
+     the dark is the one thing a light must not do. The clip sits where every
+     fall-off is already at zero, so nothing is cut, only contained. */
+  .light { position: absolute; left: 0; right: 0; top: -90%; bottom: -40%; overflow: hidden; z-index: 0; pointer-events: none; }
+  .pool {
+    position: absolute; left: 0; top: 0; width: 125%; height: 108%; pointer-events: none;
+    background:
+      radial-gradient(21% 17% at 46% 50%,
+        rgba(243,226,198,.088) 0%, rgba(243,226,198,.066) 16%, rgba(243,226,198,.038) 36%,
+        rgba(243,226,198,.016) 56%, rgba(243,226,198,.005) 76%, transparent 100%),
+      radial-gradient(46% 25% at 48% 51%,
+        rgba(243,226,198,.034) 0%, rgba(243,226,198,.024) 22%, rgba(243,226,198,.012) 46%,
+        rgba(243,226,198,.004) 70%, transparent 100%),
+      radial-gradient(64% 9% at 42% 50.5%,
+        rgba(243,226,198,.028) 0%, rgba(243,226,198,.012) 40%, rgba(243,226,198,.003) 72%, transparent 100%);
+    transform-origin: 46% 50%; will-change: transform, opacity; opacity: .8;
+  }
+  /* No bands. Speech runs on the page itself, and the mask dissolves it into
+     the ground at both edges rather than letting the viewport cut it off —
+     so nothing on this page has a visible strip around it. The mask is on the
+     svg, not the container, so the mark drawn over it stays crisp. */
+  /* Fades on all four edges now, not just the sides: the lanes come over the
+     top and up from underneath, and a lane chopped off at the band's edge
+     reads as a rendering fault rather than as speech arriving from off-stage.
+     Two gradients intersected — the sides and the ends. */
+  /* No mask on the svg any more. It existed to dissolve the outgoing line at
+     the edges, and there is no outgoing line — the word must not fade at all.
+     One less compositor mask over a surface that repaints every frame. */
+
+  /* UGLY ON PURPOSE, and set in script rather than here: speech has no
+     typography, so each lane takes whatever face the machine happens to have,
+     at whatever size, with whatever tracking — some of it squeezed until the
+     words run together. Nothing is loaded from a font host, because the point
+     is that these are the defaults nobody chose. */
+
+  /* One line, and every decision on it made on purpose: the optical size the
+     face was cut for, a hair of tracking, and nothing else on the page set
+     like it. That contrast is the whole product in one picture. */
+  .absorb {
+    /* A shade under the regular weight. At this size the thinner stem lets
+       the ground show through the letter, which is how a word set in a fine
+       serif reads as printed rather than painted. */
+    font-family: var(--serif); font-size: 78px; font-weight: 380;
+    font-optical-sizing: auto; letter-spacing: -.022em; fill: var(--white);
+    transition: fill .25s;
+  }
+  /* Both layers of the river sit on top of each other and drift together.
+     will-change keeps them on their own layers, so the drift moves a painted
+     surface instead of asking for it to be painted again. */
+  #tangle, #riverSvg { position: absolute; inset: 0; width: 100%; height: 100%; display: block; will-change: transform; }
+  #tangle { z-index: 1; }
+  #riverSvg { z-index: 2; }
+
+  /* The word arrives last: the field is already flowing when it fades up to
+     meet it, and the rush the script starts with is what it fades up into. */
+  #mark { cursor: pointer; animation: fade 1.5s .7s both; }
+  /* THE SWAP is a pull of focus. The old word goes soft and drifts on with
+     the flow while the new one comes into focus behind it, arriving from
+     the side the threads arrive from. Two texts on the same anchor: a ghost
+     that carries the old word out, and the word itself, which only ever
+     arrives. Nothing types, nothing ticks — one breath, and it has changed.
+     The wrapper carries the slide so the word's own transform stays free
+     for the swell. */
+  #wordwrap { transition: transform .6s cubic-bezier(.2, .8, .2, 1); }
+  #wordwrap.pre { transform: translateX(-18px); transition: none; }
+  .ghost { opacity: 0; pointer-events: none; }
+  .ghost.leave { animation: leave .58s cubic-bezier(.4, 0, .2, 1) both; }
+  @keyframes leave {
+    from { opacity: 1; filter: blur(0); transform: translateX(0); }
+    to   { opacity: 0; filter: blur(7px); transform: translateX(28px); }
+  }
+  #absorb.arrive { animation: arrive .62s cubic-bezier(.2, .8, .2, 1) both; }
+  @keyframes arrive {
+    from { opacity: 0; filter: blur(9px); }
+    to   { opacity: 1; filter: blur(0); }
+  }
+  #mark:focus-visible { outline: 2px solid var(--white); outline-offset: 10px; border-radius: 8px; }
+  /* The word's fill is set per frame in script — it washes with the accent
+     as the waves merge and goes to it outright with the microphone open — so
+     there is no rule for it here. An inline fill beats a class selector, and
+     a rule that can never apply is worse than no rule. */
+
+  /* The control sits under the mark; its position is measured, not guessed,
+     because the svg is sliced and the mark lands somewhere different at
+     every window width. */
+  .speak {
+    /* Above the svg, which is a box the pointer can land on. */
+    position: absolute; z-index: 3; left: 50%; top: 78%; transform: translateX(-50%);
+    display: inline-flex; align-items: center; gap: 9px; height: 46px; padding: 0 22px;
+    border: 0; border-radius: 999px; background: var(--white); color: var(--ink);
+    font-size: 13px; font-weight: 500; cursor: pointer; white-space: nowrap;
+    transition: background .18s, transform .18s; -webkit-tap-highlight-color: transparent;
+  }
+  .speak:hover { opacity: .9; transform: translateX(-50%) translateY(-1px); }
+  .speak[aria-pressed="true"] { background: var(--amber); }
+  .speak svg { width: 16px; height: 16px; }
+  /* With the demo off there is no button at all. A control that does nothing,
+     with a line under it apologising, is worse than no control. */
+  .speak[hidden] { display: none; }
+
+  /* ---- the buttons ------------------------------------------------------- */
+  /* They sit on the price field only. The river needs no words under it. */
+  .dl { display: flex; gap: 10px; flex-wrap: wrap; }
+  /* Filled, not drawn on the void: an outline on a near-black ground is a
+     hole with a line round it, and four of them in a row read as a broken
+     control. A soft raised surface makes them objects you could press. */
+  /* A hairline of light along the top edge is what separates a surface you
+     could press from a shape filled in. It is the same pale at six per
+     cent, and it is the only thing that makes these read as objects. */
+  .dl a { display: inline-flex; align-items: center; height: 52px; padding: 0 26px; border-radius: 999px; background: var(--raise); border: 1px solid rgba(243,226,198,.11); box-shadow: inset 0 1px 0 rgba(243,226,198,.07); color: var(--grey); font-size: 13.5px; transition: background .2s, border-color .2s, color .2s, transform .12s; }
+  .dl a:hover { background: rgba(243,226,198,.1); border-color: rgba(243,226,198,.2); color: var(--white); }
+  .dl a:active { transform: translateY(1px); }
+  /* The pale is the loud colour on a dark ground, the way the app's own
+     figures are lights. Lit from above like the others, so it is a pressed
+     piece of the same material and not a white sticker. */
+  .dl a.primary { background: linear-gradient(180deg, #F8EBD3, var(--white) 55%); border-color: var(--white); box-shadow: inset 0 1px 0 rgba(255,255,255,.55), 0 14px 34px -18px rgba(243,226,198,.35); color: var(--ink); font-weight: 500; }
+  .dl a.primary:hover { opacity: .88; }
+  .dl a.soon { opacity: .4; pointer-events: none; }
+
+  /* ---- the fields -------------------------------------------------------
+     Each section is a field of one colour, edge to edge, and the type on it
+     is set once for all of them: a small mono kicker, a serif title, a
+     sans line under it. What changes from field to field is the colour and
+     the thing shown. */
+  .band { padding: 104px 0; }
+  .band .kick { margin: 0 0 16px; font-family: var(--mono); font-size: 11px; letter-spacing: .22em; text-transform: uppercase; opacity: .72; }
+  .band h2 { margin: 0 0 18px; font-family: var(--serif); font-weight: 400; font-size: clamp(34px, 4.4vw, 60px); line-height: 1.02; letter-spacing: -.025em; text-wrap: balance; max-width: 14em; }
+  .band .lede { margin: 0; max-width: 560px; font-size: clamp(16px, 1.35vw, 19px); line-height: 1.55; text-wrap: pretty; }
+  .band .head { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 24px 64px; align-items: end; margin-bottom: 56px; }
+  .on-saffron { background: var(--saffron); color: var(--ink2); }
+  .on-paper { background: var(--paper); color: var(--ink2); }
+  .on-indigo { background: var(--indigo); color: #fff; }
+  .on-teal { background: var(--teal); color: #fff; }
+  .on-sun { background: var(--sun); color: var(--ink2); }
+  .on-saffron .lede, .on-paper .lede, .on-sun .lede { color: var(--ink2-soft); }
+  .on-indigo .lede, .on-teal .lede { color: rgba(255,255,255,.78); }
+
+  /* THE STEPS. Three, numbered, because they happen in this order. Big
+     numerals in the serif, so the order is the picture. */
+  .steps { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 28px; }
+  .step { border-top: 1.5px solid rgba(27,23,18,.35); padding-top: 22px; }
+  .step .n { font-family: var(--serif); font-size: 56px; line-height: 1; letter-spacing: -.03em; margin: 0 0 18px; }
+  .step h3 { margin: 0; font-family: var(--serif); font-weight: 400; font-size: clamp(22px, 2vw, 28px); line-height: 1.15; letter-spacing: -.015em; text-wrap: balance; }
+  .step p { margin: 0; color: var(--ink2-soft); font-size: 16px; line-height: 1.55; }
+
+  /* THE TONES. One line said, four cards written, each card the colour of
+     its tone: the words and the colour say the same thing. */
+  .said { margin: 0 0 26px; font-family: 'Caveat', 'Kalam', cursive; font-size: clamp(26px, 2.8vw, 36px); line-height: 1.25; color: var(--ink2-soft); }
+  .said::before { content: "you said: "; font-family: var(--mono); font-size: 11px; letter-spacing: .18em; text-transform: uppercase; vertical-align: middle; margin-right: 10px; opacity: .8; }
+  .tonegrid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
+  .tcard { border-radius: 18px; padding: 24px 24px 26px; min-height: 220px; display: flex; flex-direction: column; justify-content: space-between; transition: transform .25s cubic-bezier(.2,.8,.2,1); }
+  .tcard:hover { transform: translateY(-4px); }
+  .tcard .tn { font-family: var(--mono); font-size: 11px; letter-spacing: .2em; text-transform: uppercase; opacity: .8; }
+  .tcard p { margin: 22px 0 0; font-family: var(--serif); font-size: clamp(20px, 1.7vw, 24px); line-height: 1.25; letter-spacing: -.01em; text-wrap: pretty; }
+  .t0 { background: var(--sky); color: var(--ink2); }
+  .t1 { background: var(--rose); color: #fff; }
+  .t2 { background: var(--indigo); color: #fff; }
+  .t3 { background: var(--sun); color: var(--ink2); }
+
+  /* THE APPS. Four text fields as the apps draw them, each carrying a line
+     Tailzu wrote, so the claim "everywhere you type" is four places. */
+  .fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+  .field { border-radius: 18px; padding: 20px 22px; background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.14); }
+  .field .fn { font-family: var(--mono); font-size: 11px; letter-spacing: .2em; text-transform: uppercase; opacity: .72; margin-bottom: 14px; }
+  .bubble { display: inline-block; max-width: 92%; padding: 12px 16px; border-radius: 18px 18px 4px 18px; background: var(--leaf); color: var(--ink2); font-size: 16px; line-height: 1.4; }
+  .mail { background: #fff; color: var(--ink2); border-radius: 10px; padding: 14px 16px; font-size: 16px; line-height: 1.45; }
+  .mail .to { font-family: var(--mono); font-size: 11px; letter-spacing: .12em; color: var(--ink2-soft); margin-bottom: 8px; }
+  .memo { background: var(--butter); color: var(--ink2); border-radius: 10px; padding: 14px 16px; font-size: 16px; line-height: 1.45; font-family: var(--serif); }
+  .search { background: #fff; color: var(--ink2); border-radius: 999px; padding: 12px 18px; font-size: 16px; display: flex; align-items: center; gap: 12px; }
+  .search::before { content: ""; width: 14px; height: 14px; border: 2px solid var(--ink2-soft); border-radius: 50%; box-shadow: 5px 5px 0 -3px var(--ink2-soft); flex: none; }
+
+  /* THE DESK. The chord, drawn: three keys, the ones the tray app binds. */
+  .desk { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 40px 64px; align-items: center; }
+  .chord { justify-self: center; display: flex; align-items: center; gap: 12px; }
+  .chord i { font-style: normal; color: rgba(255,255,255,.6); font-family: var(--mono); font-size: 18px; }
+  .key { width: 104px; height: 104px; border-radius: 20px; background: linear-gradient(180deg, #fff, #E7EEEC); color: var(--teal-deep); box-shadow: 0 14px 0 #B9CCC8, 0 26px 44px -18px rgba(0,0,0,.45); display: grid; place-items: center; text-align: center; font-family: var(--mono); font-size: 11px; letter-spacing: .16em; text-transform: uppercase; transition: transform .12s, box-shadow .12s; cursor: default; }
+  .key:active { transform: translateY(9px); box-shadow: 0 5px 0 #B9CCC8, 0 16px 30px -18px rgba(0,0,0,.45); }
+  .key.wide { width: 168px; }
+  .key b { display: block; font-family: var(--serif); font-weight: 400; font-size: 30px; letter-spacing: 0; text-transform: none; line-height: 1; }
+  .key b.glyph { font-size: 40px; }
+  .chord .cap { margin: 0; }
+
+  /* THE STAGE. A window with something being said above it and the clean
+     line landing inside it, used twice: a chat box for the machines and an
+     editor for the people who talk to them for a living. The pill is the
+     phone's own keyboard bar, in miniature: what it heard, and what it is
+     doing about it. */
+  .on-lilac { background: #E9E3FB; color: var(--ink2); }
+  .on-lilac .lede { color: var(--ink2-soft); }
+  .on-ink { background: var(--ink); color: var(--white); }
+  .on-ink .lede { color: var(--grey); }
+  .stagebox { position: relative; max-width: 860px; margin: 0 auto; padding-top: 26px; }
+  .pill {
+    position: absolute; top: 0; left: 50%; transform: translateX(-50%); z-index: 2; max-width: 92%;
+    display: flex; align-items: center; gap: 12px; padding: 10px 16px; border-radius: 999px;
+    background: var(--ink); color: var(--white); font-family: var(--mono); font-size: 12px; letter-spacing: .02em;
+    box-shadow: 0 18px 40px -16px rgba(0,0,0,.55);
+  }
+  .wave { display: inline-flex; align-items: center; gap: 2px; height: 14px; }
+  .wave i { width: 2px; height: 30%; background: var(--white); border-radius: 1px; animation: bar .9s ease-in-out infinite; }
+  .wave i:nth-child(2) { animation-delay: .15s; } .wave i:nth-child(3) { animation-delay: .3s; } .wave i:nth-child(4) { animation-delay: .45s; }
+  .pill.quiet .wave i { animation: none; height: 30%; }
+  @keyframes bar { 50% { height: 100%; } }
+  .heard { max-width: 460px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--grey); }
+  .heard::before { content: "\201C"; } .heard::after { content: "\201D"; }
+  .state { letter-spacing: .18em; text-transform: uppercase; font-size: 10.5px; color: var(--amber); white-space: nowrap; }
+  .pill.done .state { color: #6EE7A8; }
+  .win { margin-top: 22px; border-radius: 16px; background: #fff; color: var(--ink2); overflow: hidden; box-shadow: 0 30px 70px -30px rgba(0,0,0,.35); border: 1px solid rgba(27,23,18,.08); }
+  .wbar { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-bottom: 1px solid var(--line); font-size: 13px; }
+  .dots { display: inline-flex; gap: 6px; } .dots i { width: 10px; height: 10px; border-radius: 50%; background: rgba(27,23,18,.14); }
+  .wname { font-weight: 500; } .wtag { margin-left: auto; font-family: var(--mono); font-size: 10.5px; letter-spacing: .18em; text-transform: uppercase; color: var(--ink2-soft); }
+  .wbody { padding: 22px 24px; min-height: 190px; font-size: 16px; line-height: 1.65; }
+  .typing { margin: 0; white-space: pre-wrap; text-wrap: pretty; }
+  .typing .hl { background: #FFF1A8; border-radius: 2px; }
+  .car { display: inline-block; width: 2px; height: 1.05em; vertical-align: -.18em; background: currentColor; margin-left: 1px; animation: blink 1s steps(1) infinite; }
+  .car.off { display: none; }
+  @keyframes blink { 50% { opacity: 0; } }
+  .wfoot { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 16px; border-top: 1px solid var(--line); }
+  .tabs { display: flex; gap: 6px; }
+  .tabs button { appearance: none; border: 1px solid var(--line); background: none; color: var(--ink2-soft); border-radius: 999px; padding: 6px 12px; font-family: var(--mono); font-size: 11px; letter-spacing: .12em; text-transform: uppercase; cursor: pointer; transition: color .2s, border-color .2s, background .2s; }
+  .tabs button[aria-selected="true"] { background: var(--ink2); border-color: var(--ink2); color: #fff; }
+  .send { width: 32px; height: 32px; border-radius: 50%; background: var(--ink2); color: #fff; display: grid; place-items: center; font-size: 16px; }
+  /* The editor: the same window, dark, with a gutter. */
+  .win.editor { background: #1C1917; color: var(--white); border-color: rgba(243,226,198,.12); }
+  .win.editor .wbar { border-bottom-color: rgba(243,226,198,.1); }
+  .win.editor .dots i { background: rgba(243,226,198,.16); }
+  .win.editor .wtag { color: var(--dim); }
+  .win.editor .ftab { font-family: var(--mono); font-size: 12px; color: var(--white); background: rgba(243,226,198,.08); padding: 4px 10px; border-radius: 6px; }
+  .win.editor .wbody { display: grid; grid-template-columns: 34px minmax(0, 1fr); gap: 0 14px; font-family: var(--mono); font-size: 14px; line-height: 1.75; padding: 18px 20px; }
+  .win.editor .gut { color: var(--dim); text-align: right; user-select: none; white-space: pre; }
+  .win.editor .typing { color: var(--grey); }
+  .win.editor .typing .hl { background: rgba(232,162,60,.28); }
+  .win.editor .wfoot { border-top-color: rgba(243,226,198,.1); font-family: var(--mono); font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--dim); }
+
+  /* THE PRICE. A title, a line, one button, and the three marks. */
+  .free { position: relative; max-width: 720px; }
+  .free .dl { justify-content: flex-start; margin-top: 28px; }
+  .logos { position: absolute; right: 28px; top: 6px; display: flex; gap: 20px; }
+  .logos svg { width: 26px; height: 26px; fill: var(--ink2); opacity: .82; }
+  .on-sun .dl a.primary { height: 56px; padding: 0 34px; font-size: 15px; }
+  .on-sun .dl a { background: rgba(27,23,18,.08); border-color: rgba(27,23,18,.16); box-shadow: none; color: var(--ink2); }
+  .on-sun .dl a:hover { background: rgba(27,23,18,.14); }
+  .on-sun .dl a.primary { background: var(--ink2); border-color: var(--ink2); color: var(--sun); }
+
+  /* THE QUESTIONS. Real ones, with answers that fit on a card. */
+  .faq { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px 40px; }
+  .qa { border-top: 1px solid var(--line); padding: 22px 0 8px; }
+  .qa h3 { margin: 0 0 8px; font-family: var(--serif); font-weight: 400; font-size: 24px; letter-spacing: -.015em; }
+  .qa p { margin: 0; color: var(--ink2-soft); font-size: 16px; line-height: 1.55; }
+
+  footer { background: var(--ink); color: var(--dim); }
+  footer .in { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px; padding: 34px 0 44px; font-size: 13px; }
+  footer nav { display: flex; gap: 24px; }
+  footer nav a:hover { color: var(--white); }
+
+  /* ---- material -------------------------------------------------------- */
+  /* GRAIN. A dark gradient on a screen is bands of colour, and bands are
+     what cheap looks like. A whisper of noise over the whole page breaks
+     them up and gives the ground the tooth of paper. One tile of the page's
+     own pale, at four per cent, fixed, and nothing under it can feel it. */
+  .grain {
+    position: fixed; inset: 0; z-index: 9; pointer-events: none; opacity: .042;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .95 0 0 0 0 .89 0 0 0 0 .78 0 0 0 .6 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-size: 200px 200px;
+  }
+  /* LIGHT FROM ABOVE. The top of the page is a shade warmer than the bottom,
+     the way a room is lit from one side: it gives the masthead a place to
+     sit and the page a top and a bottom. Three per cent of the pale. */
+  body::before {
+    content: ""; position: fixed; left: 0; right: 0; top: 0; height: 42vh; z-index: 0; pointer-events: none;
+    background: linear-gradient(180deg, rgba(243,226,198,.032), transparent);
+  }
+  .wrap, .river, .get, .band, footer { position: relative; z-index: 1; }
+
+  /* THE MARK IS ALIVE, QUIETLY. The hatched link is the product — one square
+     becoming another — so the hatching travels along it, from the first
+     square to the second, on a loop the eye can only just catch. The dot at
+     the end of the long line breathes. Nothing else on the mark moves. */
+  .mark .link { animation: signal 2.6s linear infinite; }
+  .mark .dot { transform-box: fill-box; transform-origin: center; animation: pip 3.8s ease-in-out infinite; }
+  @keyframes signal { to { stroke-dashoffset: -20; } }
+  @keyframes pip { 50% { transform: scale(1.45); opacity: .72; } }
+
+  /* ---- motion ---------------------------------------------------------- */
+  @keyframes fade { from { opacity: 0; } to { opacity: 1; } }
+  .reveal { opacity: 0; transform: translateY(26px); transition: opacity .9s cubic-bezier(.2,.85,.25,1), transform .9s cubic-bezier(.2,.85,.25,1); }
+  .reveal.in { opacity: 1; transform: none; }
+
+  @media (max-width: 900px) {
+    .river { height: 380px; }
+    .mast nav a:not(.cta) { display: none; }
+    .band .head, .desk { grid-template-columns: minmax(0, 1fr); }
+    .free { padding-top: 46px; }
+    .logos { right: auto; left: 28px; top: 0; }
+    .dl { justify-content: flex-start; }
+    .steps { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+    .tonegrid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .faq { grid-template-columns: minmax(0, 1fr); }
+    .band { padding: 76px 0; }
+  }
+  @media (max-width: 560px) {
+    .river { height: 320px; }
+    .speak span { font-size: 12.5px; }
+    .tonegrid, .fields { grid-template-columns: minmax(0, 1fr); }
+    .key { width: 84px; height: 84px; }
+    .key.wide { width: 130px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation: none !important; transition: none !important; }
+    .reveal { opacity: 1; transform: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header class="mast">
+    <!-- THE MARK, NOT THE NAME. The app icon, redrawn as a few shapes from
+         its own measured geometry so the one-file site stays one file and it
+         is crisp at any size: three squares, the hatched link, the line up
+         to the dot. It is the only place the amber is not about the waves,
+         because it is the only place the amber is the brand's own. -->
+    <a class="mark" href="/" aria-label="Tailzu">
+      <svg viewBox="170 228 680 512" aria-hidden="true">
+        <line x1="346" y1="402" x2="270" y2="598" stroke="#E9CBA2" stroke-width="9" stroke-linecap="round"/>
+        <line class="link" x1="444" y1="394" x2="554" y2="486" stroke="#E8A23C" stroke-width="30" stroke-dasharray="9 11"/>
+        <line x1="668" y1="478" x2="828" y2="243" stroke="#C77A3A" stroke-width="9" stroke-linecap="round"/>
+        <circle class="dot" cx="828" cy="243" r="11" fill="#B06240"/>
+        <rect x="308" y="269" width="132" height="132" rx="28" fill="#F4F1EA"/>
+        <rect x="558" y="478" width="132" height="132" rx="28" fill="#F4F1EA"/>
+        <rect x="178" y="598" width="132" height="132" rx="28" fill="#F4F1EA"/>
+      </svg>
+    </a>
+    <!-- One thing in the header: the download. Privacy and Terms live in
+         the footer, where they are looked for. -->
+    <nav>
+      <a href="/download" class="cta" id="navdl">Download</a>
+    </nav>
+  </header>
+
+</div>
+
+<div class="river" id="river">
+  <!-- The pool of light, under everything, breathed by the script. -->
+  <div class="light" id="light" aria-hidden="true"><div class="pool" id="pool"></div></div>
+  <!-- The tangle is drawn on a canvas, not in the svg. Two dozen moving
+       textPaths cost the page two thirds of its frame rate: changing one
+       offset re-lays its whole string out along its curve, and that is a
+       layout the browser cannot skip. Measured — freezing the offsets alone
+       took it from 23fps back to 59. -->
+  <canvas id="tangle" aria-hidden="true"></canvas>
+
+  <svg id="riverSvg" viewBox="0 0 1440 520" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+    <!-- THE ABSORBER. There is no caret and no second stream: a hundred
+         threads of everybody's mess pour in from off the screen and are
+         swallowed by one word. That is the whole product in one picture and
+         it needs no divider down the middle to say so — the two sides were
+         only ever two because something stood between them.
+         Anchored at the convergence and running right, so it takes the side
+         the outgoing line used to have. The convergence moves with it: the
+         threads have to END where the word starts, or the gap comes back. It is the reading colour, because it
+         is the result and results are settled; it goes amber only while the
+         microphone is open, which is the one moment it is still in play. -->
+    <g id="mark" role="button" tabindex="0" aria-label="Speak">
+      <!-- The word is a story told four words long — heard, meant, written,
+           sent — and the wrapper is what carries each one out with the flow
+           and brings the next in from where the threads come from. -->
+      <g id="wordwrap">
+        <text id="absorbOld" class="absorb ghost" x="762" y="284" dy=".33em" aria-hidden="true"></text>
+        <text id="absorb" class="absorb" x="762" y="284" dy=".33em">Heard.</text>
+      </g>
+    </g>
+  </svg>
+
+  <button class="speak" id="mic" aria-pressed="false">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <rect x="9" y="3" width="6" height="11" rx="3"></rect>
+      <path d="M5 11a7 7 0 0 0 14 0"></path><path d="M12 18v3M9 21h6"></path>
+    </svg>
+    <span id="micLabel">Speak</span>
+  </button>
+</div>
+
+<!-- No words under the river. The river is the headline, and the page
+     opens straight into colour. The buttons live on the price field. -->
+
+<!-- THE FIELDS. Six of them, each one colour, each one thing:
+     how it works, the tones, the apps, the desk, the price, the questions.
+     Every word comes from the backend; these are the fallbacks. -->
+<section class="band on-saffron reveal" id="how">
+  <div class="wrap">
+    <div class="head">
+      <div><p class="kick" id="howKick">How it works</p><h2 id="howTitle">Talk. It writes.</h2></div>
+    </div>
+    <div class="steps" id="steps"></div>
+  </div>
+</section>
+
+<section class="band on-paper reveal" id="tone">
+  <div class="wrap">
+    <div class="head">
+      <div><p class="kick" id="toneKick">Tone</p><h2 id="toneTitle">Same words. Your tone.</h2></div>
+      <p class="lede" id="toneLede">Pick once. Every message wears it.</p>
+    </div>
+    <p class="said" id="toneSaid"></p>
+    <div class="tonegrid" id="toneGrid"></div>
+  </div>
+</section>
+
+<!-- THE MACHINES. Say it rough, and a clean prompt lands in the box of
+     whichever machine you talk to. Three tabs, one line, the same picture
+     the phone shows in its own keyboard bar. -->
+<section class="band on-lilac reveal" id="llm">
+  <div class="wrap">
+    <div class="head">
+      <div><p class="kick" id="llmKick">Prompts</p><h2 id="llmTitle">Talk to the machine.</h2></div>
+      <p class="lede" id="llmLede">Say it rough. A clean prompt lands in the box.</p>
+    </div>
+    <div class="stagebox">
+      <div class="pill" id="llmPill"><span class="wave"><i></i><i></i><i></i><i></i></span><span class="heard" id="llmHeard"></span><span class="state" id="llmState"></span></div>
+      <div class="win">
+        <div class="wbar"><span class="dots"><i></i><i></i><i></i></span><span class="wname" id="llmName">ChatGPT</span><span class="wtag" id="llmTag">New chat</span></div>
+        <div class="wbody"><p class="typing"><span id="llmText"></span><span class="car" id="llmCar"></span></p></div>
+        <div class="wfoot"><span class="tabs" id="llmTabs" role="tablist" aria-label="Which machine"></span><span class="send" aria-hidden="true">↑</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="band on-indigo reveal" id="apps">
+  <div class="wrap">
+    <div class="head">
+      <div><p class="kick" id="appsKick">Everywhere</p><h2 id="appsTitle">It's a keyboard.</h2></div>
+    </div>
+    <div class="fields" id="fields"></div>
+  </div>
+</section>
+
+<section class="band on-teal reveal" id="desk">
+  <div class="wrap">
+    <div class="desk">
+      <div>
+        <p class="kick" id="deskKick">On the desk</p>
+        <h2 id="deskTitle">Touch Ctrl. Take control.</h2>
+        <p class="lede" id="deskLede">Mac and Windows.</p>
+      </div>
+      <!-- The tray app's way in: tap Ctrl twice (or Alt twice). Two keys
+           drawn is the gesture. -->
+      <div class="chord" id="chord" role="img" aria-label="Control, tapped twice"></div>
+    </div>
+  </div>
+</section>
+
+<!-- FOR DEVELOPERS. The same picture as the machines above, in the window
+     a developer lives in: something said, and the change landing where the
+     cursor is, typed clean. -->
+<section class="band on-ink reveal" id="dev">
+  <div class="wrap">
+    <div class="head">
+      <div><p class="kick" id="devKick">For developers</p><h2 id="devTitle">Talk to your editor.</h2></div>
+      <p class="lede" id="devLede">Say the change. It lands where the cursor is.</p>
+    </div>
+    <div class="stagebox">
+      <div class="pill" id="devPill"><span class="wave"><i></i><i></i><i></i><i></i></span><span class="heard" id="devHeard"></span><span class="state" id="devState"></span></div>
+      <div class="win editor">
+        <div class="wbar"><span class="dots"><i></i><i></i><i></i></span><span class="ftab" id="devFile">upload.ts</span><span class="wtag" id="devApp">Cursor</span></div>
+        <div class="wbody"><div class="gut">1
+2
+3
+4
+5</div><p class="typing"><span id="devText"></span><span class="car" id="devCar"></span></p></div>
+        <div class="wfoot"><span id="devFoot">TypeScript</span><span>UTF-8</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="band on-sun reveal" id="free">
+  <div class="wrap">
+    <!-- The three platforms, as their marks, in the field's corner. The one
+         button below goes to whichever of them this visitor is on. -->
+    <div class="logos" aria-label="iPhone, Android, Windows" role="img">
+        <svg viewBox="0 0 24 24"><path d="M12.152 6.896c-.948 0-2.415-1.078-3.96-1.04-2.04.027-3.91 1.183-4.961 3.014-2.117 3.675-.546 9.103 1.519 12.09 1.013 1.454 2.208 3.09 3.792 3.039 1.52-.065 2.09-.987 3.935-.987 1.831 0 2.35.987 3.96.948 1.637-.026 2.676-1.48 3.676-2.948 1.156-1.688 1.636-3.325 1.662-3.415-.039-.013-3.182-1.221-3.22-4.857-.026-3.04 2.48-4.494 2.597-4.559-1.429-2.09-3.623-2.324-4.39-2.376-2-.156-3.675 1.09-4.61 1.09zM15.53 3.83c.843-1.012 1.4-2.427 1.245-3.83-1.207.052-2.662.805-3.532 1.818-.78.896-1.454 2.338-1.273 3.714 1.338.104 2.715-.688 3.559-1.701"/></svg>
+        <svg viewBox="0 0 24 24"><path d="M3.609 1.814L13.792 12 3.61 22.186a.996.996 0 0 1-.61-.92V2.734a1 1 0 0 1 .609-.92zm10.89 10.893l2.302 2.302-10.937 6.333 8.635-8.635zm3.199-3.198l2.807 1.626a1 1 0 0 1 0 1.73l-2.808 1.626L15.206 12l2.492-2.491zM5.864 2.658L16.802 8.99l-2.303 2.303-8.635-8.635z"/></svg>
+        <svg viewBox="0 0 24 24"><path d="M0 3.449L9.75 2.1v9.451H0m10.949-9.602L24 0v11.4H10.949M0 12.6h9.75v9.451L0 20.699M10.949 12.6H24V24l-12.9-1.801"/></svg>
+    </div>
+    <div class="free">
+      <h2 id="freeTitle">Free to start.</h2>
+      <p class="lede" id="freeLede">Upgrade when you need more.</p>
+      <div class="dl" id="dl2"></div>
+    </div>
+  </div>
+</section>
+
+<section class="band on-paper reveal" id="questions">
+  <div class="wrap">
+    <div class="head">
+      <div><p class="kick" id="faqKick">Questions</p><h2 id="faqTitle">Asked, answered.</h2></div>
+    </div>
+    <div class="faq" id="faq"></div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap"><div class="in">
+    <span>© 2026 Tailzu</span>
+    <nav><a href="/privacy">Privacy</a><a href="/terms">Terms</a><a href="/download">Download</a></nav>
+  </div></div>
+</footer>
+
+<div class="grain" aria-hidden="true"></div>
+
+<script>
+(function () {
+  "use strict";
+  var API = document.documentElement.getAttribute("data-api") || "";
+  if (!API && location.protocol === "file:") API = "https://api.tailzu.space";
+  var $ = function (id) { return document.getElementById(id); };
+  var reduced = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  // ---- copy: the backend's, with this as the fallback --------------------
+  var C = {
+    get: "Free to start.",
+    cta: "Speak", ctaHeld: "Stop", writing: "Writing…", again: "Again",
+    micDenied: "Mic blocked.",
+    // The one word the whole field pours into. A word or two, never more:
+    // it has to be read at a glance, at the size of the thing swallowing a
+    // hundred threads.
+    absorb: "Heard.",
+    // The story the word tells, one word at a time, in this order. Each is
+    // two words at most: it has to be read at a glance at the size of a
+    // thing swallowing a hundred threads.
+    absorbs: ["Heard.", "Meant.", "Written.", "Sent."],
+    cases: [
+      { said: "um so like can we push the call to four",          wrote: "Can we push the call to four?" },
+      { said: "the deploy is done but abhi testing baaki hai",    wrote: "The deploy is done, but abhi testing baaki hai." },
+      { said: "हाँ वो फाइल मैंने भेज दी थी कल शाम को",                  wrote: "हाँ, वो फाइल मैंने कल शाम भेज दी थी।" },
+      { said: "நான் இப்போ கிளம்பறேன் கொஞ்சம் லேட் ஆகும்",              wrote: "நான் இப்போ கிளம்பறேன், கொஞ்சம் லேட் ஆகும்." },
+      { said: "trensfer 2500 rupeez to ramesh tomorow",            wrote: "Transfer 2500 rupees to Ramesh tomorrow." },
+      { said: "আমি কাল অফিসে আসব না একটু কাজ আছে",                   wrote: "আমি কাল অফিসে আসব না, একটু কাজ আছে।" },
+      { said: "मी उद्या ऑफिसला येणार नाही जरा काम आहे",                wrote: "मी उद्या ऑफिसला येणार नाही, जरा काम आहे." },
+      { said: "eh o sea puedo llegar como a las siete",            wrote: "Puedo llegar como a las siete." },
+      { said: "నేను రేపు ఆఫీస్ కి రాను కొంచెం పని ఉంది",                  wrote: "నేను రేపు ఆఫీస్‌కి రాను, కొంచెం పని ఉంది." },
+      { said: "ਮੈਂ ਕੱਲ੍ਹ ਨਹੀਂ ਆ ਸਕਦਾ ਥੋੜ੍ਹਾ ਕੰਮ ਹੈ",                       wrote: "ਮੈਂ ਕੱਲ੍ਹ ਨਹੀਂ ਆ ਸਕਦਾ, ਥੋੜ੍ਹਾ ਕੰਮ ਹੈ।" },
+      { said: "હું કાલે ઓફિસે નહીં આવું થોડું કામ છે",                       wrote: "હું કાલે ઓફિસે નહીં આવું, થોડું કામ છે." },
+      { said: "ನಾನು ನಾಳೆ ಆಫೀಸಿಗೆ ಬರಲ್ಲ ಸ್ವಲ್ಪ ಕೆಲಸ ಇದೆ",               wrote: "ನಾನು ನಾಳೆ ಆಫೀಸಿಗೆ ಬರಲ್ಲ, ಸ್ವಲ್ಪ ಕೆಲಸ ಇದೆ." },
+      { said: "ഞാൻ നാളെ ഓഫീസിൽ വരില്ല കുറച്ച് ജോലി ഉണ്ട്",            wrote: "ഞാൻ നാളെ ഓഫീസിൽ വരില്ല, കുറച്ച് ജോലി ഉണ്ട്." },
+      { said: "ମୁଁ କାଲି ଅଫିସ ଆସିବି ନାହିଁ ଟିକେ କାମ ଅଛି",                   wrote: "ମୁଁ କାଲି ଅଫିସ ଆସିବି ନାହିଁ, ଟିକେ କାମ ଅଛି।" },
+      { said: "euh ben je peux arriver vers sept heures je pense", wrote: "Je peux arriver vers sept heures, je pense." },
+      { said: "é tipo assim eu posso chegar por volta das sete",   wrote: "Eu posso chegar por volta das sete." },
+      { said: "ähm also ich komme so gegen sieben glaube ich",     wrote: "Ich komme so gegen sieben, glaube ich." },
+      { said: "eh gimana ya saya bisa datang sekitar jam tujuh",   wrote: "Saya bisa datang sekitar jam tujuh." },
+      { said: "yani sey saat yedi gibi gelebilirim heralde",       wrote: "Yani saat yedi gibi gelebilirim, herhalde." },
+      { said: "ano eto nakaka pagod pero tapos na yung report",    wrote: "Nakakapagod, pero tapos na yung report." },
+      { said: "يعني ممكن نأجل الاجتماع لبكرة الساعة أربعة", wrote: "ممكن نأجل الاجتماع لبكرة الساعة أربعة؟" },
+      { said: "えっと明日の会議ちょっと遅れるかも", wrote: "明日の会議、少し遅れるかもしれません。" },
+      { said: "음 내일 회의 조금 늦을 것 같아요", wrote: "내일 회의에 조금 늦을 것 같아요." },
+      { said: "那个 我明天可能会晚一点到", wrote: "我明天可能会晚一点到。" },
+      { said: "ну короче я завтра приду часам к семи", wrote: "Я завтра приду часам к семи." },
+      { said: "คือว่า พรุ่งนี้ขอไปสายนิดนึงนะ", wrote: "พรุ่งนี้ขอไปสายนิดหนึ่งนะ" },
+      { said: "ờ thì mai mình đến hơi muộn xíu nha", wrote: "Mai mình đến hơi muộn một chút nhé." },
+      { said: "ε λοιπόν θα έρθω κατά τις εφτά νομίζω", wrote: "Θα έρθω κατά τις εφτά, νομίζω." },
+      { said: "אה אני אגיע בערך בשבע נראה לי", wrote: "אני אגיע בערך בשבע, נראה לי." },
+      { said: "yaani naweza kufika saa moja hivi", wrote: "Naweza kufika saa moja hivi." },
+      { said: "یعنی میں کل نہیں آ سکوں گا تھوڑا کام ہے", wrote: "میں کل نہیں آ سکوں گا، تھوڑا کام ہے۔" },
+      { said: "उम म भोलि अफिस आउँदिन अलि काम छ", wrote: "म भोलि अफिस आउँदिनँ, अलि काम छ।" },
+      { said: "cioè tipo posso arrivare verso le sette", wrote: "Posso arrivare verso le sette." },
+      { said: "eh dus ik kan rond zeven uur komen denk ik", wrote: "Ik kan rond zeven uur komen, denk ik." },
+      { said: "no więc mogę być koło siódmej chyba", wrote: "Mogę być koło siódmej, chyba." },
+      { said: "ну коротше я прийду десь о сьомій", wrote: "Я прийду десь о сьомій." },
+      { said: "یعنی فکر کنم حدود ساعت هفت برسم", wrote: "فکر کنم حدود ساعت هفت برسم." },
+      { said: "ඒ කියන්නේ මම හෙට ඔෆිස් එන්නේ නෑ පොඩි වැඩක් තියෙනවා", wrote: "මම හෙට ඔෆිස් එන්නේ නැහැ, පොඩි වැඩක් තියෙනවා." }
+    ],
+    // THE WORDS BELOW THE RIVER. The backend's; these stand in until it
+    // answers. {n} is the free monthly word count the backend reports.
+    how: {
+      kick: "How it works", title: "Talk. It writes.",
+      steps: [
+        { title: "You speak." },
+        { title: "It hears what you mean." },
+        { title: "Written." }
+      ]
+    },
+    tone: {
+      kick: "Tone", title: "Same words. Your tone.",
+      lede: "Pick once. Every message wears it.",
+      said: "hey can u send the file tonight its kinda urgent",
+      tones: [
+        { name: "Neutral", text: "Can you send the file tonight? It's fairly urgent." },
+        { name: "Casual",  text: "Hey, can you send the file tonight? Kinda urgent." },
+        { name: "Formal",  text: "Could you please send the file this evening? It is time-sensitive." },
+        { name: "Excited", text: "Can you send the file tonight? Can't wait to dig in!" }
+      ]
+    },
+    apps: {
+      kick: "Everywhere", title: "It's a keyboard.",
+      fields: [
+        { kind: "message", app: "Message", text: "Can we push the call to four?" },
+        { kind: "mail", app: "Mail", to: "To: Priya", text: "The deploy is done, but abhi testing baaki hai." },
+        { kind: "memo", app: "Notes", text: "Transfer 2500 rupees to Ramesh tomorrow." },
+        { kind: "search", app: "Search", text: "Flights to Goa, Friday evening" }
+      ]
+    },
+    desk: {
+      kick: "On the desk", title: "Touch Ctrl. Take control.",
+      lede: "Mac and Windows.",
+      // The tray app's way in: a double-tap on Ctrl (or Alt). Two keys drawn
+      // is the gesture; `join` is what goes between them, and nothing does.
+      keys: ["Ctrl", "Ctrl"], join: ""
+    },
+    free: {
+      title: "Free to start.",
+      lede: "Upgrade when you need more."
+    },
+    llm: {
+      kick: "Prompts", title: "Talk to the machine.",
+      lede: "Say it rough. A clean prompt lands in the box.",
+      targets: ["ChatGPT", "Claude", "Grok"], tag: "New chat",
+      said: "okay so um help me think through pricing for the team plan like per seat or usage or maybe both and what could go wrong with each",
+      wrote: "Help me think through pricing for the team plan: per seat, usage-based, or a hybrid of the two. For each, give the price point, the target customer and the biggest risk."
+    },
+    dev: {
+      kick: "For developers", title: "Talk to your editor.",
+      lede: "Say the change. It lands where the cursor is.",
+      app: "Cursor", file: "upload.ts", lang: "TypeScript",
+      said: "um add a retry to the upload thing like three attempts with backoff and log every failure",
+      wrote: "// Add a retry to the upload: three attempts with exponential backoff. Log each failure."
+    },
+    faq: {
+      kick: "Questions", title: "Asked, answered.",
+      items: [
+        { q: "Does it work in WhatsApp?", a: "Yes. It's a keyboard. Every app." },
+        { q: "Which languages?", a: "22 Indian. Most of the world's." },
+        { q: "Hinglish?", a: "Native. Two languages stay two." },
+        { q: "Does it change what I said?", a: "It cleans. It never rewrites. Names and amounts stay." },
+        { q: "Can I change the tone?", a: "One tap on the keyboard." },
+        { q: "Is it free?", a: "{n} words a month, free. Then upgrade." },
+        { q: "Why Full Access on iPhone?", a: "It's how a keyboard reaches the internet." },
+        { q: "Offline?", a: "No. It needs a connection to hear you." }
+      ]
+    },
+    download: { get: "Download" },
+    stores: { ios: "https://apps.apple.com/app/id6784811357", android: "https://play.google.com/store/apps/details?id=com.tulmi.app" }
+  };
+  var site = { downloads: {}, demo: false, maxSeconds: 15, perMinute: 6, freeWords: 0 };
+
+  /* =====================================================================
+     THE RIVER
+
+     One path across the page. Everything anybody ever said travels along it
+     from the left, is swallowed at the mark, and leaves to the right as
+     a written sentence. The two halves are the same path with the same
+     motion, clipped either side of the mark — which is why the change
+     appears to happen AT the microphone rather than near it.
+
+     The real microphone sits on that crossing. Press it and your own words
+     take over both halves: the mess you actually said flows in, and your
+     sentence flows out. The page stops arguing and hands the argument over.
+     ================================================================== */
+  var own = null;                 // set once the visitor's own clip has run
+  var rraf = 0, last = 0, svgEl = $("riverSvg");
+  var mx = 0, my = 0, tx = 0, ty = 0;
+
+  /**
+   * Four lanes. Three carry the mess in and one carries the sentence out, and
+   * no two inbound lanes run at the same speed — equal speeds would beat
+   * against each other and read as one repeating pattern rather than three
+   * separate people talking at once.
+   *
+   * `take` is which cases a lane carries: interleaved rather than sliced, so
+   * three scripts are on screen at once instead of three lanes of English
+   * followed by three lanes of Devanagari.
+   */
+  /* ---------------------------------------------------------------------
+     THE TANGLE, on canvas
+
+     Speech does not arrive in lanes, so there are two dozen curves thrown
+     from a fixed seed — the same mess on every load, tunable by one number.
+     Three rules keep a tangle from becoming a bug:
+
+       · the control points step rightward, which makes x monotonic and is
+         the only thing standing between this and upside-down words;
+       · the last control point sits level with the caret, so nothing arrives
+         at an angle and gets rotated where it meets the cursor;
+       · the middle one is thrown anywhere at all, and that is where the
+         crossing and the knotting come from.
+
+     Light and dark is the other half. Most curves sit a shade above the
+     ground and a few come up almost to paper, so the left has depth rather
+     than one even wash of grey.
+
+     WORDS, NOT LETTERS. Each word is placed once, at the angle of the curve
+     under its first letter. Setting a transform per glyph is five times the
+     work for a difference nobody can see on curves this long and this shallow.
+     ------------------------------------------------------------------- */
+  /* Eighty threads, each carrying one sentence rather than a filled ribbon.
+     The cost is linear in words drawn per frame, and a phrase is seven words
+     where a filled curve is forty — which is the trade that buys the count.
+     Measured on one machine, after the transform work: 60 threads 48fps, 78
+     threads 39fps, 96 threads 32fps, 116 threads 28fps. Raising it is one
+     number, and so is the frame rate it costs. */
+  var TANGLE = 104, END = [790, 284], VB = [1440, 520];
+  var cv = $("tangle"), g2 = cv.getContext("2d");
+  /* HANDWRITTEN. Speech is a person, and a person writes by hand — so the
+     mess arrives in handwriting, and only the word that swallows it is
+     set in type. That contrast is the product: hand in, type out.
+     Caveat carries the Latin. Kalam sits behind it for the Devanagari, which
+     Caveat does not have; every other script falls through, glyph by glyph,
+     to whatever the machine has — the canvas does that on its own. One hand
+     at several weights rather than twelve faces: the variety is in the
+     pressure of the pen, not in the font menu. */
+  var FACES = [
+    { w: "400", f: "'Caveat','Kalam',cursive" }, { w: "500", f: "'Caveat','Kalam',cursive" },
+    { w: "600", f: "'Caveat','Kalam',cursive" }, { w: "700", f: "'Caveat','Kalam',cursive" },
+    { w: "400", f: "'Kalam','Caveat',cursive" }, { w: "700", f: "'Kalam','Caveat',cursive" }
+  ];
+
+  /** Fixed seed: scattered, but the same scatter every time. */
+  function seeded(a) {
+    return function () {
+      a |= 0; a = a + 0x6D2B79F5 | 0;
+      var t = Math.imul(a ^ a >>> 15, 1 | a);
+      t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+      return ((t ^ t >>> 14) >>> 0) / 4294967296;
+    };
+  }
+  /* COLOUR IN, ONE WORD OUT. The threads carry the page's own colours —
+     the saffron, rose, sky, teal, sun and lilac of the fields below — and
+     depth still does the rest: a near thread is bright and big and fast, a
+     far one dim and small and slow. A hundred colours of talk pour into a
+     single pale word, which is the whole product in one picture: mess in
+     every colour, one clean sentence out. The pale is kept for the word
+     alone so it stays the calm thing on the screen.
+     VIVID: full-saturation hues, and the far end of the field lifted so
+     even a distant thread is a colour and not a grey. */
+  var HUES = [[246,164,32], [242,74,122], [92,182,246], [36,204,178], [255,210,63], [170,140,255], [255,122,69], [110,232,168]];
+  function shade(b, hue) { return "rgba(" + hue.join(",") + "," + (0.32 + 0.68 * b).toFixed(3) + ")"; }
+
+  /** The curve as a polyline: position and heading at intervals of arc length,
+   *  so a word can be placed by distance without solving the bezier again. */
+  function sample(P) {
+    var pts = [], N = 160, prev = null, s = 0;
+    for (var i = 0; i <= N; i++) {
+      var t = i / N, u = 1 - t;
+      var x = u*u*u*P[0] + 3*u*u*t*P[2] + 3*u*t*t*P[4] + t*t*t*P[6];
+      var y = u*u*u*P[1] + 3*u*u*t*P[3] + 3*u*t*t*P[5] + t*t*t*P[7];
+      if (prev) s += Math.sqrt((x - prev[0]) * (x - prev[0]) + (y - prev[1]) * (y - prev[1]));
+      pts.push({ x: x, y: y, s: s }); prev = [x, y];
+    }
+    for (i = 0; i < pts.length; i++) {
+      var a2 = pts[Math.max(0, i - 1)], b2 = pts[Math.min(pts.length - 1, i + 1)];
+      pts[i].a = Math.atan2(b2.y - a2.y, b2.x - a2.x);
+    }
+    return pts;
+  }
+
+  var LANES = [];
+  (function build() {
+    var r = seeded(20260919);
+    for (var k = 0; k < TANGLE; k++) {
+      // Round-robin across the three edges and evenly along each, with a
+      // jitter on top. Leaving the side to chance clusters them — and it
+      // clusters differently at every count, so the picture changed whenever
+      // the number did.
+      /* THEY COME FROM OFF THE SCREEN, NOT FROM INSIDE IT.
+         Every start is well outside the frame and every thread is already
+         at speed by the time it crosses the edge. Half enter along the left
+         — the band runs the full width, so its left edge IS the edge of the
+         screen — and the quarter over the top and the quarter from beneath
+         are held to the left of the frame, so they come in through the two
+         corners rather than dropping in out of the middle of nowhere. */
+      var m = k % 4, per = Math.ceil(TANGLE / 4), slot = Math.floor(k / 4), sx, sy;
+      // The two left-hand residues are offset half a slot from each other, or
+      // they land in pairs on the same line.
+      var u = (slot + (m === 3 ? 1 : 0.5)) / per + (r() - 0.5) * 0.16;
+      u = Math.max(0, Math.min(1, u));
+      if (m === 1 || m === 3) { sx = -430 - r() * 240; sy = -150 + u * 820; }
+      else if (m === 0)       { sx = -430 + u * 640;   sy = -190 - r() * 150; }
+      else                    { sx = -430 + u * 640;   sy = 710 + r() * 150; }
+
+      /* A CURRENT, NOT A SCATTER.
+         The middle control point used to be thrown anywhere on the page,
+         which gave crossings but also kinks — a thread that set off one way
+         and jerked another. Now each thread leaves its edge along its own
+         bearing to the caret, twisted by up to thirty degrees, with a long
+         first handle. That is what makes an arc instead of a kink: the
+         thread over-swings, then comes round. The second handle points
+         straight back out of the caret, so everything arrives level and
+         nothing is rotated where it meets the cursor. Threads still cross —
+         top meets bottom, and the twist sends neighbours across each other —
+         but they cross the way silk does, not the way string does. */
+      var dx = END[0] - sx, dy = END[1] - sy, dist = Math.sqrt(dx * dx + dy * dy);
+      var bear = Math.atan2(dy, dx) + (r() - 0.5) * 1.05;
+      var h1 = dist * (0.34 + r() * 0.34), h2 = dist * (0.22 + r() * 0.30);
+      // x must step rightward at every control point, or words hang upside
+      // down. A twist that would send the first handle backward is clamped.
+      var p1x = sx + Math.max(0.16, Math.cos(bear)) * h1, p1y = sy + Math.sin(bear) * h1;
+      /* ACROSS THE LETTER, NOT ONTO A POINT. A hundred curves ending on one
+         pixel pile up into a bright knot there, and a knot being erased is
+         what "cheap" looks like. Spread over the height of the first glyph
+         they arrive along its whole stem, and the letter reads as drinking
+         them in rather than as a dot being wiped. */
+      var ey = END[1] + (r() - 0.5) * 48;
+      var p2x = END[0] - h2, p2y = ey + (r() - 0.5) * 6;
+      if (p1x > p2x - 24) p1x = p2x - 24;
+      var P = [sx, sy, p1x, p1y, p2x, p2y, END[0], ey];
+
+      /* DEPTH IS ONE NUMBER.
+         Bright, big and fast are the same thing — near. Dim, small and slow
+         are the same thing — far. Rolled separately they cancelled: a bright
+         thread crawling behind a dim one racing past reads as noise, because
+         the eye is trying to build a space out of it and cannot. Coupled,
+         the field has a front and a back and the threads pass each other the
+         way things do. More of them are far than near, which is also how
+         things are. */
+      // More of the field is near now: a fifth up front, a third in the
+      // middle, the rest behind — vivid, with depth still legible.
+      var b = r(), bright = b > 0.78 ? 0.80 + r() * 0.20
+                          : b > 0.46 ? 0.48 + r() * 0.30
+                                     : 0.22 + r() * 0.24;
+      LANES.push({
+        pts: sample(P),
+        face: FACES[k % FACES.length],
+        bright: bright,             // kept: a near thread's arrival is felt more than a far one's
+        size: 9 + bright * 8,       // a hand is small at its x-height; a shade up from the type
+        fill: shade(bright, HUES[Math.floor(r() * HUES.length)]),
+        track: (r() - 0.5) * 0.3,   // a hand is not squeezed, only a little uneven
+        from: k, gap: 1.10 + r() * 0.55,
+        speed: 40 + bright * 108,
+        // A slow breath, different on every thread, biggest at the far edge
+        // and nothing at all by the caret. The field moves like something
+        // alive instead of like a diagram.
+        amp: 2 + r() * 4, sw: 0.22 + r() * 0.34, ph: r() * 6.2832,
+        words: [], period: 1, off: 0, phase: r()   // spread, or they arrive as one clump
+      });
+    }
+  })();
+
+  /**
+   * ONE PHRASE PER THREAD, NOT A RIBBON.
+   *
+   * Filling every curve end to end is what a river does; a bombardment is
+   * separate things arriving. It is also the whole performance story, because
+   * the cost of this is linear in words drawn per frame and a full curve at
+   * thread weight is forty words where a phrase is seven. Six times fewer
+   * words is six times the threads for the same frame — and six times the
+   * threads is what this is supposed to look like.
+   *
+   * The period is set longer than the curve, so each phrase crosses, leaves,
+   * and there is a beat of nothing before it comes round again.
+   */
+  function lay(L, one, gap) {
+    g2.font = L.face.w + " " + L.size.toFixed(1) + "px " + L.face.f;
+    var space = g2.measureText(" ").width + L.track;
+    var end = L.pts[L.pts.length - 1].s;
+    var parts = one.split(/\s+/).filter(Boolean);
+    // A right-to-left line starts at its right: laid along the thread from
+    // the far end, its last word goes down first, so what arrives at the
+    // word reads the way it is read.
+    if (/[\u0590-\u08FF\uFB1D-\uFDFF\uFE70-\uFEFF]/.test(one)) parts.reverse();
+    L.words = []; var run = 0;
+    for (var i = 0; i < parts.length; i++) {
+      var t = parts[i], w = g2.measureText(t).width + L.track * t.length;
+      // Cumulative width per character, measured once. A word that has to be
+      // broken across a bend is then sliced without measuring anything again.
+      var cum = [0], c = 0;
+      for (var q = 0; q < t.length; q++) {
+        c += g2.measureText(t[q]).width + L.track;
+        cum.push(c);
+      }
+      // Only a simple script can be cut into pieces on a bend. Anything with
+      // combining marks or joining forms — Devanagari, Tamil, Arabic, Thai —
+      // is drawn whole, or the cut lands between a letter and its vowel sign
+      // and the word breaks into dotted circles.
+      L.words.push({ t: t, w: w, at: run, cum: cum, simple: /^[\u0020-\u024F\u0370-\u052F]+$/.test(t) });
+      run += w + space;
+    }
+    L.period = Math.max(run + end * 0.12, end * (gap === undefined ? 1.18 : gap));
+    if (!(L.period > 0)) L.period = 1;
+  }
+
+  function loadRiver() {
+    var n = C.cases.length;
+    LANES.forEach(function (L) {
+      // One sentence each, a different one per thread, so twenty languages
+      // are in the air at once and no two threads read the same thing.
+      lay(L, C.cases[L.from % n].said, L.gap);
+      L.off = L.phase * L.period;
+    });
+    setAbsorb(own ? absorbEl.textContent : words()[wordI % words().length]);
+    // Reduced motion never starts the loop, and a loop that never starts
+    // never paints: the left half was simply blank. One still frame is the
+    // right answer — the picture without the movement, not no picture.
+    if (reduced) paint(0);
+  }
+
+  /** THE WORD, FITTED. The svg is sliced, so how much room there is to the
+   *  right of the anchor depends on the window — and a visitor's own sentence
+   *  replaces the word once they have spoken, at whatever length they spoke.
+   *  Set big, measured, and shrunk only if it would run off. */
+  var absorbEl = $("absorb"), ABX = 762, ABSIZE = 78;
+
+  /* THE GATE is the word's own left edge, measured rather than guessed.
+     Everything on the canvas stops there: the threads merge into the stem of
+     the first letter and nothing is drawn past it. Anchoring this to a number
+     typed by hand put the cut a few units off the glyph at one font size and
+     a dozen off at another, and a thread visible inside the word reads as a
+     mistake rather than as an arrival. */
+  var GATE = 768, FADE = 150;
+  function measureGate() {
+    try {
+      var bb = absorbEl.getBBox();
+      if (bb && bb.width) GATE = bb.x + 1;    // one unit inside the stem
+    } catch (e) { /* not laid out yet; the default stands */ }
+  }
+
+  function setAbsorb(text) {
+    absorbEl.textContent = text;
+    absorbEl.setAttribute("font-size", ABSIZE);
+    var room = (VIS[2] > ABX ? VIS[2] : 1440) - ABX - 40;
+    var w = absorbEl.getComputedTextLength() || 0;
+    if (w > room && room > 0) {
+      absorbEl.setAttribute("font-size", Math.max(20, ABSIZE * room / w).toFixed(1));
+    }
+    measureGate();
+  }
+
+  function ownRiver(said, wrote) {
+    LANES.forEach(function (L) { lay(L, said, L.gap); L.off = 0; });
+    setAbsorb(wrote);            // what it absorbed, in their own words
+    placePool();
+  }
+
+  /* THE STORY, ONE WORD AT A TIME. Heard, meant, written, sent: the word the
+     threads pour into changes every few seconds, in that order, and each
+     new one is born warm and cools, like everything else on this page. The
+     visitor's own sentence ends the story for good — what it actually
+     absorbed beats what it claims to. Driven from the frame loop, so it
+     runs only while the river does: never off screen, never under reduced
+     motion. */
+  var wrapEl = $("wordwrap"), ghostEl = $("absorbOld"), wordI = 0, wordAt = 0, WORD_HOLD = 3400, swapping = false;
+  function words() { return (C.absorbs && C.absorbs.length) ? C.absorbs : [C.absorb]; }
+  function swapWord(now) {
+    var list = words(); if (list.length < 2 || swapping) return;
+    swapping = true; wordAt = now;
+    // The ghost takes the old word, as it is right now, and carries it out.
+    ghostEl.textContent = absorbEl.textContent;
+    ghostEl.setAttribute("font-size", absorbEl.getAttribute("font-size") || ABSIZE);
+    ghostEl.style.fill = absorbEl.style.fill;
+    ghostEl.classList.remove("leave"); void ghostEl.getBBox(); ghostEl.classList.add("leave");
+    // The new one comes into focus behind it, from the left, born as light.
+    wordI = (wordI + 1) % list.length;
+    wrapEl.classList.add("pre");
+    setAbsorb(list[wordI]);
+    placePool();
+    absorbEl.classList.remove("arrive"); void absorbEl.getBBox(); absorbEl.classList.add("arrive");
+    warm = Math.max(warm, 0.9);
+    void wrapEl.getBoundingClientRect();     // the pre position lands before the move
+    wrapEl.classList.remove("pre");
+    setTimeout(function () { swapping = false; }, 620);
+  }
+
+  /** Slice, by hand, so the canvas shares the svg's coordinates exactly and
+   *  the caret lands where the curves end. */
+  var DPR = 1, scale = 1, ox = 0, oy = 0;
+  /* Which part of the viewBox the window is actually showing, in viewBox
+     units. The drawing is SLICED, so this is not the viewBox: at a wide
+     window the sides are cut off and at a tall one the ends are. The edge
+     fades are hung on this rather than on the viewBox, so they always sit
+     exactly at the edge of the screen — a fade at a fixed percentage of the
+     viewBox lands inside the frame at most window sizes, and a thread that
+     fades up inside the frame looks like it started there. */
+  var VIS = [0, 0, VB[0], VB[1]];
+  function sizeCanvas() {
+    var w = cv.clientWidth, h = cv.clientHeight;
+    if (!w || !h) return;
+    DPR = Math.min(2, window.devicePixelRatio || 1);
+    cv.width = Math.round(w * DPR); cv.height = Math.round(h * DPR);
+    scale = Math.max(w / VB[0], h / VB[1]);
+    ox = (w - VB[0] * scale) / 2; oy = (h - VB[1] * scale) / 2;
+    VIS[0] = -ox / scale; VIS[1] = -oy / scale;
+    VIS[2] = VIS[0] + w / scale; VIS[3] = VIS[1] + h / scale;
+  }
+
+  function paint(t) {
+    if (!cv.width) return;
+    t = (t || 0) / 1000;
+    // Identity transform for the clear: cv.width is already in device pixels,
+    // and clearing it under a DPR-scaled transform wipes four times the area.
+    g2.setTransform(1, 0, 0, 1, 0, 0);
+    g2.clearRect(0, 0, cv.width, cv.height);
+    g2.setTransform(DPR * scale, 0, 0, DPR * scale, DPR * ox, DPR * oy);
+    g2.textBaseline = "middle";
+
+    var K = DPR * scale, TX = DPR * ox, TY = DPR * oy;
+
+    /* A word is a straight run of glyphs; the line under it is not. Drawn at
+       one angle, a long word on a tight bend leaves the curve and the joint
+       with the next one reads as a break in the line.
+       So the angle is taken at the word's MIDDLE rather than its start, which
+       halves the error for nothing, and a word whose heading changes by more
+       than about six degrees across its own length is drawn in pieces — only
+       on the bends, which is where the whole cost of fixing this lives.
+       One setTransform replaces save/translate/rotate/restore: four calls to
+       one, and measurably about twice as quick. */
+    for (var i = 0; i < LANES.length; i++) {
+      var L = LANES[i], pts = L.pts, nP = pts.length, end = pts[nP - 1].s;
+      g2.font = L.face.w + " " + L.size.toFixed(1) + "px " + L.face.f;
+      g2.fillStyle = L.fill;
+      var base = -L.period + (L.off % L.period), p = 0, curA = 1;
+      g2.globalAlpha = 1;
+      // The breath: one sine per thread per frame, scaled to nothing by the
+      // caret so the mouth never moves. Folded into the translate, so it
+      // costs a multiply per piece and no extra call.
+      var sway = L.amp * Math.sin(t * L.sw + L.ph) / end;
+
+      for (var copy = 0; copy < 2; copy++) {
+        var shift = base + copy * L.period;
+        for (var j = 0; j < L.words.length; j++) {
+          var W = L.words[j], s0 = shift + W.at;
+          if (s0 + W.w < 0) continue;
+          if (s0 > end) break;
+          while (p < nP - 1 && pts[p].s < s0) p++;
+          while (p > 0 && pts[p].s > s0) p--;
+
+          // How far the heading turns across this word decides the pieces.
+          var q2 = p;
+          while (q2 < nP - 1 && pts[q2].s < s0 + W.w) q2++;
+          var turn = Math.abs(pts[q2].a - pts[p].a);
+          var pieces = W.simple && turn > 0.105 ? Math.min(W.t.length, Math.ceil(turn / 0.105)) : 1;
+          var per = Math.ceil(W.t.length / pieces), h = p;
+
+          for (var c0 = 0; c0 < W.t.length; c0 += per) {
+            var c1 = Math.min(W.t.length, c0 + per);
+            var sA = s0 + W.cum[c0], sM = s0 + (W.cum[c0] + W.cum[c1]) / 2;
+            while (h < nP - 1 && pts[h].s < sM) h++;
+            while (h > 0 && pts[h].s > sM) h--;
+            var am = pts[h].a, g3 = h;
+            /* THE DISSOLVE IS ALONG EACH THREAD, NOT A SHAPE ON THE SCREEN.
+               A piece thins with ITS OWN distance to the gate, eased, so
+               every thread fades out along its own path over the last
+               hundred and fifty units and reaches nothing exactly at the
+               letter. A screen-space ellipse could only ever approximate
+               that, and where it was wrong it was wrong as a visible edge.
+               Taken at the piece's midpoint, so a long piece straddling the
+               gate is not drawn bright because its first letter was. */
+            var dg = (GATE - pts[h].x) / FADE, al = dg >= 1 ? 1 : dg <= 0 ? 0 : dg * dg * (3 - 2 * dg);
+            if (al === 0) continue;
+            if (al !== curA) { g2.globalAlpha = al; curA = al; }
+            while (g3 < nP - 1 && pts[g3].s < sA) g3++;
+            while (g3 > 0 && pts[g3].s > sA) g3--;
+            var qa = pts[g3];
+            var cs = Math.cos(am), sn = Math.sin(am);
+            g2.setTransform(K * cs, K * sn, -K * sn, K * cs, K * qa.x + TX, K * (qa.y + sway * (end - qa.s)) + TY);
+            g2.fillText(W.t.slice(c0, c1), 0, 0);
+          }
+        }
+        p = 0;
+      }
+    }
+    g2.globalAlpha = 1;
+    g2.setTransform(K, 0, 0, K, TX, TY);
+
+    /* The edges are faded HERE rather than by a css mask on the element. A
+       compositor mask over a canvas that is redrawn every frame makes the
+       browser re-rasterise the masked result every frame; doing it with four
+       gradient wipes costs a few fills and nothing else.
+
+       Hung on the VISIBLE rectangle, not the viewBox, and short: just enough
+       that a word is not sliced in half at the boundary, not so much that it
+       fades up inside the frame. A thread should already be at full strength
+       by the time you can see it, or it looks like it began there. */
+    var EL = VIS[0], ET = VIS[1], ER = VIS[2], EB = VIS[3], EW = 44, OV = 600;
+    g2.globalCompositeOperation = "destination-out";
+    var f;
+    f = g2.createLinearGradient(EL, 0, EL + EW, 0);
+    f.addColorStop(0, "#000"); f.addColorStop(1, "rgba(0,0,0,0)");
+    g2.fillStyle = f; g2.fillRect(EL - OV, ET - OV, EW + OV, (EB - ET) + OV * 2);
+    // No right-hand fade any more. It softened the outgoing line, and there
+    // is no outgoing line — everything right of the convergence is erased
+    // outright a few lines below, so this was a gradient drawn every frame
+    // over a region that is already empty.
+    f = g2.createLinearGradient(0, ET, 0, ET + EW);
+    f.addColorStop(0, "#000"); f.addColorStop(1, "rgba(0,0,0,0)");
+    g2.fillStyle = f; g2.fillRect(EL - OV, ET - OV, (ER - EL) + OV * 2, EW + OV);
+    f = g2.createLinearGradient(0, EB - EW, 0, EB);
+    f.addColorStop(0, "rgba(0,0,0,0)"); f.addColorStop(1, "#000");
+    g2.fillStyle = f; g2.fillRect(EL - OV, EB - EW, (ER - EL) + OV * 2, EW + OV);
+    /* The mouth, and the block beyond it, ERASE rather than paint ground.
+       They used to fill with the ground colour, which was the same thing
+       while the ground was flat — and it is not any more. There is a pool of
+       warm light under this band now, and painting flat ink over its right
+       half cut a hard vertical edge straight down the middle of it. Erasing
+       lets the light through, so the threads dissolve into the glow instead
+       of into a patch of paint that happens to match.
+
+       The mouth is centred ON the caret, not short of it. It was 190 units
+       wide and sitting twenty-two to its left, so its solid core began a
+       hundred units early and the threads died before they ever reached the
+       line — which is exactly what it looked like. Tight and centred now.
+
+       The block is there because a word is anchored at its START, so one
+       arriving at the cursor hangs its own width past it, and every tail
+       longer than the mouth's radius came out the far side as a ghost of a
+       left-hand thread on the right, where only the written sentence
+       belongs. The curves all end level at the caret, so a straight edge
+       there cannot cut anything short, and it is buried inside the mouth's
+       solid core so there is no seam. The written line is in the svg above
+       this and is untouched. */
+    /* Smaller and shifted left, because the WORD hides the knot now. The
+       mouth only has to dissolve the last of the threads in the few units
+       before the first glyph, so that they run into it rather than stopping
+       short of it in the dark. Anything wider reopens the gap. */
+    /* Past the gate, nothing. A word is anchored at its start so its tail
+       hangs past the anchor, and by the gate every piece is already at zero
+       alpha — this is a guarantee, not a visible cut. There is no ellipse any
+       more: the dissolve is done per piece, along each thread, above. */
+    g2.fillStyle = "#000";
+    g2.fillRect(GATE, VIS[1] - 300, (VIS[2] - GATE) + 300, (VIS[3] - VIS[1]) + 600);
+    g2.globalCompositeOperation = "source-over";
+  }
+
+  /* ---------------------------------------------------------------------
+     THE WAVES TAKE THE SCROLL FIRST, THEN THE PAGE MOVES
+
+     From the very top, the first few hundred pixels of downward scroll are
+     poured into the flow instead of into the document: you push, the river
+     answers, and only once that budget is spent does the page start to move.
+     After that it is ordinary scrolling and never does it again.
+
+     A budget in pixels rather than a count of flicks, because a trackpad
+     sends thirty small events where a mouse wheel sends three, and counting
+     events made the hold four times longer on one than on the other.
+
+     The guards are what keep it from being hostile: only from the very top,
+     only downward, never on touch — a phone has no wheel to intercept and
+     stealing a swipe is a far worse trade — and never under reduced motion.
+     The whole thing is over in well under a second, and the way out is to
+     keep doing exactly what you were already doing.
+
+     Past that, the coupling is permanent and free: every pixel of scroll,
+     either way, feeds the flow, and it falls back over about half a second
+     once the page is still.                                              */
+  var boost = 1, lastY = window.pageYOffset || 0, held = 460;
+  var coarse = window.matchMedia && window.matchMedia("(pointer: coarse)").matches;
+
+  window.addEventListener("wheel", function (e) {
+    if (reduced || coarse || held <= 0) return;
+    if ((window.pageYOffset || 0) > 4) { held = 0; return; }   // not from the top
+    if (e.deltaY <= 0) return;                                 // never trap a scroll up
+    e.preventDefault();
+    held -= e.deltaY;
+    boost = Math.min(9, boost + e.deltaY * 0.055);
+  }, { passive: false });
+
+  window.addEventListener("scroll", function () {
+    var y = window.pageYOffset || 0, d = Math.abs(y - lastY); lastY = y;
+    if (y > 4) held = 0;        // the page has moved; the hold is spent for good
+    boost = Math.min(9, boost + d * 0.045);
+  }, { passive: true });
+
+  /* ---------------------------------------------------------------------
+     THE CARET
+
+     Everything this product does ends at somebody's cursor, so the cursor is
+     what the speech runs into and what the sentence comes out of. No object
+     standing in for the product — the product's own destination.
+
+     It holds still and blinks while nothing is happening. With the microphone
+     open it stops blinking, turns amber and breathes with the voice, so what
+     grows and shrinks is the thing the words are about to be written at.   */
+  var MID = 284, listening = false, voice = 0, level = 0;
+
+  /* The word swells a little with the voice while the microphone is open —
+     what the caret's height used to do, on the thing that replaced it. Scaled
+     about its own left edge, so it grows into the space it is filling rather
+     than sliding away from the threads arriving at it. */
+  /* AND IT ANSWERS THE FLOW. The word carries a soft wash of the accent
+     while the waves are merging into it, and the wash deepens with how fast
+     they are arriving — so a scroll is visible on the word before the page
+     has moved at all. At rest it is barely tinted; at full rush it is most
+     of the way to the accent; with the microphone open it is the accent
+     outright, because that is the one state that is not about the waves. */
+  /* AND IT DRINKS. Each time a phrase reaches the dissolve, the word warms
+     for a beat — more for a near thread than a far one — and the warmth
+     falls away in under half a second. A hundred threads at their own
+     paces make that a shimmer that never repeats, and it is the flow made
+     visible on the thing the flow is for. `warm` is the page's first
+     breath: the word is born amber and cools to the reading colour over
+     its first seconds, because just-born is the one state the accent is
+     for. */
+  var INK = [243, 226, 198], ACC = [232, 162, 60], tint = 0, glow = 0, warm = 0;
+  function drawAbsorb(live) {
+    voice += ((live ? level : 0) - voice) * 0.22;      // eased, or it judders
+    var k = (1 + voice * 0.07).toFixed(4);
+    absorbEl.setAttribute("transform",
+      "translate(" + ABX + " " + MID + ") scale(" + k + ") translate(" + (-ABX) + " " + (-MID) + ")");
+
+    var want = live ? 1 : 0.1 + glow * 0.22 + Math.min(1, (boost - 1) / 4.2) * 0.55;
+    if (want > 1) want = 1;
+    tint += (want - tint) * 0.16;
+    // Born as light, not as amber: a new word flashes white and cools to
+    // the reading pale. The accent stays for the microphone and for the
+    // wash of arrivals, which are the flow's, not the word's.
+    var c = [0, 1, 2].map(function (i) {
+      var v = INK[i] + (ACC[i] - INK[i]) * tint;
+      return Math.round(v + (255 - v) * warm);
+    });
+    absorbEl.style.fill = "rgb(" + c.join(",") + ")";
+  }
+  drawAbsorb(false);
+
+  /* THE POOL BREATHES. A slow swell nobody could time, a lift for every
+     arrival, and the voice filling it while the microphone is open. Two
+     properties the compositor owns, so this costs the frame nothing. */
+  var pool = $("pool");
+  function breathe(t) {
+    var v = listening ? voice : 0;
+    pool.style.opacity = Math.min(1, 0.72 + glow * 0.38 + v * 0.5).toFixed(3);
+    // Leaning with the flow, and scaled about its own core rather than its
+    // box, so the breath is the light swelling and not a sheet sliding.
+    pool.style.transform = "rotate(-2.5deg) scale(" + (1 + 0.03 * Math.sin(t * 0.42) + glow * 0.05 + v * 0.09).toFixed(4) + ")";
+  }
+  /* The light belongs to the word. Its core sits a little left of the first
+     letter, where the threads die, at whatever place the sliced svg has put
+     the word for this window — so it is measured, like the button, and
+     re-measured whenever the band changes size. */
+  var light = $("light");
+  function placePool() {
+    var pw = pool.offsetWidth, ph = pool.offsetHeight;
+    if (!pw || !scale) return;
+    // The word's place in band pixels, then into the light's own box.
+    var gx = (GATE - VIS[0]) * scale - light.offsetLeft, gy = (MID - VIS[1]) * scale - light.offsetTop;
+    pool.style.left = (gx - pw * 0.46 + 16).toFixed(1) + "px";
+    pool.style.top = (gy - ph * 0.5).toFixed(1) + "px";
+  }
+
+  function river(now) {
+    rraf = requestAnimationFrame(river);
+    if (!last) last = now;
+    var dt = Math.min(64, now - last); last = now;
+    boost += (1 - boost) * Math.min(1, dt / 620);      // falls back to a walk
+    glow *= Math.pow(0.5, dt / 420);                    // half a beat, and it is gone
+    warm *= Math.pow(0.5, dt / 700);                    // the flash of a birth, cooling
+
+    for (var i = 0; i < LANES.length; i++) {
+      var L = LANES[i], was = L.off;
+      L.off = (L.off + L.speed * boost * dt / 1000) % L.period;
+      // The visible phrase's first word sits at L.off along its curve. The
+      // frame it enters the dissolve, the word drinks.
+      var gs = L.pts[L.pts.length - 1].s - FADE;
+      if (was < gs && L.off >= gs) glow = Math.min(1, glow + 0.04 + L.bright * 0.16);
+    }
+    paint(now);
+
+    if (!own && !listening) {
+      // The hold shortens with the rush: a scroll from the top speeds the
+      // threads AND turns the words over faster, down to a floor where a
+      // word can still be read.
+      var hold = Math.max(760, WORD_HOLD / (1 + (boost - 1) * 0.75));
+      if (!wordAt) wordAt = now + 2600;      // the first word gets its entrance first
+      else if (now - wordAt > hold) swapWord(now);
+    }
+    drawAbsorb(listening);
+    breathe(now / 1000);
+    // Both layers drift together, as a CSS transform rather than an attribute
+    // — the browser can move a painted layer without repainting what is on it.
+    tx += (mx - tx) * 0.06; ty += (my - ty) * 0.06;
+    var sc = Math.max(-40, Math.min(40, (window.pageYOffset || 0) * 0.06));
+    var d = "translate(" + tx.toFixed(1) + "px," + (ty - sc).toFixed(1) + "px)";
+    cv.style.transform = d; svgEl.style.transform = d;
+  }
+
+  var riverEl = $("river");
+  riverEl.addEventListener("pointermove", function (e) {
+    var r = riverEl.getBoundingClientRect();
+    mx = ((e.clientX - r.left) / r.width - 0.5) * 34;
+    my = ((e.clientY - r.top) / r.height - 0.5) * 20;
+  });
+  riverEl.addEventListener("pointerleave", function () { mx = 0; my = 0; });
+
+  /* A second ownRiver lived here, left over from the lanes version. Function
+     declarations hoist, so it silently REPLACED the real one above — and it
+     called fill(), which no longer exists, and read L.identity, which no
+     longer exists either. Nothing showed it: it only runs after a visitor
+     records something, which is the one path a page like this never takes
+     while it is being built. */
+
+  // ---- reveals & idling ---------------------------------------------------
+  if (window.IntersectionObserver) {
+    var io = new IntersectionObserver(function (es) {
+      es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); } });
+    }, { threshold: 0.12, rootMargin: "0px 0px -8% 0px" });
+    [].forEach.call(document.querySelectorAll(".reveal"), function (el) { io.observe(el); });
+
+    // The river never stops while it is on screen, so it must stop when it
+    // is not — this is the one thing on the page that costs a phone battery.
+    new IntersectionObserver(function (es) {
+      var on = es[0].isIntersecting;
+      if (on && !rraf && !reduced) { last = 0; rraf = requestAnimationFrame(river); }
+      else if (!on && rraf) { cancelAnimationFrame(rraf); rraf = 0; }
+    }, { threshold: 0 }).observe($("river"));
+  } else {
+    [].forEach.call(document.querySelectorAll(".reveal"), function (el) { el.classList.add("in"); });
+  }
+
+  // ---- downloads ----------------------------------------------------------
+  function os() {
+    var ua = navigator.userAgent;
+    if (/iPhone|iPad|iPod/i.test(ua)) return "ios";
+    if (/Android/i.test(ua)) return "android";
+    if (/Windows/i.test(ua)) return "win";
+    if (/Mac OS X|Macintosh/i.test(ua)) return "mac";
+    if (/Linux/i.test(ua)) return "linux";
+    return "win";
+  }
+  /* ONE BUTTON. A phone goes to its store; a desk gets its installer when
+     one is published, and the download page when it is not. Nothing to
+     choose, because the page already knows. The store links come with the
+     copy, so they can change without a site deploy. */
+  var FILES = { win: "/downloads/Tailzu-Setup.exe", mac: "/downloads/Tailzu.dmg", linux: "/downloads/Tailzu.AppImage" };
+  function target(k) {
+    if (k === "ios" || k === "android") return (C.stores && C.stores[k]) || "/download";
+    return site.downloads[k] ? FILES[k] : "/download";
+  }
+  function paintDownloads() {
+    var href = target(os());
+    var el2 = $("dl2"); el2.innerHTML = "";
+    var a = document.createElement("a");
+    a.href = href; a.className = "primary"; a.textContent = C.download.get || "Download";
+    el2.appendChild(a);
+    $("navdl").href = href;
+  }
+
+  /* The caption under the button is gone, so the button is the only place
+     left to say anything — which is the right number of places. It wears a
+     message for a moment and goes back to being a button. */
+  var sayT = 0;
+  function say(msg) {
+    clearTimeout(sayT);
+    micLabel.textContent = msg;
+    sayT = setTimeout(function () { micLabel.textContent = own ? C.again : C.cta; }, 3200);
+  }
+
+  /* ---------------------------------------------------------------------
+     THE FIELDS
+
+     Every word in them is the backend's (C); the page only lays them out.
+     Text goes in as text, never as markup, so a stray angle bracket in a
+     sentence prints rather than renders. {n} is the free word count the
+     backend reports beside the copy, so the number on the page is the one
+     the server is actually charging. */
+  function el(tag, cls, text) {
+    var e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (text != null) e.textContent = text;
+    return e;
+  }
+  function fill(s) {
+    return String(s)
+      .replace(/\{n\}/g, String(site.freeWords || 800))
+      .replace(/\{maxSeconds\}/g, String(site.maxSeconds || 15))
+      .replace(/\{perMinute\}/g, String(site.perMinute || 6));
+  }
+  function setText(id, s) { var e = $(id); if (e && s != null) e.textContent = fill(s); }
+
+  function paintBelow() {
+    setText("howKick", C.how.kick); setText("howTitle", C.how.title);
+    var steps = $("steps"); steps.innerHTML = "";
+    C.how.steps.forEach(function (s, i) {
+      var d = el("div", "step");
+      d.appendChild(el("p", "n", "0" + (i + 1)));
+      d.appendChild(el("h3", null, s.title));
+      if (s.text) d.appendChild(el("p", null, s.text));
+      steps.appendChild(d);
+    });
+
+    setText("toneKick", C.tone.kick); setText("toneTitle", C.tone.title); setText("toneLede", C.tone.lede);
+    setText("toneSaid", C.tone.said);
+    var tg = $("toneGrid"); tg.innerHTML = "";
+    C.tone.tones.forEach(function (t, i) {
+      var d = el("div", "tcard t" + (i % 4));
+      d.appendChild(el("span", "tn", t.name));
+      d.appendChild(el("p", null, t.text));
+      tg.appendChild(d);
+    });
+
+    setText("appsKick", C.apps.kick); setText("appsTitle", C.apps.title);
+    var fs = $("fields"); fs.innerHTML = "";
+    C.apps.fields.forEach(function (f) {
+      var d = el("div", "field");
+      d.appendChild(el("div", "fn", f.app));
+      if (f.kind === "mail") {
+        var m = el("div", "mail");
+        m.appendChild(el("div", "to", f.to || ""));
+        m.appendChild(el("div", null, f.text));
+        d.appendChild(m);
+      } else {
+        d.appendChild(el("div", f.kind === "message" ? "bubble" : f.kind === "memo" ? "memo" : "search", f.text));
+      }
+      fs.appendChild(d);
+    });
+
+    setText("deskKick", C.desk.kick); setText("deskTitle", C.desk.title); setText("deskLede", C.desk.lede);
+    // The gesture, drawn as keys: a double-tap is the same key twice.
+    var chord = $("chord"); chord.innerHTML = "";
+    C.desk.keys.forEach(function (k, i) {
+      if (i && C.desk.join) chord.appendChild(el("i", null, C.desk.join));
+      var d = el("div", "key" + (k.length > 5 ? " wide" : ""));
+      d.appendChild(el("b", /^[^A-Za-z]$/.test(k) ? "glyph" : null, k));
+      chord.appendChild(d);
+    });
+
+    setText("freeTitle", C.free.title); setText("freeLede", C.free.lede);
+
+    paintStages();
+
+    setText("faqKick", C.faq.kick); setText("faqTitle", C.faq.title);
+    var fq = $("faq"); fq.innerHTML = "";
+    C.faq.items.forEach(function (it) {
+      var d = el("div", "qa");
+      d.appendChild(el("h3", null, it.q));
+      d.appendChild(el("p", null, fill(it.a)));
+      fq.appendChild(d);
+    });
+  }
+
+  /* ---------------------------------------------------------------------
+     THE STAGES
+
+     One driver for both windows. It hears — the said line runs through the
+     pill the way the keyboard's own bar shows a transcript — then writes:
+     the clean line types into the window with its newest words lit, the
+     caret goes out, the pill says Written, and after a breath it goes
+     round again. It runs only while its field is on the screen and stops
+     the moment it is not; under reduced motion it stands at the end. */
+  var STATES = { hear: "Listening", write: "Writing", done: "Written" };
+  function stage(o) {
+    var t = 0, on = false, gen = 0;
+    var pill = $(o.pill), heard = $(o.heard), state = $(o.state), text = $(o.text), car = $(o.car);
+    function lit(full, n) {
+      text.innerHTML = "";
+      var cut = Math.max(0, full.length - n);
+      text.appendChild(document.createTextNode(full.slice(0, cut)));
+      if (n > 0) text.appendChild(el("span", "hl", full.slice(cut)));
+    }
+    function finish() {
+      heard.textContent = o.said(); state.textContent = STATES.done;
+      pill.classList.add("quiet"); pill.classList.add("done");
+      lit(o.wrote(), 0); car.classList.add("off");
+    }
+    function run() {
+      var g = ++gen, said = o.said(), wrote = o.wrote(), i = 0, j = 0;
+      clearTimeout(t);
+      pill.classList.remove("quiet"); pill.classList.remove("done");
+      heard.textContent = ""; state.textContent = STATES.hear; text.innerHTML = ""; car.classList.add("off");
+      (function hear() {
+        if (g !== gen) return;
+        if (i < said.length) {
+          i = Math.min(said.length, i + 1 + (Math.random() < 0.3 ? 1 : 0));
+          heard.textContent = said.slice(0, i);
+          t = setTimeout(hear, 34 + Math.random() * 40); return;
+        }
+        state.textContent = STATES.write; pill.classList.add("quiet"); car.classList.remove("off");
+        t = setTimeout(write, 560);
+      })();
+      function write() {
+        if (g !== gen) return;
+        if (j < wrote.length) {
+          j = Math.min(wrote.length, j + 1);
+          lit(wrote.slice(0, j), Math.min(j, 14));
+          t = setTimeout(write, wrote[j - 1] === " " ? 40 : 18 + Math.random() * 26); return;
+        }
+        lit(wrote, 0); car.classList.add("off");
+        state.textContent = STATES.done; pill.classList.add("done");
+        t = setTimeout(function () { if (g === gen && on) run(); }, 4200);
+      }
+    }
+    if (window.IntersectionObserver) {
+      new IntersectionObserver(function (es) {
+        on = es[0].isIntersecting;
+        if (!on) { clearTimeout(t); gen++; return; }
+        if (reduced) finish(); else run();
+      }, { threshold: 0.3 }).observe($(o.section));
+    } else { finish(); }
+    document.addEventListener("visibilitychange", function () { if (document.hidden) { clearTimeout(t); gen++; } else if (on && !reduced) run(); });
+    return { restart: function () { if (on && !reduced) run(); else finish(); } };
+  }
+
+  var llmI = 0;
+  var llmStage = stage({ section: "llm", pill: "llmPill", heard: "llmHeard", state: "llmState", text: "llmText", car: "llmCar",
+                         said: function () { return C.llm.said; }, wrote: function () { return C.llm.wrote; } });
+  var devStage = stage({ section: "dev", pill: "devPill", heard: "devHeard", state: "devState", text: "devText", car: "devCar",
+                         said: function () { return C.dev.said; }, wrote: function () { return C.dev.wrote; } });
+
+  function paintStages() {
+    setText("llmKick", C.llm.kick); setText("llmTitle", C.llm.title); setText("llmLede", C.llm.lede);
+    var tabs = $("llmTabs"); tabs.innerHTML = "";
+    C.llm.targets.forEach(function (name, i) {
+      var b = el("button", null, name); b.type = "button"; b.setAttribute("role", "tab");
+      b.setAttribute("aria-selected", i === llmI ? "true" : "false");
+      b.addEventListener("click", function () {
+        llmI = i; $("llmName").textContent = name;
+        [].forEach.call(tabs.children, function (x, k) { x.setAttribute("aria-selected", k === i ? "true" : "false"); });
+        llmStage.restart();
+      });
+      tabs.appendChild(b);
+    });
+    $("llmName").textContent = C.llm.targets[llmI] || "";
+    setText("llmTag", C.llm.tag);
+    setText("devKick", C.dev.kick); setText("devTitle", C.dev.title); setText("devLede", C.dev.lede);
+    setText("devFile", C.dev.file); setText("devApp", C.dev.app); setText("devFoot", C.dev.lang);
+  }
+
+  function applyCopy() {
+    $("micLabel").textContent = C.cta;
+    paintDownloads();
+    paintBelow();
+    mic.hidden = !site.demo;
+  }
+
+  // ---- the microphone -----------------------------------------------------
+  var mic = $("mic"), micLabel = $("micLabel");
+  var rec = null, stream_ = null, chunks = [], actx = null, analyser = null, vraf = 0;
+  var startedAt = 0, heard = false, lastLoud = 0, hard = 0, busy = false;
+
+  function pickMime() {
+    var c = ["audio/webm;codecs=opus", "audio/webm", "audio/mp4", "audio/ogg;codecs=opus"];
+    for (var i = 0; i < c.length; i++) if (window.MediaRecorder && MediaRecorder.isTypeSupported(c[i])) return c[i];
+    return "";
+  }
+  function ext(m) { return /mp4/.test(m) ? "m4a" : /ogg/.test(m) ? "ogg" : "webm"; }
+
+  function start() {
+    if (busy) return;
+    navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true } }).then(function (s) {
+      stream_ = s; chunks = [];
+      var m = pickMime();
+      rec = new MediaRecorder(s, m ? { mimeType: m } : undefined);
+      rec.ondataavailable = function (e) { if (e.data && e.data.size) chunks.push(e.data); };
+      rec.onstop = upload;
+      rec.start();
+      startedAt = Date.now(); heard = false; lastLoud = startedAt;
+      mic.setAttribute("aria-pressed", "true"); micLabel.textContent = C.ctaHeld;
+      riverEl.classList.add("on"); listening = true;
+      level(s);
+      hard = setTimeout(stop, site.maxSeconds * 1000);
+    }).catch(function () { say(C.micDenied); });
+  }
+
+  function level(s) {
+    try {
+      actx = new (window.AudioContext || window.webkitAudioContext)();
+      analyser = actx.createAnalyser(); analyser.fftSize = 128;
+      actx.createMediaStreamSource(s).connect(analyser);
+    } catch (e) { return; }
+    var buf = new Uint8Array(analyser.frequencyBinCount);
+    (function tick() {
+      if (!analyser) return;
+      analyser.getByteFrequencyData(buf);
+      // One number, not a bank of them: the caret has a single height, so
+      // the loudness of the whole voice is all there is to read.
+      var sum = 0, n = Math.floor(buf.length / 2);
+      for (var i = 0; i < n; i++) sum += buf[i] / 255;
+      level = Math.min(1, (sum / n) * 3.2);
+      var now = Date.now();
+      if (level > 0.19) { heard = true; lastLoud = now; }
+      // It stops itself when you pause. A pitch is one breath long.
+      if (heard && now - lastLoud > 1400) { stop(); return; }
+      vraf = requestAnimationFrame(tick);
+    })();
+  }
+
+  function stop() {
+    clearTimeout(hard);
+    if (vraf) { cancelAnimationFrame(vraf); vraf = 0; }
+    analyser = null;
+    if (actx) { try { actx.close(); } catch (e) {} actx = null; }
+    mic.setAttribute("aria-pressed", "false");
+    riverEl.classList.remove("on"); listening = false;
+    level = 0;
+    if (rec && rec.state !== "inactive") { busy = true; micLabel.textContent = C.writing; rec.stop(); }
+    else micLabel.textContent = C.cta;
+    if (stream_) { stream_.getTracks().forEach(function (t) { t.stop(); }); stream_ = null; }
+  }
+
+  function done() { busy = false; micLabel.textContent = own ? C.again : C.cta; }
+
+  function upload() {
+    var m = (rec && rec.mimeType) || "audio/webm";
+    var fd = new FormData();
+    fd.append("audio", new Blob(chunks, { type: m }), "clip." + ext(m));
+    fetch(API + "/v1/demo/transcribe", { method: "POST", body: fd }).then(function (r) {
+      // Short, because they are worn by the button now.
+      if (r.status === 413) throw new Error("Too long.");
+      if (r.status === 429) throw new Error("Wait a moment.");
+      if (r.status === 404) throw new Error("Demo is off.");
+      if (!r.ok) throw new Error("Try again.");
+      return r.json();
+    }).then(function (j) {
+      var s = (j.transcript || "").trim(), w = (j.cleanedText || "").trim();
+      if (!s && !w) throw new Error("Nothing heard.");
+      own = true;
+      // Their sentence taking over the river IS the payoff. A line saying so
+      // underneath was the page narrating what it had just done.
+      ownRiver(s, w || s);
+      done();
+    }).catch(function (e) { done(); say(e.message || "Try again."); });
+  }
+
+  function toggle() {
+    if (mic.hidden) return;      // the caret is still clickable when it is
+    if (mic.getAttribute("aria-pressed") === "true") stop(); else start();
+  }
+  mic.addEventListener("click", toggle);
+  // The mark is the control too: it is the thing that looks like it does this.
+  var markEl = $("mark");
+  markEl.addEventListener("click", toggle);
+
+  /**
+   * The button goes under the mark, and where that is has to be measured. The
+   * river's svg is sliced, so the mark lands at a different place and a
+   * different size at every window width — a percentage from the top is right
+   * at one width and wrong at all the others.
+   */
+  function placeControl() {
+    var m = markEl.getBoundingClientRect(), r = riverEl.getBoundingClientRect();
+    if (!m.width || !r.width) return;
+    var cx = m.left + m.width / 2 - r.left;
+    // Clamped, because a wider window scales the sliced svg up and pushes the
+    // mark's foot past the bottom of the band — where the sheet, which is
+    // painted over it, would swallow the button.
+    var y = Math.min(m.bottom - r.top + 30, r.height - 118);
+    mic.style.left = cx + "px"; mic.style.top = y + "px";
+    placePool();
+  }
+  // Measured once is measured too early: the first call can land before the
+  // band has its final box, and then the button sits somewhere the mark is
+  // not. Re-measure whenever the band changes size, which covers the late
+  // layout, the fonts arriving and the window being dragged.
+  if (window.ResizeObserver) new ResizeObserver(placeControl).observe(riverEl);
+  window.addEventListener("load", placeControl);
+  markEl.addEventListener("keydown", function (e) {
+    if (e.key === "Enter" || e.key === " ") { e.preventDefault(); toggle(); }
+  });
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape" && mic.getAttribute("aria-pressed") === "true") stop();
+  });
+
+  // ---- boot ---------------------------------------------------------------
+  applyCopy();
+  function boot() {
+    sizeCanvas();
+    loadRiver();
+    // THE ARRIVAL. The field comes in at a rush and settles to its walk
+    // over the first second and a half, and the word fades up into that
+    // rush already warm. The page opens on something happening, not on a
+    // diagram that then starts.
+    if (!reduced) { boost = 5.5; warm = 1; }
+    if (!reduced && !rraf) { last = 0; rraf = requestAnimationFrame(river); }
+    placeControl();
+    placePool();
+  }
+  // The river measures text along a path, so it must not be laid out before
+  // the face lands or every offset is computed for a fallback and jumps.
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(boot); else window.addEventListener("load", boot);
+
+  var rt = 0;
+  window.addEventListener("resize", function () {
+    clearTimeout(rt);
+    rt = setTimeout(function () { sizeCanvas(); loadRiver(); placeControl(); measureGate(); }, 200);
+  });
+
+  // The hand comes from the font host, and the canvas measures words in
+  // whatever face it has at the time. A phrase laid out in the fallback and
+  // drawn in the real hand has every word in the wrong place, so the river
+  // is laid out again once the hand has arrived.
+  if (document.fonts && document.fonts.load) {
+    Promise.all([document.fonts.load("14px Caveat"), document.fonts.load("14px Kalam")])
+      .then(function () { if (!own) loadRiver(); measureGate(); }, function () {});
+  }
+
+  fetch(API + "/v1/site").then(function (r) { return r.json(); }).then(function (j) {
+    if (j && j.copy) { for (var k in j.copy) if (Object.prototype.hasOwnProperty.call(j.copy, k)) C[k] = j.copy[k]; }
+    if (j) {
+      site.downloads = j.downloads || {};
+      site.demo = !!j.demo;
+      site.maxSeconds = j.maxSeconds || 15;
+      site.perMinute = j.perMinute || 6;
+      site.freeWords = j.freeWords || 0;
+    }
+    applyCopy();
+    if (!own) { sizeCanvas(); loadRiver(); }        // the server may have sent other lines
+  }).catch(function () { /* the fallbacks are already on screen */ });
+})();
+</script>
+</body>
+</html>
