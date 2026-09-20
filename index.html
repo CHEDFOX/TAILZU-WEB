@@ -322,10 +322,18 @@
   .out .k { color: #8FC7F0; }
   .out .v { color: var(--white); }
   .fine { margin: 18px 0 0; font-family: var(--mono); font-size: 11px; letter-spacing: .16em; text-transform: uppercase; color: var(--dim); }
+  .fine .ask { color: var(--white); border-bottom: 1px solid rgba(243,226,198,.35); margin-left: 14px; }
+  .devfacts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; max-width: 900px; margin: 0 0 36px; }
+  .devfacts div { border-top: 1px solid rgba(243,226,198,.18); padding-top: 16px; }
+  .devfacts .k { font-family: var(--mono); font-size: 11px; letter-spacing: .2em; text-transform: uppercase; color: var(--dim); margin: 0 0 8px; }
+  .devfacts p { margin: 0; color: var(--white); font-size: 16px; line-height: 1.5; }
 
-  /* THE PRICE. A title, a line, the buttons. */
-  .free { max-width: 720px; }
+  /* THE PRICE. A title, a line, one button, and the three marks. */
+  .free { position: relative; max-width: 720px; }
   .free .dl { justify-content: flex-start; margin-top: 28px; }
+  .logos { position: absolute; right: 28px; top: 6px; display: flex; gap: 20px; }
+  .logos svg { width: 26px; height: 26px; fill: var(--ink2); opacity: .82; }
+  .on-sun .dl a.primary { height: 56px; padding: 0 34px; font-size: 15px; }
   .on-sun .dl a { background: rgba(27,23,18,.08); border-color: rgba(27,23,18,.16); box-shadow: none; color: var(--ink2); }
   .on-sun .dl a:hover { background: rgba(27,23,18,.14); }
   .on-sun .dl a.primary { background: var(--ink2); border-color: var(--ink2); color: var(--sun); }
@@ -378,8 +386,11 @@
     .river { height: 380px; }
     .mast nav a:not(.cta) { display: none; }
     .band .head, .desk { grid-template-columns: minmax(0, 1fr); }
+    .free { padding-top: 46px; }
+    .logos { right: auto; left: 28px; top: 0; }
     .dl { justify-content: flex-start; }
     .steps { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+    .devfacts { grid-template-columns: minmax(0, 1fr); gap: 14px; }
     .tonegrid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     .faq { grid-template-columns: minmax(0, 1fr); }
     .band { padding: 76px 0; }
@@ -520,17 +531,25 @@
       <div><p class="kick" id="devKick">For developers</p><h2 id="devTitle">Try it from a terminal.</h2></div>
       <p class="lede" id="devLede">One request. Audio in, a sentence out.</p>
     </div>
+    <div class="devfacts" id="devFacts"></div>
     <div class="term" id="term">
       <div class="tbar"><span></span><span></span><span></span><button type="button" id="copyCmd">Copy</button></div>
       <pre class="tbody"><code><span class="prompt">$ </span><span id="cmd"></span><span class="cursor" id="cur"></span>
 <span class="out" id="out"></span></code></pre>
     </div>
-    <p class="fine" id="devNote"></p>
+    <p class="fine"><span id="devNote"></span> <a class="ask" id="devAsk" href="#"></a></p>
   </div>
 </section>
 
 <section class="band on-sun reveal" id="free">
   <div class="wrap">
+    <!-- The three platforms, as their marks, in the field's corner. The one
+         button below goes to whichever of them this visitor is on. -->
+    <div class="logos" aria-label="iPhone, Android, Windows" role="img">
+        <svg viewBox="0 0 24 24"><path d="M12.152 6.896c-.948 0-2.415-1.078-3.96-1.04-2.04.027-3.91 1.183-4.961 3.014-2.117 3.675-.546 9.103 1.519 12.09 1.013 1.454 2.208 3.09 3.792 3.039 1.52-.065 2.09-.987 3.935-.987 1.831 0 2.35.987 3.96.948 1.637-.026 2.676-1.48 3.676-2.948 1.156-1.688 1.636-3.325 1.662-3.415-.039-.013-3.182-1.221-3.22-4.857-.026-3.04 2.48-4.494 2.597-4.559-1.429-2.09-3.623-2.324-4.39-2.376-2-.156-3.675 1.09-4.61 1.09zM15.53 3.83c.843-1.012 1.4-2.427 1.245-3.83-1.207.052-2.662.805-3.532 1.818-.78.896-1.454 2.338-1.273 3.714 1.338.104 2.715-.688 3.559-1.701"/></svg>
+        <svg viewBox="0 0 24 24"><path d="M3.609 1.814L13.792 12 3.61 22.186a.996.996 0 0 1-.61-.92V2.734a1 1 0 0 1 .609-.92zm10.89 10.893l2.302 2.302-10.937 6.333 8.635-8.635zm3.199-3.198l2.807 1.626a1 1 0 0 1 0 1.73l-2.808 1.626L15.206 12l2.492-2.491zM5.864 2.658L16.802 8.99l-2.303 2.303-8.635-8.635z"/></svg>
+        <svg viewBox="0 0 24 24"><path d="M0 3.449L9.75 2.1v9.451H0m10.949-9.602L24 0v11.4H10.949M0 12.6h9.75v9.451L0 20.699M10.949 12.6H24V24l-12.9-1.801"/></svg>
+    </div>
     <div class="free">
       <h2 id="freeTitle">Free to start.</h2>
       <p class="lede" id="freeLede">Upgrade when you need more.</p>
@@ -638,9 +657,15 @@
       lede: "Upgrade when you need more."
     },
     dev: {
-      kick: "For developers", title: "Try it from a terminal.",
-      lede: "One request. Audio in, a sentence out.",
-      note: "No key. {perMinute} a minute. {maxSeconds} seconds each. webm, mp4, ogg."
+      kick: "For developers", title: "Built to be built on.",
+      lede: "Every screen is JSON from the server. The apps are renderers.",
+      facts: [
+        { k: "One endpoint", t: "Audio in. Clean text out. 22 Indian languages." },
+        { k: "Server-driven UI", t: "A screen ships without a release." },
+        { k: "Desktop hook", t: "A tray app. Hotkey, record, paste anywhere." }
+      ],
+      note: "No key. {perMinute} a minute. {maxSeconds} seconds each. webm, mp4, ogg.",
+      ask: "Want a key?", mail: "hello@tailzu.space"
     },
     faq: {
       kick: "Questions", title: "Asked, answered.",
@@ -655,7 +680,8 @@
         { q: "Offline?", a: "No. It needs a connection to hear you." }
       ]
     },
-    download: { win: "Windows", mac: "macOS", linux: "Linux", ios: "iPhone", android: "Android", soon: "soon" }
+    download: { get: "Download" },
+    stores: { ios: "https://apps.apple.com/app/id6784811357", android: "https://play.google.com/store/apps/details?id=com.tulmi.app" }
   };
   var site = { downloads: {}, demo: false, maxSeconds: 15, perMinute: 6, freeWords: 0 };
 
@@ -1280,29 +1306,22 @@
     if (/Linux/i.test(ua)) return "linux";
     return "win";
   }
-  var FILES = { win: "/downloads/Tailzu-Setup.exe", mac: "/downloads/Tailzu.dmg", linux: "/downloads/Tailzu.AppImage", ios: "/download", android: "/download" };
-  function has(k) { return (k === "ios" || k === "android") ? true : !!site.downloads[k]; }
-
-  function button(k, lead) {
-    var ok = has(k);
-    var a = document.createElement("a");
-    a.href = ok ? FILES[k] : "#";
-    a.textContent = (C.download[k] || k) + (ok ? "" : " · " + C.download.soon);
-    a.className = (k === lead ? "primary" : "") + (ok ? "" : " soon");
-    if (!ok) a.setAttribute("aria-disabled", "true");
-    return a;
+  /* ONE BUTTON. A phone goes to its store; a desk gets its installer when
+     one is published, and the download page when it is not. Nothing to
+     choose, because the page already knows. The store links come with the
+     copy, so they can change without a site deploy. */
+  var FILES = { win: "/downloads/Tailzu-Setup.exe", mac: "/downloads/Tailzu.dmg", linux: "/downloads/Tailzu.AppImage" };
+  function target(k) {
+    if (k === "ios" || k === "android") return (C.stores && C.stores[k]) || "/download";
+    return site.downloads[k] ? FILES[k] : "/download";
   }
   function paintDownloads() {
-    var mine = os();
-    var order = [mine].concat(["mac", "win", "ios", "android", "linux"].filter(function (k) { return k !== mine; })).slice(0, 4);
-    // The filled button promises that something downloads. It goes to the
-    // visitor's platform when there is an installer, otherwise to the first
-    // one there is — never to a button that says "soon".
-    var lead = has(mine) ? mine : (order.filter(has)[0] || null);
-    // On the price field: all of them, because choosing is the point there.
-    var el2 = $("dl2");
-    el2.innerHTML = ""; order.forEach(function (k) { el2.appendChild(button(k, lead)); });
-    if (has(mine)) $("navdl").href = FILES[mine];
+    var href = target(os());
+    var el2 = $("dl2"); el2.innerHTML = "";
+    var a = document.createElement("a");
+    a.href = href; a.className = "primary"; a.textContent = C.download.get || "Download";
+    el2.appendChild(a);
+    $("navdl").href = href;
   }
 
   /* The caption under the button is gone, so the button is the only place
@@ -1435,7 +1454,13 @@
     devEl.hidden = !site.demo;
     if (!site.demo) return;
     setText("devKick", C.dev.kick); setText("devTitle", C.dev.title); setText("devLede", C.dev.lede);
+    var df = $("devFacts"); df.innerHTML = "";
+    (C.dev.facts || []).forEach(function (f) {
+      var d = el("div"); d.appendChild(el("p", "k", f.k)); d.appendChild(el("p", null, f.t)); df.appendChild(d);
+    });
     setText("devNote", C.dev.note);
+    var ask = $("devAsk");
+    if (C.dev.mail) { ask.textContent = C.dev.ask; ask.href = "mailto:" + C.dev.mail; ask.hidden = false; } else ask.hidden = true;
     if (reduced || typed) { cmdEl.textContent = devCmd(); curEl.classList.add("off"); devAnswer(); }
   }
   if (window.IntersectionObserver) {
