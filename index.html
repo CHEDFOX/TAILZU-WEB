@@ -463,7 +463,7 @@
   <div class="wrap">
     <div class="getin hair reveal">
       <h1 id="heroTitle">Say it badly. Send it perfectly.</h1>
-      <p class="lede" id="heroLede">Talk the way you talk — half Hindi, half English, ums and all. Tailzu turns it into the sentence you meant, in your tone, in any app.</p>
+      <p class="lede" id="heroLede">Ums, Hinglish, half-thoughts in. Your sentence, out.</p>
       <!-- One button, for this visitor's platform, and one quiet line for the
            rest. Four buttons here read as a control panel; the full set lives
            on the price field, where choosing is the point. -->
@@ -479,7 +479,7 @@
   <div class="wrap">
     <div class="head">
       <div><p class="kick" id="howKick">How it works</p><h2 id="howTitle">Talk. It writes.</h2></div>
-      <p class="lede" id="howLede">No commands, no script. Speak the way you speak and send what you meant.</p>
+      <p class="lede" id="howLede">Three seconds. No script.</p>
     </div>
     <div class="steps" id="steps"></div>
   </div>
@@ -489,7 +489,7 @@
   <div class="wrap">
     <div class="head">
       <div><p class="kick" id="toneKick">Tone</p><h2 id="toneTitle">Same words. Your tone.</h2></div>
-      <p class="lede" id="toneLede">Pick a tone once and every message wears it. Change it in one tap when the room changes.</p>
+      <p class="lede" id="toneLede">Pick once. Every message wears it.</p>
     </div>
     <p class="said" id="toneSaid"></p>
     <div class="tonegrid" id="toneGrid"></div>
@@ -499,8 +499,8 @@
 <section class="band on-indigo reveal" id="apps">
   <div class="wrap">
     <div class="head">
-      <div><p class="kick" id="appsKick">Everywhere</p><h2 id="appsTitle">It's a keyboard. It works everywhere you type.</h2></div>
-      <p class="lede" id="appsLede">WhatsApp, Mail, Slack, Notes, the search bar. Anywhere a keyboard opens, Tailzu opens with it.</p>
+      <div><p class="kick" id="appsKick">Everywhere</p><h2 id="appsTitle">It's a keyboard.</h2></div>
+      <p class="lede" id="appsLede">Every app. Every field. No copy-paste.</p>
     </div>
     <div class="fields" id="fields"></div>
   </div>
@@ -512,7 +512,7 @@
       <div>
         <p class="kick" id="deskKick">On the desk</p>
         <h2 id="deskTitle">Mac and Windows too.</h2>
-        <p class="lede" id="deskLede">Press a key, talk, let go. The words land wherever your cursor is — any app, any window.</p>
+        <p class="lede" id="deskLede">Press a key. Talk. It's typed.</p>
       </div>
       <div class="key" role="img" aria-label="A key"><span><b id="deskKey">F9</b><span id="deskKeyLabel">hold to talk</span></span></div>
     </div>
@@ -528,7 +528,7 @@
       </div>
       <div>
         <h2 id="freeTitle">Free to start.</h2>
-        <p class="lede" id="freeLede">On us, every month. No card. Upgrade when you need more.</p>
+        <p class="lede" id="freeLede">No card. Upgrade when you need more.</p>
         <div class="dl" id="dl2"></div>
       </div>
     </div>
@@ -596,20 +596,20 @@
     // answers. {n} is the free monthly word count the backend reports.
     hero: {
       title: "Say it badly. Send it perfectly.",
-      lede: "Talk the way you talk — half Hindi, half English, ums and all. Tailzu turns it into the sentence you meant, in your tone, in any app."
+      lede: "Ums, Hinglish, half-thoughts in. Your sentence, out."
     },
     how: {
       kick: "How it works", title: "Talk. It writes.",
-      lede: "No commands, no script. Speak the way you speak and send what you meant.",
+      lede: "Three seconds. No script.",
       steps: [
-        { title: "Speak", text: "Tap the mic on your keyboard and just talk. Mid-sentence changes of mind are fine." },
-        { title: "It listens in your language", text: "Twenty-two Indian languages and most of the world's. Mix two in one breath and it keeps both." },
-        { title: "It writes what you meant", text: "Fillers gone. Names and amounts untouched. A misheard word repaired. A sentence you would actually send." }
+        { title: "Speak", text: "Tap the mic. Talk like you do." },
+        { title: "It listens", text: "22 Indian languages. Most of the world's. Mix two." },
+        { title: "It writes", text: "Fillers gone. Facts kept. Send." }
       ]
     },
     tone: {
       kick: "Tone", title: "Same words. Your tone.",
-      lede: "Pick a tone once and every message wears it. Change it in one tap when the room changes.",
+      lede: "Pick once. Every message wears it.",
       said: "hey can u send the file tonight its kinda urgent",
       tones: [
         { name: "Neutral", text: "Can you send the file tonight? It's fairly urgent." },
@@ -619,8 +619,8 @@
       ]
     },
     apps: {
-      kick: "Everywhere", title: "It's a keyboard. It works everywhere you type.",
-      lede: "WhatsApp, Mail, Slack, Notes, the search bar. Anywhere a keyboard opens, Tailzu opens with it.",
+      kick: "Everywhere", title: "It's a keyboard.",
+      lede: "Every app. Every field. No copy-paste.",
       fields: [
         { kind: "message", app: "Message", text: "Can we push the call to four?" },
         { kind: "mail", app: "Mail", to: "To: Priya", text: "The deploy is done, but abhi testing baaki hai." },
@@ -630,21 +630,21 @@
     },
     desk: {
       kick: "On the desk", title: "Mac and Windows too.",
-      lede: "Press a key, talk, let go. The words land wherever your cursor is — any app, any window.",
+      lede: "Press a key. Talk. It's typed.",
       key: "F9", keyLabel: "hold to talk"
     },
     free: {
       kick: "Price", unit: "free words a month", title: "Free to start.",
-      lede: "On us, every month. No card. Upgrade when you need more."
+      lede: "No card. Upgrade when you need more."
     },
     faq: {
       kick: "Questions", title: "Asked, answered.",
       items: [
-        { q: "Does it work in WhatsApp?", a: "Yes. Tailzu is a keyboard, so it works in every app on your phone — WhatsApp, Instagram, Mail, Notes, anything with a text field." },
-        { q: "Which languages?", a: "Twenty-two Indian languages and most of the world's. Mix two in one sentence and it keeps both." },
-        { q: "Does it change what I said?", a: "It cleans, it does not rewrite. Fillers go, facts stay, names and amounts are never touched. A tone changes how it sounds, not what it says." },
-        { q: "Is it free?", a: "Free to start, with {n} words a month. Upgrade when you need more." },
-        { q: "Phone or desk?", a: "Both. iPhone and Android as a keyboard. Mac and Windows as a key you press to talk." }
+        { q: "Does it work in WhatsApp?", a: "Yes. It's a keyboard. Every app." },
+        { q: "Which languages?", a: "22 Indian. Most of the world's. Mix two." },
+        { q: "Does it change what I said?", a: "It cleans. It never rewrites. Names and amounts stay." },
+        { q: "Is it free?", a: "{n} words a month, free. Then upgrade." },
+        { q: "Phone or desk?", a: "Both. A keyboard on the phone. A key on the desk." }
       ]
     },
     download: { win: "Windows", mac: "macOS", linux: "Linux", ios: "iPhone", android: "Android", soon: "soon", also: "Also on", and: "and" }
