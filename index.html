@@ -293,32 +293,40 @@
      frame so the animation has something to leave from. The phone's own
      height is locked once, after the keys are built, so the section does
      not jump when the board shrinks. */
-  .kb { position: relative; flex: none; overflow: hidden; background: #D1D4DA; border-radius: 0 0 30px 30px; transition: height .55s cubic-bezier(.2,.8,.2,1), background .4s; }
-  .kb.small { background: #E9EAEE; }
+  .kb { position: relative; flex: none; overflow: hidden; background: #D1D4DA; border-radius: 0 0 30px 30px; transition: background .5s; }
+  .kb.small { background: #E4E6EB; }
+  .dust { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 2; }
   .rows { padding: 8px 4px 10px; display: grid; gap: 9px; }
-  .krow { display: flex; gap: 5px; padding: 0 2px; }
-  .krow.r2 { padding: 0 6%; }
-  @keyframes cutkey { 30% { transform: translateY(-9px) scale(1.06); opacity: 1; } 100% { transform: translateY(48px) scale(.3) rotate(9deg); opacity: 0; } }
-  .kb.cut .k { animation: cutkey .55s cubic-bezier(.4, 0, .8, .4) forwards; animation-delay: calc(var(--i, 0) * 13ms); }
-  /* What remains after the cut: the mic, alone in the keyboard. */
-  .keyless { position: absolute; inset: 0; display: grid; place-items: center; transform: translateY(40px); opacity: 0; transition: transform .45s cubic-bezier(.2,.8,.2,1) .15s, opacity .3s .15s; }
-  .kb.small .keyless { transform: none; opacity: 1; }
-  /* THE APP'S MIC KEY, exactly: a white circle the size of a key, with
-     the brand mark tinted black inside it — no border, no shadow, no
-     colour change while it listens. All that happens is that the mark
-     itself comes apart into its own pixels, black on the same white. */
-  .kmic { position: relative; overflow: hidden; width: 48px; height: 48px; border-radius: 50%; background: #fff; display: grid; place-items: center; }
-  .kmic .mk { width: 54%; height: 46%; display: block; transition: opacity .16s; }
-  .kmic canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
-  .kmic.burst .mk { opacity: 0; }
+  /* A REAL BOARD'S PROPORTIONS. Ten keys on the top row set the unit; the
+     second row is inset by half a key and half a gap on each side, so its
+     nine keys sit between the ones above; the third row's shift and delete
+     are a third again as wide as a letter, with the letters still on the
+     same grid; the bottom row is a number key, the mic, a space bar of
+     five units and a return of one and three fifths. */
+  .krow { display: flex; gap: 5px; padding: 0 3px; }
+  .krow.r2 { padding: 0 5.1%; }
+  .krow.r3 .k.wide:first-child { margin-right: 5px; }
+  .krow.r3 .k.wide:last-child { margin-left: 5px; }
+  /* THE KEYS GO, THE MIC STAYS. Each key blurs and lifts and comes apart
+     into its own dust, in a wave from the first to the last; the mic is
+     not one of them and does not move. */
+  @keyframes todust {
+    30%  { transform: translateY(-5px) scale(1.04); filter: blur(0); opacity: 1; }
+    100% { transform: translateY(-14px) scale(1.14); filter: blur(7px); opacity: 0; }
+  }
+  .kb.cut .k:not(.mic) { animation: todust .5s cubic-bezier(.4, 0, .7, .5) forwards; animation-delay: calc(var(--i, 0) * 11ms); }
+  .kb.small .k:not(.mic) { opacity: 0; filter: blur(7px); pointer-events: none; }
   .k { position: relative; flex: 1 1 0; min-width: 0; height: 42px; border-radius: 6px; background: #fff; box-shadow: 0 1px 0 #898A8D; display: grid; place-items: center; font-family: var(--sans); font-size: 17px; color: #000; transition: transform .08s, background .08s; }
-  .k.wide { flex: 1.5 1 0; background: #ABB0BA; font-size: 12px; }
+  .k.wide { flex: 1.34 1 0; background: #ABB0BA; font-size: 12px; }
   .k.space { flex: 5 1 0; font-size: 12px; color: #444; }
+  .k.ret { flex: 1.6 1 0; }
+  .k.num { flex: 1.3 1 0; }
   /* THE APP'S MIC KEY, in the row where the app puts it: a white circle
      the height of a key, the mark tinted black inside it, no border and no
      shadow. Pressed, the mark comes apart into its own pixels — the same
      dispersion, on the same white — and nothing else about it changes. */
-  .k.mic { flex: 0 0 42px; height: 42px; border-radius: 50%; background: #fff; overflow: hidden; box-shadow: none; }
+  .k.mic { flex: 0 0 42px; height: 42px; border-radius: 50%; background: #fff; overflow: hidden; box-shadow: none; transition: transform .3s; z-index: 3; }
+  .k.mic.live { transform: scale(1.08); }
   .k.mic .mk { width: 54%; height: 46%; display: block; transition: opacity .16s; }
   .k.mic canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
   .k.mic.burst .mk { opacity: 0; }
@@ -485,6 +493,7 @@
   @media (max-width: 560px) {
     .rtop { letter-spacing: .16em; font-size: 10px; }
     .k.mic { flex: 0 0 38px; height: 38px; }
+    .krow.r2 { padding: 0 5.3%; }
     .speak span { font-size: 12.5px; }
     .tonegrid { grid-template-columns: minmax(0, 1fr); }
     .k { height: 38px; font-size: 15px; }
@@ -541,20 +550,7 @@
         </div>
         <div class="kb" id="kb">
           <div class="rows" id="kbRows"></div>
-          <!-- What is left when the keys are cut: the mic. -->
-          <div class="keyless" id="keyless"><span class="kmic" id="kmic">
-            <!-- The mark, tinted black, the way the app's key carries it. -->
-            <svg class="mk" viewBox="170 228 680 512" aria-hidden="true">
-              <line x1="346" y1="402" x2="270" y2="598" stroke="#000" stroke-width="9" stroke-linecap="round"/>
-              <line x1="444" y1="394" x2="554" y2="486" stroke="#000" stroke-width="30" stroke-dasharray="9 11"/>
-              <line x1="668" y1="478" x2="828" y2="243" stroke="#000" stroke-width="9" stroke-linecap="round"/>
-              <circle cx="828" cy="243" r="11" fill="#000"/>
-              <rect x="308" y="269" width="132" height="132" rx="28" fill="#000"/>
-              <rect x="558" y="478" width="132" height="132" rx="28" fill="#000"/>
-              <rect x="178" y="598" width="132" height="132" rx="28" fill="#000"/>
-            </svg>
-            <canvas id="micDots" aria-hidden="true"></canvas>
-          </span>          </div>
+          <canvas class="dust" id="kbDust" aria-hidden="true"></canvas>
         </div>
       </div>
     </div>
@@ -594,26 +590,6 @@
 <!-- THE MACHINES. Say it rough, and a clean prompt lands in the box of
      whichever machine you talk to. Three tabs, one line, the same picture
      the phone shows in its own keyboard bar. -->
-<section class="band on-lilac reveal" data-tone="light" id="llm">
-  <canvas class="current" data-shade="ink" aria-hidden="true"></canvas>
-  <div class="wrap">
-    <div class="head">
-      <div><h2 id="llmTitle">Talk to the machine.</h2></div>
-      <p class="lede" id="llmLede">Say it rough. A clean prompt lands in the box.</p>
-    </div>
-    <div class="stagebox">
-      <div class="pill" id="llmPill"><span class="wave"><i></i><i></i><i></i><i></i></span><span class="heard" id="llmHeard"></span><span class="state" id="llmState"></span></div>
-      <div class="win">
-        <div class="wbar"><span class="dots"><i></i><i></i><i></i></span><span class="wname" id="llmName">ChatGPT</span><span class="wtag" id="llmTag">New chat</span></div>
-        <div class="wbody"><p class="typing"><span id="llmText"></span><span class="car" id="llmCar"></span></p></div>
-        <div class="wfoot"><span class="tabs" id="llmTabs" role="tablist" aria-label="Which machine"></span><span class="send" aria-hidden="true">↑</span></div>
-      </div>
-    </div>
-    <p class="getrow"><a class="get-it" data-dl href="/download">Download</a></p>
-  </div>
-</section>
-
-
 <section class="band on-indigo reveal" data-tone="dark" id="desk">
   <canvas class="current" data-shade="pale" aria-hidden="true"></canvas>
   <div class="wrap">
@@ -630,9 +606,7 @@
   </div>
 </section>
 
-<!-- FOR DEVELOPERS. The same picture as the machines above, in the window
-     a developer lives in: something said, and the change landing where the
-     cursor is, typed clean. -->
+
 <section class="band on-ink reveal" data-tone="dark" id="dev">
   <canvas class="current" data-shade="pale" aria-hidden="true"></canvas>
   <div class="wrap">
@@ -656,12 +630,33 @@
   </div>
 </section>
 
+<!-- FOR DEVELOPERS. The same picture as the machines above, in the window
+     a developer lives in: something said, and the change landing where the
+     cursor is, typed clean. -->
+<section class="band on-lilac reveal" data-tone="light" id="llm">
+  <canvas class="current" data-shade="ink" aria-hidden="true"></canvas>
+  <div class="wrap">
+    <div class="head">
+      <div><h2 id="llmTitle">Talk to the machine.</h2></div>
+      <p class="lede" id="llmLede">Say it rough. A clean prompt lands in the box.</p>
+    </div>
+    <div class="stagebox">
+      <div class="pill" id="llmPill"><span class="wave"><i></i><i></i><i></i><i></i></span><span class="heard" id="llmHeard"></span><span class="state" id="llmState"></span></div>
+      <div class="win">
+        <div class="wbar"><span class="dots"><i></i><i></i><i></i></span><span class="wname" id="llmName">ChatGPT</span><span class="wtag" id="llmTag">New chat</span></div>
+        <div class="wbody"><p class="typing"><span id="llmText"></span><span class="car" id="llmCar"></span></p></div>
+        <div class="wfoot"><span class="tabs" id="llmTabs" role="tablist" aria-label="Which machine"></span><span class="send" aria-hidden="true">↑</span></div>
+      </div>
+    </div>
+    <p class="getrow"><a class="get-it" data-dl href="/download">Download</a></p>
+  </div>
+</section>
+
 <section class="band on-sun reveal" data-tone="light" id="free">
   <canvas class="current" data-shade="ink" aria-hidden="true"></canvas>
   <div class="wrap">
     <div class="free">
       <h2 id="freeTitle">Free to start.</h2>
-      <p class="lede" id="freeLede">Upgrade when you need more.</p>
       <div class="dl" id="dl2"></div>
     </div>
   </div>
@@ -821,8 +816,7 @@
       keys: ["Ctrl", "Ctrl"], join: ""
     },
     free: {
-      title: "Free to start.",
-      lede: "Upgrade when you need more."
+      title: "Free to start."
     },
     llm: {
       title: "Talk to the machine.",
@@ -1298,7 +1292,7 @@
       chord.appendChild(d);
     });
 
-    setText("freeTitle", C.free.title); setText("freeLede", C.free.lede);
+    setText("freeTitle", C.free.title);
 
     paintStages();
 
@@ -1636,7 +1630,7 @@
      slow way and the fast way, side by side, in one picture. Then the next
      app. It runs only while it can be seen.
      ================================================================== */
-  var kbEl = $("kb"), rowsEl = $("kbRows"), keyless = $("keyless"), kbField = $("kbField"), kbApp = $("kbApp"), keyOf = {}, micKey = null, rowDots = null, keyN = 0;
+  var kbEl = $("kb"), rowsEl = $("kbRows"), kbField = $("kbField"), kbApp = $("kbApp"), keyOf = {}, micKey = null, rowDots = null, keyN = 0;
   var appI = 0, kgen = 0, ktm = 0, keysOn = false;
   /* The other forms a held letter offers, as the keyboard's own tray does. */
   var TRAYS = { a: "a à á â ä ã å", e: "e è é ê ë", i: "i ì í î ï", o: "o ò ó ô ö õ", u: "u ù ú û ü", c: "c ç ć", n: "n ñ ń", s: "s ß ś š", y: "y ÿ", z: "z ž ź", l: "l ł", d: "d đ", h: "h ħ" };
@@ -1658,30 +1652,70 @@
       rowsEl.appendChild(r);
     });
     var r4 = el("div", "krow r4");
-    r4.appendChild(el("div", "k wide", "123"));
+    r4.appendChild(el("div", "k wide num", "123"));
     micKey = el("div", "k mic");
     micKey.innerHTML = '<svg class="mk" viewBox="170 228 680 512" aria-hidden="true"><line x1="346" y1="402" x2="270" y2="598" stroke="#000" stroke-width="9" stroke-linecap="round"/><line x1="444" y1="394" x2="554" y2="486" stroke="#000" stroke-width="30" stroke-dasharray="9 11"/><line x1="668" y1="478" x2="828" y2="243" stroke="#000" stroke-width="9" stroke-linecap="round"/><circle cx="828" cy="243" r="11" fill="#000"/><rect x="308" y="269" width="132" height="132" rx="28" fill="#000"/><rect x="558" y="478" width="132" height="132" rx="28" fill="#000"/><rect x="178" y="598" width="132" height="132" rx="28" fill="#000"/></svg><canvas></canvas>';
     r4.appendChild(micKey);
     rowDots = MicDots(micKey.querySelector("canvas"), micKey, { dot: "#000", inset: 11 });
     var sp = el("div", "k space", "space"); keyOf[" "] = sp; r4.appendChild(sp);
-    r4.appendChild(el("div", "k wide", "return"));
+    r4.appendChild(el("div", "k wide ret", "return"));
     rowsEl.appendChild(r4);
     // Each key's place in the wave of the cut, first to last.
     [].forEach.call(rowsEl.querySelectorAll(".k"), function (k, i) { k.style.setProperty("--i", i); });
-    measurePhone();
   }
-  /* The board at rest is as tall as its rows; the phone is locked to the
-     height it has with them, so the shrink moves the board and nothing
-     else. Re-measured if the phone's width changes. */
-  var kbTall = 0, KB_SMALL = 98, phoneEl = document.querySelector(".phone");
-  function measurePhone() {
-    if (!rowsEl.children.length) return;
-    kbEl.style.height = ""; phoneEl.style.height = "";
-    kbTall = kbEl.offsetHeight;
-    if (kbTall) phoneEl.style.height = phoneEl.offsetHeight + "px";
-    if (kbEl.classList.contains("small")) kbEl.style.height = KB_SMALL + "px";
+  /* The board never changes size any more — the keys go, the board and
+     the mic stay — so the phone needs no locked height. What it does need
+     is the dust: a canvas over the rows that every key is thrown into as
+     it blurs away, so the keys come apart rather than merely fading.
+     Sixteen specks per key, from anywhere inside it, drifting up and out
+     and gone in about three quarters of a second. */
+  var dustEl = $("kbDust"), dustRaf = 0, motes = [];
+  function keysToDust() {
+    if (reduced || !dustEl) return;
+    var box = kbEl.getBoundingClientRect(), dpr = Math.min(2, window.devicePixelRatio || 1);
+    dustEl.width = Math.round(box.width * dpr); dustEl.height = Math.round(box.height * dpr);
+    var g = dustEl.getContext("2d");
+    motes = [];
+    [].forEach.call(rowsEl.querySelectorAll(".k:not(.mic)"), function (k, idx) {
+      var r = k.getBoundingClientRect(), wide = k.classList.contains("wide") || k.classList.contains("space");
+      var at = (+k.style.getPropertyValue("--i") || idx) * 11;
+      for (var q = 0; q < (wide ? 26 : 16); q++) {
+        motes.push({
+          x: r.left - box.left + Math.random() * r.width,
+          y: r.top - box.top + Math.random() * r.height,
+          vx: (Math.random() - 0.5) * 26, vy: -14 - Math.random() * 38,
+          r: 0.6 + Math.random() * 1.1, born: at, life: 620 + Math.random() * 260, age: -at
+        });
+      }
+    });
+    if (dustRaf) cancelAnimationFrame(dustRaf);
+    var last = 0;
+    (function tick(now) {
+      dustRaf = requestAnimationFrame(tick);
+      if (!last) last = now;
+      var dt = Math.min(48, now - last); last = now;
+      g.setTransform(dpr, 0, 0, dpr, 0, 0);
+      g.clearRect(0, 0, box.width, box.height);
+      var alive = 0;
+      for (var i = 0; i < motes.length; i++) {
+        var m = motes[i]; m.age += dt;
+        if (m.age <= 0) { alive++; continue; }
+        if (m.age > m.life) continue;
+        alive++;
+        m.x += m.vx * dt / 1000; m.y += m.vy * dt / 1000; m.vy += 26 * dt / 1000;
+        var k = 1 - m.age / m.life;
+        g.globalAlpha = k * k;
+        g.fillStyle = "#fff";
+        g.beginPath(); g.arc(m.x, m.y, m.r, 0, 6.2832); g.fill();
+      }
+      g.globalAlpha = 1;
+      if (!alive) { cancelAnimationFrame(dustRaf); dustRaf = 0; g.clearRect(0, 0, box.width, box.height); }
+    })(performance.now());
   }
-  if (window.ResizeObserver && phoneEl) new ResizeObserver(function () { if (!kbEl.classList.contains("small")) measurePhone(); }).observe(phoneEl);
+  function dustClear() {
+    if (dustRaf) { cancelAnimationFrame(dustRaf); dustRaf = 0; }
+    if (dustEl && dustEl.width) dustEl.getContext("2d").clearRect(0, 0, dustEl.width, dustEl.height);
+  }
   /** The open app's field, as that app draws it, with a place for the text. */
   function fieldFor(f) {
     kbField.innerHTML = "";
@@ -1709,14 +1743,15 @@
     var apps = C.apps.fields, f = apps[appI % apps.length], text = said || f.text;
     liveText(kbApp, said ? (C.hero.said || "Said") : f.app);
     // The keys are back, and the title reads as printed.
-    kbEl.classList.remove("small"); kbEl.classList.remove("cut"); keyless.classList.remove("live");
-    kbEl.style.height = "";
+    kbEl.classList.remove("small"); kbEl.classList.remove("cut");
+    if (micKey) micKey.classList.remove("live");
+    dustClear();
     var kw = $("kw"); if (kw) kw.classList.remove("cut");
     var slot = fieldFor(f);
     cTyped.reset(); cSaid.reset();
 
     if (reduced) {
-      kbEl.classList.add("small"); kbEl.style.height = KB_SMALL + "px";
+      kbEl.classList.add("small");
       if (kw) kw.classList.add("cut");
       liveText(slot.t, text); slot.c.classList.add("off");
       cTyped.still(true, text.length + 2, text.length * 0.16);
@@ -1756,22 +1791,20 @@
       klater(gap, press);
     })();
 
-    /* THE CUT. The mic key is pressed, its mark comes apart, the keys fall
-       away in a wave and take the typed line with them, the title is
-       corrected, and the board shrinks to what is left. */
+    /* THE CUT. The keys blur, lift and come apart into their own dust,
+       taking the typed line with them; the title is corrected; and the
+       board is the same board with one key left in it, exactly where it
+       always was. The mic does not move and does not animate here — it has
+       one animation, and it belongs to the moment it is listening. */
     function cut() {
       if (g !== kgen) return;
-      micKey.classList.add("down"); if (rowDots) rowDots.start();
-      klater(360, function () {
-        micKey.classList.remove("down"); if (rowDots) rowDots.stop();
-        if (kw) kw.classList.add("cut");
-        kbEl.style.height = (kbTall || kbEl.offsetHeight) + "px";   // something to leave from
-        kbEl.classList.add("cut");
-        liveText(slot.t, "");
-        klater(880, function () {
-          kbEl.classList.add("small"); kbEl.style.height = KB_SMALL + "px";
-          klater(620, speak);
-        });
+      if (kw) kw.classList.add("cut");
+      kbEl.classList.add("cut");
+      keysToDust();
+      liveText(slot.t, "");
+      klater(900, function () {
+        kbEl.classList.add("small");
+        klater(420, speak);
       });
     }
 
@@ -1779,14 +1812,14 @@
        the clock that stops at the end of it is true. */
     function speak() {
       if (g !== kgen) return;
-      keyless.classList.add("live"); micDots.start(); cSaid.start(false);
+      micKey.classList.add("live"); rowDots.start(); cSaid.start(false);
       var words = text.split(/\s+/).filter(Boolean), at = 0;
       var chunk = Math.max(1, Math.ceil(words.length / 6)), per = Math.round(1000 / SPEECH_WPS) * chunk;
       (function say() {
         if (g !== kgen) return;
         if (at >= words.length) {
           liveText(slot.t, text); cSaid.stop();
-          keyless.classList.remove("live"); micDots.stop(); slot.c.classList.add("off");
+          micKey.classList.remove("live"); rowDots.stop(); slot.c.classList.add("off");
           if (said) return;                 // theirs stays
           klater(3000, function () { appI++; playApp(); });
           return;
@@ -1924,7 +1957,6 @@
   }
   // The keyboard's key is the app's: black dots on white. The hero's own
   // button turns amber while it listens, so its dots are the ink.
-  var micDots = MicDots($("micDots"), $("kmic"), { dot: "#000", inset: 11 });
 
   function resumeKeys() {
     if (keysOn) return; keysOn = true;
@@ -1934,7 +1966,9 @@
     keysOn = false; kgen++; clearTimeout(ktm);
     [].forEach.call(document.querySelectorAll(".k.down, .k.hold"), function (k) { k.classList.remove("down"); k.classList.remove("hold"); });
     if (rowDots) rowDots.stop();
-    keyless.classList.remove("live"); micDots.stop();
+    if (micKey) micKey.classList.remove("live");
+    if (rowDots) rowDots.stop();
+    dustClear();
   }
 
   /* A RUN OWNS ITS ELEMENT. Half the text on this page is being written
