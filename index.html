@@ -131,82 +131,61 @@
      nowhere to go and the whole band reads as evenly busy. This is the page's
      own ink at four per cent — warm light, no new colour — and it is what
      makes the caret the subject rather than one more mark among a hundred. */
-  /* THE HERO IS ONE SENTENCE AND NOTHING ELSE.
-     No field of threads behind it, no plate to hush them, no caption, no
-     state word, no ticker, no placeholder. A dark ground, one sentence at
-     the size a sentence deserves, and a way in under it. What the sentence
-     does is the whole idea: it arrives as somebody said it, in a hand,
-     with its ums and its typos — and then, in the same place, by the same
-     words, it is written. Everything that was on this screen besides that
-     was decoration standing in front of it. */
+  /* THE HERO IS A RACE, AND THE POINT IS THE CLOCK.
+     Every version of this screen so far explained something, and a screen
+     that explains is a screen the brain finishes reading and leaves. This
+     one asks a question instead.
+
+     The same sentence, twice, in the same place. First it is TYPED — badly,
+     the way anybody types: a hesitation, a wrong letter, a backspace, a
+     correction — while a clock runs beside it. Watching it is faintly
+     unbearable, which is the point: you are watching yourself. Then it is
+     wiped, and the clock starts again, and the sentence arrives whole,
+     SAID, in about a second.
+
+     Nothing is claimed. Two numbers are put next to each other and the
+     brain does the rest: what was that, and why was the second one ten
+     times faster. The answer is the product, and it is on the clock. */
   .hero {
-    position: relative; background: var(--ink); margin: 0; padding: clamp(60px, 11vh, 120px) 0 clamp(64px, 12vh, 132px);
+    position: relative; background: var(--ink); margin: 0; padding: clamp(56px, 10vh, 110px) 0 clamp(60px, 11vh, 120px);
     min-height: clamp(520px, 78vh, 820px); display: grid; align-items: center;
     animation: fade 1.1s .15s both;
   }
   .hero .wrap { position: relative; z-index: 2; width: 100%; }
-  .stage { max-width: 1120px; margin: 0 auto; text-align: center; }
-  /* THE LINE. Both versions are laid out in one box, one over the other,
-     so the sentence never moves down the page as it changes. */
-  .line { position: relative; min-height: 2.3em; font-size: clamp(38px, 6.6vw, 104px); display: grid; align-items: center; }
-  .spoken, .written { grid-area: 1 / 1; margin: 0; display: flex; flex-wrap: wrap; justify-content: center; align-items: baseline; }
-  /* A hand, not a face. One colour: the contrast that matters is hand
-     against type, and it has to survive being the only thing on screen. */
-  .spoken { gap: .06em .32em; font-family: 'Caveat', 'Kalam', cursive; font-weight: 600; font-size: .86em; line-height: 1.24; color: var(--dim); }
-  .spoken .w {
-    display: inline-block; opacity: 0; transform: translateY(10px) rotate(var(--tilt, 0deg));
-    text-decoration-thickness: 2px; text-underline-offset: .1em; text-decoration-color: transparent;
-    transition: opacity .3s, transform .5s cubic-bezier(.2,.8,.2,1), color .4s, text-decoration-color .4s;
-  }
-  .spoken .w.in { opacity: 1; transform: translateY(0) rotate(var(--tilt, 0deg)); }
-  /* The fillers are struck and the typos get the squiggle everyone has
-     seen under their own spelling. The two marks the world knows. */
-  .spoken .w.drop { opacity: .4; text-decoration-line: line-through; text-decoration-color: currentColor; }
-  .spoken .w.fix { text-decoration-line: underline; text-decoration-style: wavy; text-decoration-color: var(--rose); }
-  .spoken .w.fixed { text-decoration-line: underline; text-decoration-style: solid; text-decoration-color: #6EE7A8; }
-  .written {
-    gap: 0 .24em; font-family: var(--serif); font-weight: 380; font-optical-sizing: auto;
-    line-height: 1.04; letter-spacing: -.028em; color: var(--white);
-  }
-  .written .w { display: inline-block; opacity: 0; transform: translateY(6px); transition: opacity .34s, transform .44s cubic-bezier(.2,.8,.2,1); }
-  .written .w.in { opacity: 1; transform: none; }
-  /* THE FLIGHT. Each kept word is copied here at the place it was
-     handwritten and animated to the place it is typeset, growing to that
-     word's own width as it fades — so the word somebody said becomes the
-     word that was written, rather than one line swapping for another. */
-  .fly { position: absolute; inset: 0; pointer-events: none; z-index: 3; }
-  .fly span {
-    position: absolute; display: inline-block; white-space: nowrap; transform-origin: left center;
-    font-family: 'Caveat', 'Kalam', cursive; font-weight: 600; line-height: 1.24;
-    transform: translate(0, 0) scale(1); opacity: 1;
-    transition: transform .62s cubic-bezier(.3,.75,.2,1), opacity .62s ease-in;
-  }
-  .stage.out .spoken, .stage.out .written { opacity: 0; transition: opacity .34s; }
-  .herodl { margin: clamp(46px, 6vw, 84px) 0 0; text-align: center; }
+  .race { max-width: 1060px; margin: 0 auto; display: grid; gap: clamp(30px, 4.4vw, 58px); }
+  /* Both halves stay on the screen. A number the visitor has to remember
+     is a number they do not compare — the whole argument is that the two
+     are next to each other and one of them is absurd. */
+  .half { transition: opacity .5s; }
+  .half.voice { opacity: 0; }
+  .race.two .half.voice { opacity: 1; }
+  .race.two .half.typed { opacity: .38; }
+  /* The row that carries the argument: what is happening, what it cost,
+     and how long it took. They sit at the two ends of the line's measure. */
+  .rtop { display: flex; justify-content: space-between; align-items: baseline; gap: 20px; margin: 0 0 clamp(12px, 1.6vw, 20px); font-family: var(--mono); font-size: clamp(11px, .95vw, 13px); letter-spacing: .26em; text-transform: uppercase; }
+  .rlab { color: var(--dim); }
+  .rtime { color: var(--grey); font-variant-numeric: tabular-nums; transition: color .3s; }
+  .half.typed .rtime { color: var(--rose); }
+  .half.voice .rtime { color: var(--amber); }
+  /* THE TWO LINES. The typed one is set in the machine's own monospace,
+     because that is what typing looks like and it reads as work; the said
+     one is type, set properly, at the size a sentence deserves. */
+  .rline { margin: 0; color: var(--white); }
+  .half.typed .rline { min-height: 2.3em; font-family: var(--mono); font-size: clamp(17px, 2.3vw, 30px); line-height: 1.5; letter-spacing: -.01em; color: var(--grey); }
+  .half.voice .rline { min-height: 1.2em; font-family: var(--serif); font-weight: 380; font-optical-sizing: auto; font-size: clamp(30px, 4.6vw, 68px); line-height: 1.12; letter-spacing: -.026em; }
+  .rline .bad { color: var(--rose); }
+  /* The caret is a block, the way a terminal draws one, and it stops
+     blinking while something is being written. */
+  .rcar { display: inline-block; width: .5em; height: 1.02em; vertical-align: -.16em; margin-left: .04em; background: currentColor; animation: blink 1s steps(1) infinite; opacity: 0; }
+  .half.live .rcar { opacity: 1; animation: none; }
+  .race.out .half { opacity: 0; }
+  .herodl { margin: clamp(44px, 5.6vw, 76px) 0 0; }
   .hero .get-it { background: var(--white); color: var(--ink); height: 50px; padding: 0 28px; font-size: 14px; }
   /* The demo, when the server has it on: one line of small type under the
      button, which is also where it says anything it has to say. */
   .tiny { display: inline-block; margin: 18px 0 0; border: 0; background: none; cursor: pointer; font-family: var(--mono); font-size: 11px; letter-spacing: .22em; text-transform: uppercase; color: var(--dim); transition: color .2s; }
   .tiny:hover { color: var(--white); }
   .tiny[hidden] { display: none; }
-  /* The word's colour is set per frame in script — it washes with the accent
-     as the waves merge and goes to it outright with the microphone open — so
-     there is no rule for it here. */
-
-  /* The control sits under the word, in flow. */
-  .speak {
-    position: relative;
-    display: inline-flex; align-items: center; gap: 9px; height: 46px; padding: 0 22px;
-    border: 0; border-radius: 999px; background: var(--white); color: var(--ink);
-    font-size: 13px; font-weight: 500; cursor: pointer; white-space: nowrap;
-    transition: background .18s, transform .18s; -webkit-tap-highlight-color: transparent;
-  }
-  .speak:hover { opacity: .9; transform: translateY(-1px); }
-  .speak[aria-pressed="true"] { background: var(--amber); }
-  .speak svg { width: 16px; height: 16px; }
-  /* With the demo off there is no button at all. A control that does nothing,
-     with a line under it apologising, is worse than no control. */
-  .speak[hidden] { display: none; }
 
   /* ---- the buttons ------------------------------------------------------- */
   /* They sit on the price field only. The river needs no words under it. */
@@ -508,7 +487,10 @@
     .band { padding: 76px 0; }
   }
   @media (max-width: 560px) {
-    .line { font-size: 30px; min-height: 3.2em; }
+    .half.voice .rline { font-size: 27px; }
+    .half.typed .rline { font-size: 15px; min-height: 3em; }
+    .rtop { letter-spacing: .16em; font-size: 10px; }
+    .race { gap: 26px; }
     .k.mic { flex: 0 0 38px; height: 38px; }
     .speak span { font-size: 12.5px; }
     .tonegrid { grid-template-columns: minmax(0, 1fr); }
@@ -547,13 +529,18 @@
 
 <section class="hero" id="river" data-tone="dark">
   <div class="wrap">
-    <!-- ONE SENTENCE. As somebody said it, and then — in the same place,
-         by the same words — as it was written. -->
-    <div class="stage" id="mark">
-      <div class="line" id="line">
-        <p class="spoken" id="said" dir="auto"></p>
-        <p class="written" id="wrote" dir="auto"></p>
-        <div class="fly" id="fly" aria-hidden="true"></div>
+    <!-- THE RACE. The same sentence typed, then said, in the same place,
+         with a clock on each. -->
+    <div class="race" id="race">
+      <div class="half typed" id="hTyped">
+        <p class="rtop"><span class="rlab" id="labTyped">Typed</span><span class="rtime" id="timeTyped"></span></p>
+        <p class="rline" dir="auto"><span id="textTyped"></span><span class="rcar"></span></p>
+      </div>
+      <!-- Named apart from the tone screen's own said line, whose rule
+           printed a ghost "you said:" over this one. -->
+      <div class="half voice" id="hSaid">
+        <p class="rtop"><span class="rlab" id="labSaid">Said</span><span class="rtime" id="timeSaid"></span></p>
+        <p class="rline" dir="auto"><span id="textSaid"></span><span class="rcar"></span></p>
       </div>
     </div>
     <p class="herodl">
@@ -766,12 +753,14 @@
     // heard it. `title` is the headline for when the demo is switched off
     // at the server and there is no button to press.
     hero: {
-      said: "You said",
+      said: "Said",
+      typed: "Typed",
+      taps: "taps",
+      press: "press",
       invite: "Press. Say anything.",
       listening: "Listening",
       writing: "Writing",
-      again: "Say another.",
-      placeholder: "Your words land here."
+      again: "Say another."
     },
     // The story the word tells, one word at a time, in this order. Each is
     // two words at most: it has to be read at a glance at the size of a
@@ -1550,8 +1539,6 @@
     if (mic.getAttribute("aria-pressed") === "true") { stop(); return; }
     // Whatever was playing gets out of the way: the screen is theirs now.
     pauseStage(); staged = true;
-    stageEl.classList.remove("out");
-    saidEl.innerHTML = ""; wroteLine.innerHTML = ""; flyEl.innerHTML = ""; saidEl.style.visibility = "";
     start();
   }
   mic.addEventListener("click", toggle);
@@ -1585,8 +1572,8 @@
      anywhere has watched their own. The visitor's own recording, when the
      demo is on, ends the loop: their sentence, held.
      ================================================================== */
-  var stageEl = $("mark"), saidEl = $("said"), wroteLine = $("wrote"), lineEl = $("line"), flyEl = $("fly");
-  var caseI = 0, sgen = 0, stm = 0, staged = false, seen = true, current = null;
+  var raceEl = $("race"), hTyped = $("hTyped"), hSaid = $("hSaid");
+  var caseI = 0, sgen = 0, stm = 0, staged = false, seen = true, current = null, ownSaid = "";
 
   /** Set text on a node the page is animating. */
   function liveText(node, s) { live(node, function () { node.textContent = s; }); }
@@ -1599,140 +1586,125 @@
       if (n > 0) node.appendChild(el("span", "hl", full.slice(cut)));
     });
   }
-  function norm(w) { return w.toLowerCase().replace(/[\p{P}\p{S}]+/gu, ""); }
-  function lev(a, b) {
-    var m = a.length, n = b.length, prev = [], cur = [], i, j, t;
-    for (j = 0; j <= n; j++) prev[j] = j;
-    for (i = 1; i <= m; i++) {
-      cur[0] = i;
-      for (j = 1; j <= n; j++) cur[j] = Math.min(prev[j] + 1, cur[j - 1] + 1, prev[j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1));
-      t = prev; prev = cur; cur = t;
-    }
-    return prev[n];
-  }
-  /* What became of each spoken word, and WHICH written word it became.
-     Kept is an exact match after case and punctuation; fixed is within a
-     letter or two of a written word — a typo, a near miss; the rest are
-     fillers. A short word is never a near miss: "so" is not a typo of
-     "to", it is a filler. A line where nothing matches — a script written
-     without spaces, a sentence recast whole — is all rewritten and nothing
-     dropped: it was never thrown away. */
-  function classify(parts, wrote) {
-    var raw = wrote.split(/\s+/).filter(Boolean), ws = raw.map(norm), taken = {};
-    var out = parts.map(function (w) {
-      var nw = norm(w), i;
-      if (!nw) return { k: "drop", j: -1 };
-      for (i = 0; i < ws.length; i++) if (!taken[i] && ws[i] === nw) { taken[i] = 1; return { k: "keep", j: i }; }
-      if (nw.length < 4) return { k: "drop", j: -1 };
-      var lim = Math.max(1, Math.floor(nw.length / 3));
-      for (i = 0; i < ws.length; i++) {
-        if (taken[i]) continue;
-        if (Math.abs(ws[i].length - nw.length) <= lim && lev(nw, ws[i]) <= lim) {
-          taken[i] = 1;
-          // The word it becomes, without the sentence's own punctuation:
-          // the fix is the spelling, the full stop belongs to the line.
-          return { k: "fix", j: i, to: raw[i].replace(/^[\p{P}\p{S}]+|[\p{P}\p{S}]+$/gu, "") };
-        }
-      }
-      return { k: "drop", j: -1 };
-    });
-    if (!out.some(function (x) { return x.k !== "drop"; })) out = out.map(function () { return { k: "fix", j: -1 }; });
-    return out;
-  }
   function later(ms, fn) { var g = sgen; stm = setTimeout(function () { if (g === sgen) fn(); }, ms); }
+
+  /* THE COUNT AND THE CLOCK. Seconds alone undersell it and can be argued
+     with; taps cannot. Every letter is a tap, and so is the wrong one and
+     the backspace that takes it back — a correction spends three taps to
+     undo one, which is exactly what typing on a phone is. Against that:
+     one press.
+
+     The clock is counted from the frame the half began, not from a sum of
+     the delays that were asked for — a background tab, a slow machine or a
+     long paint would each make a number that was never true. */
+  function clock(el) {
+    var raf = 0, at = 0, taps = 0, typing = false;
+    function text(secs) {
+      return (typing ? taps + " " + (C.hero.taps || "taps") : "1 " + (C.hero.press || "press")) + " · " + secs.toFixed(1) + "s";
+    }
+    return {
+      tap: function () { taps++; },
+      start: function (isTyping) {
+        at = performance.now(); taps = 0; typing = !!isTyping;
+        if (raf) cancelAnimationFrame(raf);
+        (function tick() { raf = requestAnimationFrame(tick); liveText(el, text((performance.now() - at) / 1000)); })();
+      },
+      stop: function () {
+        if (raf) { cancelAnimationFrame(raf); raf = 0; }
+        var secs = (performance.now() - at) / 1000;
+        liveText(el, text(secs));
+        return secs;
+      },
+      still: function (isTyping, n, secs) { typing = !!isTyping; taps = n; liveText(el, text(secs)); }
+    };
+  }
+  var cTyped = clock($("timeTyped")), cSaid = clock($("timeSaid"));
+
+  /* TYPING, THE WAY IT ACTUALLY GOES. A thumb, not a keyboard: a hundred
+     and ten to a hundred and ninety milliseconds a letter, a breath before
+     a word now and then, and one wrong letter that sits there for a third
+     of a second before it is taken back. Nobody types cleanly, and a demo
+     that does is a lie the visitor can feel. */
+  function typeOut(node, full, done) {
+    var g = sgen, i = 0, badAt = Math.max(6, Math.floor(full.length * (0.45 + Math.random() * 0.3)));
+    var WRONG = "asdfghjkl";
+    (function step() {
+      if (g !== sgen) return;
+      if (i >= full.length) { node.textContent = full; done(); return; }
+      if (i === badAt) {
+        var wrong = WRONG[Math.floor(Math.random() * WRONG.length)];
+        node.innerHTML = "";
+        node.appendChild(document.createTextNode(full.slice(0, i)));
+        node.appendChild(el("span", "bad", wrong));
+        cTyped.tap(); badAt = -1;
+        later(340 + Math.random() * 180, function () {
+          node.textContent = full.slice(0, i); cTyped.tap();
+          later(170, step);
+        });
+        return;
+      }
+      i++; cTyped.tap();
+      node.textContent = full.slice(0, i);
+      var gap = full[i - 1] === " " && Math.random() < 0.4 ? 300 + Math.random() * 260 : 110 + Math.random() * 80;
+      later(gap, step);
+    })();
+  }
+
+  /* SAYING IT. The clock has to be the time it takes to SAY the line, not
+     the time it takes to paint it: a sentence appearing in half a second
+     is a number nobody believes, and rightly — nobody says seven words in
+     half a second. So it is revealed over the time speech actually takes,
+     about two and a half words a second, and the clock that stops at the
+     end of it is true. */
+  var SPEECH_WPS = 2.5;
+  function sayOut(node, full, done) {
+    var g = sgen, words = full.split(/\s+/).filter(Boolean), at = 0;
+    var chunk = Math.max(1, Math.ceil(words.length / 6)), per = Math.round(1000 / SPEECH_WPS) * chunk;
+    (function step() {
+      if (g !== sgen) return;
+      if (at >= words.length) { node.textContent = full; done(); return; }
+      at = Math.min(words.length, at + chunk);
+      node.textContent = words.slice(0, at).join(" ");
+      later(per, step);
+    })();
+  }
 
   function play(cs, hold) {
     var g = ++sgen; clearTimeout(stm); current = cs;
-    stageEl.classList.remove("out");
-    saidEl.style.visibility = ""; flyEl.innerHTML = "";
-    var parts = cs.said.split(/\s+/).filter(Boolean), kinds = classify(parts, cs.wrote);
-    var wparts = cs.wrote.split(/\s+/).filter(Boolean), spans = [], wspans = [];
-
-    // Both lines are built at once and stacked; only one is ever lit.
-    saidEl.innerHTML = "";
-    parts.forEach(function (w, i) {
-      var sp = el("span", "w", w);
-      // One colour, the page's own pale. Eight of them read as a
-      // children's book, and the threads behind are already every colour
-      // there is; the contrast that matters is hand against type.
-      sp.style.setProperty("--tilt", (((i * 7 + caseI * 13) % 11 - 5) * 0.34).toFixed(2) + "deg");
-      saidEl.appendChild(sp); spans.push(sp);
-    });
-    wroteLine.innerHTML = "";
-    wparts.forEach(function (w) { var sp = el("span", "w", w); wroteLine.appendChild(sp); wspans.push(sp); });
-
-    if (reduced) {   // the last frame, standing
-      spans.forEach(function (sp) { sp.style.display = "none"; });
-      wspans.forEach(function (sp) { sp.classList.add("in"); });
+    var line = cs.wrote, tText = $("textTyped"), sText = $("textSaid");
+    raceEl.classList.remove("out");
+    liveText($("labTyped"), C.hero.typed || "Typed");
+    liveText($("labSaid"), C.hero.said || "Said");
+    if (reduced) {   // the last frame, standing: the two numbers
+      raceEl.classList.add("two");
+      tText.textContent = line; sText.textContent = line;
+      cTyped.still(true, line.length + 2, line.length * 0.16);
+      cSaid.still(false, 0, line.split(/\s+/).length / SPEECH_WPS);
       return;
     }
-    var i = 0;
-    (function hear() {
-      if (g !== sgen) return;
-      if (i < spans.length) { spans[i++].classList.add("in"); later((i === 1 ? 240 : 100) + Math.random() * 110, hear); return; }
-      later(440, meant);
-    })();
-
-    function meant() {
-      spans.forEach(function (sp, k) { if (kinds[k].k !== "keep") sp.classList.add(kinds[k].k); });
-      // Then the typos are fixed where they stand.
-      later(560, function () {
-        spans.forEach(function (sp, k) { if (kinds[k].to) { sp.textContent = kinds[k].to; sp.classList.remove("fix"); sp.classList.add("fixed"); } });
-        later(560, written);
-      });
-    }
-
-    /* WRITTEN. Not a swap: the words fly. Each kept word is copied into
-       the flight layer at the place it was handwritten, the handwritten
-       line is hidden, and the copy is animated to the place its typeset
-       word sits — scaled to that word's own width — while it fades and the
-       letterform fades up under it. The fillers fall. Measured, not
-       guessed: both lines are laid out in the same box, so one rectangle
-       each is all this needs. */
-    function written() {
-      var box = lineEl.getBoundingClientRect();
-      var from = spans.map(function (sp) { return sp.getBoundingClientRect(); });
-      var to = wspans.map(function (sp) { return sp.getBoundingClientRect(); });
-      var face = getComputedStyle(spans[0] || saidEl), size = face.fontSize, ink = face.color;
-      saidEl.style.visibility = "hidden";
-      spans.forEach(function (sp, k) {
-        var r = from[k]; if (!r.width) return;
-        var c = el("span", null, sp.textContent);
-        c.style.left = (r.left - box.left).toFixed(1) + "px";
-        c.style.top = (r.top - box.top).toFixed(1) + "px";
-        c.style.fontSize = size; c.style.color = ink;
-        flyEl.appendChild(c);
-        var j = kinds[k].j, t = j >= 0 ? to[j] : null;
-        requestAnimationFrame(function () {
-          requestAnimationFrame(function () {
-            if (g !== sgen) return;
-            if (t && t.width) {
-              c.style.transform = "translate(" + (t.left - r.left).toFixed(1) + "px," + (t.top + t.height / 2 - r.top - r.height / 2).toFixed(1) + "px) scale(" + (t.width / r.width).toFixed(3) + ")";
-            } else {
-              c.style.transform = "translate(0," + (r.height * 0.55).toFixed(1) + "px) scale(.86)";
-            }
-            c.style.opacity = "0";
-          });
+    raceEl.classList.remove("two");
+    hTyped.classList.add("live"); hSaid.classList.remove("live");
+    tText.textContent = ""; sText.textContent = "";
+    cSaid.still(false, 0, 0); liveText($("timeSaid"), "");
+    cTyped.start(true);
+    typeOut(tText, line, function () {
+      cTyped.stop(); hTyped.classList.remove("live");
+      // A beat to read what it cost, and then the other way.
+      later(900, function () {
+        raceEl.classList.add("two"); hSaid.classList.add("live");
+        cSaid.start(false);
+        sayOut(sText, line, function () {
+          cSaid.stop(); hSaid.classList.remove("live");
+          if (hold) return;
+          later(3400, function () { raceEl.classList.add("out"); later(520, next); });
         });
       });
-      // The letterforms arrive under the flight, left to right.
-      wspans.forEach(function (sp, k) { setTimeout(function () { if (g === sgen) sp.classList.add("in"); }, 180 + k * 26); });
-      later(1100, function () { flyEl.innerHTML = ""; sent(); });
-    }
-
-    function sent() {
-      if (hold) return;
-      later(2400, function () { stageEl.classList.add("out"); later(420, next); });
-    }
+    });
   }
-  function resetStage() { saidEl.style.visibility = ""; flyEl.innerHTML = ""; }
-  /* One after another, in the order the backend sent them, so within a
-     minute somebody from anywhere has watched their own language. A
-     visitor's own recording, if the demo is on, ends the cycle for good:
-     what it actually did beats what it claims. */
-  function next() { if (own) return; resetStage(); caseI = (caseI + 1) % C.cases.length; play(C.cases[caseI]); }
+  function next() { if (own) return; caseI = (caseI + 1) % C.cases.length; play(C.cases[caseI]); }
+  function resetStage() { cTyped.stop(); cSaid.stop(); }
   function resumeStage() { if (staged) return; staged = true; resetStage(); play(own && current ? current : C.cases[caseI], !!own); }
-  function pauseStage() { staged = false; sgen++; clearTimeout(stm); }
+  function pauseStage() { staged = false; sgen++; clearTimeout(stm); cTyped.stop(); cSaid.stop(); }
   document.addEventListener("visibilitychange", function () { if (document.hidden) pauseStage(); else if (seen) resumeStage(); });
 
   /* =====================================================================
