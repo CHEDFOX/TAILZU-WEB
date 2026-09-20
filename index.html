@@ -394,6 +394,28 @@
      app is open: a key goes down and its letter pops up over it the way a
      real key does — and then the mic key, and the rest of the line lands
      at once. Beside it, the apps, the open one lit. */
+  /* THE TITLE IS A KEYBOARD. Its last word is set in keycaps, and they
+     are pressed one after another: the pressed cap sinks and goes hollow
+     — cut out of the line — and its letter lifts above it in a small key,
+     the way a real key does. The claim, made of the thing it claims. */
+  .caps { display: inline-flex; gap: .09em; vertical-align: -.06em; margin: 0 .04em; }
+  .cap {
+    position: relative; display: inline-grid; place-items: center; width: 1.02em; height: 1.02em; border-radius: .17em;
+    background: linear-gradient(180deg, #fff, #EEF3F1); color: var(--teal-deep);
+    font-family: var(--sans); font-weight: 500; font-size: .66em; line-height: 1; letter-spacing: 0;
+    box-shadow: 0 .13em 0 #B9CCC8, 0 .55em 1.1em -.45em rgba(0,0,0,.5);
+    transition: transform .12s, box-shadow .12s, background .12s, color .12s;
+  }
+  .cap.down { transform: translateY(.13em); background: #C9D6D3; color: transparent; box-shadow: 0 0 0 #B9CCC8, inset 0 .08em .16em rgba(0,0,0,.22); }
+  .cap .pop {
+    position: absolute; left: 50%; bottom: calc(100% + .22em); width: 1.34em; height: 1.34em; border-radius: .2em;
+    background: #fff; color: var(--teal-deep); font-size: 1em; display: grid; place-items: center;
+    box-shadow: 0 .3em .9em rgba(0,0,0,.38), 0 0 0 .5px rgba(0,0,0,.08);
+    opacity: 0; transform: translateX(-50%) translateY(.45em) scale(.6); transform-origin: 50% 100%;
+    transition: opacity .12s, transform .18s cubic-bezier(.2,.8,.2,1); pointer-events: none; z-index: 2;
+  }
+  .cap .pop::after { content: ""; position: absolute; top: calc(100% - 1px); left: 22%; right: 22%; height: .3em; background: #fff; border-radius: 0 0 .1em .1em; }
+  .cap.down .pop { opacity: 1; transform: translateX(-50%) translateY(0) scale(1); }
   .apps { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 40px 64px; align-items: center; }
   .applist { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
   .applist li { display: flex; align-items: center; gap: 16px; padding: 14px 18px; border-radius: 14px; border: 1px solid rgba(255,255,255,.14); color: rgba(255,255,255,.6); font-size: 15px; transition: background .35s, color .35s, transform .35s; }
@@ -418,7 +440,7 @@
      its letter lifts above it in a bigger key with a neck down to the hole,
      the way a real key does. Held, the lifted key gives way to a tray of
      small keys over it: the letter's other forms, the one it means lit. */
-  .k.down { transform: translateY(1px); background: #C9CCD3; box-shadow: inset 0 1px 2px rgba(0,0,0,.2); }
+  .k.down { transform: translateY(2px); background: #B8BCC6; box-shadow: inset 0 2px 4px rgba(0,0,0,.26); }
   .k.letter.down { color: transparent; }
   .k.mic.down { background: var(--amber); box-shadow: none; }
   .k .pop { position: absolute; left: 50%; bottom: calc(100% + 6px); width: 168%; height: 62px; border-radius: 11px; background: #fff; box-shadow: 0 4px 12px rgba(0,0,0,.32), 0 0 0 .5px rgba(0,0,0,.08); display: grid; place-items: center; font-size: 31px; color: #000; opacity: 0; transform: translateX(-50%) translateY(12px) scale(.6); transform-origin: 50% 100%; transition: opacity .1s, transform .15s cubic-bezier(.2,.8,.2,1); pointer-events: none; z-index: 2; }
@@ -629,7 +651,7 @@
     <!-- THE SENTENCE. A line as somebody said it, and the line it became,
          in four beats named by the four words of the story. The stage is
          the control too: with the demo on, pressing it opens the mic. -->
-    <div class="stage" id="mark" role="button" tabindex="0" aria-label="Speak" data-noglitch>
+    <div class="stage" id="mark" role="button" tabindex="0" aria-label="Speak">
       <div class="gut g1"><span id="labSaid">You said</span><span class="lang" id="lang"></span></div>
       <p class="spoken" id="said" dir="auto"></p>
       <div class="rule" aria-hidden="true"></div>
@@ -649,7 +671,7 @@
       </svg>
       <span id="micLabel">Speak</span>
     </button>
-    <div class="langs" id="langs" aria-hidden="true" data-noglitch><div class="langtrack" id="langtrack"></div></div>
+    <div class="langs" id="langs" aria-hidden="true"><div class="langtrack" id="langtrack"></div></div>
   </div>
 </section>
 
@@ -694,10 +716,10 @@
       <p class="lede" id="llmLede">Say it rough. A clean prompt lands in the box.</p>
     </div>
     <div class="stagebox">
-      <div class="pill" id="llmPill" data-noglitch><span class="wave"><i></i><i></i><i></i><i></i></span><span class="heard" id="llmHeard"></span><span class="state" id="llmState"></span></div>
+      <div class="pill" id="llmPill"><span class="wave"><i></i><i></i><i></i><i></i></span><span class="heard" id="llmHeard"></span><span class="state" id="llmState"></span></div>
       <div class="win">
         <div class="wbar"><span class="dots"><i></i><i></i><i></i></span><span class="wname" id="llmName">ChatGPT</span><span class="wtag" id="llmTag">New chat</span></div>
-        <div class="wbody" data-noglitch><p class="typing"><span id="llmText"></span><span class="car" id="llmCar"></span></p></div>
+        <div class="wbody"><p class="typing"><span id="llmText"></span><span class="car" id="llmCar"></span></p></div>
         <div class="wfoot"><span class="tabs" id="llmTabs" role="tablist" aria-label="Which machine"></span><span class="send" aria-hidden="true">↑</span></div>
       </div>
     </div>
@@ -712,7 +734,7 @@
       <div><h2 id="appsTitle">It's a keyboard.</h2></div>
     </div>
     <div class="apps">
-      <div class="phone" aria-hidden="true" data-noglitch>
+      <div class="phone" aria-hidden="true">
         <div class="screen">
           <div class="appbar"><span class="appdot"></span><span id="kbApp">Message</span></div>
           <div class="appfield" id="kbField"></div>
@@ -752,14 +774,14 @@
       <p class="lede" id="devLede">Say the change. It lands where the cursor is.</p>
     </div>
     <div class="stagebox">
-      <div class="pill" id="devPill" data-noglitch><span class="wave"><i></i><i></i><i></i><i></i></span><span class="heard" id="devHeard"></span><span class="state" id="devState"></span></div>
+      <div class="pill" id="devPill"><span class="wave"><i></i><i></i><i></i><i></i></span><span class="heard" id="devHeard"></span><span class="state" id="devState"></span></div>
       <div class="win editor">
         <div class="wbar"><span class="dots"><i></i><i></i><i></i></span><span class="ftab" id="devFile">upload.ts</span><span class="wtag" id="devApp">Cursor</span></div>
         <div class="wbody"><div class="gut">1
 2
 3
 4
-5</div><p class="typing" data-noglitch><span id="devText"></span><span class="car" id="devCar"></span></p></div>
+5</div><p class="typing"><span id="devText"></span><span class="car" id="devCar"></span></p></div>
         <div class="wfoot"><span id="devFoot">TypeScript</span><span>UTF-8</span></div>
       </div>
     </div>
@@ -1356,6 +1378,22 @@
   }
   function setText(id, s) { var e = $(id); if (e && s != null) e.textContent = fill(s); }
 
+  /** The last word of the title in keycaps, letter by letter; whatever
+   *  comes before it, and any punctuation after it, stays as type. */
+  function paintCaps(title) {
+    var h = $("appsTitle"), t = fill(title || ""), m = /^(.*?)([^\s\p{P}]+)(\p{P}*)$/u.exec(t.trim());
+    h.innerHTML = "";
+    if (!m) { h.textContent = t; return; }
+    if (m[1]) h.appendChild(document.createTextNode(m[1]));
+    var caps = el("span", "caps");
+    m[2].split("").forEach(function (ch) {
+      var c = el("span", "cap", ch), pop = el("span", "pop", ch);
+      pop.setAttribute("aria-hidden", "true"); c.appendChild(pop); caps.appendChild(c);
+    });
+    h.appendChild(caps);
+    if (m[3]) h.appendChild(document.createTextNode(m[3]));
+    h.setAttribute("aria-label", t);   // read as one word, not as doubled letters
+  }
   function paintBelow() {
     setText("howTitle", C.how.title);
     var steps = $("steps"); steps.innerHTML = "";
@@ -1377,7 +1415,7 @@
       tg.appendChild(d);
     });
 
-    setText("appsTitle", C.apps.title);
+    paintCaps(C.apps.title);
     var al = $("applist"); al.innerHTML = "";
     C.apps.fields.forEach(function (f, i) {
       var li = el("li", i === appI % C.apps.fields.length ? "on" : "");
@@ -1813,7 +1851,8 @@
       var r = el("div", "krow r" + (ri + 1));
       if (ri === 2) r.appendChild(el("div", "k wide", "\u21E7"));
       row.split("").forEach(function (ch, ci) {
-        var k = el("div", "k letter", ch); k.appendChild(el("span", "pop", ch)); keyOf[ch] = k; r.appendChild(k);
+        var k = el("div", "k letter", ch), pop = el("span", "pop", ch);
+        pop.setAttribute("aria-hidden", "true"); k.appendChild(pop); keyOf[ch] = k; r.appendChild(k);
         if (TRAYS[ch]) {
           var tray = el("span", "tray" + (ci >= row.length / 2 ? " r" : ""));
           TRAYS[ch].split(" ").forEach(function (alt) { tray.appendChild(el("i", alt === ch ? "on" : null, alt)); });
@@ -1870,9 +1909,9 @@
           });
           return;
         }
-        if (k) { k.classList.add("down"); setTimeout(function () { if (g === kgen) k.classList.remove("down"); }, 150); }
+        if (k) { k.classList.add("down"); setTimeout(function () { if (g === kgen) k.classList.remove("down"); }, 230); }
         slot.t.textContent = text.slice(0, i);
-        klater(190 + Math.random() * 80, press); return;
+        klater(280 + Math.random() * 80, press); return;
       }
       micKey.classList.add("down"); micKey.classList.add("live");
       klater(420, function () {
@@ -1887,10 +1926,24 @@
       });
     })();
   }
-  function resumeKeys() { if (keysOn) return; keysOn = true; if (kbEl.children.length) playApp(); }
+  /* The title's caps, pressed in turn while the screen is on. */
+  var capI = 0, capTm = 0, capsOn = false;
+  function capsStep() {
+    if (!capsOn) return;
+    var caps = $("appsTitle").querySelectorAll(".cap"); if (!caps.length) return;
+    var c = caps[capI % caps.length]; capI++;
+    c.classList.add("down");
+    capTm = setTimeout(function () { c.classList.remove("down"); capTm = setTimeout(capsStep, 260); }, 380);
+  }
+  function resumeKeys() {
+    if (keysOn) return; keysOn = true;
+    if (kbEl.children.length) playApp();
+    if (!reduced && !capsOn) { capsOn = true; capTm = setTimeout(capsStep, 400); }
+  }
   function pauseKeys() {
     keysOn = false; kgen++; clearTimeout(ktm);
-    [].forEach.call(kbEl.querySelectorAll(".k.down, .k.hold"), function (k) { k.classList.remove("down"); k.classList.remove("hold"); });
+    capsOn = false; clearTimeout(capTm);
+    [].forEach.call(document.querySelectorAll(".k.down, .k.hold, .cap.down"), function (k) { k.classList.remove("down"); k.classList.remove("hold"); });
     if (micKey) micKey.classList.remove("live");
   }
 
@@ -1898,18 +1951,18 @@
      THE GLITCH. Any text the cursor crosses flickers into ones and zeros
      and resolves back, left to right, in under a second — the page is made
      of the machine's material and lets you see it for a moment. Spaces
-     stay, so the shape of the line holds. Text the page is writing itself
-     (the sentence, the windows, the phone) is left alone, as is a whole
-     paragraph. Never on touch, never under reduced motion.
+     stay, so the shape of the line holds. Every text, including what the
+     page is writing itself: if the page rewrites a line mid-run, the run
+     simply lets go. Never on touch, never under reduced motion.
      ================================================================== */
-  var GLITCH_AT = "h1,h2,h3,p,li,a,button,span,b,i,em,strong,td,th,label,dt,dd";
+  var GLITCH_AT = "h1,h2,h3,p,li,a,button,span,b,i,em,strong,td,th,label,dt,dd,.k,.cap,.key,.gut";
   var glitchOn = typeof WeakMap === "function" ? new WeakMap() : null;
   function textNodesOf(root) {
     var out = [], walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, null, false), nd;
     while ((nd = walker.nextNode())) {
       if (!/\S/.test(nd.nodeValue)) continue;
       var pe = nd.parentElement;
-      if (!pe || pe.closest("[data-noglitch], svg, script, style, .glw")) continue;
+      if (!pe || pe.closest("svg, script, style, .glw")) continue;
       out.push(nd);
     }
     return out;
@@ -1926,7 +1979,6 @@
     if (!glitchOn || glitchOn.get(elm)) return;
     var nodes = textNodesOf(elm); if (!nodes.length) return;
     var total = 0; nodes.forEach(function (nd) { total += nd.nodeValue.length; });
-    if (total > 320) return;      // a paragraph, not a line: leave it be
     glitchOn.set(elm, true);
     var words = [], wraps = [], off = 0;
     nodes.forEach(function (nd) {
@@ -1966,8 +2018,7 @@
   if (!reduced && !coarse && glitchOn) {
     document.addEventListener("mouseover", function (e) {
       var t = e.target && e.target.closest ? e.target.closest(GLITCH_AT) : null;
-      if (!t || t.closest("[data-noglitch]")) return;
-      glitch(t);
+      if (t) glitch(t);
     });
   }
 
