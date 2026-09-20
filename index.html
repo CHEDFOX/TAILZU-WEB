@@ -414,9 +414,22 @@
   .k.mic { flex: 1.5 1 0; background: var(--ink); color: var(--white); transition: background .2s, color .2s; }
   .k.mic svg { width: 16px; height: 16px; }
   .k.mic.live { background: var(--amber); color: var(--ink); }
-  .k.down { transform: translateY(1px); background: #E3E5EA; box-shadow: none; }
-  .k .pop { position: absolute; left: 50%; bottom: calc(100% - 6px); width: 160%; height: 58px; border-radius: 9px 9px 7px 7px; background: #fff; box-shadow: 0 2px 8px rgba(0,0,0,.28); display: grid; place-items: center; font-size: 28px; color: #000; opacity: 0; transform: translateX(-50%) scale(.7); transform-origin: 50% 100%; transition: opacity .09s, transform .12s; pointer-events: none; z-index: 2; }
-  .k.down .pop { opacity: 1; transform: translateX(-50%) scale(1); }
+  /* THE CUT. A pressed key is cut out of the board — it goes hollow and
+     its letter lifts above it in a bigger key with a neck down to the hole,
+     the way a real key does. Held, the lifted key gives way to a tray of
+     small keys over it: the letter's other forms, the one it means lit. */
+  .k.down { transform: translateY(1px); background: #C9CCD3; box-shadow: inset 0 1px 2px rgba(0,0,0,.2); }
+  .k.letter.down { color: transparent; }
+  .k.mic.down { background: var(--amber); box-shadow: none; }
+  .k .pop { position: absolute; left: 50%; bottom: calc(100% + 6px); width: 168%; height: 62px; border-radius: 11px; background: #fff; box-shadow: 0 4px 12px rgba(0,0,0,.32), 0 0 0 .5px rgba(0,0,0,.08); display: grid; place-items: center; font-size: 31px; color: #000; opacity: 0; transform: translateX(-50%) translateY(12px) scale(.6); transform-origin: 50% 100%; transition: opacity .1s, transform .15s cubic-bezier(.2,.8,.2,1); pointer-events: none; z-index: 2; }
+  .k .pop::after { content: ""; position: absolute; top: calc(100% - 1px); left: 19%; right: 19%; height: 13px; background: #fff; border-radius: 0 0 5px 5px; }
+  .k.down .pop { opacity: 1; transform: translateX(-50%) translateY(0) scale(1); }
+  .k.hold .pop { opacity: 0; }
+  .k .tray { position: absolute; left: -6px; bottom: calc(100% + 8px); display: flex; gap: 4px; padding: 6px; border-radius: 13px; background: #fff; box-shadow: 0 8px 22px rgba(0,0,0,.34), 0 0 0 .5px rgba(0,0,0,.08); opacity: 0; transform: translateY(12px) scale(.7); transform-origin: 10% 100%; transition: opacity .12s, transform .2s cubic-bezier(.2,.8,.2,1); pointer-events: none; z-index: 3; }
+  .k .tray.r { left: auto; right: -6px; transform-origin: 90% 100%; }
+  .k.hold .tray { opacity: 1; transform: translateY(0) scale(1); }
+  .tray i { font-style: normal; display: grid; place-items: center; width: 30px; height: 40px; border-radius: 7px; font-size: 20px; color: #000; }
+  .tray i.on { background: #0A84FF; color: #fff; }
   .bubble { display: inline-block; max-width: 92%; padding: 12px 16px; border-radius: 18px 18px 4px 18px; background: var(--leaf); color: var(--ink2); font-size: 16px; line-height: 1.4; }
   .mail { background: #fff; color: var(--ink2); border-radius: 10px; padding: 14px 16px; font-size: 16px; line-height: 1.45; }
   .mail .to { font-family: var(--mono); font-size: 11px; letter-spacing: .12em; color: var(--ink2-soft); margin-bottom: 8px; }
@@ -1792,13 +1805,20 @@
      ================================================================== */
   var kbEl = $("kb"), kbField = $("kbField"), kbApp = $("kbApp"), keyOf = {}, micKey = null;
   var appI = 0, kgen = 0, ktm = 0, keysOn = false;
+  /* The other forms a held letter offers, as the keyboard's own tray does. */
+  var TRAYS = { a: "a à á â ä ã å", e: "e è é ê ë", i: "i ì í î ï", o: "o ò ó ô ö õ", u: "u ù ú û ü", c: "c ç ć", n: "n ñ ń", s: "s ß ś š", y: "y ÿ", z: "z ž ź", l: "l ł", d: "d đ", h: "h ħ" };
   function buildKeys() {
     kbEl.innerHTML = ""; keyOf = {};
     ["qwertyuiop", "asdfghjkl", "zxcvbnm"].forEach(function (row, ri) {
       var r = el("div", "krow r" + (ri + 1));
       if (ri === 2) r.appendChild(el("div", "k wide", "\u21E7"));
-      row.split("").forEach(function (ch) {
-        var k = el("div", "k", ch); k.appendChild(el("span", "pop", ch)); keyOf[ch] = k; r.appendChild(k);
+      row.split("").forEach(function (ch, ci) {
+        var k = el("div", "k letter", ch); k.appendChild(el("span", "pop", ch)); keyOf[ch] = k; r.appendChild(k);
+        if (TRAYS[ch]) {
+          var tray = el("span", "tray" + (ci >= row.length / 2 ? " r" : ""));
+          TRAYS[ch].split(" ").forEach(function (alt) { tray.appendChild(el("i", alt === ch ? "on" : null, alt)); });
+          k.appendChild(tray); k.tray = true;
+        }
       });
       if (ri === 2) r.appendChild(el("div", "k wide", "\u232B"));
       kbEl.appendChild(r);
@@ -1827,7 +1847,7 @@
     var apps = C.apps.fields, f = apps[appI % apps.length], text = f.text;
     kbApp.textContent = f.app;
     [].forEach.call($("applist").children, function (li, i) { li.classList.toggle("on", i === appI % apps.length); });
-    var slot = fieldFor(f), i = 0;
+    var slot = fieldFor(f), i = 0, trayed = false;
     // The first two words by key, the rest by voice.
     var cut = (function () { var k = 0; for (var q = 0; q < text.length; q++) if (text[q] === " " && ++k === 2) return q + 1; return Math.ceil(text.length / 3); })();
     if (reduced) { slot.t.textContent = text; slot.c.classList.add("off"); return; }
@@ -1835,9 +1855,24 @@
       if (g !== kgen) return;
       if (i < cut) {
         var k = keyOf[text[i].toLowerCase()]; i++;
-        if (k) { k.classList.add("down"); setTimeout(function () { k.classList.remove("down"); }, 110); }
+        // One key per line is held: the tray of small keys opens over it,
+        // then the letter lands.
+        if (k && k.tray && !trayed) {
+          trayed = true;
+          k.classList.add("down");
+          klater(260, function () {
+            k.classList.add("hold");
+            klater(820, function () {
+              k.classList.remove("hold"); k.classList.remove("down");
+              slot.t.textContent = text.slice(0, i);
+              klater(240, press);
+            });
+          });
+          return;
+        }
+        if (k) { k.classList.add("down"); setTimeout(function () { if (g === kgen) k.classList.remove("down"); }, 150); }
         slot.t.textContent = text.slice(0, i);
-        klater(150 + Math.random() * 90, press); return;
+        klater(190 + Math.random() * 80, press); return;
       }
       micKey.classList.add("down"); micKey.classList.add("live");
       klater(420, function () {
@@ -1853,7 +1888,11 @@
     })();
   }
   function resumeKeys() { if (keysOn) return; keysOn = true; if (kbEl.children.length) playApp(); }
-  function pauseKeys() { keysOn = false; kgen++; clearTimeout(ktm); if (micKey) { micKey.classList.remove("down"); micKey.classList.remove("live"); } }
+  function pauseKeys() {
+    keysOn = false; kgen++; clearTimeout(ktm);
+    [].forEach.call(kbEl.querySelectorAll(".k.down, .k.hold"), function (k) { k.classList.remove("down"); k.classList.remove("hold"); });
+    if (micKey) micKey.classList.remove("live");
+  }
 
   /* =====================================================================
      THE GLITCH. Any text the cursor crosses flickers into ones and zeros
