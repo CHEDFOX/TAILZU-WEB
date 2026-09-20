@@ -86,15 +86,25 @@
   .wrap { max-width: 1140px; margin: 0 auto; padding: 0 28px; }
   .eye { font-family: var(--mono); font-size: 11px; letter-spacing: .2em; text-transform: uppercase; }
 
-  /* ---- masthead ------------------------------------------------------- */
-  .mast { position: relative; z-index: 6; display: flex; justify-content: space-between; align-items: center; padding: 26px 0; }
-  .mark { display: inline-flex; align-items: center; }
+  /* ---- masthead ---------------------------------------------------------
+     THE HEADER RIDES EVERY SCREEN. It sticks, the mark in the middle and
+     the download on the right, and it takes the tone of the screen under
+     it: pale on a dark field, ink on a light one, with a wash of that
+     field's own colour behind it once the page has moved. One header, the
+     same on every screen, never in the way of any of them. */
+  .mast { position: sticky; top: 0; z-index: 30; padding: 16px 0; --mast-bg: var(--violet); }
+  .mast::before { content: ""; position: absolute; inset: 0; z-index: -1; background: var(--mast-bg); opacity: 0; transition: opacity .3s, background-color .3s; }
+  .mast.stuck::before { opacity: .84; }
+  .mast.stuck { -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); }
+  .mast .in3 { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; }
+  .mark { grid-column: 2; justify-self: center; display: inline-flex; align-items: center; }
   .mark svg { height: 30px; width: auto; display: block; }
-  .mast nav { display: flex; gap: 26px; align-items: center; }
-  .mast nav a { color: var(--grey); font-size: 13.5px; transition: color .18s; }
-  .mast nav a:hover { color: var(--white); }
-  .mast nav a.cta { color: var(--ink); background: var(--white); padding: 9px 18px; border-radius: 999px; font-weight: 500; font-size: 13px; }
+  .mark rect { transition: fill .3s; }
+  .mast nav { grid-column: 3; justify-self: end; display: flex; gap: 26px; align-items: center; }
+  .mast nav a.cta { color: var(--ink); background: var(--white); padding: 9px 18px; border-radius: 999px; font-weight: 500; font-size: 13px; transition: background .3s, color .3s; }
   .mast nav a.cta:hover { opacity: .82; }
+  .mast[data-tone="light"] .mark rect { fill: var(--ink2); }
+  .mast[data-tone="light"] nav a.cta { background: var(--ink2); color: var(--paper); }
 
   /* ---- the one title ---------------------------------------------------
      Over the buttons, four words at most, not in the accent. Nothing over
@@ -124,7 +134,7 @@
      the eye. The current runs behind it at a whisper: every language in
      the air, none of it competing with the sentence in front. */
   .hero {
-    position: relative; overflow: hidden; margin: 0; padding: 22px 0 58px;
+    position: relative; overflow: hidden; margin: 0; padding: 22px 0 48px;
     min-height: clamp(480px, 76vh, 680px); display: grid; align-items: center;
     animation: fade 1.2s .2s both;
   }
@@ -138,7 +148,7 @@
      nobody's typography. */
   .spoken {
     margin: 12px 0 26px; min-height: 1.3em; display: flex; flex-wrap: wrap; gap: .05em .42em;
-    font-family: 'Caveat', 'Kalam', cursive; font-weight: 600; font-size: clamp(30px, 3.8vw, 54px); line-height: 1.22;
+    font-family: 'Caveat', 'Kalam', cursive; font-weight: 600; font-size: clamp(32px, 4.1vw, 58px); line-height: 1.22;
     transition: opacity .6s, transform .38s;
   }
   .spoken .w {
@@ -146,12 +156,16 @@
     text-decoration-thickness: 2px; text-underline-offset: .1em; text-decoration-color: transparent;
     transition: opacity .3s, transform .5s cubic-bezier(.2,.8,.2,1), color .5s, text-decoration-color .5s;
   }
-  .spoken .w.in { opacity: 1; transform: translateY(0) rotate(var(--tilt, 0deg)); }
+  .spoken .w.in { opacity: 1; transform: translateY(0) rotate(var(--tilt, 0deg)); animation: float 3.6s ease-in-out infinite alternate; animation-delay: var(--ph, 0s); }
+  @keyframes float { to { translate: 0 -4px; } }
   /* MEANT. The fillers are struck and the typos get the squiggle everyone
      has seen under their own spelling — and then the clean line arrives
      without either. The two marks the whole world already knows. */
   .spoken .w.drop { opacity: .32; text-decoration-line: line-through; text-decoration-color: currentColor; }
   .spoken .w.fix { text-decoration-line: underline; text-decoration-style: wavy; text-decoration-color: var(--rose); }
+  /* And then the typo is fixed where it stands: the word changes to what
+     it should have been, and the squiggle turns into a clean green line. */
+  .spoken .w.fixed { text-decoration-line: underline; text-decoration-style: solid; text-decoration-color: #6EE7A8; }
   .spoken.done { opacity: .55; }
   /* THE STATE: the story, one word at a time, rolling — heard, meant,
      written, sent — with the keyboard's own wave beside it. */
@@ -165,7 +179,7 @@
      the line goes on — born warm, like everything else on this page. */
   .written {
     margin: 14px 0 0; min-height: 2.2em; font-family: var(--serif); font-weight: 380; font-optical-sizing: auto;
-    font-size: clamp(38px, 5.8vw, 88px); line-height: 1.08; letter-spacing: -.022em; color: var(--white); text-wrap: balance;
+    font-size: clamp(40px, 6.3vw, 98px); line-height: 1.06; letter-spacing: -.024em; color: var(--white); text-wrap: balance;
     transition: opacity .38s, transform .38s;
   }
   .written .hl { color: #FFDCA6; }
@@ -173,6 +187,13 @@
   .stage .row { transition: opacity .38s, transform .38s; }
   .stage.out .row, .stage.out .spoken, .stage.out .written { opacity: 0; transform: translateY(-12px); }
   .hero .speak { margin-top: 30px; }
+  /* THE LANGUAGES, in a line along the bottom: every one the page will
+     play, the one playing lit, the line sliding so it is always in view.
+     A visitor sees theirs coming. */
+  .langs { margin-top: 46px; overflow: hidden; -webkit-mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent); mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent); }
+  .langtrack { display: flex; gap: 34px; white-space: nowrap; padding: 0 8%; font-family: var(--mono); font-size: 11px; letter-spacing: .22em; text-transform: uppercase; color: var(--dim); transition: transform .9s cubic-bezier(.2,.8,.2,1); will-change: transform; }
+  .langtrack span { transition: color .4s; }
+  .langtrack span.on { color: var(--white); }
   /* THE LIGHT IS ALIVE. The pool is its own layer under the threads, and
      the script breathes it: it swells a little on a slow cycle, brightens
      for a beat each time a phrase reaches the word, and fills with the
@@ -234,7 +255,7 @@
      Its font size is the word's, so the roll distance is written in ems. */
   .slot {
     position: relative; display: block; height: 1.2em; overflow: hidden;
-    font-family: var(--serif); font-style: italic; font-weight: 400; font-size: 22px; line-height: 1.1;
+    font-family: var(--serif); font-style: italic; font-weight: 400; font-size: 24px; line-height: 1.1;
     letter-spacing: 0; text-transform: none; color: var(--grey);
   }
   .roll { display: block; }
@@ -307,8 +328,23 @@
      is set once for all of them: a small mono kicker, a serif title, a
      sans line under it. What changes from field to field is the colour and
      the thing shown. */
-  .band { padding: 104px 0; }
-  .band .kick { margin: 0 0 16px; font-family: var(--mono); font-size: 11px; letter-spacing: .22em; text-transform: uppercase; opacity: .72; }
+  .band { padding: 104px 0; overflow: hidden; }
+  /* The current under every screen, in that screen's own lighter shade:
+     ink at a whisper on the light fields, pale at a whisper on the dark. */
+  canvas.current { position: absolute; inset: 0; width: 100%; height: 100%; display: block; z-index: 0; }
+  .band > .wrap { position: relative; z-index: 2; }
+  /* THE DOWNLOAD, ON EVERY SCREEN, in that screen's own colours. */
+  .get-it { display: inline-flex; align-items: center; height: 44px; padding: 0 22px; border-radius: 999px; font-size: 13.5px; font-weight: 500; white-space: nowrap; transition: transform .12s, opacity .2s; }
+  .get-it:hover { opacity: .86; }
+  .get-it:active { transform: translateY(1px); }
+  .on-saffron .get-it { background: var(--ink2); color: var(--saffron); }
+  .on-paper .get-it { background: var(--ink2); color: var(--paper); }
+  .on-lilac .get-it { background: var(--indigo); color: #fff; }
+  .on-teal .get-it { background: #fff; color: var(--teal-deep); }
+  .on-indigo .get-it { background: var(--sun); color: var(--indigo-deep); }
+  .on-ink .get-it { background: var(--white); color: var(--ink); }
+  .getrow { margin: 44px 0 0; }
+  .desk .getrow { margin-top: 28px; }
   .band h2 { margin: 0 0 18px; font-family: var(--serif); font-weight: 400; font-size: clamp(34px, 4.4vw, 60px); line-height: 1.02; letter-spacing: -.025em; text-wrap: balance; max-width: 14em; }
   .band .lede { margin: 0; max-width: 560px; font-size: clamp(16px, 1.35vw, 19px); line-height: 1.55; text-wrap: pretty; }
   .band .head { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 24px 64px; align-items: end; margin-bottom: 56px; }
@@ -344,9 +380,33 @@
 
   /* THE APPS. Four text fields as the apps draw them, each carrying a line
      Tailzu wrote, so the claim "everywhere you type" is four places. */
-  .fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
-  .field { border-radius: 18px; padding: 20px 22px; background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.14); }
-  .field .fn { font-family: var(--mono); font-size: 11px; letter-spacing: .2em; text-transform: uppercase; opacity: .72; margin-bottom: 14px; }
+  /* THE PHONE. The keyboard as it is on the phone, typing into whichever
+     app is open: a key goes down and its letter pops up over it the way a
+     real key does — and then the mic key, and the rest of the line lands
+     at once. Beside it, the apps, the open one lit. */
+  .apps { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 40px 64px; align-items: center; }
+  .applist { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+  .applist li { display: flex; align-items: center; gap: 16px; padding: 14px 18px; border-radius: 14px; border: 1px solid rgba(255,255,255,.14); color: rgba(255,255,255,.6); font-size: 15px; transition: background .35s, color .35s, transform .35s; }
+  .applist li.on { background: rgba(255,255,255,.12); color: #fff; transform: translateX(8px); }
+  .applist .fn { font-family: var(--mono); font-size: 11px; letter-spacing: .2em; text-transform: uppercase; min-width: 74px; }
+  .phone { width: min(400px, 100%); margin: 0 auto; border-radius: 40px; padding: 12px; background: #0B0A09; box-shadow: 0 50px 90px -40px rgba(0,0,0,.7), inset 0 0 0 1px rgba(255,255,255,.08); }
+  .screen { background: #F2F2F7; border-radius: 30px 30px 0 0; padding: 22px 16px 16px; min-height: 178px; color: var(--ink2); }
+  .appbar { display: flex; align-items: center; gap: 8px; font-family: var(--mono); font-size: 11px; letter-spacing: .2em; text-transform: uppercase; color: var(--ink2-soft); margin-bottom: 14px; }
+  .appdot { width: 8px; height: 8px; border-radius: 50%; background: var(--teal); }
+  .appfield .bubble, .appfield .mail, .appfield .memo, .appfield .search { font-size: 15px; }
+  .appfield .car { height: 1em; vertical-align: -.15em; }
+  .kb { background: #D1D4DA; border-radius: 0 0 30px 30px; padding: 8px 4px 10px; display: grid; gap: 9px; }
+  .krow { display: flex; gap: 5px; padding: 0 2px; }
+  .krow.r2 { padding: 0 6%; }
+  .k { position: relative; flex: 1 1 0; min-width: 0; height: 42px; border-radius: 6px; background: #fff; box-shadow: 0 1px 0 #898A8D; display: grid; place-items: center; font-family: var(--sans); font-size: 17px; color: #000; transition: transform .08s, background .08s; }
+  .k.wide { flex: 1.5 1 0; background: #ABB0BA; font-size: 12px; }
+  .k.space { flex: 5 1 0; font-size: 12px; color: #444; }
+  .k.mic { flex: 1.5 1 0; background: var(--ink); color: var(--white); transition: background .2s, color .2s; }
+  .k.mic svg { width: 16px; height: 16px; }
+  .k.mic.live { background: var(--amber); color: var(--ink); }
+  .k.down { transform: translateY(1px); background: #E3E5EA; box-shadow: none; }
+  .k .pop { position: absolute; left: 50%; bottom: calc(100% - 6px); width: 160%; height: 58px; border-radius: 9px 9px 7px 7px; background: #fff; box-shadow: 0 2px 8px rgba(0,0,0,.28); display: grid; place-items: center; font-size: 28px; color: #000; opacity: 0; transform: translateX(-50%) scale(.7); transform-origin: 50% 100%; transition: opacity .09s, transform .12s; pointer-events: none; z-index: 2; }
+  .k.down .pop { opacity: 1; transform: translateX(-50%) scale(1); }
   .bubble { display: inline-block; max-width: 92%; padding: 12px 16px; border-radius: 18px 18px 4px 18px; background: var(--leaf); color: var(--ink2); font-size: 16px; line-height: 1.4; }
   .mail { background: #fff; color: var(--ink2); border-radius: 10px; padding: 14px 16px; font-size: 16px; line-height: 1.45; }
   .mail .to { font-family: var(--mono); font-size: 11px; letter-spacing: .12em; color: var(--ink2-soft); margin-bottom: 8px; }
@@ -421,7 +481,7 @@
   /* THE PRICE. A title, a line, one button, and the three marks. */
   .free { position: relative; max-width: 720px; }
   .free .dl { justify-content: flex-start; margin-top: 28px; }
-  .logos { position: absolute; right: 28px; top: 6px; display: flex; gap: 20px; }
+  .logos { position: absolute; right: 28px; bottom: 30px; z-index: 2; display: flex; gap: 20px; }
   .logos svg { width: 26px; height: 26px; fill: var(--ink2); opacity: .82; }
   .on-sun .dl a.primary { height: 56px; padding: 0 34px; font-size: 15px; }
   .on-sun .dl a { background: rgba(27,23,18,.08); border-color: rgba(27,23,18,.16); box-shadow: none; color: var(--ink2); }
@@ -475,10 +535,8 @@
   @media (max-width: 900px) {
     .hero { min-height: clamp(440px, 66vh, 600px); padding: 14px 0 40px; }
     .plate { left: -20%; width: 140%; }
-    .mast nav a:not(.cta) { display: none; }
-    .band .head, .desk { grid-template-columns: minmax(0, 1fr); }
-    .free { padding-top: 46px; }
-    .logos { right: auto; left: 28px; top: 0; }
+    .band .head, .desk, .apps { grid-template-columns: minmax(0, 1fr); }
+    .logos { right: 20px; bottom: 22px; }
     .dl { justify-content: flex-start; }
     .steps { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
     .tonegrid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -490,7 +548,8 @@
     .slot { font-size: 19px; }
     .written { font-size: 36px; }
     .speak span { font-size: 12.5px; }
-    .tonegrid, .fields { grid-template-columns: minmax(0, 1fr); }
+    .tonegrid { grid-template-columns: minmax(0, 1fr); }
+    .k { height: 38px; font-size: 15px; }
     .key { width: 84px; height: 84px; }
     .key.wide { width: 130px; }
   }
@@ -502,8 +561,8 @@
 </head>
 <body>
 
-<div class="wrap">
-  <header class="mast">
+<header class="mast" id="mast" data-tone="dark">
+  <div class="wrap in3">
     <!-- THE MARK, NOT THE NAME. The app icon, redrawn as a few shapes from
          its own measured geometry so the one-file site stays one file and it
          is crisp at any size: three squares, the hatched link, the line up
@@ -525,11 +584,10 @@
     <nav>
       <a href="/download" class="cta" id="navdl">Download</a>
     </nav>
-  </header>
+  </div>
+</header>
 
-</div>
-
-<section class="hero" id="river">
+<section class="hero" id="river" data-tone="dark">
   <!-- The pool of light, under everything, breathed by the script. -->
   <div class="light" id="light" aria-hidden="true"><div class="pool" id="pool"></div></div>
   <!-- The current, at a whisper, behind the sentence: everything anybody
@@ -563,6 +621,7 @@
       </svg>
       <span id="micLabel">Speak</span>
     </button>
+    <div class="langs" id="langs" aria-hidden="true"><div class="langtrack" id="langtrack"></div></div>
   </div>
 </section>
 
@@ -572,33 +631,38 @@
 <!-- THE FIELDS. Six of them, each one colour, each one thing:
      how it works, the tones, the apps, the desk, the price, the questions.
      Every word comes from the backend; these are the fallbacks. -->
-<section class="band on-saffron reveal" id="how">
+<section class="band on-saffron reveal" data-tone="light" id="how">
+  <canvas class="current" data-shade="ink" aria-hidden="true"></canvas>
   <div class="wrap">
     <div class="head">
-      <div><p class="kick" id="howKick">How it works</p><h2 id="howTitle">Talk. It writes.</h2></div>
+      <div><h2 id="howTitle">Talk. It writes.</h2></div>
     </div>
     <div class="steps" id="steps"></div>
+    <p class="getrow"><a class="get-it" data-dl href="/download">Download</a></p>
   </div>
 </section>
 
-<section class="band on-paper reveal" id="tone">
+<section class="band on-paper reveal" data-tone="light" id="tone">
+  <canvas class="current" data-shade="ink" aria-hidden="true"></canvas>
   <div class="wrap">
     <div class="head">
-      <div><p class="kick" id="toneKick">Tone</p><h2 id="toneTitle">Same words. Your tone.</h2></div>
+      <div><h2 id="toneTitle">Same words. Your tone.</h2></div>
       <p class="lede" id="toneLede">Pick once. Every message wears it.</p>
     </div>
     <p class="said" id="toneSaid"></p>
     <div class="tonegrid" id="toneGrid"></div>
+    <p class="getrow"><a class="get-it" data-dl href="/download">Download</a></p>
   </div>
 </section>
 
 <!-- THE MACHINES. Say it rough, and a clean prompt lands in the box of
      whichever machine you talk to. Three tabs, one line, the same picture
      the phone shows in its own keyboard bar. -->
-<section class="band on-lilac reveal" id="llm">
+<section class="band on-lilac reveal" data-tone="light" id="llm">
+  <canvas class="current" data-shade="ink" aria-hidden="true"></canvas>
   <div class="wrap">
     <div class="head">
-      <div><p class="kick" id="llmKick">Prompts</p><h2 id="llmTitle">Talk to the machine.</h2></div>
+      <div><h2 id="llmTitle">Talk to the machine.</h2></div>
       <p class="lede" id="llmLede">Say it rough. A clean prompt lands in the box.</p>
     </div>
     <div class="stagebox">
@@ -609,25 +673,38 @@
         <div class="wfoot"><span class="tabs" id="llmTabs" role="tablist" aria-label="Which machine"></span><span class="send" aria-hidden="true">↑</span></div>
       </div>
     </div>
+    <p class="getrow"><a class="get-it" data-dl href="/download">Download</a></p>
   </div>
 </section>
 
-<section class="band on-teal reveal" id="apps">
+<section class="band on-teal reveal" data-tone="dark" id="apps">
+  <canvas class="current" data-shade="pale" aria-hidden="true"></canvas>
   <div class="wrap">
     <div class="head">
-      <div><p class="kick" id="appsKick">Everywhere</p><h2 id="appsTitle">It's a keyboard.</h2></div>
+      <div><h2 id="appsTitle">It's a keyboard.</h2></div>
     </div>
-    <div class="fields" id="fields"></div>
+    <div class="apps">
+      <div class="phone" aria-hidden="true">
+        <div class="screen">
+          <div class="appbar"><span class="appdot"></span><span id="kbApp">Message</span></div>
+          <div class="appfield" id="kbField"></div>
+        </div>
+        <div class="kb" id="kb"></div>
+      </div>
+      <ul class="applist" id="applist"></ul>
+    </div>
+    <p class="getrow"><a class="get-it" data-dl href="/download">Download</a></p>
   </div>
 </section>
 
-<section class="band on-indigo reveal" id="desk">
+<section class="band on-indigo reveal" data-tone="dark" id="desk">
+  <canvas class="current" data-shade="pale" aria-hidden="true"></canvas>
   <div class="wrap">
     <div class="desk">
       <div>
-        <p class="kick" id="deskKick">On the desk</p>
         <h2 id="deskTitle">Touch Ctrl. Take control.</h2>
         <p class="lede" id="deskLede">Mac and Windows.</p>
+        <p class="getrow"><a class="get-it" data-dl href="/download">Download</a></p>
       </div>
       <!-- The tray app's way in: tap Ctrl twice (or Alt twice). Two keys
            drawn is the gesture. -->
@@ -639,10 +716,11 @@
 <!-- FOR DEVELOPERS. The same picture as the machines above, in the window
      a developer lives in: something said, and the change landing where the
      cursor is, typed clean. -->
-<section class="band on-ink reveal" id="dev">
+<section class="band on-ink reveal" data-tone="dark" id="dev">
+  <canvas class="current" data-shade="pale" aria-hidden="true"></canvas>
   <div class="wrap">
     <div class="head">
-      <div><p class="kick" id="devKick">For developers</p><h2 id="devTitle">Talk to your editor.</h2></div>
+      <div><h2 id="devTitle">Talk to your editor.</h2></div>
       <p class="lede" id="devLede">Say the change. It lands where the cursor is.</p>
     </div>
     <div class="stagebox">
@@ -657,36 +735,40 @@
         <div class="wfoot"><span id="devFoot">TypeScript</span><span>UTF-8</span></div>
       </div>
     </div>
+    <p class="getrow"><a class="get-it" data-dl href="/download">Download</a></p>
   </div>
 </section>
 
-<section class="band on-sun reveal" id="free">
+<section class="band on-sun reveal" data-tone="light" id="free">
+  <canvas class="current" data-shade="ink" aria-hidden="true"></canvas>
   <div class="wrap">
-    <!-- The three platforms, as their marks, in the field's corner. The one
-         button below goes to whichever of them this visitor is on. -->
-    <div class="logos" aria-label="iPhone, Android, Windows" role="img">
-        <svg viewBox="0 0 24 24"><path d="M12.152 6.896c-.948 0-2.415-1.078-3.96-1.04-2.04.027-3.91 1.183-4.961 3.014-2.117 3.675-.546 9.103 1.519 12.09 1.013 1.454 2.208 3.09 3.792 3.039 1.52-.065 2.09-.987 3.935-.987 1.831 0 2.35.987 3.96.948 1.637-.026 2.676-1.48 3.676-2.948 1.156-1.688 1.636-3.325 1.662-3.415-.039-.013-3.182-1.221-3.22-4.857-.026-3.04 2.48-4.494 2.597-4.559-1.429-2.09-3.623-2.324-4.39-2.376-2-.156-3.675 1.09-4.61 1.09zM15.53 3.83c.843-1.012 1.4-2.427 1.245-3.83-1.207.052-2.662.805-3.532 1.818-.78.896-1.454 2.338-1.273 3.714 1.338.104 2.715-.688 3.559-1.701"/></svg>
-        <svg viewBox="0 0 24 24"><path d="M3.609 1.814L13.792 12 3.61 22.186a.996.996 0 0 1-.61-.92V2.734a1 1 0 0 1 .609-.92zm10.89 10.893l2.302 2.302-10.937 6.333 8.635-8.635zm3.199-3.198l2.807 1.626a1 1 0 0 1 0 1.73l-2.808 1.626L15.206 12l2.492-2.491zM5.864 2.658L16.802 8.99l-2.303 2.303-8.635-8.635z"/></svg>
-        <svg viewBox="0 0 24 24"><path d="M0 3.449L9.75 2.1v9.451H0m10.949-9.602L24 0v11.4H10.949M0 12.6h9.75v9.451L0 20.699M10.949 12.6H24V24l-12.9-1.801"/></svg>
-    </div>
     <div class="free">
       <h2 id="freeTitle">Free to start.</h2>
       <p class="lede" id="freeLede">Upgrade when you need more.</p>
       <div class="dl" id="dl2"></div>
     </div>
   </div>
-</section>
-
-<section class="band on-paper reveal" id="questions">
-  <div class="wrap">
-    <div class="head">
-      <div><p class="kick" id="faqKick">Questions</p><h2 id="faqTitle">Asked, answered.</h2></div>
-    </div>
-    <div class="faq" id="faq"></div>
+  <!-- The three platforms, as their marks, in the screen's bottom corner.
+       The one button above goes to whichever of them this visitor is on. -->
+  <div class="logos" aria-label="iPhone, Android, Windows" role="img">
+    <svg viewBox="0 0 24 24"><path d="M12.152 6.896c-.948 0-2.415-1.078-3.96-1.04-2.04.027-3.91 1.183-4.961 3.014-2.117 3.675-.546 9.103 1.519 12.09 1.013 1.454 2.208 3.09 3.792 3.039 1.52-.065 2.09-.987 3.935-.987 1.831 0 2.35.987 3.96.948 1.637-.026 2.676-1.48 3.676-2.948 1.156-1.688 1.636-3.325 1.662-3.415-.039-.013-3.182-1.221-3.22-4.857-.026-3.04 2.48-4.494 2.597-4.559-1.429-2.09-3.623-2.324-4.39-2.376-2-.156-3.675 1.09-4.61 1.09zM15.53 3.83c.843-1.012 1.4-2.427 1.245-3.83-1.207.052-2.662.805-3.532 1.818-.78.896-1.454 2.338-1.273 3.714 1.338.104 2.715-.688 3.559-1.701"/></svg>
+    <svg viewBox="0 0 24 24"><path d="M3.609 1.814L13.792 12 3.61 22.186a.996.996 0 0 1-.61-.92V2.734a1 1 0 0 1 .609-.92zm10.89 10.893l2.302 2.302-10.937 6.333 8.635-8.635zm3.199-3.198l2.807 1.626a1 1 0 0 1 0 1.73l-2.808 1.626L15.206 12l2.492-2.491zM5.864 2.658L16.802 8.99l-2.303 2.303-8.635-8.635z"/></svg>
+    <svg viewBox="0 0 24 24"><path d="M0 3.449L9.75 2.1v9.451H0m10.949-9.602L24 0v11.4H10.949M0 12.6h9.75v9.451L0 20.699M10.949 12.6H24V24l-12.9-1.801"/></svg>
   </div>
 </section>
 
-<footer>
+<section class="band on-paper reveal" data-tone="light" id="questions">
+  <canvas class="current" data-shade="ink" aria-hidden="true"></canvas>
+  <div class="wrap">
+    <div class="head">
+      <div><h2 id="faqTitle">Asked, answered.</h2></div>
+    </div>
+    <div class="faq" id="faq"></div>
+    <p class="getrow"><a class="get-it" data-dl href="/download">Download</a></p>
+  </div>
+</section>
+
+<footer data-tone="dark">
   <div class="wrap"><div class="in">
     <span>© 2026 Tailzu</span>
     <nav><a href="/privacy">Privacy</a><a href="/terms">Terms</a><a href="/download">Download</a></nav>
@@ -761,7 +843,7 @@
     // THE WORDS BELOW THE RIVER. The backend's; these stand in until it
     // answers. {n} is the free monthly word count the backend reports.
     how: {
-      kick: "How it works", title: "Talk. It writes.",
+      title: "Talk. It writes.",
       steps: [
         { title: "You speak." },
         { title: "It hears what you mean." },
@@ -769,7 +851,7 @@
       ]
     },
     tone: {
-      kick: "Tone", title: "Same words. Your tone.",
+      title: "Same words. Your tone.",
       lede: "Pick once. Every message wears it.",
       said: "hey can u send the file tonight its kinda urgent",
       tones: [
@@ -780,7 +862,7 @@
       ]
     },
     apps: {
-      kick: "Everywhere", title: "It's a keyboard.",
+      title: "It's a keyboard.",
       fields: [
         { kind: "message", app: "Message", text: "Can we push the call to four?" },
         { kind: "mail", app: "Mail", to: "To: Priya", text: "The deploy is done, but abhi testing baaki hai." },
@@ -789,7 +871,7 @@
       ]
     },
     desk: {
-      kick: "On the desk", title: "Touch Ctrl. Take control.",
+      title: "Touch Ctrl. Take control.",
       lede: "Mac and Windows.",
       // The tray app's way in: a double-tap on Ctrl (or Alt). Two keys drawn
       // is the gesture; `join` is what goes between them, and nothing does.
@@ -800,21 +882,21 @@
       lede: "Upgrade when you need more."
     },
     llm: {
-      kick: "Prompts", title: "Talk to the machine.",
+      title: "Talk to the machine.",
       lede: "Say it rough. A clean prompt lands in the box.",
       targets: ["ChatGPT", "Claude", "Grok"], more: "and more", tag: "New chat",
       said: "okay so um help me think through pricing for the team plan like per seat or usage or maybe both and what could go wrong with each",
       wrote: "Help me think through pricing for the team plan: per seat, usage-based, or a hybrid of the two. For each, give the price point, the target customer and the biggest risk."
     },
     dev: {
-      kick: "For developers", title: "Talk to your editor.",
+      title: "Talk to your editor.",
       lede: "Say the change. It lands where the cursor is.",
       app: "Cursor", file: "upload.ts", lang: "TypeScript",
       said: "um add a retry to the upload thing like three attempts with backoff and log every failure",
       wrote: "// Add a retry to the upload: three attempts with exponential backoff. Log each failure."
     },
     faq: {
-      kick: "Questions", title: "Asked, answered.",
+      title: "Asked, answered.",
       items: [
         { q: "Does it work in WhatsApp?", a: "Yes. It's a keyboard. Every app." },
         { q: "Which languages?", a: "22 Indian. Most of the world's." },
@@ -845,62 +927,37 @@
      sentence flows out. The page stops arguing and hands the argument over.
      ================================================================== */
   var own = null;                 // set once the visitor's own clip has run
-  var rraf = 0, last = 0;
 
-  /**
-   * Four lanes. Three carry the mess in and one carries the sentence out, and
-   * no two inbound lanes run at the same speed — equal speeds would beat
-   * against each other and read as one repeating pattern rather than three
-   * separate people talking at once.
-   *
-   * `take` is which cases a lane carries: interleaved rather than sliced, so
-   * three scripts are on screen at once instead of three lanes of English
-   * followed by three lanes of Devanagari.
-   */
   /* ---------------------------------------------------------------------
-     THE TANGLE, on canvas
+     THE CURRENT, on canvas — one engine, every screen.
 
-     Speech does not arrive in lanes, so there are two dozen curves thrown
-     from a fixed seed — the same mess on every load, tunable by one number.
-     Three rules keep a tangle from becoming a bug:
+     Speech does not arrive in lanes, so there are a few dozen curves thrown
+     from a fixed seed — the same current on every load, tunable by one
+     number — each carrying one sentence in one hand, crossing the screen
+     left to right with a slow breath. The hero's runs in the page's own
+     colours; every field below has one in its own lighter shade, a
+     watermark of the same talk under the same words.
 
-       · the control points step rightward, which makes x monotonic and is
-         the only thing standing between this and upside-down words;
-       · the last control point sits level with the caret, so nothing arrives
-         at an angle and gets rotated where it meets the cursor;
-       · the middle one is thrown anywhere at all, and that is where the
-         crossing and the knotting come from.
+     Two rules keep a current from becoming a bug: the control points step
+     rightward, which makes x monotonic and is the only thing between this
+     and upside-down words; and a word is placed once, at the angle of the
+     curve under its middle, cut into pieces only on a bend.
 
-     Light and dark is the other half. Most curves sit a shade above the
-     ground and a few come up almost to paper, so the left has depth rather
-     than one even wash of grey.
-
-     WORDS, NOT LETTERS. Each word is placed once, at the angle of the curve
-     under its first letter. Setting a transform per glyph is five times the
-     work for a difference nobody can see on curves this long and this shallow.
+     The cost is linear in words drawn per frame, and a phrase is seven
+     words where a filled curve is forty — which is the trade that buys the
+     count. Each screen's current runs only while that screen is on.
      ------------------------------------------------------------------- */
-  /* Eighty threads, each carrying one sentence rather than a filled ribbon.
-     The cost is linear in words drawn per frame, and a phrase is seven words
-     where a filled curve is forty — which is the trade that buys the count.
-     Measured on one machine, after the transform work: 60 threads 48fps, 78
-     threads 39fps, 96 threads 32fps, 116 threads 28fps. Raising it is one
-     number, and so is the frame rate it costs. */
-  var TANGLE = 44, END = [790, 284], VB = [1440, 520];
-  var cv = $("tangle"), g2 = cv.getContext("2d");
+  var VB = [1440, 520];
   /* HANDWRITTEN. Speech is a person, and a person writes by hand — so the
-     mess arrives in handwriting, and only the word that swallows it is
-     set in type. That contrast is the product: hand in, type out.
-     Caveat carries the Latin. Kalam sits behind it for the Devanagari, which
-     Caveat does not have; every other script falls through, glyph by glyph,
-     to whatever the machine has — the canvas does that on its own. One hand
-     at several weights rather than twelve faces: the variety is in the
-     pressure of the pen, not in the font menu. */
+     mess arrives in handwriting, and only what it becomes is set in type.
+     Caveat carries the Latin. Kalam sits behind it for the Devanagari; every
+     other script falls through, glyph by glyph, to whatever the machine
+     has. One hand at several weights rather than twelve faces. */
   var FACES = [
     { w: "400", f: "'Caveat','Kalam',cursive" }, { w: "500", f: "'Caveat','Kalam',cursive" },
     { w: "600", f: "'Caveat','Kalam',cursive" }, { w: "700", f: "'Caveat','Kalam',cursive" },
     { w: "400", f: "'Kalam','Caveat',cursive" }, { w: "700", f: "'Kalam','Caveat',cursive" }
   ];
-
   /** Fixed seed: scattered, but the same scatter every time. */
   function seeded(a) {
     return function () {
@@ -910,15 +967,9 @@
       return ((t ^ t >>> 14) >>> 0) / 4294967296;
     };
   }
-  /* COLOUR IN, ONE WORD OUT. The threads carry the page's own colours —
-     the saffron, rose, sky, teal, sun and lilac of the fields below — and
-     depth still does the rest: a near thread is bright and big and fast, a
-     far one dim and small and slow. A hundred colours of talk pour into a
-     single pale word, which is the whole product in one picture: mess in
-     every colour, one clean sentence out. The pale is kept for the word
-     alone so it stays the calm thing on the screen.
-     VIVID: full-saturation hues, and the far end of the field lifted so
-     even a distant thread is a colour and not a grey. */
+  /* The page's own colours, for the hero's threads: saffron, rose, sky,
+     leaf, sun, ember, pale, lilac. Depth does the rest — a near thread is
+     bright, big and fast, a far one dim, small and slow. */
   var HUES = [[246,164,32], [242,84,128], [124,196,255], [110,232,168], [255,210,63], [255,122,69], [243,226,198], [201,184,255]];
   function shade(b, hue) { return "rgba(" + hue.join(",") + "," + (0.32 + 0.68 * b).toFixed(3) + ")"; }
 
@@ -940,347 +991,18 @@
     return pts;
   }
 
-  var LANES = [];
-  function build() {
-    var r = seeded(20260919);
-    LANES.length = 0;
-    // The threads leave through the box's right edge, at its middle height,
-    // wherever the window has put that.
-    END[0] = VIS[2] + 260; END[1] = (VIS[1] + VIS[3]) / 2;
-    var H = VIS[3] - VIS[1];
-    for (var k = 0; k < TANGLE; k++) {
-      // Round-robin across the three edges and evenly along each, with a
-      // jitter on top. Leaving the side to chance clusters them — and it
-      // clusters differently at every count, so the picture changed whenever
-      // the number did.
-      /* THEY COME FROM OFF THE SCREEN, NOT FROM INSIDE IT.
-         Every start is well outside the frame and every thread is already
-         at speed by the time it crosses the edge. Half enter along the left
-         — the band runs the full width, so its left edge IS the edge of the
-         screen — and the quarter over the top and the quarter from beneath
-         are held to the left of the frame, so they come in through the two
-         corners rather than dropping in out of the middle of nowhere. */
-      /* ONE CURRENT, FROM THE LEFT. They used to come in from three edges,
-         and three edges converging on a point is a starburst: every thread
-         at its own angle, a knot of crossings in the middle of the screen
-         and no direction to read it in. Now every thread enters along the
-         left, spread over more than the height of the band so the outer
-         ones cut the corners at a shallow angle, and all of them run the
-         way a sentence runs. A river has a direction. */
-      var per = TANGLE, slot = k, sx, sy;
-      var u = (slot + 0.5) / per + (r() - 0.5) * 0.9 / per;
-      u = Math.max(0, Math.min(1, u));
-      // Off the box's left edge, spread a little past its top and bottom, so
-      // the outer threads come in through the corners at a shallow angle.
-      sx = VIS[0] - 80 - r() * 320; sy = VIS[1] - H * 0.08 + u * H * 1.16;
-
-      /* A CURRENT, NOT A SCATTER.
-         The middle control point used to be thrown anywhere on the page,
-         which gave crossings but also kinks — a thread that set off one way
-         and jerked another. Now each thread leaves its edge along its own
-         bearing to the caret, twisted by up to thirty degrees, with a long
-         first handle. That is what makes an arc instead of a kink: the
-         thread over-swings, then comes round. The second handle points
-         straight back out of the caret, so everything arrives level and
-         nothing is rotated where it meets the cursor. Threads still cross —
-         top meets bottom, and the twist sends neighbours across each other —
-         but they cross the way silk does, not the way string does. */
-      // Each thread drifts to an exit of its own on the far edge: a current
-      // across the whole screen, not a funnel into one point.
-      var ey = sy + (r() - 0.5) * H * 0.5;
-      var dx = END[0] - sx, dy = ey - sy, dist = Math.sqrt(dx * dx + dy * dy);
-      /* Each thread sets off LEVEL — the way it entered — twisted by a few
-         degrees so neighbours cross, and only then bends in to the word.
-         Level in, level out: the bend is in the middle, where a current
-         narrows, and no thread ever heads straight at the caret. */
-      var bear = (r() - 0.5) * 0.5;
-      var h1 = dist * (0.42 + r() * 0.26), h2 = dist * (0.26 + r() * 0.26);
-      // x must step rightward at every control point, or words hang upside
-      // down. A twist that would send the first handle backward is clamped.
-      var p1x = sx + Math.max(0.16, Math.cos(bear)) * h1, p1y = sy + Math.sin(bear) * h1;
-      var p2x = END[0] - h2, p2y = ey + (r() - 0.5) * 6;
-      if (p1x > p2x - 24) p1x = p2x - 24;
-      var P = [sx, sy, p1x, p1y, p2x, p2y, END[0], ey];
-
-      /* DEPTH IS ONE NUMBER.
-         Bright, big and fast are the same thing — near. Dim, small and slow
-         are the same thing — far. Rolled separately they cancelled: a bright
-         thread crawling behind a dim one racing past reads as noise, because
-         the eye is trying to build a space out of it and cannot. Coupled,
-         the field has a front and a back and the threads pass each other the
-         way things do. More of them are far than near, which is also how
-         things are. */
-      // More of the field is near now: a fifth up front, a third in the
-      // middle, the rest behind — vivid, with depth still legible.
-      var b = r(), bright = b > 0.78 ? 0.80 + r() * 0.20
-                          : b > 0.46 ? 0.48 + r() * 0.30
-                                     : 0.22 + r() * 0.24;
-      LANES.push({
-        pts: sample(P),
-        face: FACES[k % FACES.length],
-        bright: bright,             // kept: a near thread's arrival is felt more than a far one's
-        size: 10 + bright * 7,      // a hand is small at its x-height
-        fill: shade(bright, HUES[Math.floor(r() * HUES.length)]),
-        track: (r() - 0.5) * 0.3,   // a hand is not squeezed, only a little uneven
-        from: k, gap: 1.10 + r() * 0.55,
-        speed: 26 + bright * 72,
-        // A slow breath, different on every thread, biggest at the far edge
-        // and nothing at all by the caret. The field moves like something
-        // alive instead of like a diagram.
-        amp: 1.2 + r() * 2.2, sw: 0.18 + r() * 0.26, ph: r() * 6.2832,
-        words: [], period: 1, off: 0, phase: r()   // spread, or they arrive as one clump
-      });
-    }
-  }
-
-  /**
-   * ONE PHRASE PER THREAD, NOT A RIBBON.
-   *
-   * Filling every curve end to end is what a river does; a bombardment is
-   * separate things arriving. It is also the whole performance story, because
-   * the cost of this is linear in words drawn per frame and a full curve at
-   * thread weight is forty words where a phrase is seven. Six times fewer
-   * words is six times the threads for the same frame — and six times the
-   * threads is what this is supposed to look like.
-   *
-   * The period is set longer than the curve, so each phrase crosses, leaves,
-   * and there is a beat of nothing before it comes round again.
-   */
-  function lay(L, one, gap) {
-    g2.font = L.face.w + " " + L.size.toFixed(1) + "px " + L.face.f;
-    var space = g2.measureText(" ").width + L.track;
-    var end = L.pts[L.pts.length - 1].s;
-    var parts = one.split(/\s+/).filter(Boolean);
-    // A right-to-left line starts at its right: laid along the thread from
-    // the far end, its last word goes down first, so what arrives at the
-    // word reads the way it is read.
-    if (/[\u0590-\u08FF\uFB1D-\uFDFF\uFE70-\uFEFF]/.test(one)) parts.reverse();
-    L.words = []; var run = 0;
-    for (var i = 0; i < parts.length; i++) {
-      var t = parts[i], w = g2.measureText(t).width + L.track * t.length;
-      // Cumulative width per character, measured once. A word that has to be
-      // broken across a bend is then sliced without measuring anything again.
-      var cum = [0], c = 0;
-      for (var q = 0; q < t.length; q++) {
-        c += g2.measureText(t[q]).width + L.track;
-        cum.push(c);
-      }
-      // Only a simple script can be cut into pieces on a bend. Anything with
-      // combining marks or joining forms — Devanagari, Tamil, Arabic, Thai —
-      // is drawn whole, or the cut lands between a letter and its vowel sign
-      // and the word breaks into dotted circles.
-      L.words.push({ t: t, w: w, at: run, cum: cum, simple: /^[\u0020-\u024F\u0370-\u052F]+$/.test(t) });
-      run += w + space;
-    }
-    L.period = Math.max(run + end * 0.12, end * (gap === undefined ? 1.18 : gap));
-    if (!(L.period > 0)) L.period = 1;
-  }
-
-  function loadRiver() {
-    var n = C.cases.length;
-    LANES.forEach(function (L) {
-      // One sentence each, a different one per thread, so twenty languages
-      // are in the air at once and no two threads read the same thing.
-      lay(L, own ? ownSaid : C.cases[L.from % n].said, L.gap);
-      L.off = L.phase * L.period;
-    });
-    // Reduced motion never starts the loop, and a loop that never starts
-    // never paints: the left half was simply blank. One still frame is the
-    // right answer — the picture without the movement, not no picture.
-    if (reduced) paint(0);
-  }
-
-  /* THE GATE is past the far edge now: nothing dissolves inside the frame.
-     Kept as the erase line the painter guarantees nothing past. */
-  var GATE = 1400, FADE = 110, ownSaid = "";
-
-  /** Slice, by hand, so the canvas shares the svg's coordinates exactly and
-   *  the caret lands where the curves end. */
-  var DPR = 1, scale = 1, ox = 0, oy = 0;
-  /* Which part of the viewBox the window is actually showing, in viewBox
-     units. The drawing is SLICED, so this is not the viewBox: at a wide
-     window the sides are cut off and at a tall one the ends are. The edge
-     fades are hung on this rather than on the viewBox, so they always sit
-     exactly at the edge of the screen — a fade at a fixed percentage of the
-     viewBox lands inside the frame at most window sizes, and a thread that
-     fades up inside the frame looks like it started there. */
-  var VIS = [0, 0, VB[0], VB[1]];
-  function sizeCanvas() {
-    var w = cv.clientWidth, h = cv.clientHeight;
-    if (!w || !h) return;
-    DPR = Math.min(2, window.devicePixelRatio || 1);
-    cv.width = Math.round(w * DPR); cv.height = Math.round(h * DPR);
-    scale = Math.max(w / VB[0], h / VB[1]);
-    ox = (w - VB[0] * scale) / 2; oy = (h - VB[1] * scale) / 2;
-    VIS[0] = -ox / scale; VIS[1] = -oy / scale;
-    VIS[2] = VIS[0] + w / scale; VIS[3] = VIS[1] + h / scale;
-    GATE = VIS[2] + 400;      // nothing dissolves inside the frame; the edge fade is the exit
-    build();
-  }
-
-  function paint(t) {
-    if (!cv.width) return;
-    t = (t || 0) / 1000;
-    // Identity transform for the clear: cv.width is already in device pixels,
-    // and clearing it under a DPR-scaled transform wipes four times the area.
-    g2.setTransform(1, 0, 0, 1, 0, 0);
-    g2.clearRect(0, 0, cv.width, cv.height);
-    g2.setTransform(DPR * scale, 0, 0, DPR * scale, DPR * ox, DPR * oy);
-    g2.textBaseline = "middle";
-
-    var K = DPR * scale, TX = DPR * ox, TY = DPR * oy;
-
-    /* A word is a straight run of glyphs; the line under it is not. Drawn at
-       one angle, a long word on a tight bend leaves the curve and the joint
-       with the next one reads as a break in the line.
-       So the angle is taken at the word's MIDDLE rather than its start, which
-       halves the error for nothing, and a word whose heading changes by more
-       than about six degrees across its own length is drawn in pieces — only
-       on the bends, which is where the whole cost of fixing this lives.
-       One setTransform replaces save/translate/rotate/restore: four calls to
-       one, and measurably about twice as quick. */
-    for (var i = 0; i < LANES.length; i++) {
-      var L = LANES[i], pts = L.pts, nP = pts.length, end = pts[nP - 1].s;
-      g2.font = L.face.w + " " + L.size.toFixed(1) + "px " + L.face.f;
-      g2.fillStyle = L.fill;
-      var base = -L.period + (L.off % L.period), p = 0, curA = 1;
-      g2.globalAlpha = 1;
-      // The breath: one sine per thread per frame, scaled to nothing by the
-      // caret so the mouth never moves. Folded into the translate, so it
-      // costs a multiply per piece and no extra call.
-      var sway = L.amp * Math.sin(t * L.sw + L.ph) / end;
-
-      for (var copy = 0; copy < 2; copy++) {
-        var shift = base + copy * L.period;
-        for (var j = 0; j < L.words.length; j++) {
-          var W = L.words[j], s0 = shift + W.at;
-          if (s0 + W.w < 0) continue;
-          if (s0 > end) break;
-          while (p < nP - 1 && pts[p].s < s0) p++;
-          while (p > 0 && pts[p].s > s0) p--;
-
-          // How far the heading turns across this word decides the pieces.
-          var q2 = p;
-          while (q2 < nP - 1 && pts[q2].s < s0 + W.w) q2++;
-          var turn = Math.abs(pts[q2].a - pts[p].a);
-          var pieces = W.simple && turn > 0.105 ? Math.min(W.t.length, Math.ceil(turn / 0.105)) : 1;
-          var per = Math.ceil(W.t.length / pieces), h = p;
-
-          for (var c0 = 0; c0 < W.t.length; c0 += per) {
-            var c1 = Math.min(W.t.length, c0 + per);
-            var sA = s0 + W.cum[c0], sM = s0 + (W.cum[c0] + W.cum[c1]) / 2;
-            while (h < nP - 1 && pts[h].s < sM) h++;
-            while (h > 0 && pts[h].s > sM) h--;
-            var am = pts[h].a, g3 = h;
-            /* THE DISSOLVE IS ALONG EACH THREAD, NOT A SHAPE ON THE SCREEN.
-               A piece thins with ITS OWN distance to the gate, eased, so
-               every thread fades out along its own path over the last
-               hundred and fifty units and reaches nothing exactly at the
-               letter. A screen-space ellipse could only ever approximate
-               that, and where it was wrong it was wrong as a visible edge.
-               Taken at the piece's midpoint, so a long piece straddling the
-               gate is not drawn bright because its first letter was. */
-            var dg = (GATE - pts[h].x) / FADE, al = dg >= 1 ? 1 : dg <= 0 ? 0 : dg * dg * (3 - 2 * dg);
-            if (al === 0) continue;
-            if (al !== curA) { g2.globalAlpha = al; curA = al; }
-            while (g3 < nP - 1 && pts[g3].s < sA) g3++;
-            while (g3 > 0 && pts[g3].s > sA) g3--;
-            var qa = pts[g3];
-            var cs = Math.cos(am), sn = Math.sin(am);
-            g2.setTransform(K * cs, K * sn, -K * sn, K * cs, K * qa.x + TX, K * (qa.y + sway * (end - qa.s)) + TY);
-            g2.fillText(W.t.slice(c0, c1), 0, 0);
-          }
-        }
-        p = 0;
-      }
-    }
-    g2.globalAlpha = 1;
-    g2.setTransform(K, 0, 0, K, TX, TY);
-
-    /* The edges are faded HERE rather than by a css mask on the element. A
-       compositor mask over a canvas that is redrawn every frame makes the
-       browser re-rasterise the masked result every frame; doing it with four
-       gradient wipes costs a few fills and nothing else.
-
-       Hung on the VISIBLE rectangle, not the viewBox, and short: just enough
-       that a word is not sliced in half at the boundary, not so much that it
-       fades up inside the frame. A thread should already be at full strength
-       by the time you can see it, or it looks like it began there. */
-    var EL = VIS[0], ET = VIS[1], ER = VIS[2], EB = VIS[3], EW = 44, OV = 600;
-    g2.globalCompositeOperation = "destination-out";
-    var f;
-    f = g2.createLinearGradient(EL, 0, EL + EW, 0);
-    f.addColorStop(0, "#000"); f.addColorStop(1, "rgba(0,0,0,0)");
-    g2.fillStyle = f; g2.fillRect(EL - OV, ET - OV, EW + OV, (EB - ET) + OV * 2);
-    // The far edge fades too: the current leaves the screen the way it
-    // came in, thinning out rather than being cut.
-    f = g2.createLinearGradient(ER - 180, 0, ER, 0);
-    f.addColorStop(0, "rgba(0,0,0,0)"); f.addColorStop(1, "#000");
-    g2.fillStyle = f; g2.fillRect(ER - 180, ET - OV, 180 + OV, (EB - ET) + OV * 2);
-    f = g2.createLinearGradient(0, ET, 0, ET + EW);
-    f.addColorStop(0, "#000"); f.addColorStop(1, "rgba(0,0,0,0)");
-    g2.fillStyle = f; g2.fillRect(EL - OV, ET - OV, (ER - EL) + OV * 2, EW + OV);
-    f = g2.createLinearGradient(0, EB - EW, 0, EB);
-    f.addColorStop(0, "rgba(0,0,0,0)"); f.addColorStop(1, "#000");
-    g2.fillStyle = f; g2.fillRect(EL - OV, EB - EW, (ER - EL) + OV * 2, EW + OV);
-    /* The mouth, and the block beyond it, ERASE rather than paint ground.
-       They used to fill with the ground colour, which was the same thing
-       while the ground was flat — and it is not any more. There is a pool of
-       warm light under this band now, and painting flat ink over its right
-       half cut a hard vertical edge straight down the middle of it. Erasing
-       lets the light through, so the threads dissolve into the glow instead
-       of into a patch of paint that happens to match.
-
-       The mouth is centred ON the caret, not short of it. It was 190 units
-       wide and sitting twenty-two to its left, so its solid core began a
-       hundred units early and the threads died before they ever reached the
-       line — which is exactly what it looked like. Tight and centred now.
-
-       The block is there because a word is anchored at its START, so one
-       arriving at the cursor hangs its own width past it, and every tail
-       longer than the mouth's radius came out the far side as a ghost of a
-       left-hand thread on the right, where only the written sentence
-       belongs. The curves all end level at the caret, so a straight edge
-       there cannot cut anything short, and it is buried inside the mouth's
-       solid core so there is no seam. The written line is in the svg above
-       this and is untouched. */
-    /* Smaller and shifted left, because the WORD hides the knot now. The
-       mouth only has to dissolve the last of the threads in the few units
-       before the first glyph, so that they run into it rather than stopping
-       short of it in the dark. Anything wider reopens the gap. */
-    /* Past the gate, nothing. A word is anchored at its start so its tail
-       hangs past the anchor, and by the gate every piece is already at zero
-       alpha — this is a guarantee, not a visible cut. There is no ellipse any
-       more: the dissolve is done per piece, along each thread, above. */
-    g2.fillStyle = "#000";
-    g2.fillRect(GATE, VIS[1] - 300, (VIS[2] - GATE) + 300, (VIS[3] - VIS[1]) + 600);
-    g2.globalCompositeOperation = "source-over";
-  }
-
-  /* ---------------------------------------------------------------------
-     THE WAVES TAKE THE SCROLL FIRST, THEN THE PAGE MOVES
-
-     From the very top, the first few hundred pixels of downward scroll are
-     poured into the flow instead of into the document: you push, the river
-     answers, and only once that budget is spent does the page start to move.
-     After that it is ordinary scrolling and never does it again.
-
-     A budget in pixels rather than a count of flicks, because a trackpad
-     sends thirty small events where a mouse wheel sends three, and counting
-     events made the hold four times longer on one than on the other.
-
-     The guards are what keep it from being hostile: only from the very top,
-     only downward, never on touch — a phone has no wheel to intercept and
-     stealing a swipe is a far worse trade — and never under reduced motion.
-     The whole thing is over in well under a second, and the way out is to
-     keep doing exactly what you were already doing.
-
-     Past that, the coupling is permanent and free: every pixel of scroll,
-     either way, feeds the flow, and it falls back over about half a second
-     once the page is still.                                              */
-  var boost = 1, lastY = window.pageYOffset || 0, held = 460;
+  /* THE RUSH. A scroll speeds every current on the page, and it falls back
+     to a walk over about half a second once the page is still. From the
+     very top, the first few hundred pixels of wheel are poured into the
+     flow instead of the document — you push, the page answers, then it
+     scrolls. Never on touch, never under reduced motion, over in under a
+     second. Relaxed once per frame however many currents are running. */
+  var boost = 1, boostAt = 0, lastY = window.pageYOffset || 0, held = 460;
   var coarse = window.matchMedia && window.matchMedia("(pointer: coarse)").matches;
-
+  function relax(now) {
+    var dt = boostAt ? Math.min(64, now - boostAt) : 16; boostAt = now;
+    boost += (1 - boost) * Math.min(1, dt / 620);
+  }
   window.addEventListener("wheel", function (e) {
     if (reduced || coarse || held <= 0) return;
     if ((window.pageYOffset || 0) > 4) { held = 0; return; }   // not from the top
@@ -1289,42 +1011,212 @@
     held -= e.deltaY;
     boost = Math.min(9, boost + e.deltaY * 0.055);
   }, { passive: false });
-
   window.addEventListener("scroll", function () {
     var y = window.pageYOffset || 0, d = Math.abs(y - lastY); lastY = y;
     if (y > 4) held = 0;        // the page has moved; the hold is spent for good
     boost = Math.min(9, boost + d * 0.045);
   }, { passive: true });
 
-  /* ---------------------------------------------------------------------
-     THE CARET
+  /**
+   * One current. `o.count` threads; `o.tone` [r,g,b] with `o.alpha` [lo,hi]
+   * for a single-colour current, or the page's hues without it; `o.calm`
+   * for a slower one; `o.tick(dt, now)` runs once per frame for whatever
+   * else keeps time with it.
+   */
+  function Current(canvas, o) {
+    var g = canvas.getContext("2d"), lanes = [], VIS = [0, 0, VB[0], VB[1]];
+    var DPR = 1, scale = 1, ox = 0, oy = 0, raf = 0, last = 0, ready = false;
+    var count = o.count || 44, calm = o.calm ? 0.6 : 1;
 
-     Everything this product does ends at somebody's cursor, so the cursor is
-     what the speech runs into and what the sentence comes out of. No object
-     standing in for the product — the product's own destination.
+    /* ONE CURRENT, FROM THE LEFT. Every thread enters along the left edge,
+       spread a little past the top and bottom so the outer ones cut the
+       corners at a shallow angle, sets off level twisted by a few degrees
+       so neighbours cross, bends once in the middle, and drifts to an exit
+       of its own on the far edge. A river has a direction. Depth is one
+       number: bright, big and fast are near; dim, small and slow are far. */
+    function build() {
+      var r = seeded(20260919 + (o.seed || 0));
+      lanes.length = 0;
+      var H = VIS[3] - VIS[1], EX = VIS[2] + 260;
+      for (var k = 0; k < count; k++) {
+        var u = (k + 0.5) / count + (r() - 0.5) * 0.9 / count;
+        u = Math.max(0, Math.min(1, u));
+        var sx = VIS[0] - 80 - r() * 320, sy = VIS[1] - H * 0.08 + u * H * 1.16;
+        var ey = sy + (r() - 0.5) * H * 0.5;
+        var dx = EX - sx, dy = ey - sy, dist = Math.sqrt(dx * dx + dy * dy);
+        var bear = (r() - 0.5) * 0.5;
+        var h1 = dist * (0.42 + r() * 0.26), h2 = dist * (0.26 + r() * 0.26);
+        // x must step rightward at every control point, or words hang
+        // upside down. A twist that would send the first handle backward
+        // is clamped.
+        var p1x = sx + Math.max(0.16, Math.cos(bear)) * h1, p1y = sy + Math.sin(bear) * h1;
+        var p2x = EX - h2, p2y = ey + (r() - 0.5) * 6;
+        if (p1x > p2x - 24) p1x = p2x - 24;
+        var b = r(), bright = b > 0.78 ? 0.80 + r() * 0.20 : b > 0.46 ? 0.48 + r() * 0.30 : 0.22 + r() * 0.24;
+        var hue = HUES[Math.floor(r() * HUES.length)];
+        lanes.push({
+          pts: sample([sx, sy, p1x, p1y, p2x, p2y, EX, ey]),
+          face: FACES[k % FACES.length], bright: bright,
+          size: 10 + bright * 7,      // a hand is small at its x-height
+          fill: o.tone ? "rgba(" + o.tone.join(",") + "," + (o.alpha[0] + (o.alpha[1] - o.alpha[0]) * bright).toFixed(3) + ")" : shade(bright, hue),
+          track: (r() - 0.5) * 0.3,   // a hand is not squeezed, only a little uneven
+          from: k + (o.seed || 0), gap: 1.10 + r() * 0.55,
+          speed: (26 + bright * 72) * calm,
+          // A slow breath, different on every thread, biggest at the far
+          // edge. The field moves like something alive, not a diagram.
+          amp: 1.2 + r() * 2.2, sw: 0.18 + r() * 0.26, ph: r() * 6.2832,
+          words: [], period: 1, off: 0, phase: r()   // spread, or they arrive as one clump
+        });
+      }
+    }
 
-     It holds still and blinks while nothing is happening. With the microphone
-     open it stops blinking, turns amber and breathes with the voice, so what
-     grows and shrinks is the thing the words are about to be written at.   */
-  var listening = false, voice = 0, level = 0;
+    /* ONE PHRASE PER THREAD, NOT A RIBBON. Each phrase crosses, leaves, and
+       there is a beat of nothing before it comes round again. */
+    function lay(L, one, gap) {
+      g.font = L.face.w + " " + L.size.toFixed(1) + "px " + L.face.f;
+      var space = g.measureText(" ").width + L.track;
+      var end = L.pts[L.pts.length - 1].s;
+      var parts = one.split(/\s+/).filter(Boolean);
+      // A right-to-left line is laid from its far end, so it reads the way
+      // it is read.
+      if (/[֐-ࣿיִ-﷿ﹰ-﻿]/.test(one)) parts.reverse();
+      L.words = []; var run = 0;
+      for (var i = 0; i < parts.length; i++) {
+        var t = parts[i], w = g.measureText(t).width + L.track * t.length;
+        // Cumulative width per character, measured once, so a word broken
+        // across a bend is sliced without measuring again.
+        var cum = [0], c = 0;
+        for (var q = 0; q < t.length; q++) { c += g.measureText(t[q]).width + L.track; cum.push(c); }
+        // Only a simple script can be cut on a bend. Anything with combining
+        // marks or joining forms is drawn whole, or the cut lands between a
+        // letter and its vowel sign.
+        L.words.push({ t: t, w: w, at: run, cum: cum, simple: /^[ -ɏͰ-ԯ]+$/.test(t) });
+        run += w + space;
+      }
+      L.period = Math.max(run + end * 0.12, end * (gap === undefined ? 1.18 : gap));
+      if (!(L.period > 0)) L.period = 1;
+    }
+    /** One sentence per thread, a different one each, so many languages are
+     *  in the air at once; or the one line given, on every thread. */
+    function load(text) {
+      var n = C.cases.length;
+      lanes.forEach(function (L) { lay(L, text || C.cases[L.from % n].said, L.gap); L.off = L.phase * L.period; });
+      ready = true;
+      // Reduced motion never starts the loop: one still frame is the
+      // picture without the movement, not no picture.
+      if (reduced) paint(0);
+    }
+    /** Sliced, by hand: the visible rectangle in drawing units, so the edge
+     *  fades sit exactly at the edge of the screen at every size. */
+    function size() {
+      var w = canvas.clientWidth, h = canvas.clientHeight;
+      if (!w || !h) return;
+      DPR = Math.min(2, window.devicePixelRatio || 1);
+      canvas.width = Math.round(w * DPR); canvas.height = Math.round(h * DPR);
+      scale = Math.max(w / VB[0], h / VB[1]);
+      ox = (w - VB[0] * scale) / 2; oy = (h - VB[1] * scale) / 2;
+      VIS[0] = -ox / scale; VIS[1] = -oy / scale;
+      VIS[2] = VIS[0] + w / scale; VIS[3] = VIS[1] + h / scale;
+      build();
+    }
 
-  /* The pool's lift: kicked by the stage at each beat, gone in half a beat. */
-  var glow = 0;
+    function paint(t) {
+      if (!canvas.width || !ready) return;
+      t = (t || 0) / 1000;
+      g.setTransform(1, 0, 0, 1, 0, 0);
+      g.clearRect(0, 0, canvas.width, canvas.height);
+      g.textBaseline = "middle";
+      var K = DPR * scale, TX = DPR * ox, TY = DPR * oy;
 
-  /* THE POOL BREATHES. A slow swell nobody could time, a lift for every
-     arrival, and the voice filling it while the microphone is open. Two
-     properties the compositor owns, so this costs the frame nothing. */
-  var pool = $("pool");
+      /* A word is a straight run of glyphs; the line under it is not. The
+         angle is taken at the word's MIDDLE, and a word whose heading turns
+         more than about six degrees across its length is drawn in pieces —
+         only on the bends. One setTransform per piece. */
+      for (var i = 0; i < lanes.length; i++) {
+        var L = lanes[i], pts = L.pts, nP = pts.length, end = pts[nP - 1].s;
+        g.font = L.face.w + " " + L.size.toFixed(1) + "px " + L.face.f;
+        g.fillStyle = L.fill;
+        var base = -L.period + (L.off % L.period), p = 0;
+        var sway = L.amp * Math.sin(t * L.sw + L.ph) / end;
+        for (var copy = 0; copy < 2; copy++) {
+          var shift = base + copy * L.period;
+          for (var j = 0; j < L.words.length; j++) {
+            var W = L.words[j], s0 = shift + W.at;
+            if (s0 + W.w < 0) continue;
+            if (s0 > end) break;
+            while (p < nP - 1 && pts[p].s < s0) p++;
+            while (p > 0 && pts[p].s > s0) p--;
+            var q2 = p;
+            while (q2 < nP - 1 && pts[q2].s < s0 + W.w) q2++;
+            var turn = Math.abs(pts[q2].a - pts[p].a);
+            var pieces = W.simple && turn > 0.105 ? Math.min(W.t.length, Math.ceil(turn / 0.105)) : 1;
+            var per = Math.ceil(W.t.length / pieces), h = p;
+            for (var c0 = 0; c0 < W.t.length; c0 += per) {
+              var c1 = Math.min(W.t.length, c0 + per);
+              var sA = s0 + W.cum[c0], sM = s0 + (W.cum[c0] + W.cum[c1]) / 2;
+              while (h < nP - 1 && pts[h].s < sM) h++;
+              while (h > 0 && pts[h].s > sM) h--;
+              var am = pts[h].a, g3 = h;
+              while (g3 < nP - 1 && pts[g3].s < sA) g3++;
+              while (g3 > 0 && pts[g3].s > sA) g3--;
+              var qa = pts[g3], cs = Math.cos(am), sn = Math.sin(am);
+              g.setTransform(K * cs, K * sn, -K * sn, K * cs, K * qa.x + TX, K * (qa.y + sway * (end - qa.s)) + TY);
+              g.fillText(W.t.slice(c0, c1), 0, 0);
+            }
+          }
+          p = 0;
+        }
+      }
+      g.setTransform(K, 0, 0, K, TX, TY);
+
+      /* The edges fade HERE rather than by a css mask: a compositor mask
+         over a canvas redrawn every frame re-rasterises it every frame; four
+         gradient wipes cost a few fills. Hung on the VISIBLE rectangle, so
+         they sit exactly at the edge of the screen, and short — a thread is
+         at full strength by the time it can be seen. */
+      var EL = VIS[0], ET = VIS[1], ER = VIS[2], EB = VIS[3], EW = 44, OV = 600, f;
+      g.globalCompositeOperation = "destination-out";
+      f = g.createLinearGradient(EL, 0, EL + EW, 0);
+      f.addColorStop(0, "#000"); f.addColorStop(1, "rgba(0,0,0,0)");
+      g.fillStyle = f; g.fillRect(EL - OV, ET - OV, EW + OV, (EB - ET) + OV * 2);
+      f = g.createLinearGradient(ER - 180, 0, ER, 0);
+      f.addColorStop(0, "rgba(0,0,0,0)"); f.addColorStop(1, "#000");
+      g.fillStyle = f; g.fillRect(ER - 180, ET - OV, 180 + OV, (EB - ET) + OV * 2);
+      f = g.createLinearGradient(0, ET, 0, ET + EW);
+      f.addColorStop(0, "#000"); f.addColorStop(1, "rgba(0,0,0,0)");
+      g.fillStyle = f; g.fillRect(EL - OV, ET - OV, (ER - EL) + OV * 2, EW + OV);
+      f = g.createLinearGradient(0, EB - EW, 0, EB);
+      f.addColorStop(0, "rgba(0,0,0,0)"); f.addColorStop(1, "#000");
+      g.fillStyle = f; g.fillRect(EL - OV, EB - EW, (ER - EL) + OV * 2, EW + OV);
+      g.globalCompositeOperation = "source-over";
+    }
+
+    function frame(now) {
+      raf = requestAnimationFrame(frame);
+      if (!last) last = now;
+      var dt = Math.min(64, now - last); last = now;
+      relax(now);
+      if (o.tick) o.tick(dt, now);
+      for (var i = 0; i < lanes.length; i++) { var L = lanes[i]; L.off = (L.off + L.speed * boost * dt / 1000) % L.period; }
+      paint(now);
+    }
+    function start() { if (!raf && !reduced) { last = 0; raf = requestAnimationFrame(frame); } }
+    function stop() { if (raf) { cancelAnimationFrame(raf); raf = 0; } }
+    return { size: size, load: load, start: start, stop: stop, el: canvas };
+  }
+
+  /* THE POOL BREATHES. A slow swell nobody could time, a lift at every beat
+     of the sentence, and the voice filling it while the microphone is open.
+     Opacity and transform only, so the compositor moves a painted surface. */
+  var listening = false, level = 0, glow = 0;
+  var pool = $("pool"), light = $("light");
   function breathe(t) {
     var v = listening ? level : 0;
     pool.style.opacity = Math.min(1, 0.72 + glow * 0.38 + v * 0.5).toFixed(3);
-    // Leaning with the flow, and scaled about its own core rather than its
-    // box, so the breath is the light swelling and not a sheet sliding.
     pool.style.transform = "rotate(-2.5deg) scale(" + (1 + 0.03 * Math.sin(t * 0.42) + glow * 0.05 + v * 0.09).toFixed(4) + ")";
   }
   /* The light sits under the written line's first words, where the clean
      sentence is born. Measured against the light's own box. */
-  var light = $("light");
   function placePool() {
     var pw = pool.offsetWidth, ph = pool.offsetHeight;
     if (!pw) return;
@@ -1335,32 +1227,18 @@
     pool.style.top = (gy - ph * 0.5).toFixed(1) + "px";
   }
 
-  function river(now) {
-    rraf = requestAnimationFrame(river);
-    if (!last) last = now;
-    var dt = Math.min(64, now - last); last = now;
-    boost += (1 - boost) * Math.min(1, dt / 620);      // falls back to a walk
-    glow *= Math.pow(0.5, dt / 420);                    // half a beat, and it is gone
-
-    for (var i = 0; i < LANES.length; i++) {
-      var L = LANES[i];
-      L.off = (L.off + L.speed * boost * dt / 1000) % L.period;
-    }
-    paint(now);
-    breathe(now / 1000);
-  }
-
+  /* The hero's current, in colour, keeping time for the pool; and one per
+     screen below it, in that screen's own lighter shade — ink at a whisper
+     on the light fields, pale at a whisper on the dark — calmer and fewer. */
+  var hero = Current($("tangle"), { count: 44, tick: function (dt, now) { glow *= Math.pow(0.5, dt / 420); breathe(now / 1000); } });
+  var currents = [hero], ownSaid = "";
+  [].forEach.call(document.querySelectorAll("canvas.current"), function (c, i) {
+    var ink = c.getAttribute("data-shade") === "ink";
+    currents.push(Current(c, { count: 22, calm: true, seed: (i + 1) * 97, tone: ink ? [27, 23, 18] : [243, 226, 198], alpha: ink ? [0.07, 0.13] : [0.09, 0.17] }));
+  });
+  function sizeCanvas() { currents.forEach(function (c) { c.size(); }); }
+  function loadRiver() { currents.forEach(function (c, i) { c.load(i === 0 && own ? ownSaid : null); }); }
   var riverEl = $("river");
-  /* No drift under the pointer any more. The picture used to lean toward
-     the cursor, and a thing that moves when nobody asked it to reads as
-     shaking, not as depth. The current is the only motion in the box. */
-
-  /* A second ownRiver lived here, left over from the lanes version. Function
-     declarations hoist, so it silently REPLACED the real one above — and it
-     called fill(), which no longer exists, and read L.identity, which no
-     longer exists either. Nothing showed it: it only runs after a visitor
-     records something, which is the one path a page like this never takes
-     while it is being built. */
 
   // ---- reveals & idling ---------------------------------------------------
   if (window.IntersectionObserver) {
@@ -1373,13 +1251,20 @@
     // is not — this is the one thing on the page that costs a phone battery.
     new IntersectionObserver(function (es) {
       var on = es[0].isIntersecting;
-      if (on && !rraf && !reduced) { last = 0; rraf = requestAnimationFrame(river); }
-      else if (!on && rraf) { cancelAnimationFrame(rraf); rraf = 0; }
+      if (on) hero.start(); else hero.stop();
       // The sentence plays only while it can be seen.
       seen = on; if (on) resumeStage(); else pauseStage();
     }, { threshold: 0 }).observe($("river"));
+    // Every other screen's current runs only while that screen is on.
+    currents.slice(1).forEach(function (c) {
+      new IntersectionObserver(function (es) { if (es[0].isIntersecting) c.start(); else c.stop(); }, { threshold: 0 }).observe(c.el);
+    });
+    // And the keyboard types only while it can be seen.
+    new IntersectionObserver(function (es) { if (es[0].isIntersecting) resumeKeys(); else pauseKeys(); }, { threshold: 0.25 }).observe($("apps"));
   } else {
     [].forEach.call(document.querySelectorAll(".reveal"), function (el) { el.classList.add("in"); });
+    currents.forEach(function (c) { c.start(); });
+    resumeKeys();
   }
 
   // ---- downloads ----------------------------------------------------------
@@ -1408,6 +1293,7 @@
     a.href = href; a.className = "primary"; a.textContent = C.download.get || "Download";
     el2.appendChild(a);
     $("navdl").href = href;
+    [].forEach.call(document.querySelectorAll("[data-dl]"), function (b) { b.href = href; b.textContent = C.download.get || "Download"; });
   }
 
   /* The caption under the button is gone, so the button is the only place
@@ -1443,7 +1329,7 @@
   function setText(id, s) { var e = $(id); if (e && s != null) e.textContent = fill(s); }
 
   function paintBelow() {
-    setText("howKick", C.how.kick); setText("howTitle", C.how.title);
+    setText("howTitle", C.how.title);
     var steps = $("steps"); steps.innerHTML = "";
     C.how.steps.forEach(function (s, i) {
       var d = el("div", "step");
@@ -1453,7 +1339,7 @@
       steps.appendChild(d);
     });
 
-    setText("toneKick", C.tone.kick); setText("toneTitle", C.tone.title); setText("toneLede", C.tone.lede);
+    setText("toneTitle", C.tone.title); setText("toneLede", C.tone.lede);
     setText("toneSaid", C.tone.said);
     var tg = $("toneGrid"); tg.innerHTML = "";
     C.tone.tones.forEach(function (t, i) {
@@ -1463,23 +1349,17 @@
       tg.appendChild(d);
     });
 
-    setText("appsKick", C.apps.kick); setText("appsTitle", C.apps.title);
-    var fs = $("fields"); fs.innerHTML = "";
-    C.apps.fields.forEach(function (f) {
-      var d = el("div", "field");
-      d.appendChild(el("div", "fn", f.app));
-      if (f.kind === "mail") {
-        var m = el("div", "mail");
-        m.appendChild(el("div", "to", f.to || ""));
-        m.appendChild(el("div", null, f.text));
-        d.appendChild(m);
-      } else {
-        d.appendChild(el("div", f.kind === "message" ? "bubble" : f.kind === "memo" ? "memo" : "search", f.text));
-      }
-      fs.appendChild(d);
+    setText("appsTitle", C.apps.title);
+    var al = $("applist"); al.innerHTML = "";
+    C.apps.fields.forEach(function (f, i) {
+      var li = el("li", i === appI % C.apps.fields.length ? "on" : "");
+      li.appendChild(el("span", "fn", f.app));
+      li.appendChild(el("span", null, f.text));
+      al.appendChild(li);
     });
+    if (!kbEl.children.length) buildKeys();
 
-    setText("deskKick", C.desk.kick); setText("deskTitle", C.desk.title); setText("deskLede", C.desk.lede);
+    setText("deskTitle", C.desk.title); setText("deskLede", C.desk.lede);
     // The gesture, drawn as keys: a double-tap is the same key twice.
     var chord = $("chord"); chord.innerHTML = "";
     C.desk.keys.forEach(function (k, i) {
@@ -1493,7 +1373,7 @@
 
     paintStages();
 
-    setText("faqKick", C.faq.kick); setText("faqTitle", C.faq.title);
+    setText("faqTitle", C.faq.title);
     var fq = $("faq"); fq.innerHTML = "";
     C.faq.items.forEach(function (it) {
       var d = el("div", "qa");
@@ -1567,7 +1447,7 @@
                          said: function () { return C.dev.said; }, wrote: function () { return C.dev.wrote; } });
 
   function paintStages() {
-    setText("llmKick", C.llm.kick); setText("llmTitle", C.llm.title); setText("llmLede", C.llm.lede);
+    setText("llmTitle", C.llm.title); setText("llmLede", C.llm.lede);
     var tabs = $("llmTabs"); tabs.innerHTML = "";
     C.llm.targets.forEach(function (name, i) {
       var b = el("button", null, name); b.type = "button"; b.setAttribute("role", "tab");
@@ -1582,13 +1462,14 @@
     if (C.llm.more) tabs.appendChild(el("span", "more", C.llm.more));
     $("llmName").textContent = C.llm.targets[llmI] || "";
     setText("llmTag", C.llm.tag);
-    setText("devKick", C.dev.kick); setText("devTitle", C.dev.title); setText("devLede", C.dev.lede);
+    setText("devTitle", C.dev.title); setText("devLede", C.dev.lede);
     setText("devFile", C.dev.file); setText("devApp", C.dev.app); setText("devFoot", C.dev.lang);
   }
 
   function applyCopy() {
     $("micLabel").textContent = C.cta;
     setText("labSaid", C.hero && C.hero.said);
+    paintLangs();
     paintDownloads();
     paintBelow();
     mic.hidden = !site.demo;
@@ -1763,20 +1644,42 @@
      spaces, a sentence recast whole — is all fixed and nothing dropped: it
      was never thrown away, it was rewritten. */
   function classify(parts, wrote) {
-    var ws = wrote.split(/\s+/).map(norm).filter(Boolean), set = {};
+    var raw = wrote.split(/\s+/).filter(Boolean), ws = raw.map(norm), set = {};
     ws.forEach(function (x) { set[x] = 1; });
     var out = parts.map(function (w) {
-      var n = norm(w); if (!n || set[n]) return "keep";
+      var n = norm(w); if (!n || set[n]) return { k: "keep" };
       // A short word is never a near miss of another: "so" is not a typo
       // of "to", it is a filler. Only a word long enough to be misspelt
       // can have been.
-      if (n.length < 4) return "drop";
+      if (n.length < 4) return { k: "drop" };
       var lim = Math.max(1, Math.floor(n.length / 3));
-      for (var i = 0; i < ws.length; i++) if (Math.abs(ws[i].length - n.length) <= lim && lev(n, ws[i]) <= lim) return "fix";
-      return "drop";
+      for (var i = 0; i < ws.length; i++) {
+        if (Math.abs(ws[i].length - n.length) <= lim && lev(n, ws[i]) <= lim) {
+          // The word it becomes, with the sentence's own punctuation left
+          // off: the fix is the spelling, the full stop is the line's.
+          return { k: "fix", to: raw[i].replace(/^[\p{P}\p{S}]+|[\p{P}\p{S}]+$/gu, "") };
+        }
+      }
+      return { k: "drop" };
     });
-    if (!out.some(function (k) { return k !== "drop"; })) out = out.map(function () { return "fix"; });
+    if (!out.some(function (x) { return x.k !== "drop"; })) out = out.map(function () { return { k: "fix" }; });
     return out;
+  }
+  /* The languages along the bottom, built once from the cases; the one
+     playing lit, and the line slid so it sits in view. */
+  var langsEl = $("langs"), langTrack = $("langtrack");
+  function paintLangs() {
+    langTrack.innerHTML = "";
+    var seen = {};
+    C.cases.forEach(function (cs) { if (cs.lang && !seen[cs.lang]) { seen[cs.lang] = 1; langTrack.appendChild(el("span", null, cs.lang)); } });
+  }
+  function markLang(name) {
+    var on = null;
+    [].forEach.call(langTrack.children, function (sp) { var is = sp.textContent === name; sp.classList.toggle("on", is); if (is) on = sp; });
+    if (!on) return;
+    var x = on.offsetLeft + on.offsetWidth / 2 - langsEl.clientWidth / 2;
+    x = Math.max(0, Math.min(Math.max(0, langTrack.scrollWidth - langsEl.clientWidth), x));
+    langTrack.style.transform = "translateX(" + (-x).toFixed(1) + "px)";
   }
   function later(ms, fn) { var g = sgen; stm = setTimeout(function () { if (g === sgen) fn(); }, ms); }
 
@@ -1789,11 +1692,13 @@
     parts.forEach(function (w, i) {
       var sp = el("span", "w", w);
       sp.style.setProperty("--tilt", (((i * 7 + caseI * 13) % 11 - 5) * 0.45).toFixed(2) + "deg");
+      sp.style.setProperty("--ph", (-((i * 0.53) % 3.6)).toFixed(2) + "s");
       sp.style.color = "rgb(" + HUES[(i * 3 + caseI) % HUES.length].join(",") + ")";
       saidEl.appendChild(sp); spans.push(sp);
     });
+    markLang(cs.lang || "");
     if (reduced) {   // the last frame, standing
-      spans.forEach(function (sp, k) { sp.classList.add("in"); if (kinds[k] !== "keep") sp.classList.add(kinds[k]); });
+      spans.forEach(function (sp, k) { sp.classList.add("in"); if (kinds[k].k === "drop") sp.classList.add("drop"); if (kinds[k].to) { sp.textContent = kinds[k].to; sp.classList.add("fixed"); } });
       absorbEl.textContent = B[3]; litInto(wroteEl, cs.wrote, 0); stateEl.classList.add("done"); saidEl.classList.add("done");
       return;
     }
@@ -1806,9 +1711,13 @@
     })();
     function meant() {
       roll(B[1]);
-      spans.forEach(function (sp, k) { if (kinds[k] !== "keep") sp.classList.add(kinds[k]); });
+      spans.forEach(function (sp, k) { if (kinds[k].k !== "keep") sp.classList.add(kinds[k].k); });
       glow = Math.min(1, glow + 0.4);
-      later(720, written);
+      // Then the typos are fixed where they stand.
+      later(560, function () {
+        spans.forEach(function (sp, k) { if (kinds[k].to) { sp.textContent = kinds[k].to; sp.classList.remove("fix"); sp.classList.add("fixed"); } });
+        later(520, written);
+      });
     }
     function written() {
       roll(B[2]); carEl.classList.remove("off"); glow = 1; placePool();
@@ -1830,6 +1739,107 @@
   function pauseStage() { staged = false; sgen++; clearTimeout(stm); }
   document.addEventListener("visibilitychange", function () { if (document.hidden) pauseStage(); else if (seen) resumeStage(); });
 
+  /* =====================================================================
+     THE HEADER RIDES EVERY SCREEN. It sticks, and takes the tone of the
+     screen under it: pale mark and pale button on a dark field, ink on a
+     light one, with a wash of that field's own colour behind it once the
+     page has moved. Nine rectangles compared per scroll frame.
+     ================================================================== */
+  var mast = $("mast"), screens = [].slice.call(document.querySelectorAll("section[data-tone], footer[data-tone]")), mastTone = "", mastBg = "", mastRaf = 0;
+  function tuneMast() {
+    mastRaf = 0;
+    var mid = mast.offsetHeight / 2 + 1, cur = null;
+    for (var i = 0; i < screens.length; i++) {
+      var r = screens[i].getBoundingClientRect();
+      if (r.top <= mid && r.bottom > mid) { cur = screens[i]; break; }
+    }
+    mast.classList.toggle("stuck", (window.pageYOffset || 0) > 8);
+    if (!cur) return;
+    var tone = cur.getAttribute("data-tone");
+    if (tone !== mastTone) { mastTone = tone; mast.setAttribute("data-tone", tone); }
+    var bg = getComputedStyle(cur).backgroundColor;
+    if (!bg || bg === "transparent" || /rgba\(\s*\d+,\s*\d+,\s*\d+,\s*0\)/.test(bg)) bg = getComputedStyle(document.body).backgroundColor;
+    if (bg !== mastBg) { mastBg = bg; mast.style.setProperty("--mast-bg", bg); }
+  }
+  window.addEventListener("scroll", function () { if (!mastRaf) mastRaf = requestAnimationFrame(tuneMast); }, { passive: true });
+  window.addEventListener("resize", function () { if (!mastRaf) mastRaf = requestAnimationFrame(tuneMast); });
+  tuneMast();
+
+  /* =====================================================================
+     THE KEYBOARD
+
+     "It's a keyboard" shown rather than said: the phone's own keyboard,
+     under whichever app is open. A key goes down and its letter pops up
+     over it, the way a real key does, for the first two words — and then
+     the mic key goes amber and the rest of the line lands at once. The
+     slow way and the fast way, side by side, in one picture. Then the next
+     app. It runs only while it can be seen.
+     ================================================================== */
+  var kbEl = $("kb"), kbField = $("kbField"), kbApp = $("kbApp"), keyOf = {}, micKey = null;
+  var appI = 0, kgen = 0, ktm = 0, keysOn = false;
+  function buildKeys() {
+    kbEl.innerHTML = ""; keyOf = {};
+    ["qwertyuiop", "asdfghjkl", "zxcvbnm"].forEach(function (row, ri) {
+      var r = el("div", "krow r" + (ri + 1));
+      if (ri === 2) r.appendChild(el("div", "k wide", "\u21E7"));
+      row.split("").forEach(function (ch) {
+        var k = el("div", "k", ch); k.appendChild(el("span", "pop", ch)); keyOf[ch] = k; r.appendChild(k);
+      });
+      if (ri === 2) r.appendChild(el("div", "k wide", "\u232B"));
+      kbEl.appendChild(r);
+    });
+    var r4 = el("div", "krow r4");
+    r4.appendChild(el("div", "k wide", "123"));
+    micKey = el("div", "k mic");
+    micKey.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"></rect><path d="M5 11a7 7 0 0 0 14 0M12 18v3"></path></svg>';
+    r4.appendChild(micKey);
+    var sp = el("div", "k space", "space"); keyOf[" "] = sp; r4.appendChild(sp);
+    r4.appendChild(el("div", "k wide", "return"));
+    kbEl.appendChild(r4);
+  }
+  /** The open app's field, as that app draws it, with a place for the text. */
+  function fieldFor(f) {
+    kbField.innerHTML = "";
+    var box, t = el("span"), c = el("span", "car");
+    if (f.kind === "mail") { box = el("div", "mail"); box.appendChild(el("div", "to", f.to || "")); var body = el("div"); body.appendChild(t); body.appendChild(c); box.appendChild(body); }
+    else { box = el("div", f.kind === "message" ? "bubble" : f.kind === "memo" ? "memo" : "search"); box.appendChild(t); box.appendChild(c); }
+    kbField.appendChild(box);
+    return { t: t, c: c };
+  }
+  function klater(ms, fn) { var g = kgen; ktm = setTimeout(function () { if (g === kgen) fn(); }, ms); }
+  function playApp() {
+    var g = ++kgen; clearTimeout(ktm);
+    var apps = C.apps.fields, f = apps[appI % apps.length], text = f.text;
+    kbApp.textContent = f.app;
+    [].forEach.call($("applist").children, function (li, i) { li.classList.toggle("on", i === appI % apps.length); });
+    var slot = fieldFor(f), i = 0;
+    // The first two words by key, the rest by voice.
+    var cut = (function () { var k = 0; for (var q = 0; q < text.length; q++) if (text[q] === " " && ++k === 2) return q + 1; return Math.ceil(text.length / 3); })();
+    if (reduced) { slot.t.textContent = text; slot.c.classList.add("off"); return; }
+    (function press() {
+      if (g !== kgen) return;
+      if (i < cut) {
+        var k = keyOf[text[i].toLowerCase()]; i++;
+        if (k) { k.classList.add("down"); setTimeout(function () { k.classList.remove("down"); }, 110); }
+        slot.t.textContent = text.slice(0, i);
+        klater(150 + Math.random() * 90, press); return;
+      }
+      micKey.classList.add("down"); micKey.classList.add("live");
+      klater(420, function () {
+        micKey.classList.remove("down");
+        var rest = text.slice(cut).split(" "), j = 0;
+        (function say() {
+          if (g !== kgen) return;
+          if (j < rest.length) { j++; slot.t.textContent = text.slice(0, cut) + rest.slice(0, j).join(" "); klater(85, say); return; }
+          micKey.classList.remove("live"); slot.c.classList.add("off");
+          klater(2000, function () { appI++; playApp(); });
+        })();
+      });
+    })();
+  }
+  function resumeKeys() { if (keysOn) return; keysOn = true; if (kbEl.children.length) playApp(); }
+  function pauseKeys() { keysOn = false; kgen++; clearTimeout(ktm); if (micKey) { micKey.classList.remove("down"); micKey.classList.remove("live"); } }
+
   // ---- boot ---------------------------------------------------------------
   applyCopy();
   function boot() {
@@ -1840,7 +1850,7 @@
     // rush already warm. The page opens on something happening, not on a
     // diagram that then starts.
     if (!reduced) boost = 4;
-    if (!reduced && !rraf) { last = 0; rraf = requestAnimationFrame(river); }
+    hero.start();
     placePool();
     resumeStage();
   }
