@@ -537,6 +537,12 @@
   @keyframes signal { to { stroke-dashoffset: -20; } }
   @keyframes pip { 50% { transform: scale(1.45); opacity: .72; } }
 
+  /* The glitch's boxes: one per word, each the width its word had. Clipped
+     with clip-path rather than overflow, which would move the baseline of
+     an inline-block and drop every word a few pixels. */
+  .glb { display: inline-block; white-space: nowrap; vertical-align: baseline; text-align: left; }
+  .glb.held { clip-path: inset(0 -0.05em 0 0); }
+
   /* ---- motion ---------------------------------------------------------- */
   @keyframes fade { from { opacity: 0; } to { opacity: 1; } }
   .reveal { opacity: 0; transform: translateY(26px); transition: opacity .9s cubic-bezier(.2,.85,.25,1), transform .9s cubic-bezier(.2,.85,.25,1); }
@@ -1858,44 +1864,64 @@
      paragraph. Never on touch, never under reduced motion.
      ================================================================== */
   var GLITCH_AT = "h1,h2,h3,p,li,a,button,span,b,i,em,strong,td,th,label,dt,dd";
-  var glitchOn = typeof WeakMap === "function" ? new WeakMap() : null, origOf = glitchOn ? new WeakMap() : null;
+  var glitchOn = typeof WeakMap === "function" ? new WeakMap() : null;
   function textNodesOf(root) {
     var out = [], walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, null, false), nd;
     while ((nd = walker.nextNode())) {
       if (!/\S/.test(nd.nodeValue)) continue;
       var pe = nd.parentElement;
-      if (!pe || pe.closest("[data-noglitch], svg, script, style")) continue;
+      if (!pe || pe.closest("[data-noglitch], svg, script, style, .glw")) continue;
       out.push(nd);
     }
     return out;
   }
+  /* THE LINE NEVER MOVES. Digits are not the width of letters, so swapping
+     them in plain text would push words along and wrap a line that was
+     not wrapped. So every word goes into a box of its own exact width,
+     measured once before the first flicker, and the digits are drawn
+     inside that box — narrower, they leave a hair of room; wider, they are
+     clipped. The spaces between the boxes are the original spaces, so the
+     line breaks exactly where it did. When the run is over the original
+     text node goes back, untouched. */
   function glitch(elm) {
     if (!glitchOn || glitchOn.get(elm)) return;
     var nodes = textNodesOf(elm); if (!nodes.length) return;
-    var total = 0, items = nodes.map(function (nd) {
-      var s = origOf.get(nd) || nd.nodeValue; origOf.set(nd, s); total += s.length; return { nd: nd, s: s };
-    });
+    var total = 0; nodes.forEach(function (nd) { total += nd.nodeValue.length; });
     if (total > 320) return;      // a paragraph, not a line: leave it be
     glitchOn.set(elm, true);
+    var words = [], wraps = [], off = 0;
+    nodes.forEach(function (nd) {
+      var wrap = document.createElement("span"); wrap.className = "glw";
+      nd.nodeValue.split(/(\s+)/).forEach(function (tok) {
+        if (!tok) return;
+        if (/^\s+$/.test(tok)) { wrap.appendChild(document.createTextNode(tok)); off += tok.length; return; }
+        var b = document.createElement("span"); b.className = "glb"; b.textContent = tok;
+        wrap.appendChild(b); words.push({ el: b, s: tok, off: off }); off += tok.length;
+      });
+      nd.parentNode.replaceChild(wrap, nd); wraps.push({ wrap: wrap, nd: nd });
+    });
+    words.forEach(function (w) { w.w = w.el.getBoundingClientRect().width; });
+    words.forEach(function (w) { w.el.style.width = w.w.toFixed(2) + "px"; w.el.classList.add("held"); });
     var dur = Math.min(900, 360 + total * 8), t0 = 0, lastFlip = 0, rnd = [];
-    function flip() { rnd = items.map(function (it) { return it.s.replace(/\S/g, function () { return Math.random() < 0.5 ? "0" : "1"; }); }); }
+    function flip() { rnd = words.map(function (w) { return w.s.replace(/./g, function () { return Math.random() < 0.5 ? "0" : "1"; }); }); }
     flip();
+    function undo() {
+      wraps.forEach(function (x) { if (x.wrap.parentNode) x.wrap.parentNode.replaceChild(x.nd, x.wrap); });
+      setTimeout(function () { glitchOn.delete(elm); }, 500);
+    }
     (function step(now) {
       if (!t0) t0 = now;
       var k = Math.min(1, (now - t0) / dur);
       if (now - lastFlip > 46) { flip(); lastFlip = now; }
-      // Resolved from the left, and a little ahead of time, so the last
+      // Resolved from the left, a little ahead of time, so the last
       // characters do not linger as digits.
-      items.forEach(function (it, i) {
-        var str = it.s, len = str.length, front = Math.floor(len * k * 1.12), out = "";
-        for (var c = 0; c < len; c++) out += (c < front || str[c] === " ") ? str[c] : rnd[i][c];
-        it.nd.nodeValue = out;
+      var front = Math.floor(total * k * 1.12);
+      words.forEach(function (w, i) {
+        var out = "";
+        for (var c = 0; c < w.s.length; c++) out += (w.off + c < front) ? w.s[c] : rnd[i][c];
+        w.el.textContent = out;
       });
-      if (k < 1) requestAnimationFrame(step);
-      else {
-        items.forEach(function (it) { it.nd.nodeValue = it.s; origOf.delete(it.nd); });
-        setTimeout(function () { glitchOn.delete(elm); }, 500);
-      }
+      if (k < 1) requestAnimationFrame(step); else undo();
     })(performance.now());
   }
   if (!reduced && !coarse && glitchOn) {
