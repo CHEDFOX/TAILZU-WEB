@@ -292,11 +292,16 @@
   .search { background: #fff; color: var(--ink2); border-radius: 999px; padding: 12px 18px; font-size: 16px; display: flex; align-items: center; gap: 12px; }
   .search::before { content: ""; width: 14px; height: 14px; border: 2px solid var(--ink2-soft); border-radius: 50%; box-shadow: 5px 5px 0 -3px var(--ink2-soft); flex: none; }
 
-  /* THE DESK. One key, drawn. */
+  /* THE DESK. The chord, drawn: three keys, the ones the tray app binds. */
   .desk { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 40px 64px; align-items: center; }
-  .key { justify-self: center; width: 180px; height: 180px; border-radius: 28px; background: linear-gradient(180deg, #fff, #E7EEEC); color: var(--teal-deep); box-shadow: 0 22px 0 #B9CCC8, 0 34px 60px -20px rgba(0,0,0,.45); display: grid; place-items: center; font-family: var(--mono); font-size: 13px; letter-spacing: .2em; text-transform: uppercase; transition: transform .12s, box-shadow .12s; }
-  .key:active { transform: translateY(14px); box-shadow: 0 8px 0 #B9CCC8, 0 20px 40px -20px rgba(0,0,0,.45); }
-  .key b { display: block; font-family: var(--serif); font-weight: 400; font-size: 64px; letter-spacing: 0; text-transform: none; line-height: 1; margin-bottom: 8px; }
+  .chord { justify-self: center; display: flex; align-items: center; gap: 12px; }
+  .chord i { font-style: normal; color: rgba(255,255,255,.6); font-family: var(--mono); font-size: 18px; }
+  .key { width: 104px; height: 104px; border-radius: 20px; background: linear-gradient(180deg, #fff, #E7EEEC); color: var(--teal-deep); box-shadow: 0 14px 0 #B9CCC8, 0 26px 44px -18px rgba(0,0,0,.45); display: grid; place-items: center; text-align: center; font-family: var(--mono); font-size: 11px; letter-spacing: .16em; text-transform: uppercase; transition: transform .12s, box-shadow .12s; cursor: default; }
+  .key:active { transform: translateY(9px); box-shadow: 0 5px 0 #B9CCC8, 0 16px 30px -18px rgba(0,0,0,.45); }
+  .key.wide { width: 168px; }
+  .key b { display: block; font-family: var(--serif); font-weight: 400; font-size: 30px; letter-spacing: 0; text-transform: none; line-height: 1; }
+  .key b.glyph { font-size: 40px; }
+  .chord .cap { margin: 0; }
 
   /* THE PRICE. One number, big. */
   .free { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 32px 64px; align-items: end; }
@@ -365,7 +370,8 @@
     .river { height: 320px; }
     .speak span { font-size: 12.5px; }
     .tonegrid, .fields { grid-template-columns: minmax(0, 1fr); }
-    .key { width: 150px; height: 150px; }
+    .key { width: 84px; height: 84px; }
+    .key.wide { width: 130px; }
   }
   @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after { animation: none !important; transition: none !important; }
@@ -480,9 +486,11 @@
       <div>
         <p class="kick" id="deskKick">On the desk</p>
         <h2 id="deskTitle">Mac and Windows too.</h2>
-        <p class="lede" id="deskLede">Press a key. Talk. It's typed.</p>
+        <p class="lede" id="deskLede">Press once. Talk. Press again. It's typed.</p>
       </div>
-      <div class="key" role="img" aria-label="A key"><span><b id="deskKey">F9</b><span id="deskKeyLabel">hold to talk</span></span></div>
+      <!-- The chord the tray app actually binds by default: Ctrl (⌘ on a
+           Mac), Shift, Space. Press once to talk, again to paste. -->
+      <div class="chord" id="chord" role="img" aria-label="Control, Shift, Space"></div>
     </div>
   </div>
 </section>
@@ -594,8 +602,8 @@
     },
     desk: {
       kick: "On the desk", title: "Mac and Windows too.",
-      lede: "Press a key. Talk. It's typed.",
-      key: "F9", keyLabel: "hold to talk"
+      lede: "Press once. Talk. Press again. It's typed.",
+      keys: ["Ctrl", "Shift", "Space"], keysMac: ["⌘", "Shift", "Space"]
     },
     free: {
       kick: "Price", unit: "free words a month", title: "Free to start.",
@@ -1326,7 +1334,15 @@
     });
 
     setText("deskKick", C.desk.kick); setText("deskTitle", C.desk.title); setText("deskLede", C.desk.lede);
-    setText("deskKey", C.desk.key); setText("deskKeyLabel", C.desk.keyLabel);
+    // The chord, for this visitor's desk: Command on a Mac, Control elsewhere.
+    var chord = $("chord"); chord.innerHTML = "";
+    var keys = os() === "mac" ? C.desk.keysMac : C.desk.keys;
+    keys.forEach(function (k, i) {
+      if (i) chord.appendChild(el("i", null, "+"));
+      var d = el("div", "key" + (k.length > 5 ? " wide" : ""));
+      d.appendChild(el("b", /^[^A-Za-z]$/.test(k) ? "glyph" : null, k));
+      chord.appendChild(d);
+    });
 
     setText("freeKick", C.free.kick); setText("freeN", "{n}"); setText("freeUnit", C.free.unit);
     setText("freeTitle", C.free.title); setText("freeLede", C.free.lede);
