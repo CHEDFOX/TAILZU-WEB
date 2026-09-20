@@ -260,7 +260,7 @@
 
   /* THE STEPS. Three, numbered, because they happen in this order. Big
      numerals in the serif, so the order is the picture. */
-  .steps { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 28px; }
+  .steps { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 28px; }
   .step { border-top: 1.5px solid rgba(27,23,18,.35); padding-top: 22px; }
   .step .n { font-family: var(--serif); font-size: 56px; line-height: 1; letter-spacing: -.03em; margin: 0 0 18px; }
   .step h3 { margin: 0; font-family: var(--serif); font-weight: 400; font-size: clamp(22px, 2vw, 28px); line-height: 1.15; letter-spacing: -.015em; text-wrap: balance; }
@@ -481,8 +481,8 @@
     <div class="desk">
       <div>
         <p class="kick" id="deskKick">On the desk</p>
-        <h2 id="deskTitle">Tap Ctrl twice.</h2>
-        <p class="lede" id="deskLede">Mac and Windows. Talk. Tap twice. It's typed.</p>
+        <h2 id="deskTitle">Tap Ctrl twice. Take control.</h2>
+        <p class="lede" id="deskLede">Mac and Windows.</p>
       </div>
       <!-- The tray app's way in: tap Ctrl twice (or Alt twice). Two keys
            drawn is the gesture. -->
@@ -565,8 +565,7 @@
       steps: [
         { title: "You speak." },
         { title: "It hears what you mean." },
-        { title: "Written." },
-        { title: "Tap Ctrl. Take control." }
+        { title: "Written." }
       ]
     },
     tone: {
@@ -590,8 +589,8 @@
       ]
     },
     desk: {
-      kick: "On the desk", title: "Tap Ctrl twice.",
-      lede: "Mac and Windows. Talk. Tap twice. It's typed.",
+      kick: "On the desk", title: "Tap Ctrl twice. Take control.",
+      lede: "Mac and Windows.",
       // The tray app's way in: a double-tap on Ctrl (or Alt). Two keys drawn
       // is the gesture; `join` is what goes between them, and nothing does.
       keys: ["Ctrl", "Ctrl"], join: ""
