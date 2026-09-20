@@ -197,20 +197,26 @@
   /* The word arrives last: the field is already flowing when it fades up to
      meet it, and the rush the script starts with is what it fades up into. */
   #mark { cursor: pointer; animation: fade 1.5s .7s both; }
-  /* THE SWAP. The old word leaves the way the threads travel — a few units
-     to the right, fading — and the next arrives from the side they arrive
-     from, letter by letter, each one a beat after the last. The wrapper
-     moves; the letters fade; the word itself keeps its own transform for
-     the breath. */
-  #wordwrap { transition: transform .5s cubic-bezier(.2, .8, .2, 1), opacity .26s ease; }
-  #wordwrap.out { transform: translateX(30px); opacity: 0; }
-  /* The new word is set while the old one is still going — never an empty
-     moment at the mouth of the river. The wrapper snaps back to full and to
-     the left with no transition; only the letters, each on its own beat,
-     and the slide to rest are animated. */
-  #wordwrap.pre { transform: translateX(-22px); opacity: 1; transition: none; }
-  .absorb tspan { animation: gin .36s cubic-bezier(.2, .8, .2, 1) both; }
-  @keyframes gin { from { opacity: 0; } to { opacity: 1; } }
+  /* THE SWAP is a pull of focus. The old word goes soft and drifts on with
+     the flow while the new one comes into focus behind it, arriving from
+     the side the threads arrive from. Two texts on the same anchor: a ghost
+     that carries the old word out, and the word itself, which only ever
+     arrives. Nothing types, nothing ticks — one breath, and it has changed.
+     The wrapper carries the slide so the word's own transform stays free
+     for the swell. */
+  #wordwrap { transition: transform .6s cubic-bezier(.2, .8, .2, 1); }
+  #wordwrap.pre { transform: translateX(-18px); transition: none; }
+  .ghost { opacity: 0; pointer-events: none; }
+  .ghost.leave { animation: leave .58s cubic-bezier(.4, 0, .2, 1) both; }
+  @keyframes leave {
+    from { opacity: 1; filter: blur(0); transform: translateX(0); }
+    to   { opacity: 0; filter: blur(7px); transform: translateX(28px); }
+  }
+  #absorb.arrive { animation: arrive .62s cubic-bezier(.2, .8, .2, 1) both; }
+  @keyframes arrive {
+    from { opacity: 0; filter: blur(9px); }
+    to   { opacity: 1; filter: blur(0); }
+  }
   #mark:focus-visible { outline: 2px solid var(--white); outline-offset: 10px; border-radius: 8px; }
   /* The word's fill is set per frame in script — it washes with the accent
      as the waves merge and goes to it outright with the microphone open — so
@@ -503,6 +509,7 @@
            sent — and the wrapper is what carries each one out with the flow
            and brings the next in from where the threads come from. -->
       <g id="wordwrap">
+        <text id="absorbOld" class="absorb ghost" x="762" y="284" dy=".33em" aria-hidden="true"></text>
         <text id="absorb" class="absorb" x="762" y="284" dy=".33em">Heard.</text>
       </g>
     </g>
@@ -1050,16 +1057,8 @@
     } catch (e) { /* not laid out yet; the default stands */ }
   }
 
-  var SVGNS = "http://www.w3.org/2000/svg";
   function setAbsorb(text) {
-    // One tspan per letter, so each can arrive a beat after the last.
-    absorbEl.textContent = "";
-    text.split("").forEach(function (ch, i) {
-      var ts = document.createElementNS(SVGNS, "tspan");
-      ts.textContent = ch === " " ? "\u00A0" : ch;
-      ts.style.animationDelay = (i * 26) + "ms";
-      absorbEl.appendChild(ts);
-    });
+    absorbEl.textContent = text;
     absorbEl.setAttribute("font-size", ABSIZE);
     var room = (VIS[2] > ABX ? VIS[2] : 1440) - ABX - 40;
     var w = absorbEl.getComputedTextLength() || 0;
@@ -1082,23 +1081,26 @@
      absorbed beats what it claims to. Driven from the frame loop, so it
      runs only while the river does: never off screen, never under reduced
      motion. */
-  var wrapEl = $("wordwrap"), wordI = 0, wordAt = 0, WORD_HOLD = 3400, swapping = false;
+  var wrapEl = $("wordwrap"), ghostEl = $("absorbOld"), wordI = 0, wordAt = 0, WORD_HOLD = 3400, swapping = false;
   function words() { return (C.absorbs && C.absorbs.length) ? C.absorbs : [C.absorb]; }
   function swapWord(now) {
     var list = words(); if (list.length < 2 || swapping) return;
     swapping = true; wordAt = now;
-    wrapEl.classList.add("out");
-    setTimeout(function () {
-      if (own) { swapping = false; wrapEl.classList.remove("out"); return; }
-      wordI = (wordI + 1) % list.length;
-      wrapEl.classList.add("pre"); wrapEl.classList.remove("out");
-      setAbsorb(list[wordI]);
-      placePool();
-      warm = Math.max(warm, 0.9);            // born as light
-      void wrapEl.getBoundingClientRect();   // the pre position lands before the move
-      wrapEl.classList.remove("pre");
-      swapping = false;
-    }, 230);
+    // The ghost takes the old word, as it is right now, and carries it out.
+    ghostEl.textContent = absorbEl.textContent;
+    ghostEl.setAttribute("font-size", absorbEl.getAttribute("font-size") || ABSIZE);
+    ghostEl.style.fill = absorbEl.style.fill;
+    ghostEl.classList.remove("leave"); void ghostEl.getBBox(); ghostEl.classList.add("leave");
+    // The new one comes into focus behind it, from the left, born as light.
+    wordI = (wordI + 1) % list.length;
+    wrapEl.classList.add("pre");
+    setAbsorb(list[wordI]);
+    placePool();
+    absorbEl.classList.remove("arrive"); void absorbEl.getBBox(); absorbEl.classList.add("arrive");
+    warm = Math.max(warm, 0.9);
+    void wrapEl.getBoundingClientRect();     // the pre position lands before the move
+    wrapEl.classList.remove("pre");
+    setTimeout(function () { swapping = false; }, 620);
   }
 
   /** Slice, by hand, so the canvas shares the svg's coordinates exactly and
@@ -1395,8 +1397,12 @@
     paint(now);
 
     if (!own && !listening) {
+      // The hold shortens with the rush: a scroll from the top speeds the
+      // threads AND turns the words over faster, down to a floor where a
+      // word can still be read.
+      var hold = Math.max(760, WORD_HOLD / (1 + (boost - 1) * 0.75));
       if (!wordAt) wordAt = now + 2600;      // the first word gets its entrance first
-      else if (now - wordAt > WORD_HOLD) swapWord(now);
+      else if (now - wordAt > hold) swapWord(now);
     }
     drawAbsorb(listening);
     breathe(now / 1000);
