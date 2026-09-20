@@ -412,8 +412,8 @@
   .applist li { display: flex; align-items: center; gap: 16px; padding: 14px 18px; border-radius: 14px; border: 1px solid rgba(255,255,255,.14); color: rgba(255,255,255,.6); font-size: 15px; transition: background .35s, color .35s, transform .35s; }
   .applist li.on { background: rgba(255,255,255,.12); color: #fff; transform: translateX(8px); }
   .applist .fn { font-family: var(--mono); font-size: 11px; letter-spacing: .2em; text-transform: uppercase; min-width: 74px; }
-  .phone { width: min(400px, 100%); height: 476px; margin: 0 auto; display: flex; flex-direction: column; border-radius: 40px; padding: 12px; background: #0B0A09; box-shadow: 0 50px 90px -40px rgba(0,0,0,.7), inset 0 0 0 1px rgba(255,255,255,.08); }
-  .screen { flex: 1 1 auto; min-height: 0; background: #F2F2F7; border-radius: 30px 30px 0 0; padding: 22px 16px 16px; color: var(--ink2); }
+  .phone { width: min(400px, 100%); margin: 0 auto; border-radius: 40px; padding: 12px; background: #0B0A09; box-shadow: 0 50px 90px -40px rgba(0,0,0,.7), inset 0 0 0 1px rgba(255,255,255,.08); }
+  .screen { background: #F2F2F7; border-radius: 30px 30px 0 0; padding: 22px 16px 16px; min-height: 178px; color: var(--ink2); }
   .appbar { display: flex; align-items: center; gap: 8px; font-family: var(--mono); font-size: 11px; letter-spacing: .2em; text-transform: uppercase; color: var(--ink2-soft); margin-bottom: 14px; }
   .appdot { width: 8px; height: 8px; border-radius: 50%; background: var(--teal); }
   .appfield .bubble, .appfield .mail, .appfield .memo, .appfield .search { font-size: 15px; }
@@ -421,11 +421,17 @@
   /* THE CUT, AND WHAT IS LEFT. A few taps on the keys, then the keys are
      cut away — each one lifts a little and drops out of the board, in a
      wave from the first key to the last — and the board shrinks to what a
-     keyboard is once it has no keys: a mark, a wave, a word and a mic.
-     Tailzu's keyboard. The line then arrives by voice. */
-  .kb { position: relative; flex: none; height: 213px; overflow: hidden; background: #D1D4DA; border-radius: 0 0 30px 30px; transition: height .55s cubic-bezier(.2,.8,.2,1), background .4s; }
-  .kb.small { height: 98px; background: #E9EAEE; }
+     keyboard is once it has no keys: the mic, alone.
+     The board's height is its rows' height, as it always was; the shrink
+     is driven from script, which locks that measured height in for one
+     frame so the animation has something to leave from. The phone's own
+     height is locked once, after the keys are built, so the section does
+     not jump when the board shrinks. */
+  .kb { position: relative; overflow: hidden; background: #D1D4DA; border-radius: 0 0 30px 30px; transition: height .55s cubic-bezier(.2,.8,.2,1), background .4s; }
+  .kb.small { background: #E9EAEE; }
   .rows { padding: 8px 4px 10px; display: grid; gap: 9px; }
+  .krow { display: flex; gap: 5px; padding: 0 2px; }
+  .krow.r2 { padding: 0 6%; }
   @keyframes cutkey { 30% { transform: translateY(-9px) scale(1.06); opacity: 1; } 100% { transform: translateY(48px) scale(.3) rotate(9deg); opacity: 0; } }
   .kb.cut .k { animation: cutkey .55s cubic-bezier(.4, 0, .8, .4) forwards; animation-delay: calc(var(--i, 0) * 13ms); }
   /* What remains after the cut: the mic, alone in the keyboard. */
@@ -608,8 +614,6 @@
     .speak span { font-size: 12.5px; }
     .tonegrid { grid-template-columns: minmax(0, 1fr); }
     .k { height: 38px; font-size: 15px; }
-    .kb { height: 197px; }
-    .phone { height: 440px; }
     .key { width: 84px; height: 84px; }
     .key.wide { width: 130px; }
   }
@@ -1883,7 +1887,20 @@
     rowsEl.appendChild(r4);
     // Each key's place in the wave of the cut, first to last.
     [].forEach.call(rowsEl.querySelectorAll(".k"), function (k, i) { k.style.setProperty("--i", i); });
+    measurePhone();
   }
+  /* The board at rest is as tall as its rows; the phone is locked to the
+     height it has with them, so the shrink moves the board and nothing
+     else. Re-measured if the phone's width changes. */
+  var kbTall = 0, KB_SMALL = 98, phoneEl = document.querySelector(".phone");
+  function measurePhone() {
+    if (!rowsEl.children.length) return;
+    kbEl.style.height = ""; phoneEl.style.height = "";
+    kbTall = kbEl.offsetHeight;
+    if (kbTall) phoneEl.style.height = phoneEl.offsetHeight + "px";
+    if (kbEl.classList.contains("small")) kbEl.style.height = KB_SMALL + "px";
+  }
+  if (window.ResizeObserver && phoneEl) new ResizeObserver(function () { if (!kbEl.classList.contains("small")) measurePhone(); }).observe(phoneEl);
   /** The open app's field, as that app draws it, with a place for the text. */
   function fieldFor(f) {
     kbField.innerHTML = "";
@@ -1901,11 +1918,12 @@
     [].forEach.call($("applist").children, function (li, i) { li.classList.toggle("on", i === appI % apps.length); });
     // The keys are back for the next app, and the title reads as printed.
     kbEl.classList.remove("small"); kbEl.classList.remove("cut"); keyless.classList.remove("live");
+    kbEl.style.height = "";
     var kw = $("kw"); if (kw) kw.classList.remove("cut");
     var slot = fieldFor(f), i = 0;
-    // The first word by key — a few taps, the old way — then the cut.
-    var first = (text.match(/^\S+/) || [""])[0], typed = Math.min(first.length, 4);
-    if (reduced) { kbEl.classList.add("small"); if (kw) kw.classList.add("cut"); slot.t.textContent = text; slot.c.classList.add("off"); return; }
+    // The first two words by key — the old way, at length — then the cut.
+    var typed = (function () { var k = 0; for (var q = 0; q < text.length; q++) if (text[q] === " " && ++k === 2) return q; return Math.ceil(text.length / 3); })();
+    if (reduced) { kbEl.classList.add("small"); kbEl.style.height = KB_SMALL + "px"; if (kw) kw.classList.add("cut"); slot.t.textContent = text; slot.c.classList.add("off"); return; }
     (function press() {
       if (g !== kgen) return;
       if (i < typed) {
@@ -1920,9 +1938,10 @@
          rest of the line arrives by voice, a word at a time. */
       klater(380, function () {
         if (kw) kw.classList.add("cut");
+        kbEl.style.height = (kbTall || kbEl.offsetHeight) + "px";   // something to leave from
         kbEl.classList.add("cut");
         klater(920, function () {
-          kbEl.classList.add("small");
+          kbEl.classList.add("small"); kbEl.style.height = KB_SMALL + "px";
           klater(700, function () {
             keyless.classList.add("live");
             var rest = text.slice(i).split(" "), j = 0;
