@@ -394,42 +394,46 @@
      app is open: a key goes down and its letter pops up over it the way a
      real key does — and then the mic key, and the rest of the line lands
      at once. Beside it, the apps, the open one lit. */
-  /* THE TITLE IS A KEYBOARD. Its last word is set in keycaps, and they
-     are pressed one after another: the pressed cap sinks and goes hollow
-     — cut out of the line — and its letter lifts above it in a small key,
-     the way a real key does. The claim, made of the thing it claims. */
-  .caps { display: inline-flex; gap: .09em; vertical-align: -.06em; margin: 0 .04em; }
-  .cap {
-    position: relative; display: inline-grid; place-items: center; width: 1.02em; height: 1.02em; border-radius: .17em;
-    background: linear-gradient(180deg, #fff, #EEF3F1); color: var(--teal-deep);
-    font-family: var(--sans); font-weight: 500; font-size: .66em; line-height: 1; letter-spacing: 0;
-    box-shadow: 0 .13em 0 #B9CCC8, 0 .55em 1.1em -.45em rgba(0,0,0,.5);
-    transition: transform .12s, box-shadow .12s, background .12s, color .12s;
-  }
-  .cap.down { transform: translateY(.13em); background: #C9D6D3; color: transparent; box-shadow: 0 0 0 #B9CCC8, inset 0 .08em .16em rgba(0,0,0,.22); }
-  .cap .pop {
-    position: absolute; left: 50%; bottom: calc(100% + .22em); width: 1.34em; height: 1.34em; border-radius: .2em;
-    background: #fff; color: var(--teal-deep); font-size: 1em; display: grid; place-items: center;
-    box-shadow: 0 .3em .9em rgba(0,0,0,.38), 0 0 0 .5px rgba(0,0,0,.08);
-    opacity: 0; transform: translateX(-50%) translateY(.45em) scale(.6); transform-origin: 50% 100%;
-    transition: opacity .12s, transform .18s cubic-bezier(.2,.8,.2,1); pointer-events: none; z-index: 2;
-  }
-  .cap .pop::after { content: ""; position: absolute; top: calc(100% - 1px); left: 22%; right: 22%; height: .3em; background: #fff; border-radius: 0 0 .1em .1em; }
-  .cap.down .pop { opacity: 1; transform: translateX(-50%) translateY(0) scale(1); }
+  /* THE CORRECTION. "It's a keyboard." — and then, the way an editor
+     marks a proof, "key" is struck through and "keyless" is written above
+     it by hand. It's a keyless board. The strike draws itself, the hand
+     writes itself left to right, and the phone's keys fall at the same
+     moment. Room above the title for the hand. */
+  #appsTitle { padding-top: .5em; }
+  .kw { position: relative; display: inline-block; }
+  .cutword { position: relative; display: inline-block; transition: color .4s .15s; }
+  .cutword::after { content: ""; position: absolute; left: -3%; right: -3%; top: 55%; height: .07em; border-radius: 2px; background: var(--rose); transform: scaleX(0) rotate(-3deg); transform-origin: left center; transition: transform .38s cubic-bezier(.2,.8,.2,1); }
+  .kw.cut .cutword { color: rgba(255,255,255,.42); }
+  .kw.cut .cutword::after { transform: scaleX(1) rotate(-3deg); }
+  .fix { position: absolute; left: -.06em; bottom: 74%; font-family: 'Caveat', 'Kalam', cursive; font-weight: 600; font-size: .64em; line-height: 1; letter-spacing: 0; color: var(--sun); white-space: nowrap; transform: rotate(-6deg); transform-origin: left bottom; clip-path: inset(-20% 100% -20% 0); transition: clip-path .62s cubic-bezier(.2,.8,.2,1) .3s; }
+  .kw.cut .fix { clip-path: inset(-20% -12% -20% 0); }
   .apps { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 40px 64px; align-items: center; }
   .applist { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
   .applist li { display: flex; align-items: center; gap: 16px; padding: 14px 18px; border-radius: 14px; border: 1px solid rgba(255,255,255,.14); color: rgba(255,255,255,.6); font-size: 15px; transition: background .35s, color .35s, transform .35s; }
   .applist li.on { background: rgba(255,255,255,.12); color: #fff; transform: translateX(8px); }
   .applist .fn { font-family: var(--mono); font-size: 11px; letter-spacing: .2em; text-transform: uppercase; min-width: 74px; }
-  .phone { width: min(400px, 100%); margin: 0 auto; border-radius: 40px; padding: 12px; background: #0B0A09; box-shadow: 0 50px 90px -40px rgba(0,0,0,.7), inset 0 0 0 1px rgba(255,255,255,.08); }
-  .screen { background: #F2F2F7; border-radius: 30px 30px 0 0; padding: 22px 16px 16px; min-height: 178px; color: var(--ink2); }
+  .phone { width: min(400px, 100%); height: 476px; margin: 0 auto; display: flex; flex-direction: column; border-radius: 40px; padding: 12px; background: #0B0A09; box-shadow: 0 50px 90px -40px rgba(0,0,0,.7), inset 0 0 0 1px rgba(255,255,255,.08); }
+  .screen { flex: 1 1 auto; min-height: 0; background: #F2F2F7; border-radius: 30px 30px 0 0; padding: 22px 16px 16px; color: var(--ink2); }
   .appbar { display: flex; align-items: center; gap: 8px; font-family: var(--mono); font-size: 11px; letter-spacing: .2em; text-transform: uppercase; color: var(--ink2-soft); margin-bottom: 14px; }
   .appdot { width: 8px; height: 8px; border-radius: 50%; background: var(--teal); }
   .appfield .bubble, .appfield .mail, .appfield .memo, .appfield .search { font-size: 15px; }
   .appfield .car { height: 1em; vertical-align: -.15em; }
-  .kb { background: #D1D4DA; border-radius: 0 0 30px 30px; padding: 8px 4px 10px; display: grid; gap: 9px; }
-  .krow { display: flex; gap: 5px; padding: 0 2px; }
-  .krow.r2 { padding: 0 6%; }
+  /* THE CUT, AND WHAT IS LEFT. A few taps on the keys, then the keys are
+     cut away — each one lifts a little and drops out of the board, in a
+     wave from the first key to the last — and the board shrinks to what a
+     keyboard is once it has no keys: a mark, a wave, a word and a mic.
+     Tailzu's keyboard. The line then arrives by voice. */
+  .kb { position: relative; flex: none; height: 213px; overflow: hidden; background: #D1D4DA; border-radius: 0 0 30px 30px; transition: height .55s cubic-bezier(.2,.8,.2,1), background .4s; }
+  .kb.small { height: 98px; background: #E9EAEE; }
+  .rows { padding: 8px 4px 10px; display: grid; gap: 9px; }
+  @keyframes cutkey { 30% { transform: translateY(-9px) scale(1.06); opacity: 1; } 100% { transform: translateY(48px) scale(.3) rotate(9deg); opacity: 0; } }
+  .kb.cut .k { animation: cutkey .55s cubic-bezier(.4, 0, .8, .4) forwards; animation-delay: calc(var(--i, 0) * 13ms); }
+  /* What remains after the cut: the mic, alone in the keyboard. */
+  .keyless { position: absolute; inset: 0; display: grid; place-items: center; transform: translateY(40px); opacity: 0; transition: transform .45s cubic-bezier(.2,.8,.2,1) .15s, opacity .3s .15s; }
+  .kb.small .keyless { transform: none; opacity: 1; }
+  .kmic { width: 58px; height: 58px; border-radius: 50%; background: var(--ink); color: var(--white); display: grid; place-items: center; box-shadow: 0 12px 26px -12px rgba(0,0,0,.6); transition: background .25s, color .25s, transform .25s; }
+  .kmic svg { width: 24px; height: 24px; }
+  .keyless.live .kmic { background: var(--amber); color: var(--ink); transform: scale(1.08); }
   .k { position: relative; flex: 1 1 0; min-width: 0; height: 42px; border-radius: 6px; background: #fff; box-shadow: 0 1px 0 #898A8D; display: grid; place-items: center; font-family: var(--sans); font-size: 17px; color: #000; transition: transform .08s, background .08s; }
   .k.wide { flex: 1.5 1 0; background: #ABB0BA; font-size: 12px; }
   .k.space { flex: 5 1 0; font-size: 12px; color: #444; }
@@ -604,6 +608,8 @@
     .speak span { font-size: 12.5px; }
     .tonegrid { grid-template-columns: minmax(0, 1fr); }
     .k { height: 38px; font-size: 15px; }
+    .kb { height: 197px; }
+    .phone { height: 440px; }
     .key { width: 84px; height: 84px; }
     .key.wide { width: 130px; }
   }
@@ -739,7 +745,11 @@
           <div class="appbar"><span class="appdot"></span><span id="kbApp">Message</span></div>
           <div class="appfield" id="kbField"></div>
         </div>
-        <div class="kb" id="kb"></div>
+        <div class="kb" id="kb">
+          <div class="rows" id="kbRows"></div>
+          <!-- What is left when the keys are cut: the mic. -->
+          <div class="keyless" id="keyless"><span class="kmic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"></rect><path d="M5 11a7 7 0 0 0 14 0M12 18v3"></path></svg></span>          </div>
+        </div>
       </div>
       <ul class="applist" id="applist"></ul>
     </div>
@@ -913,6 +923,9 @@
     },
     apps: {
       title: "It's a keyboard.",
+      // The correction: this word is struck through, and this one is
+      // written above it by hand. It's a keyless board.
+      cut: "key", fix: "keyless",
       fields: [
         { kind: "message", app: "Message", text: "Can we push the call to four?" },
         { kind: "mail", app: "Mail", to: "To: Priya", text: "The deploy is done, but abhi testing baaki hai." },
@@ -1378,21 +1391,19 @@
   }
   function setText(id, s) { var e = $(id); if (e && s != null) e.textContent = fill(s); }
 
-  /** The last word of the title in keycaps, letter by letter; whatever
-   *  comes before it, and any punctuation after it, stays as type. */
-  function paintCaps(title) {
-    var h = $("appsTitle"), t = fill(title || ""), m = /^(.*?)([^\s\p{P}]+)(\p{P}*)$/u.exec(t.trim());
-    h.innerHTML = "";
-    if (!m) { h.textContent = t; return; }
-    if (m[1]) h.appendChild(document.createTextNode(m[1]));
-    var caps = el("span", "caps");
-    m[2].split("").forEach(function (ch) {
-      var c = el("span", "cap", ch), pop = el("span", "pop", ch);
-      pop.setAttribute("aria-hidden", "true"); c.appendChild(pop); caps.appendChild(c);
-    });
-    h.appendChild(caps);
-    if (m[3]) h.appendChild(document.createTextNode(m[3]));
-    h.setAttribute("aria-label", t);   // read as one word, not as doubled letters
+  /** The title with its correction: the cut word wrapped so it can be
+   *  struck through, and the fix written above it by hand. */
+  function paintTitle() {
+    var h = $("appsTitle"), t = fill(C.apps.title || ""), cut = C.apps.cut || "", fix = C.apps.fix || "";
+    h.innerHTML = ""; h.setAttribute("aria-label", t);
+    var at = cut ? t.toLowerCase().indexOf(cut.toLowerCase()) : -1;
+    if (at < 0) { h.textContent = t; return; }
+    h.appendChild(document.createTextNode(t.slice(0, at)));
+    var kw = el("span", "kw"); kw.id = "kw";
+    kw.appendChild(el("span", "cutword", t.slice(at, at + cut.length)));
+    var fx = el("span", "fix", fix); fx.setAttribute("aria-hidden", "true"); kw.appendChild(fx);
+    h.appendChild(kw);
+    h.appendChild(document.createTextNode(t.slice(at + cut.length)));
   }
   function paintBelow() {
     setText("howTitle", C.how.title);
@@ -1415,7 +1426,7 @@
       tg.appendChild(d);
     });
 
-    paintCaps(C.apps.title);
+    paintTitle();
     var al = $("applist"); al.innerHTML = "";
     C.apps.fields.forEach(function (f, i) {
       var li = el("li", i === appI % C.apps.fields.length ? "on" : "");
@@ -1423,7 +1434,7 @@
       li.appendChild(el("span", null, f.text));
       al.appendChild(li);
     });
-    if (!kbEl.children.length) buildKeys();
+    if (!rowsEl.children.length) buildKeys();
 
     setText("deskTitle", C.desk.title); setText("deskLede", C.desk.lede);
     // The gesture, drawn as keys: a double-tap is the same key twice.
@@ -1841,12 +1852,12 @@
      slow way and the fast way, side by side, in one picture. Then the next
      app. It runs only while it can be seen.
      ================================================================== */
-  var kbEl = $("kb"), kbField = $("kbField"), kbApp = $("kbApp"), keyOf = {}, micKey = null;
+  var kbEl = $("kb"), rowsEl = $("kbRows"), keyless = $("keyless"), kbField = $("kbField"), kbApp = $("kbApp"), keyOf = {}, micKey = null, keyN = 0;
   var appI = 0, kgen = 0, ktm = 0, keysOn = false;
   /* The other forms a held letter offers, as the keyboard's own tray does. */
   var TRAYS = { a: "a à á â ä ã å", e: "e è é ê ë", i: "i ì í î ï", o: "o ò ó ô ö õ", u: "u ù ú û ü", c: "c ç ć", n: "n ñ ń", s: "s ß ś š", y: "y ÿ", z: "z ž ź", l: "l ł", d: "d đ", h: "h ħ" };
   function buildKeys() {
-    kbEl.innerHTML = ""; keyOf = {};
+    rowsEl.innerHTML = ""; keyOf = {}; keyN = 0;
     ["qwertyuiop", "asdfghjkl", "zxcvbnm"].forEach(function (row, ri) {
       var r = el("div", "krow r" + (ri + 1));
       if (ri === 2) r.appendChild(el("div", "k wide", "\u21E7"));
@@ -1860,7 +1871,7 @@
         }
       });
       if (ri === 2) r.appendChild(el("div", "k wide", "\u232B"));
-      kbEl.appendChild(r);
+      rowsEl.appendChild(r);
     });
     var r4 = el("div", "krow r4");
     r4.appendChild(el("div", "k wide", "123"));
@@ -1869,7 +1880,9 @@
     r4.appendChild(micKey);
     var sp = el("div", "k space", "space"); keyOf[" "] = sp; r4.appendChild(sp);
     r4.appendChild(el("div", "k wide", "return"));
-    kbEl.appendChild(r4);
+    rowsEl.appendChild(r4);
+    // Each key's place in the wave of the cut, first to last.
+    [].forEach.call(rowsEl.querySelectorAll(".k"), function (k, i) { k.style.setProperty("--i", i); });
   }
   /** The open app's field, as that app draws it, with a place for the text. */
   function fieldFor(f) {
@@ -1886,65 +1899,53 @@
     var apps = C.apps.fields, f = apps[appI % apps.length], text = f.text;
     kbApp.textContent = f.app;
     [].forEach.call($("applist").children, function (li, i) { li.classList.toggle("on", i === appI % apps.length); });
-    var slot = fieldFor(f), i = 0, trayed = false;
-    // The first two words by key, the rest by voice.
-    var cut = (function () { var k = 0; for (var q = 0; q < text.length; q++) if (text[q] === " " && ++k === 2) return q + 1; return Math.ceil(text.length / 3); })();
-    if (reduced) { slot.t.textContent = text; slot.c.classList.add("off"); return; }
+    // The keys are back for the next app, and the title reads as printed.
+    kbEl.classList.remove("small"); kbEl.classList.remove("cut"); keyless.classList.remove("live");
+    var kw = $("kw"); if (kw) kw.classList.remove("cut");
+    var slot = fieldFor(f), i = 0;
+    // The first word by key — a few taps, the old way — then the cut.
+    var first = (text.match(/^\S+/) || [""])[0], typed = Math.min(first.length, 4);
+    if (reduced) { kbEl.classList.add("small"); if (kw) kw.classList.add("cut"); slot.t.textContent = text; slot.c.classList.add("off"); return; }
     (function press() {
       if (g !== kgen) return;
-      if (i < cut) {
+      if (i < typed) {
         var k = keyOf[text[i].toLowerCase()]; i++;
-        // One key per line is held: the tray of small keys opens over it,
-        // then the letter lands.
-        if (k && k.tray && !trayed) {
-          trayed = true;
-          k.classList.add("down");
-          klater(260, function () {
-            k.classList.add("hold");
-            klater(820, function () {
-              k.classList.remove("hold"); k.classList.remove("down");
-              slot.t.textContent = text.slice(0, i);
-              klater(240, press);
-            });
-          });
-          return;
-        }
         if (k) { k.classList.add("down"); setTimeout(function () { if (g === kgen) k.classList.remove("down"); }, 230); }
         slot.t.textContent = text.slice(0, i);
-        klater(280 + Math.random() * 80, press); return;
+        klater(300 + Math.random() * 80, press); return;
       }
-      micKey.classList.add("down"); micKey.classList.add("live");
-      klater(420, function () {
-        micKey.classList.remove("down");
-        var rest = text.slice(cut).split(" "), j = 0;
-        (function say() {
-          if (g !== kgen) return;
-          if (j < rest.length) { j++; slot.t.textContent = text.slice(0, cut) + rest.slice(0, j).join(" "); klater(85, say); return; }
-          micKey.classList.remove("live"); slot.c.classList.add("off");
-          klater(2000, function () { appI++; playApp(); });
-        })();
+      /* THE CUT. The title's "key" is struck through and "keyless" written
+         above it by hand; the phone's keys fall at the same moment, in a
+         wave; the board shrinks to the mic alone; the mic goes live and the
+         rest of the line arrives by voice, a word at a time. */
+      klater(380, function () {
+        if (kw) kw.classList.add("cut");
+        kbEl.classList.add("cut");
+        klater(920, function () {
+          kbEl.classList.add("small");
+          klater(700, function () {
+            keyless.classList.add("live");
+            var rest = text.slice(i).split(" "), j = 0;
+            klater(520, function say() {
+              if (g !== kgen) return;
+              if (j < rest.length) { j++; slot.t.textContent = text.slice(0, i) + rest.slice(0, j).join(" "); klater(95, say); return; }
+              keyless.classList.remove("live"); slot.c.classList.add("off");
+              klater(2400, function () { appI++; playApp(); });
+            });
+          });
+        });
       });
     })();
   }
-  /* The title's caps, pressed in turn while the screen is on. */
-  var capI = 0, capTm = 0, capsOn = false;
-  function capsStep() {
-    if (!capsOn) return;
-    var caps = $("appsTitle").querySelectorAll(".cap"); if (!caps.length) return;
-    var c = caps[capI % caps.length]; capI++;
-    c.classList.add("down");
-    capTm = setTimeout(function () { c.classList.remove("down"); capTm = setTimeout(capsStep, 260); }, 380);
-  }
   function resumeKeys() {
     if (keysOn) return; keysOn = true;
-    if (kbEl.children.length) playApp();
-    if (!reduced && !capsOn) { capsOn = true; capTm = setTimeout(capsStep, 400); }
+    if (rowsEl.children.length) playApp();
   }
   function pauseKeys() {
     keysOn = false; kgen++; clearTimeout(ktm);
-    capsOn = false; clearTimeout(capTm);
-    [].forEach.call(document.querySelectorAll(".k.down, .k.hold, .cap.down"), function (k) { k.classList.remove("down"); k.classList.remove("hold"); });
+    [].forEach.call(document.querySelectorAll(".k.down, .k.hold"), function (k) { k.classList.remove("down"); k.classList.remove("hold"); });
     if (micKey) micKey.classList.remove("live");
+    keyless.classList.remove("live");
   }
 
   /* =====================================================================
@@ -1955,7 +1956,7 @@
      page is writing itself: if the page rewrites a line mid-run, the run
      simply lets go. Never on touch, never under reduced motion.
      ================================================================== */
-  var GLITCH_AT = "h1,h2,h3,p,li,a,button,span,b,i,em,strong,td,th,label,dt,dd,.k,.cap,.key,.gut";
+  var GLITCH_AT = "h1,h2,h3,p,li,a,button,span,b,i,em,strong,td,th,label,dt,dd,.k,.key,.gut";
   var glitchOn = typeof WeakMap === "function" ? new WeakMap() : null;
   function textNodesOf(root) {
     var out = [], walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, null, false), nd;
