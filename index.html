@@ -958,8 +958,9 @@
     return pts;
   }
 
-  /* THE RUSH. A scroll speeds every current on the page, and it falls back
-     to a walk over about half a second once the page is still. From the
+  /* THE RUSH. A scroll speeds every current on the page — up to twenty
+     times, so the brightest words cross the screen in a second — and it
+     falls back to a walk over about a second once the page is still. From the
      very top, the first few hundred pixels of wheel are poured into the
      flow instead of the document — you push, the page answers, then it
      scrolls. Never on touch, never under reduced motion, over in under a
@@ -968,7 +969,7 @@
   var coarse = window.matchMedia && window.matchMedia("(pointer: coarse)").matches;
   function relax(now) {
     var dt = boostAt ? Math.min(64, now - boostAt) : 16; boostAt = now;
-    boost += (1 - boost) * Math.min(1, dt / 620);
+    boost += (1 - boost) * Math.min(1, dt / 900);
   }
   window.addEventListener("wheel", function (e) {
     if (reduced || coarse || held <= 0) return;
@@ -976,12 +977,12 @@
     if (e.deltaY <= 0) return;                                 // never trap a scroll up
     e.preventDefault();
     held -= e.deltaY;
-    boost = Math.min(9, boost + e.deltaY * 0.055);
+    boost = Math.min(20, boost + e.deltaY * 0.1);
   }, { passive: false });
   window.addEventListener("scroll", function () {
     var y = window.pageYOffset || 0, d = Math.abs(y - lastY); lastY = y;
     if (y > 4) held = 0;        // the page has moved; the hold is spent for good
-    boost = Math.min(9, boost + d * 0.045);
+    boost = Math.min(20, boost + d * 0.09);
   }, { passive: true });
 
   /**
