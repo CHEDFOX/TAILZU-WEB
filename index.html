@@ -131,55 +131,50 @@
      nowhere to go and the whole band reads as evenly busy. This is the page's
      own ink at four per cent — warm light, no new colour — and it is what
      makes the caret the subject rather than one more mark among a hundred. */
-  /* THE HERO IS A RACE, AND THE POINT IS THE CLOCK.
-     Every version of this screen so far explained something, and a screen
-     that explains is a screen the brain finishes reading and leaves. This
-     one asks a question instead.
+  /* THE HERO IS THE KEYBOARD, ON THE CLOCK.
+     The most concrete thing this product has is the keyboard itself, and
+     the sharpest thing that can be said about it is what it costs. So the
+     top screen is both: a phone typing a sentence the way a thumb really
+     types it — a hesitation, a wrong letter, a backspace — with the taps
+     counted beside it; and then the keys are cut away, the mark comes
+     apart, and the same sentence is said. Two numbers are left standing
+     next to each other and nothing is claimed.
 
-     The same sentence, twice, in the same place. First it is TYPED — badly,
-     the way anybody types: a hesitation, a wrong letter, a backspace, a
-     correction — while a clock runs beside it. Watching it is faintly
-     unbearable, which is the point: you are watching yourself. Then it is
-     wiped, and the clock starts again, and the sentence arrives whole,
-     SAID, in about a second.
-
-     Nothing is claimed. Two numbers are put next to each other and the
-     brain does the rest: what was that, and why was the second one ten
-     times faster. The answer is the product, and it is on the clock. */
+     The title is the other half of the question. It reads "It's a
+     keyboard." until the keys go, and then, the way an editor marks a
+     proof, "key" is struck through and "keyless" is written above it. */
   .hero {
-    position: relative; background: var(--ink); margin: 0; padding: clamp(56px, 10vh, 110px) 0 clamp(60px, 11vh, 120px);
-    min-height: clamp(520px, 78vh, 820px); display: grid; align-items: center;
+    position: relative; background: var(--ink); margin: 0; padding: clamp(40px, 7vh, 84px) 0 clamp(52px, 9vh, 104px);
     animation: fade 1.1s .15s both;
   }
-  .hero .wrap { position: relative; z-index: 2; width: 100%; }
-  .race { max-width: 1060px; margin: 0 auto; display: grid; gap: clamp(30px, 4.4vw, 58px); }
-  /* Both halves stay on the screen. A number the visitor has to remember
-     is a number they do not compare — the whole argument is that the two
-     are next to each other and one of them is absurd. */
-  .half { transition: opacity .5s; }
-  .half.voice { opacity: 0; }
-  .race.two .half.voice { opacity: 1; }
-  .race.two .half.typed { opacity: .38; }
-  /* The row that carries the argument: what is happening, what it cost,
-     and how long it took. They sit at the two ends of the line's measure. */
-  .rtop { display: flex; justify-content: space-between; align-items: baseline; gap: 20px; margin: 0 0 clamp(12px, 1.6vw, 20px); font-family: var(--mono); font-size: clamp(11px, .95vw, 13px); letter-spacing: .26em; text-transform: uppercase; }
-  .rlab { color: var(--dim); }
-  .rtime { color: var(--grey); font-variant-numeric: tabular-nums; transition: color .3s; }
-  .half.typed .rtime { color: var(--rose); }
-  .half.voice .rtime { color: var(--amber); }
-  /* THE TWO LINES. The typed one is set in the machine's own monospace,
-     because that is what typing looks like and it reads as work; the said
-     one is type, set properly, at the size a sentence deserves. */
-  .rline { margin: 0; color: var(--white); }
-  .half.typed .rline { min-height: 2.3em; font-family: var(--mono); font-size: clamp(17px, 2.3vw, 30px); line-height: 1.5; letter-spacing: -.01em; color: var(--grey); }
-  .half.voice .rline { min-height: 1.2em; font-family: var(--serif); font-weight: 380; font-optical-sizing: auto; font-size: clamp(30px, 4.6vw, 68px); line-height: 1.12; letter-spacing: -.026em; }
-  .rline .bad { color: var(--rose); }
-  /* The caret is a block, the way a terminal draws one, and it stops
-     blinking while something is being written. */
-  .rcar { display: inline-block; width: .5em; height: 1.02em; vertical-align: -.16em; margin-left: .04em; background: currentColor; animation: blink 1s steps(1) infinite; opacity: 0; }
-  .half.live .rcar { opacity: 1; animation: none; }
-  .race.out .half { opacity: 0; }
-  .herodl { margin: clamp(44px, 5.6vw, 76px) 0 0; }
+  .hero .wrap { position: relative; z-index: 2; }
+  /* The phone's column is given a width rather than left to its content:
+     a percentage width inside an auto track resolves against the track it
+     is sizing, and the whole thing collapses to a sliver. */
+  .topgrid { display: grid; grid-template-columns: minmax(0, 1fr) clamp(300px, 30vw, 380px); gap: clamp(32px, 5vw, 80px); align-items: center; }
+  .pitch { min-width: 0; }
+  /* THE CORRECTION, at hero scale. Room above it for the hand. */
+  .kbtitle { margin: 0 0 clamp(34px, 4.6vw, 62px); padding-top: .46em; font-family: var(--serif); font-weight: 380; font-optical-sizing: auto; font-size: clamp(40px, 5.4vw, 82px); line-height: 1.02; letter-spacing: -.028em; color: var(--white); }
+  .kw { position: relative; display: inline-block; }
+  .cutword { position: relative; display: inline-block; transition: color .4s .15s; }
+  .cutword::after { content: ""; position: absolute; left: -3%; right: -3%; top: 55%; height: .07em; border-radius: 2px; background: var(--rose); transform: scaleX(0) rotate(-3deg); transform-origin: left center; transition: transform .38s cubic-bezier(.2,.8,.2,1); }
+  .kw.cut .cutword { color: rgba(243,226,198,.34); }
+  .kw.cut .cutword::after { transform: scaleX(1) rotate(-3deg); }
+  .fix { position: absolute; left: -.06em; bottom: 76%; font-family: 'Caveat', 'Kalam', cursive; font-weight: 600; font-size: .62em; line-height: 1; letter-spacing: 0; color: var(--sun); white-space: nowrap; transform: rotate(-6deg); transform-origin: left bottom; clip-path: inset(-20% 100% -20% 0); transition: clip-path .62s cubic-bezier(.2,.8,.2,1) .3s; }
+  .kw.cut .fix { clip-path: inset(-20% -12% -20% 0); }
+
+  /* THE TWO NUMBERS. Both stay on the screen: a number you have to
+     remember is a number you never compare. Taps, not just seconds —
+     seconds can be argued with, taps cannot. */
+  .race { display: grid; gap: 14px; margin: 0 0 clamp(34px, 4.4vw, 54px); max-width: 460px; }
+  .rtop { display: flex; justify-content: space-between; align-items: baseline; gap: 20px; margin: 0; padding-bottom: 12px; border-bottom: 1px solid rgba(243,226,198,.12); font-family: var(--mono); font-size: clamp(11px, .95vw, 13px); letter-spacing: .24em; text-transform: uppercase; }
+  .rlab { color: var(--dim); transition: color .3s; }
+  .rtime { color: var(--grey); font-variant-numeric: tabular-nums; transition: color .3s, opacity .3s; }
+  .rrow.waiting .rtime { opacity: .28; }
+  .rrow.on .rlab { color: var(--white); }
+  .rrow.typed .rtime { color: var(--rose); }
+  .rrow.voice .rtime { color: var(--amber); }
+  .herodl { margin: 0; }
   .hero .get-it { background: var(--white); color: var(--ink); height: 50px; padding: 0 28px; font-size: 14px; }
   /* The demo, when the server has it on: one line of small type under the
      button, which is also where it says anything it has to say. */
@@ -280,13 +275,11 @@
   .kw.cut .cutword::after { transform: scaleX(1) rotate(-3deg); }
   .fix { position: absolute; left: -.06em; bottom: 74%; font-family: 'Caveat', 'Kalam', cursive; font-weight: 600; font-size: .64em; line-height: 1; letter-spacing: 0; color: var(--sun); white-space: nowrap; transform: rotate(-6deg); transform-origin: left bottom; clip-path: inset(-20% 100% -20% 0); transition: clip-path .62s cubic-bezier(.2,.8,.2,1) .3s; }
   .kw.cut .fix { clip-path: inset(-20% -12% -20% 0); }
-  .apps { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 40px 64px; align-items: center; }
-  .applist { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
-  .applist li { display: flex; align-items: center; gap: 16px; padding: 14px 18px; border-radius: 14px; border: 1px solid rgba(255,255,255,.14); color: rgba(255,255,255,.6); font-size: 15px; transition: background .35s, color .35s, transform .35s; }
-  .applist li.on { background: rgba(255,255,255,.12); color: #fff; transform: translateX(8px); }
-  .applist .fn { font-family: var(--mono); font-size: 11px; letter-spacing: .2em; text-transform: uppercase; min-width: 74px; }
-  .phone { width: min(400px, 100%); margin: 0 auto; border-radius: 40px; padding: 12px; background: #0B0A09; box-shadow: 0 50px 90px -40px rgba(0,0,0,.7), inset 0 0 0 1px rgba(255,255,255,.08); }
-  .screen { background: #F2F2F7; border-radius: 30px 30px 0 0; padding: 22px 16px 16px; min-height: 178px; color: var(--ink2); }
+  /* The phone's height is locked once the keys are built, so the screen
+     does not jump when the board shrinks; the screen takes up whatever the
+     board gives back, rather than leaving a hole under it. */
+  .phone { width: 100%; max-width: 380px; margin: 0 auto; display: flex; flex-direction: column; border-radius: 40px; padding: 12px; background: #0B0A09; box-shadow: 0 50px 90px -40px rgba(0,0,0,.7), inset 0 0 0 1px rgba(255,255,255,.08); }
+  .screen { flex: 1 1 auto; background: #F2F2F7; border-radius: 30px 30px 0 0; padding: 22px 16px 16px; min-height: 178px; color: var(--ink2); }
   .appbar { display: flex; align-items: center; gap: 8px; font-family: var(--mono); font-size: 11px; letter-spacing: .2em; text-transform: uppercase; color: var(--ink2-soft); margin-bottom: 14px; }
   .appdot { width: 8px; height: 8px; border-radius: 50%; background: var(--teal); }
   .appfield .bubble, .appfield .mail, .appfield .memo, .appfield .search { font-size: 15px; }
@@ -300,7 +293,7 @@
      frame so the animation has something to leave from. The phone's own
      height is locked once, after the keys are built, so the section does
      not jump when the board shrinks. */
-  .kb { position: relative; overflow: hidden; background: #D1D4DA; border-radius: 0 0 30px 30px; transition: height .55s cubic-bezier(.2,.8,.2,1), background .4s; }
+  .kb { position: relative; flex: none; overflow: hidden; background: #D1D4DA; border-radius: 0 0 30px 30px; transition: height .55s cubic-bezier(.2,.8,.2,1), background .4s; }
   .kb.small { background: #E9EAEE; }
   .rows { padding: 8px 4px 10px; display: grid; gap: 9px; }
   .krow { display: flex; gap: 5px; padding: 0 2px; }
@@ -477,8 +470,11 @@
   .reveal.in { opacity: 1; transform: none; }
 
   @media (max-width: 900px) {
-    .hero { min-height: clamp(440px, 70vh, 640px); padding: 54px 0 60px; }
-    .band .head, .desk, .apps { grid-template-columns: minmax(0, 1fr); }
+    .topgrid { grid-template-columns: minmax(0, 1fr); gap: 34px; }
+    .kbtitle { margin-bottom: 26px; }
+    .pitch { order: 2; }
+    .phone { order: 1; }
+    .band .head, .desk { grid-template-columns: minmax(0, 1fr); }
     .logos { right: 20px; bottom: 22px; }
     .dl { justify-content: flex-start; }
     .steps { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
@@ -487,10 +483,7 @@
     .band { padding: 76px 0; }
   }
   @media (max-width: 560px) {
-    .half.voice .rline { font-size: 27px; }
-    .half.typed .rline { font-size: 15px; min-height: 3em; }
     .rtop { letter-spacing: .16em; font-size: 10px; }
-    .race { gap: 26px; }
     .k.mic { flex: 0 0 38px; height: 38px; }
     .speak span { font-size: 12.5px; }
     .tonegrid { grid-template-columns: minmax(0, 1fr); }
@@ -529,26 +522,42 @@
 
 <section class="hero" id="river" data-tone="dark">
   <div class="wrap">
-    <!-- THE RACE. The same sentence typed, then said, in the same place,
-         with a clock on each. -->
-    <div class="race" id="race">
-      <div class="half typed" id="hTyped">
-        <p class="rtop"><span class="rlab" id="labTyped">Typed</span><span class="rtime" id="timeTyped"></span></p>
-        <p class="rline" dir="auto"><span id="textTyped"></span><span class="rcar"></span></p>
+    <div class="topgrid">
+      <div class="pitch">
+        <h1 class="kbtitle" id="appsTitle">It's a keyboard.</h1>
+        <div class="race">
+          <p class="rtop rrow typed waiting" id="rowTyped"><span class="rlab" id="labTyped">Typed</span><span class="rtime" id="timeTyped">—</span></p>
+          <p class="rtop rrow voice waiting" id="rowSaid"><span class="rlab" id="labSaid">Said</span><span class="rtime" id="timeSaid">—</span></p>
+        </div>
+        <p class="herodl"><a class="get-it" data-dl href="/download">Download</a></p>
+        <!-- The demo, when the server has it on. One line, and the only
+             place anything about the microphone is ever said. -->
+        <p style="margin:0"><button class="tiny" id="mic" aria-pressed="false" hidden><span id="micLabel">Say one yourself</span></button></p>
       </div>
-      <!-- Named apart from the tone screen's own said line, whose rule
-           printed a ghost "you said:" over this one. -->
-      <div class="half voice" id="hSaid">
-        <p class="rtop"><span class="rlab" id="labSaid">Said</span><span class="rtime" id="timeSaid"></span></p>
-        <p class="rline" dir="auto"><span id="textSaid"></span><span class="rcar"></span></p>
+      <div class="phone" aria-hidden="true">
+        <div class="screen">
+          <div class="appbar"><span class="appdot"></span><span id="kbApp">Message</span></div>
+          <div class="appfield" id="kbField"></div>
+        </div>
+        <div class="kb" id="kb">
+          <div class="rows" id="kbRows"></div>
+          <!-- What is left when the keys are cut: the mic. -->
+          <div class="keyless" id="keyless"><span class="kmic" id="kmic">
+            <!-- The mark, tinted black, the way the app's key carries it. -->
+            <svg class="mk" viewBox="170 228 680 512" aria-hidden="true">
+              <line x1="346" y1="402" x2="270" y2="598" stroke="#000" stroke-width="9" stroke-linecap="round"/>
+              <line x1="444" y1="394" x2="554" y2="486" stroke="#000" stroke-width="30" stroke-dasharray="9 11"/>
+              <line x1="668" y1="478" x2="828" y2="243" stroke="#000" stroke-width="9" stroke-linecap="round"/>
+              <circle cx="828" cy="243" r="11" fill="#000"/>
+              <rect x="308" y="269" width="132" height="132" rx="28" fill="#000"/>
+              <rect x="558" y="478" width="132" height="132" rx="28" fill="#000"/>
+              <rect x="178" y="598" width="132" height="132" rx="28" fill="#000"/>
+            </svg>
+            <canvas id="micDots" aria-hidden="true"></canvas>
+          </span>          </div>
+        </div>
       </div>
     </div>
-    <p class="herodl">
-      <a class="get-it" data-dl href="/download">Download</a>
-    </p>
-    <!-- The demo, when the server has it on. One line, and the only place
-         anything about the microphone is ever said. -->
-    <p style="margin:0"><button class="tiny" id="mic" aria-pressed="false" hidden><span id="micLabel">Say one yourself</span></button></p>
   </div>
 </section>
 
@@ -604,41 +613,6 @@
   </div>
 </section>
 
-<section class="band on-teal reveal" data-tone="dark" id="apps">
-  <canvas class="current" data-shade="pale" aria-hidden="true"></canvas>
-  <div class="wrap">
-    <div class="head">
-      <div><h2 id="appsTitle">It's a keyboard.</h2></div>
-    </div>
-    <div class="apps">
-      <div class="phone" aria-hidden="true">
-        <div class="screen">
-          <div class="appbar"><span class="appdot"></span><span id="kbApp">Message</span></div>
-          <div class="appfield" id="kbField"></div>
-        </div>
-        <div class="kb" id="kb">
-          <div class="rows" id="kbRows"></div>
-          <!-- What is left when the keys are cut: the mic. -->
-          <div class="keyless" id="keyless"><span class="kmic" id="kmic">
-            <!-- The mark, tinted black, the way the app's key carries it. -->
-            <svg class="mk" viewBox="170 228 680 512" aria-hidden="true">
-              <line x1="346" y1="402" x2="270" y2="598" stroke="#000" stroke-width="9" stroke-linecap="round"/>
-              <line x1="444" y1="394" x2="554" y2="486" stroke="#000" stroke-width="30" stroke-dasharray="9 11"/>
-              <line x1="668" y1="478" x2="828" y2="243" stroke="#000" stroke-width="9" stroke-linecap="round"/>
-              <circle cx="828" cy="243" r="11" fill="#000"/>
-              <rect x="308" y="269" width="132" height="132" rx="28" fill="#000"/>
-              <rect x="558" y="478" width="132" height="132" rx="28" fill="#000"/>
-              <rect x="178" y="598" width="132" height="132" rx="28" fill="#000"/>
-            </svg>
-            <canvas id="micDots" aria-hidden="true"></canvas>
-          </span>          </div>
-        </div>
-      </div>
-      <ul class="applist" id="applist"></ul>
-    </div>
-    <p class="getrow"><a class="get-it" data-dl href="/download">Download</a></p>
-  </div>
-</section>
 
 <section class="band on-indigo reveal" data-tone="dark" id="desk">
   <canvas class="current" data-shade="pale" aria-hidden="true"></canvas>
@@ -1204,8 +1178,7 @@
     currents.forEach(function (c) {
       new IntersectionObserver(function (es) { if (es[0].isIntersecting) c.start(); else c.stop(); }, { threshold: 0 }).observe(c.el);
     });
-    // And the keyboard types only while it can be seen.
-    new IntersectionObserver(function (es) { if (es[0].isIntersecting) resumeKeys(); else pauseKeys(); }, { threshold: 0.25 }).observe($("apps"));
+
   } else {
     [].forEach.call(document.querySelectorAll(".reveal"), function (el) { el.classList.add("in"); });
     currents.forEach(function (c) { c.start(); });
@@ -1311,13 +1284,8 @@
     });
 
     paintTitle();
-    var al = $("applist"); al.innerHTML = "";
-    C.apps.fields.forEach(function (f, i) {
-      var li = el("li", i === appI % C.apps.fields.length ? "on" : "");
-      li.appendChild(el("span", "fn", f.app));
-      li.appendChild(el("span", null, f.text));
-      al.appendChild(li);
-    });
+    liveText($("labTyped"), C.hero.typed || "Typed");
+    liveText($("labSaid"), C.hero.said || "Said");
     if (!rowsEl.children.length) buildKeys();
 
     setText("deskTitle", C.desk.title); setText("deskLede", C.desk.lede);
@@ -1526,10 +1494,11 @@
       var s = (j.transcript || "").trim(), w = (j.cleanedText || "").trim();
       if (!s && !w) throw new Error("Nothing heard.");
       own = true;
-      // Their sentence taking over the screen IS the payoff. A line saying
-      // so underneath was the page narrating what it had just done.
-      pauseStage(); staged = true;      // nothing plays over theirs
-      resetStage(); play({ said: s, wrote: w || s, lang: "" }, true);
+      // Their own sentence, in the phone, on the clock — and it stays:
+      // what the page actually did beats every example it was showing.
+      ownSaid = w || s;
+      kgen++; clearTimeout(ktm);
+      playApp(ownSaid);
       done(); say(idleWord(), false, true);
     }).catch(function (e) { done(); say(e.message || "Try again."); });
   }
@@ -1572,7 +1541,7 @@
      anywhere has watched their own. The visitor's own recording, when the
      demo is on, ends the loop: their sentence, held.
      ================================================================== */
-  var raceEl = $("race"), hTyped = $("hTyped"), hSaid = $("hSaid");
+  var rowTyped = $("rowTyped"), rowSaid = $("rowSaid");
   var caseI = 0, sgen = 0, stm = 0, staged = false, seen = true, current = null, ownSaid = "";
 
   /** Set text on a node the page is animating. */
@@ -1586,7 +1555,6 @@
       if (n > 0) node.appendChild(el("span", "hl", full.slice(cut)));
     });
   }
-  function later(ms, fn) { var g = sgen; stm = setTimeout(function () { if (g === sgen) fn(); }, ms); }
 
   /* THE COUNT AND THE CLOCK. Seconds alone undersell it and can be argued
      with; taps cannot. Every letter is a tap, and so is the wrong one and
@@ -1597,114 +1565,39 @@
      The clock is counted from the frame the half began, not from a sum of
      the delays that were asked for — a background tab, a slow machine or a
      long paint would each make a number that was never true. */
-  function clock(el) {
+  function clock(el, row) {
     var raf = 0, at = 0, taps = 0, typing = false;
     function text(secs) {
       return (typing ? taps + " " + (C.hero.taps || "taps") : "1 " + (C.hero.press || "press")) + " · " + secs.toFixed(1) + "s";
     }
     return {
       tap: function () { taps++; },
+      reset: function () { row.classList.add("waiting"); row.classList.remove("on"); liveText(el, "—"); },
       start: function (isTyping) {
         at = performance.now(); taps = 0; typing = !!isTyping;
+        row.classList.remove("waiting"); row.classList.add("on");
         if (raf) cancelAnimationFrame(raf);
         (function tick() { raf = requestAnimationFrame(tick); liveText(el, text((performance.now() - at) / 1000)); })();
       },
       stop: function () {
         if (raf) { cancelAnimationFrame(raf); raf = 0; }
         var secs = (performance.now() - at) / 1000;
-        liveText(el, text(secs));
+        if (at) liveText(el, text(secs));
+        row.classList.remove("on");
         return secs;
       },
-      still: function (isTyping, n, secs) { typing = !!isTyping; taps = n; liveText(el, text(secs)); }
+      still: function (isTyping, n, secs) {
+        typing = !!isTyping; taps = n; row.classList.remove("waiting"); liveText(el, text(secs));
+      }
     };
   }
-  var cTyped = clock($("timeTyped")), cSaid = clock($("timeSaid"));
-
-  /* TYPING, THE WAY IT ACTUALLY GOES. A thumb, not a keyboard: a hundred
-     and ten to a hundred and ninety milliseconds a letter, a breath before
-     a word now and then, and one wrong letter that sits there for a third
-     of a second before it is taken back. Nobody types cleanly, and a demo
-     that does is a lie the visitor can feel. */
-  function typeOut(node, full, done) {
-    var g = sgen, i = 0, badAt = Math.max(6, Math.floor(full.length * (0.45 + Math.random() * 0.3)));
-    var WRONG = "asdfghjkl";
-    (function step() {
-      if (g !== sgen) return;
-      if (i >= full.length) { node.textContent = full; done(); return; }
-      if (i === badAt) {
-        var wrong = WRONG[Math.floor(Math.random() * WRONG.length)];
-        node.innerHTML = "";
-        node.appendChild(document.createTextNode(full.slice(0, i)));
-        node.appendChild(el("span", "bad", wrong));
-        cTyped.tap(); badAt = -1;
-        later(340 + Math.random() * 180, function () {
-          node.textContent = full.slice(0, i); cTyped.tap();
-          later(170, step);
-        });
-        return;
-      }
-      i++; cTyped.tap();
-      node.textContent = full.slice(0, i);
-      var gap = full[i - 1] === " " && Math.random() < 0.4 ? 300 + Math.random() * 260 : 110 + Math.random() * 80;
-      later(gap, step);
-    })();
-  }
-
-  /* SAYING IT. The clock has to be the time it takes to SAY the line, not
-     the time it takes to paint it: a sentence appearing in half a second
-     is a number nobody believes, and rightly — nobody says seven words in
-     half a second. So it is revealed over the time speech actually takes,
-     about two and a half words a second, and the clock that stops at the
-     end of it is true. */
+  var cTyped = clock($("timeTyped"), rowTyped), cSaid = clock($("timeSaid"), rowSaid);
+  /* Speech, at the pace speech actually goes: a sentence that appears in
+     half a second is a number nobody believes, and rightly. */
   var SPEECH_WPS = 2.5;
-  function sayOut(node, full, done) {
-    var g = sgen, words = full.split(/\s+/).filter(Boolean), at = 0;
-    var chunk = Math.max(1, Math.ceil(words.length / 6)), per = Math.round(1000 / SPEECH_WPS) * chunk;
-    (function step() {
-      if (g !== sgen) return;
-      if (at >= words.length) { node.textContent = full; done(); return; }
-      at = Math.min(words.length, at + chunk);
-      node.textContent = words.slice(0, at).join(" ");
-      later(per, step);
-    })();
-  }
 
-  function play(cs, hold) {
-    var g = ++sgen; clearTimeout(stm); current = cs;
-    var line = cs.wrote, tText = $("textTyped"), sText = $("textSaid");
-    raceEl.classList.remove("out");
-    liveText($("labTyped"), C.hero.typed || "Typed");
-    liveText($("labSaid"), C.hero.said || "Said");
-    if (reduced) {   // the last frame, standing: the two numbers
-      raceEl.classList.add("two");
-      tText.textContent = line; sText.textContent = line;
-      cTyped.still(true, line.length + 2, line.length * 0.16);
-      cSaid.still(false, 0, line.split(/\s+/).length / SPEECH_WPS);
-      return;
-    }
-    raceEl.classList.remove("two");
-    hTyped.classList.add("live"); hSaid.classList.remove("live");
-    tText.textContent = ""; sText.textContent = "";
-    cSaid.still(false, 0, 0); liveText($("timeSaid"), "");
-    cTyped.start(true);
-    typeOut(tText, line, function () {
-      cTyped.stop(); hTyped.classList.remove("live");
-      // A beat to read what it cost, and then the other way.
-      later(900, function () {
-        raceEl.classList.add("two"); hSaid.classList.add("live");
-        cSaid.start(false);
-        sayOut(sText, line, function () {
-          cSaid.stop(); hSaid.classList.remove("live");
-          if (hold) return;
-          later(3400, function () { raceEl.classList.add("out"); later(520, next); });
-        });
-      });
-    });
-  }
-  function next() { if (own) return; caseI = (caseI + 1) % C.cases.length; play(C.cases[caseI]); }
-  function resetStage() { cTyped.stop(); cSaid.stop(); }
-  function resumeStage() { if (staged) return; staged = true; resetStage(); play(own && current ? current : C.cases[caseI], !!own); }
-  function pauseStage() { staged = false; sgen++; clearTimeout(stm); cTyped.stop(); cSaid.stop(); }
+  function pauseStage() { staged = false; pauseKeys(); }
+  function resumeStage() { if (staged) return; staged = true; resumeKeys(); }
   document.addEventListener("visibilitychange", function () { if (document.hidden) pauseStage(); else if (seen) resumeStage(); });
 
   /* =====================================================================
@@ -1799,52 +1692,110 @@
     return { t: t, c: c };
   }
   function klater(ms, fn) { var g = kgen; ktm = setTimeout(function () { if (g === kgen) fn(); }, ms); }
-  function playApp() {
+  /* ONE APP AT A TIME, AND BOTH WAYS OF WRITING IN IT.
+
+     The sentence is typed the way a thumb really types: a letter every
+     hundred and ten to a hundred and ninety milliseconds, a breath before
+     a word now and then, and one wrong letter that sits for a third of a
+     second before it is taken back. Every one of those is a tap, and the
+     backspace is a tap too, so a correction spends three to undo one.
+
+     Then the keys are cut away, and everything typing produced goes with
+     them; the mark comes apart into its own pixels; and the same sentence
+     is said, over the time speech actually takes. What is left on the
+     screen is two numbers.                                             */
+  function playApp(said) {
     var g = ++kgen; clearTimeout(ktm);
-    var apps = C.apps.fields, f = apps[appI % apps.length], text = f.text;
-    liveText(kbApp, f.app);
-    [].forEach.call($("applist").children, function (li, i) { li.classList.toggle("on", i === appI % apps.length); });
-    // The keys are back for the next app, and the title reads as printed.
+    var apps = C.apps.fields, f = apps[appI % apps.length], text = said || f.text;
+    liveText(kbApp, said ? (C.hero.said || "Said") : f.app);
+    // The keys are back, and the title reads as printed.
     kbEl.classList.remove("small"); kbEl.classList.remove("cut"); keyless.classList.remove("live");
     kbEl.style.height = "";
     var kw = $("kw"); if (kw) kw.classList.remove("cut");
-    var slot = fieldFor(f), i = 0;
-    // The first two words by key — the old way, at length — then the cut.
-    var typed = (function () { var k = 0; for (var q = 0; q < text.length; q++) if (text[q] === " " && ++k === 2) return q; return Math.ceil(text.length / 3); })();
-    if (reduced) { kbEl.classList.add("small"); kbEl.style.height = KB_SMALL + "px"; if (kw) kw.classList.add("cut"); liveText(slot.t, text); slot.c.classList.add("off"); return; }
+    var slot = fieldFor(f);
+    cTyped.reset(); cSaid.reset();
+
+    if (reduced) {
+      kbEl.classList.add("small"); kbEl.style.height = KB_SMALL + "px";
+      if (kw) kw.classList.add("cut");
+      liveText(slot.t, text); slot.c.classList.add("off");
+      cTyped.still(true, text.length + 2, text.length * 0.16);
+      cSaid.still(false, 0, text.split(/\s+/).length / SPEECH_WPS);
+      return;
+    }
+    // A visitor's own sentence skips the typing: they already did it the
+    // other way, which is the entire point.
+    if (said) { cut(); return; }
+
+    // --- the hard way
+    var i = 0, badAt = Math.max(5, Math.floor(text.length * (0.45 + Math.random() * 0.3)));
+    cTyped.start(true);
     (function press() {
       if (g !== kgen) return;
-      if (i < typed) {
-        var k = keyOf[text[i].toLowerCase()]; i++;
-        if (k) { k.classList.add("down"); setTimeout(function () { if (g === kgen) k.classList.remove("down"); }, 230); }
-        liveText(slot.t, text.slice(0, i));
-        klater(300 + Math.random() * 80, press); return;
+      if (i >= text.length) {
+        cTyped.stop();
+        klater(760, cut);
+        return;
       }
-      /* THE CUT. The title's "key" is struck through and "keyless" written
-         above it by hand; the phone's keys fall at the same moment, in a
-         wave; the board shrinks to the mic alone; the mic goes live and the
-         rest of the line arrives by voice, a word at a time. */
+      if (i === badAt) {
+        // the wrong letter, the pause, the backspace: three taps to undo one
+        var wrong = "asdfghjkl"[Math.floor(Math.random() * 9)];
+        var wk = keyOf[wrong];
+        if (wk) { wk.classList.add("down"); setTimeout(function () { if (g === kgen) wk.classList.remove("down"); }, 200); }
+        liveText(slot.t, text.slice(0, i) + wrong); cTyped.tap(); badAt = -1;
+        klater(340 + Math.random() * 180, function () {
+          liveText(slot.t, text.slice(0, i)); cTyped.tap();
+          klater(170, press);
+        });
+        return;
+      }
+      var k = keyOf[text[i].toLowerCase()]; i++; cTyped.tap();
+      if (k) { k.classList.add("down"); setTimeout(function () { if (g === kgen) k.classList.remove("down"); }, 190); }
+      liveText(slot.t, text.slice(0, i));
+      var gap = text[i - 1] === " " && Math.random() < 0.4 ? 290 + Math.random() * 240 : 110 + Math.random() * 80;
+      klater(gap, press);
+    })();
+
+    /* THE CUT. The mic key is pressed, its mark comes apart, the keys fall
+       away in a wave and take the typed line with them, the title is
+       corrected, and the board shrinks to what is left. */
+    function cut() {
+      if (g !== kgen) return;
       micKey.classList.add("down"); if (rowDots) rowDots.start();
-      klater(380, function () {
+      klater(360, function () {
         micKey.classList.remove("down"); if (rowDots) rowDots.stop();
         if (kw) kw.classList.add("cut");
         kbEl.style.height = (kbTall || kbEl.offsetHeight) + "px";   // something to leave from
         kbEl.classList.add("cut");
-        klater(920, function () {
+        liveText(slot.t, "");
+        klater(880, function () {
           kbEl.classList.add("small"); kbEl.style.height = KB_SMALL + "px";
-          klater(700, function () {
-            keyless.classList.add("live"); micDots.start();
-            var rest = text.slice(i).split(" "), j = 0;
-            klater(520, function say() {
-              if (g !== kgen) return;
-              if (j < rest.length) { j++; liveText(slot.t, text.slice(0, i) + rest.slice(0, j).join(" ")); klater(95, say); return; }
-              keyless.classList.remove("live"); micDots.stop(); slot.c.classList.add("off");
-              klater(2400, function () { appI++; playApp(); });
-            });
-          });
+          klater(620, speak);
         });
       });
-    })();
+    }
+
+    /* AND THE OTHER WAY. Revealed over the time speech actually takes, so
+       the clock that stops at the end of it is true. */
+    function speak() {
+      if (g !== kgen) return;
+      keyless.classList.add("live"); micDots.start(); cSaid.start(false);
+      var words = text.split(/\s+/).filter(Boolean), at = 0;
+      var chunk = Math.max(1, Math.ceil(words.length / 6)), per = Math.round(1000 / SPEECH_WPS) * chunk;
+      (function say() {
+        if (g !== kgen) return;
+        if (at >= words.length) {
+          liveText(slot.t, text); cSaid.stop();
+          keyless.classList.remove("live"); micDots.stop(); slot.c.classList.add("off");
+          if (said) return;                 // theirs stays
+          klater(3000, function () { appI++; playApp(); });
+          return;
+        }
+        at = Math.min(words.length, at + chunk);
+        liveText(slot.t, words.slice(0, at).join(" "));
+        klater(per, say);
+      })();
+    }
   }
   /* =====================================================================
      THE MIC COMES APART — the app's own, brought over exactly.
@@ -1977,7 +1928,7 @@
 
   function resumeKeys() {
     if (keysOn) return; keysOn = true;
-    if (rowsEl.children.length) playApp();
+    if (rowsEl.children.length) playApp(own ? ownSaid : null);
   }
   function pauseKeys() {
     keysOn = false; kgen++; clearTimeout(ktm);
