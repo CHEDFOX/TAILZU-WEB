@@ -231,16 +231,19 @@
      shape. */
   /* The headline and the line under it sit here, on the dark, right after
      the river, with the buttons — and then the page opens into colour. */
-  .get { background: linear-gradient(180deg, transparent, var(--wash)); color: var(--white); padding: 72px 0 72px; }
+  .get { background: linear-gradient(180deg, transparent, var(--wash)); color: var(--white); padding: 48px 0 76px; }
   /* HAIRLINES THAT DISSOLVE. A rule from edge to edge is a drawn line; one
      that fades out before it reaches either edge is a fold in the surface.
      Same pale, same weight, no ends. */
   .hair { background: linear-gradient(90deg, transparent, var(--rule) 14%, var(--rule) 86%, transparent) top / 100% 1px no-repeat; }
-  .getin { padding-top: 44px; display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 40px 64px; align-items: end; }
-  .get h1 { margin: 0 0 18px; font-family: var(--serif); font-weight: 400; font-size: clamp(34px, 4.6vw, 62px); line-height: 1.02; letter-spacing: -.025em; text-wrap: balance; }
-  .get .lede { margin: 0; max-width: 560px; color: var(--grey); font-size: clamp(16px, 1.35vw, 19px); line-height: 1.55; text-wrap: pretty; }
-  .get .note { margin: 18px 0 0; color: var(--dim); font-family: var(--mono); font-size: 11px; letter-spacing: .16em; }
-  .dl { display: flex; gap: 10px; flex-wrap: wrap; justify-content: flex-end; }
+  /* One column, read top to bottom: the headline, the line, the button.
+     Everything left-aligned on the same edge as the river's own margin. */
+  .getin { padding-top: 48px; max-width: 780px; }
+  .get h1 { margin: 0 0 20px; font-family: var(--serif); font-weight: 400; font-size: clamp(38px, 5.2vw, 72px); line-height: 1.0; letter-spacing: -.028em; text-wrap: balance; }
+  .get .lede { margin: 0; max-width: 600px; color: var(--grey); font-size: clamp(16px, 1.4vw, 20px); line-height: 1.55; text-wrap: pretty; }
+  .cta { display: flex; align-items: center; gap: 22px; flex-wrap: wrap; margin-top: 32px; }
+  .also { margin: 0; color: var(--dim); font-size: 14px; }
+  .dl { display: flex; gap: 10px; flex-wrap: wrap; }
   /* Filled, not drawn on the void: an outline on a near-black ground is a
      hole with a line round it, and four of them in a row read as a broken
      control. A soft raised surface makes them objects you could press. */
@@ -459,12 +462,12 @@
 <section class="get">
   <div class="wrap">
     <div class="getin hair reveal">
-      <div>
-        <h1 id="heroTitle">Say it badly. Send it perfectly.</h1>
-        <p class="lede" id="heroLede">Talk the way you talk — half Hindi, half English, ums and all. Tailzu turns it into the sentence you meant, in your tone, in any app.</p>
-        <p class="note" id="platforms">MAC · WINDOWS · iPHONE · ANDROID</p>
-      </div>
-      <div class="dl" id="dl"></div>
+      <h1 id="heroTitle">Say it badly. Send it perfectly.</h1>
+      <p class="lede" id="heroLede">Talk the way you talk — half Hindi, half English, ums and all. Tailzu turns it into the sentence you meant, in your tone, in any app.</p>
+      <!-- One button, for this visitor's platform, and one quiet line for the
+           rest. Four buttons here read as a control panel; the full set lives
+           on the price field, where choosing is the point. -->
+      <div class="cta"><div class="dl" id="dl"></div><p class="also" id="also"></p></div>
     </div>
   </div>
 </section>
@@ -644,7 +647,7 @@
         { q: "Phone or desk?", a: "Both. iPhone and Android as a keyboard. Mac and Windows as a key you press to talk." }
       ]
     },
-    download: { win: "Windows", mac: "macOS", linux: "Linux", ios: "iPhone", android: "Android", soon: "soon" }
+    download: { win: "Windows", mac: "macOS", linux: "Linux", ios: "iPhone", android: "Android", soon: "soon", also: "Also on", and: "and" }
   };
   var site = { downloads: {}, demo: false, maxSeconds: 15 };
 
@@ -1268,24 +1271,39 @@
   var FILES = { win: "/downloads/Tailzu-Setup.exe", mac: "/downloads/Tailzu.dmg", linux: "/downloads/Tailzu.AppImage", ios: "/download", android: "/download" };
   function has(k) { return (k === "ios" || k === "android") ? true : !!site.downloads[k]; }
 
+  function button(k, lead) {
+    var ok = has(k);
+    var a = document.createElement("a");
+    a.href = ok ? FILES[k] : "#";
+    a.textContent = (C.download[k] || k) + (ok ? "" : " · " + C.download.soon);
+    a.className = (k === lead ? "primary" : "") + (ok ? "" : " soon");
+    if (!ok) a.setAttribute("aria-disabled", "true");
+    return a;
+  }
+  function list(names) {
+    return names.length < 2 ? names.join("") : names.slice(0, -1).join(", ") + " " + (C.download.and || "and") + " " + names[names.length - 1];
+  }
   function paintDownloads() {
-    var el = $("dl"); el.innerHTML = "";
     var mine = os();
     var order = [mine].concat(["mac", "win", "ios", "android", "linux"].filter(function (k) { return k !== mine; })).slice(0, 4);
     // The filled button promises that something downloads. It goes to the
     // visitor's platform when there is an installer, otherwise to the first
     // one there is — never to a button that says "soon".
     var lead = has(mine) ? mine : (order.filter(has)[0] || null);
-    order.forEach(function (k) {
-      var ok = has(k);
-      var a = document.createElement("a");
-      a.href = ok ? FILES[k] : "#";
-      a.textContent = (C.download[k] || k) + (ok ? "" : " · " + C.download.soon);
-      a.className = (k === lead ? "primary" : "") + (ok ? "" : " soon");
-      if (!ok) a.setAttribute("aria-disabled", "true");
-      el.appendChild(a);
-    });
-    var el2 = $("dl2"); if (el2) el2.innerHTML = el.innerHTML;
+    // Under the river: the one button, and one line for the others — what
+    // is there now, and what is coming.
+    var el = $("dl"); el.innerHTML = "";
+    if (lead) el.appendChild(button(lead, lead));
+    var rest = order.filter(function (k) { return k !== lead; });
+    var now = rest.filter(has).map(function (k) { return C.download[k] || k; });
+    var soon = rest.filter(function (k) { return !has(k); }).map(function (k) { return C.download[k] || k; });
+    var line = [];
+    if (now.length) line.push((C.download.also || "Also on") + " " + list(now) + ".");
+    if (soon.length) line.push(list(soon) + " " + C.download.soon + ".");
+    $("also").textContent = line.join(" ");
+    // On the price field: all of them, because choosing is the point there.
+    var el2 = $("dl2");
+    if (el2) { el2.innerHTML = ""; order.forEach(function (k) { el2.appendChild(button(k, lead)); }); }
     if (has(mine)) $("navdl").href = FILES[mine];
   }
 
