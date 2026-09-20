@@ -1711,7 +1711,7 @@
           x: r.left - box.left + Math.random() * r.width,
           y: r.top - box.top + Math.random() * r.height,
           vx: (Math.random() - 0.5) * 16, vy: -10 - Math.random() * 24,
-          r: 0.5 + Math.random() * 0.9, born: at, life: 620 + Math.random() * 240, age: -at
+          r: 0.35 + Math.random() * 0.55, born: at, life: 620 + Math.random() * 240, age: -at
         });
       }
     });
@@ -1909,7 +1909,9 @@
       var w = canvas.clientWidth || 58;
       DPR = Math.min(2, window.devicePixelRatio || 1);
       if (size === w && canvas.width) return;
-      size = w; R = w / 2; DR = Math.max(0.9, w / 44);
+      // Finer than the app's 0.9 of a point: on a page the circle is seen
+      // from further away, and a dot that is bold there reads as a crumb.
+      size = w; R = w / 2; DR = Math.max(0.5, w / 76);
       canvas.width = Math.round(w * DPR); canvas.height = Math.round(w * DPR);
       home = markPoints(w, 60, opts.inset || 6);
     }
