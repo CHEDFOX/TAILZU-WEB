@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Tailzu</title>
 <meta name="description" content="Talk. It writes. Every word you meant, none you didn't, in the language you said it. 22 Indian languages and most of the world's.">
-<meta name="theme-color" content="#0F0D0B">
+<meta name="theme-color" content="#1C1640">
 <meta property="og:title" content="Tailzu — say it badly, send it perfect">
 <meta property="og:description" content="Talk. It writes. In your language, in your tone, in any app.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -57,6 +57,10 @@
     --indigo: #2A2878; --indigo-deep: #17163F;
     --teal: #167D71; --teal-deep: #0C4F47;
     --sun: #F7CF4A; --rose: #E4587B; --sky: #DCEBF7; --leaf: #DDF3E3; --butter: #FFF3C2;
+    /* THE HERO'S OWN FIELD. The page is a walk through fields of colour, so
+       the first screen is one too — a deep violet, not a black void with a
+       spotlight in it. Warm handwriting and a pale word on a cool ground. */
+    --violet: #1C1640;
     --serif: 'Newsreader', Georgia, 'Times New Roman', serif;
     --sans: 'Instrument Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
     --mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
@@ -65,9 +69,9 @@
   /* clip, not hidden: hidden still lets a script scroll the page sideways
      to reach something that hangs past the edge, and this page hangs light
      and dust past both. clip cannot be scrolled at all. */
-  html { background: var(--ink); overflow-x: hidden; overflow-x: clip; }
+  html { background: var(--violet); overflow-x: hidden; overflow-x: clip; }
   body {
-    margin: 0; background: var(--ink); color: var(--white);
+    margin: 0; background: var(--violet); color: var(--white);
     font-family: var(--sans); font-size: 16px; line-height: 1.65;
     -webkit-font-smoothing: antialiased; overflow-x: hidden; overflow-x: clip;
   }
@@ -183,7 +187,7 @@
     /* A shade under the regular weight. At this size the thinner stem lets
        the ground show through the letter, which is how a word set in a fine
        serif reads as printed rather than painted. */
-    font-family: var(--serif); font-size: 78px; font-weight: 380;
+    font-family: var(--serif); font-size: 104px; font-weight: 380;
     font-optical-sizing: auto; letter-spacing: -.022em; fill: var(--white);
     transition: fill .25s;
   }
@@ -208,10 +212,10 @@
   @keyframes rollout {
     from { transform: translateY(0); opacity: 1; }
     70%  { opacity: 1; }
-    to   { transform: translateY(-96px); opacity: 0; }
+    to   { transform: translateY(-124px); opacity: 0; }
   }
   @keyframes rollin {
-    from { transform: translateY(96px); }
+    from { transform: translateY(124px); }
     to   { transform: translateY(0); }
   }
   #ghostwrap.leave .ghost { opacity: 1; }
@@ -314,8 +318,8 @@
   .desk { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 40px 64px; align-items: center; }
   .chord { justify-self: center; display: flex; align-items: center; gap: 12px; }
   .chord i { font-style: normal; color: rgba(255,255,255,.6); font-family: var(--mono); font-size: 18px; }
-  .key { width: 104px; height: 104px; border-radius: 20px; background: linear-gradient(180deg, #fff, #E7EEEC); color: var(--teal-deep); box-shadow: 0 14px 0 #B9CCC8, 0 26px 44px -18px rgba(0,0,0,.45); display: grid; place-items: center; text-align: center; font-family: var(--mono); font-size: 11px; letter-spacing: .16em; text-transform: uppercase; transition: transform .12s, box-shadow .12s; cursor: default; }
-  .key:active { transform: translateY(9px); box-shadow: 0 5px 0 #B9CCC8, 0 16px 30px -18px rgba(0,0,0,.45); }
+  .key { width: 104px; height: 104px; border-radius: 20px; background: linear-gradient(180deg, #fff, #E9E8F4); color: var(--indigo-deep); box-shadow: 0 14px 0 #B9BADB, 0 26px 44px -18px rgba(0,0,0,.45); display: grid; place-items: center; text-align: center; font-family: var(--mono); font-size: 11px; letter-spacing: .16em; text-transform: uppercase; transition: transform .12s, box-shadow .12s; cursor: default; }
+  .key:active { transform: translateY(9px); box-shadow: 0 5px 0 #B9BADB, 0 16px 30px -18px rgba(0,0,0,.45); }
   .key.wide { width: 168px; }
   .key b { display: block; font-family: var(--serif); font-weight: 400; font-size: 30px; letter-spacing: 0; text-transform: none; line-height: 1; }
   .key b.glyph { font-size: 40px; }
@@ -357,7 +361,8 @@
   .car.off { display: none; }
   @keyframes blink { 50% { opacity: 0; } }
   .wfoot { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 16px; border-top: 1px solid var(--line); }
-  .tabs { display: flex; gap: 6px; }
+  .tabs { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+  .tabs .more { margin-left: 8px; font-family: var(--mono); font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--ink2-soft); }
   .tabs button { appearance: none; border: 1px solid var(--line); background: none; color: var(--ink2-soft); border-radius: 999px; padding: 6px 12px; font-family: var(--mono); font-size: 11px; letter-spacing: .12em; text-transform: uppercase; cursor: pointer; transition: color .2s, border-color .2s, background .2s; }
   .tabs button[aria-selected="true"] { background: var(--ink2); border-color: var(--ink2); color: #fff; }
   .send { width: 32px; height: 32px; border-radius: 50%; background: var(--ink2); color: #fff; display: grid; place-items: center; font-size: 16px; }
@@ -510,11 +515,15 @@
            beneath, inside a window the height of one line. Each text has a
            wrapper of its own to carry the roll, so the word's own transform
            stays free for the swell. -->
-      <clipPath id="wordclip"><rect x="700" y="214" width="1000" height="140"/></clipPath>
-      <g clip-path="url(#wordclip)">
+      <!-- A nested svg is the window, not a clipPath: a viewport clips its
+           own overflow in the compositor, so a child carried by a css
+           animation stays inside it. A clip-path on a group let the rolling
+           words out of the slot. Its viewBox equals its place in the parent,
+           so every coordinate inside is the parent's coordinate. -->
+      <svg id="wordslot" x="640" y="194" width="1100" height="180" viewBox="640 194 1100 180" overflow="hidden">
         <g id="ghostwrap"><text id="absorbOld" class="absorb ghost" x="762" y="284" dy=".33em" aria-hidden="true"></text></g>
         <g id="wordwrap"><text id="absorb" class="absorb" x="762" y="284" dy=".33em">Heard.</text></g>
-      </g>
+      </svg>
     </g>
   </svg>
 
@@ -573,7 +582,7 @@
   </div>
 </section>
 
-<section class="band on-indigo reveal" id="apps">
+<section class="band on-teal reveal" id="apps">
   <div class="wrap">
     <div class="head">
       <div><p class="kick" id="appsKick">Everywhere</p><h2 id="appsTitle">It's a keyboard.</h2></div>
@@ -582,7 +591,7 @@
   </div>
 </section>
 
-<section class="band on-teal reveal" id="desk">
+<section class="band on-indigo reveal" id="desk">
   <div class="wrap">
     <div class="desk">
       <div>
@@ -761,7 +770,7 @@
     llm: {
       kick: "Prompts", title: "Talk to the machine.",
       lede: "Say it rough. A clean prompt lands in the box.",
-      targets: ["ChatGPT", "Claude", "Grok", "Gemini", "Perplexity", "Copilot", "DeepSeek", "Cursor"], tag: "New chat",
+      targets: ["ChatGPT", "Claude", "Grok"], more: "and more", tag: "New chat",
       said: "okay so um help me think through pricing for the team plan like per seat or usage or maybe both and what could go wrong with each",
       wrote: "Help me think through pricing for the team plan: per seat, usage-based, or a hybrid of the two. For each, give the price point, the target customer and the biggest risk."
     },
@@ -845,7 +854,7 @@
      Measured on one machine, after the transform work: 60 threads 48fps, 78
      threads 39fps, 96 threads 32fps, 116 threads 28fps. Raising it is one
      number, and so is the frame rate it costs. */
-  var TANGLE = 104, END = [790, 284], VB = [1440, 520];
+  var TANGLE = 64, END = [790, 284], VB = [1440, 520];
   var cv = $("tangle"), g2 = cv.getContext("2d");
   /* HANDWRITTEN. Speech is a person, and a person writes by hand — so the
      mess arrives in handwriting, and only the word that swallows it is
@@ -879,7 +888,7 @@
      alone so it stays the calm thing on the screen.
      VIVID: full-saturation hues, and the far end of the field lifted so
      even a distant thread is a colour and not a grey. */
-  var HUES = [[246,164,32], [242,74,122], [92,182,246], [36,204,178], [255,210,63], [170,140,255], [255,122,69], [110,232,168]];
+  var HUES = [[246,164,32], [242,84,128], [124,196,255], [110,232,168], [255,210,63], [255,122,69], [243,226,198], [201,184,255]];
   function shade(b, hue) { return "rgba(" + hue.join(",") + "," + (0.32 + 0.68 * b).toFixed(3) + ")"; }
 
   /** The curve as a polyline: position and heading at intervals of arc length,
@@ -901,8 +910,9 @@
   }
 
   var LANES = [];
-  (function build() {
+  function build() {
     var r = seeded(20260919);
+    LANES.length = 0;
     for (var k = 0; k < TANGLE; k++) {
       // Round-robin across the three edges and evenly along each, with a
       // jitter on top. Leaving the side to chance clusters them — and it
@@ -915,14 +925,17 @@
          screen — and the quarter over the top and the quarter from beneath
          are held to the left of the frame, so they come in through the two
          corners rather than dropping in out of the middle of nowhere. */
-      var m = k % 4, per = Math.ceil(TANGLE / 4), slot = Math.floor(k / 4), sx, sy;
-      // The two left-hand residues are offset half a slot from each other, or
-      // they land in pairs on the same line.
-      var u = (slot + (m === 3 ? 1 : 0.5)) / per + (r() - 0.5) * 0.16;
+      /* ONE CURRENT, FROM THE LEFT. They used to come in from three edges,
+         and three edges converging on a point is a starburst: every thread
+         at its own angle, a knot of crossings in the middle of the screen
+         and no direction to read it in. Now every thread enters along the
+         left, spread over more than the height of the band so the outer
+         ones cut the corners at a shallow angle, and all of them run the
+         way a sentence runs. A river has a direction. */
+      var per = TANGLE, slot = k, sx, sy;
+      var u = (slot + 0.5) / per + (r() - 0.5) * 0.9 / per;
       u = Math.max(0, Math.min(1, u));
-      if (m === 1 || m === 3) { sx = -430 - r() * 240; sy = -150 + u * 820; }
-      else if (m === 0)       { sx = -430 + u * 640;   sy = -190 - r() * 150; }
-      else                    { sx = -430 + u * 640;   sy = 710 + r() * 150; }
+      sx = -380 - r() * 300; sy = -120 + u * 780;
 
       /* A CURRENT, NOT A SCATTER.
          The middle control point used to be thrown anywhere on the page,
@@ -936,8 +949,12 @@
          top meets bottom, and the twist sends neighbours across each other —
          but they cross the way silk does, not the way string does. */
       var dx = END[0] - sx, dy = END[1] - sy, dist = Math.sqrt(dx * dx + dy * dy);
-      var bear = Math.atan2(dy, dx) + (r() - 0.5) * 1.05;
-      var h1 = dist * (0.34 + r() * 0.34), h2 = dist * (0.22 + r() * 0.30);
+      /* Each thread sets off LEVEL — the way it entered — twisted by a few
+         degrees so neighbours cross, and only then bends in to the word.
+         Level in, level out: the bend is in the middle, where a current
+         narrows, and no thread ever heads straight at the caret. */
+      var bear = (r() - 0.5) * 0.5;
+      var h1 = dist * (0.42 + r() * 0.26), h2 = dist * (0.26 + r() * 0.26);
       // x must step rightward at every control point, or words hang upside
       // down. A twist that would send the first handle backward is clamped.
       var p1x = sx + Math.max(0.16, Math.cos(bear)) * h1, p1y = sy + Math.sin(bear) * h1;
@@ -946,7 +963,7 @@
          what "cheap" looks like. Spread over the height of the first glyph
          they arrive along its whole stem, and the letter reads as drinking
          them in rather than as a dot being wiped. */
-      var ey = END[1] + (r() - 0.5) * 48;
+      var ey = END[1] + (r() - 0.5) * 120;
       var p2x = END[0] - h2, p2y = ey + (r() - 0.5) * 6;
       if (p1x > p2x - 24) p1x = p2x - 24;
       var P = [sx, sy, p1x, p1y, p2x, p2y, END[0], ey];
@@ -968,7 +985,7 @@
         pts: sample(P),
         face: FACES[k % FACES.length],
         bright: bright,             // kept: a near thread's arrival is felt more than a far one's
-        size: 9 + bright * 8,       // a hand is small at its x-height; a shade up from the type
+        size: 11 + bright * 9,      // a hand is small at its x-height; a shade up from the type
         fill: shade(bright, HUES[Math.floor(r() * HUES.length)]),
         track: (r() - 0.5) * 0.3,   // a hand is not squeezed, only a little uneven
         from: k, gap: 1.10 + r() * 0.55,
@@ -976,11 +993,12 @@
         // A slow breath, different on every thread, biggest at the far edge
         // and nothing at all by the caret. The field moves like something
         // alive instead of like a diagram.
-        amp: 2 + r() * 4, sw: 0.22 + r() * 0.34, ph: r() * 6.2832,
+        amp: 1.2 + r() * 2.2, sw: 0.18 + r() * 0.26, ph: r() * 6.2832,
         words: [], period: 1, off: 0, phase: r()   // spread, or they arrive as one clump
       });
     }
-  })();
+  }
+  build();
 
   /**
    * ONE PHRASE PER THREAD, NOT A RIBBON.
@@ -1044,7 +1062,7 @@
    *  right of the anchor depends on the window — and a visitor's own sentence
    *  replaces the word once they have spoken, at whatever length they spoke.
    *  Set big, measured, and shrunk only if it would run off. */
-  var absorbEl = $("absorb"), ABX = 762, ABSIZE = 78;
+  var absorbEl = $("absorb"), ghostEl = $("absorbOld"), slotEl = $("wordslot"), ABX = 762, ABSIZE = 104, ownSaid = "";
 
   /* THE GATE is the word's own left edge, measured rather than guessed.
      Everything on the canvas stops there: the threads merge into the stem of
@@ -1052,7 +1070,7 @@
      typed by hand put the cut a few units off the glyph at one font size and
      a dozen off at another, and a thread visible inside the word reads as a
      mistake rather than as an arrival. */
-  var GATE = 768, FADE = 150;
+  var GATE = 768, FADE = 210;
   function measureGate() {
     try {
       var bb = absorbEl.getBBox();
@@ -1072,6 +1090,7 @@
   }
 
   function ownRiver(said, wrote) {
+    ownSaid = said;
     LANES.forEach(function (L) { lay(L, said, L.gap); L.off = 0; });
     setAbsorb(wrote);            // what it absorbed, in their own words
     placePool();
@@ -1084,7 +1103,7 @@
      absorbed beats what it claims to. Driven from the frame loop, so it
      runs only while the river does: never off screen, never under reduced
      motion. */
-  var wrapEl = $("wordwrap"), ghostWrap = $("ghostwrap"), ghostEl = $("absorbOld"), wordI = 0, wordAt = 0, WORD_HOLD = 3400, swapping = false;
+  var wrapEl = $("wordwrap"), ghostWrap = $("ghostwrap"), wordI = 0, wordAt = 0, WORD_HOLD = 3400, swapping = false;
   function words() { return (C.absorbs && C.absorbs.length) ? C.absorbs : [C.absorb]; }
   function swapWord(now) {
     var list = words(); if (list.length < 2 || swapping) return;
@@ -1123,6 +1142,24 @@
     ox = (w - VB[0] * scale) / 2; oy = (h - VB[1] * scale) / 2;
     VIS[0] = -ox / scale; VIS[1] = -oy / scale;
     VIS[2] = VIS[0] + w / scale; VIS[3] = VIS[1] + h / scale;
+    fitMouth();
+  }
+  /* THE MOUTH MOVES WITH THE WINDOW. The drawing is sliced, so on a phone
+     the visible strip is a third of the viewBox and a mouth fixed at its
+     centre lands two thirds of the way across the screen, with no room for
+     the word. So the mouth sits at a fraction of what is VISIBLE: a little
+     past the middle on a wide screen, a third of the way on a narrow one,
+     and the threads are rebuilt to arrive there. */
+  var ABX0 = 762;
+  function fitMouth() {
+    var vw = VIS[2] - VIS[0];
+    var want = vw >= 1180 ? ABX0 : Math.round(VIS[0] + vw * (vw < 700 ? 0.34 : 0.44));
+    if (want === ABX) return;
+    ABX = want; END[0] = ABX + 28;
+    absorbEl.setAttribute("x", ABX); ghostEl.setAttribute("x", ABX);
+    slotEl.setAttribute("x", ABX - 122); slotEl.setAttribute("viewBox", (ABX - 122) + " 194 1100 180");
+    build();
+    if (C.cases) LANES.forEach(function (L) { lay(L, own ? ownSaid : C.cases[L.from % C.cases.length].said, L.gap); L.off = L.phase * L.period; });
   }
 
   function paint(t) {
@@ -1649,6 +1686,7 @@
       });
       tabs.appendChild(b);
     });
+    if (C.llm.more) tabs.appendChild(el("span", "more", C.llm.more));
     $("llmName").textContent = C.llm.targets[llmI] || "";
     setText("llmTag", C.llm.tag);
     setText("devKick", C.dev.kick); setText("devTitle", C.dev.title); setText("devLede", C.dev.lede);
