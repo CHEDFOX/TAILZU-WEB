@@ -118,20 +118,61 @@
      nowhere to go and the whole band reads as evenly busy. This is the page's
      own ink at four per cent — warm light, no new colour — and it is what
      makes the caret the subject rather than one more mark among a hundred. */
-  /* THE BOX AND THE WORD. The current runs inside a rounded window and the
-     word it becomes stands outside it, beside it on a wide screen and under
-     it on a phone. Two things, side by side: the mess, framed, and the one
-     clean word it turns into, free of the frame. */
-  .river {
-    position: relative; margin: 26px 0 76px; display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
-    gap: 32px 52px; align-items: center; animation: fade 1.4s .35s both;
+  /* THE HERO IS THE PRODUCT DOING ITS ONE THING, at hero size. A line as
+     somebody actually said it — ums, Hinglish, a typo, in their own hand
+     and colour — and under it the line it became. One idea, one place for
+     the eye. The current runs behind it at a whisper: every language in
+     the air, none of it competing with the sentence in front. */
+  .hero {
+    position: relative; overflow: hidden; margin: 0; padding: 22px 0 58px;
+    min-height: clamp(480px, 76vh, 680px); display: grid; align-items: center;
+    animation: fade 1.2s .2s both;
   }
-  .box {
-    position: relative; height: clamp(320px, calc(100vh - 380px), 440px); border-radius: 30px; overflow: hidden;
-    background: #130E2F; border: 1px solid rgba(243,226,198,.1);
-    box-shadow: inset 0 1px 0 rgba(255,255,255,.05), 0 50px 90px -50px rgba(0,0,0,.7);
+  .hero .wrap { position: relative; z-index: 2; width: 100%; }
+  .stage { position: relative; max-width: 1060px; }
+  .stage .row { display: flex; align-items: center; gap: 14px; min-height: 26px; font-family: var(--mono); font-size: 11px; letter-spacing: .22em; text-transform: uppercase; color: var(--dim); }
+  .stage .lang { color: var(--grey); }
+  .stage .lang:not(:empty)::before { content: "·"; margin-right: 14px; color: var(--dim); }
+  /* THE SPOKEN LINE. A hand, not a face: each word lands with its own
+     tilt and its own colour, the way speech arrives — alive, uneven, and
+     nobody's typography. */
+  .spoken {
+    margin: 12px 0 26px; min-height: 1.3em; display: flex; flex-wrap: wrap; gap: .05em .42em;
+    font-family: 'Caveat', 'Kalam', cursive; font-weight: 600; font-size: clamp(30px, 3.8vw, 54px); line-height: 1.22;
+    transition: opacity .6s, transform .38s;
   }
-  .mouth { display: flex; flex-direction: column; align-items: flex-start; gap: 26px; min-width: 0; }
+  .spoken .w {
+    display: inline-block; opacity: 0; transform: translateY(12px) rotate(var(--tilt, 0deg));
+    text-decoration-thickness: 2px; text-underline-offset: .1em; text-decoration-color: transparent;
+    transition: opacity .3s, transform .5s cubic-bezier(.2,.8,.2,1), color .5s, text-decoration-color .5s;
+  }
+  .spoken .w.in { opacity: 1; transform: translateY(0) rotate(var(--tilt, 0deg)); }
+  /* MEANT. The fillers are struck and the typos get the squiggle everyone
+     has seen under their own spelling — and then the clean line arrives
+     without either. The two marks the whole world already knows. */
+  .spoken .w.drop { opacity: .32; text-decoration-line: line-through; text-decoration-color: currentColor; }
+  .spoken .w.fix { text-decoration-line: underline; text-decoration-style: wavy; text-decoration-color: var(--rose); }
+  .spoken.done { opacity: .55; }
+  /* THE STATE: the story, one word at a time, rolling — heard, meant,
+     written, sent — with the keyboard's own wave beside it. */
+  .state { display: inline-flex; align-items: center; gap: 12px; }
+  .state .wave i { background: var(--amber); }
+  .state.done .wave i { background: #6EE7A8; animation: none; height: 30%; }
+  .state .tick { display: none; width: 15px; height: 15px; color: #6EE7A8; }
+  .state.done .tick { display: block; }
+  /* THE WRITTEN LINE. Type, where the spoken line was a hand: that contrast
+     is the product. The newest letters are warm and cool into the pale as
+     the line goes on — born warm, like everything else on this page. */
+  .written {
+    margin: 14px 0 0; min-height: 2.2em; font-family: var(--serif); font-weight: 380; font-optical-sizing: auto;
+    font-size: clamp(38px, 5.8vw, 88px); line-height: 1.08; letter-spacing: -.022em; color: var(--white); text-wrap: balance;
+    transition: opacity .38s, transform .38s;
+  }
+  .written .hl { color: #FFDCA6; }
+  .written .car { width: 3px; height: .92em; vertical-align: -.1em; }
+  .stage .row { transition: opacity .38s, transform .38s; }
+  .stage.out .row, .stage.out .spoken, .stage.out .written { opacity: 0; transform: translateY(-12px); }
+  .hero .speak { margin-top: 30px; }
   /* THE LIGHT IS ALIVE. The pool is its own layer under the threads, and
      the script breathes it: it swells a little on a slow cycle, brightens
      for a beat each time a phrase reaches the word, and fills with the
@@ -189,29 +230,21 @@
   /* One line, and every decision on it made on purpose: the optical size the
      face was cut for, a hair of tracking, and nothing else on the page set
      like it. That contrast is the whole product in one picture. */
-  /* THE SLOT is one line tall and clips: the words roll through it. Its
-     font size is the word's, so the roll distance can be written in ems.
-     The word arrives last: the field is already flowing when it fades up to
-     meet it, and the rush the script starts with is what it fades up into. */
+  /* THE SLOT is one line tall and clips: the state words roll through it.
+     Its font size is the word's, so the roll distance is written in ems. */
   .slot {
-    position: relative; display: block; width: 100%; height: 1.16em; overflow: hidden; cursor: pointer;
-    font-family: var(--serif); font-size: clamp(60px, 7.4vw, 108px); line-height: 1.1; letter-spacing: -.022em;
-    animation: fade 1.5s .7s both;
+    position: relative; display: block; height: 1.2em; overflow: hidden;
+    font-family: var(--serif); font-style: italic; font-weight: 400; font-size: 22px; line-height: 1.1;
+    letter-spacing: 0; text-transform: none; color: var(--grey);
   }
   .roll { display: block; }
   #ghostwrap { position: absolute; left: 0; top: 0; }
-  .absorb {
-    /* A shade under the regular weight. At this size the thinner stem lets
-       the ground show through the letter, which is how a word set in a fine
-       serif reads as printed rather than painted. */
-    display: inline-block; font-weight: 380; font-optical-sizing: auto; color: var(--white);
-    white-space: nowrap; transform-origin: left center; transition: color .25s;
+  .absorb { display: inline-block; white-space: nowrap; }
+  #tangle { position: absolute; inset: 0; width: 100%; height: 100%; display: block; opacity: .34; z-index: 1; }
+  .plate {
+    position: absolute; z-index: 1; left: -10%; top: 4%; width: 86%; height: 92%; pointer-events: none;
+    background: radial-gradient(ellipse at 44% 50%, rgba(28,22,64,.97) 0%, rgba(28,22,64,.88) 30%, rgba(28,22,64,.5) 56%, rgba(28,22,64,0) 74%);
   }
-  /* The visitor's own sentence is as long as they made it: the slot opens
-     up and the line wraps, at a size a sentence can be read at. */
-  .slot.free { height: auto; overflow: visible; font-size: clamp(26px, 3vw, 40px); line-height: 1.18; }
-  .slot.free .absorb { white-space: normal; }
-  #tangle { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
   /* THE SWAP is a roll. Inside a window one line tall, the old word rises
      out of the top and the new one rises in from the bottom, on the same
      easing, at the same time, like a line on a departures board. No blur,
@@ -440,8 +473,8 @@
   .reveal.in { opacity: 1; transform: none; }
 
   @media (max-width: 900px) {
-    .river { grid-template-columns: minmax(0, 1fr); gap: 26px; margin-bottom: 60px; }
-    .box { height: 340px; }
+    .hero { min-height: clamp(440px, 66vh, 600px); padding: 14px 0 40px; }
+    .plate { left: -20%; width: 140%; }
     .mast nav a:not(.cta) { display: none; }
     .band .head, .desk { grid-template-columns: minmax(0, 1fr); }
     .free { padding-top: 46px; }
@@ -453,7 +486,9 @@
     .band { padding: 76px 0; }
   }
   @media (max-width: 560px) {
-    .box { height: 280px; border-radius: 22px; }
+    .spoken { font-size: 28px; gap: .05em .34em; }
+    .slot { font-size: 19px; }
+    .written { font-size: 36px; }
     .speak span { font-size: 12.5px; }
     .tonegrid, .fields { grid-template-columns: minmax(0, 1fr); }
     .key { width: 84px; height: 84px; }
@@ -494,37 +529,42 @@
 
 </div>
 
-<div class="wrap">
-  <div class="river" id="river">
-    <!-- THE BOX. Everything anybody said, in every hand and colour, runs
-         inside a rounded window toward its right edge, where the pool of
-         light sits and the threads leave. The tangle is drawn on a canvas,
-         not in an svg: two dozen moving textPaths cost the page two thirds
-         of its frame rate. -->
-    <div class="box" id="box">
-      <div class="light" id="light" aria-hidden="true"><div class="pool" id="pool"></div></div>
-      <canvas id="tangle" aria-hidden="true"></canvas>
-    </div>
-    <!-- THE WORD, outside the box. What the current becomes: one word set
-         in type, rolling through the story — heard, meant, written, sent —
-         and the visitor's own sentence once they have spoken. Each text has
-         a wrapper of its own to carry the roll, so the word's own transform
-         stays free for the swell. -->
-    <div class="mouth" id="mouth">
-      <div class="slot" id="mark" role="button" tabindex="0" aria-label="Speak">
-        <span class="roll" id="ghostwrap"><span class="absorb ghost" id="absorbOld" aria-hidden="true"></span></span>
-        <span class="roll" id="wordwrap"><span class="absorb" id="absorb">Heard.</span></span>
+<section class="hero" id="river">
+  <!-- The pool of light, under everything, breathed by the script. -->
+  <div class="light" id="light" aria-hidden="true"><div class="pool" id="pool"></div></div>
+  <!-- The current, at a whisper, behind the sentence: everything anybody
+       said, in every hand and colour, crossing the screen. Drawn on a
+       canvas, not in an svg: moving textPaths cost the page two thirds of
+       its frame rate. -->
+  <canvas id="tangle" aria-hidden="true"></canvas>
+  <!-- Calm ground under the sentence: the current dims where the words
+       are and stays alive at the edges. -->
+  <div class="plate" aria-hidden="true"></div>
+  <div class="wrap">
+    <!-- THE SENTENCE. A line as somebody said it, and the line it became,
+         in four beats named by the four words of the story. The stage is
+         the control too: with the demo on, pressing it opens the mic. -->
+    <div class="stage" id="mark" role="button" tabindex="0" aria-label="Speak">
+      <div class="row"><span id="labSaid">You said</span><span class="lang" id="lang"></span></div>
+      <p class="spoken" id="said" dir="auto"></p>
+      <div class="row">
+        <span class="state" id="state">
+          <span class="wave"><i></i><i></i><i></i><i></i></span>
+          <span class="slot"><span class="roll" id="ghostwrap"><span class="absorb ghost" id="absorbOld" aria-hidden="true"></span></span><span class="roll" id="wordwrap"><span class="absorb" id="absorb">Heard.</span></span></span>
+          <svg class="tick" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>
+        </span>
       </div>
-      <button class="speak" id="mic" aria-pressed="false">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <rect x="9" y="3" width="6" height="11" rx="3"></rect>
-          <path d="M5 11a7 7 0 0 0 14 0"></path><path d="M12 18v3M9 21h6"></path>
-        </svg>
-        <span id="micLabel">Speak</span>
-      </button>
+      <p class="written" id="wrote" dir="auto"><span id="wroteText"></span><span class="car off" id="wroteCar"></span></p>
     </div>
+    <button class="speak" id="mic" aria-pressed="false">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <rect x="9" y="3" width="6" height="11" rx="3"></rect>
+        <path d="M5 11a7 7 0 0 0 14 0"></path><path d="M12 18v3M9 21h6"></path>
+      </svg>
+      <span id="micLabel">Speak</span>
+    </button>
   </div>
-</div>
+</section>
 
 <!-- No words under the river. The river is the headline, and the page
      opens straight into colour. The buttons live on the price field. -->
@@ -672,49 +712,51 @@
     // it has to be read at a glance, at the size of the thing swallowing a
     // hundred threads.
     absorb: "Heard.",
+    // The hero's one label, over the line as somebody said it.
+    hero: { said: "You said" },
     // The story the word tells, one word at a time, in this order. Each is
     // two words at most: it has to be read at a glance at the size of a
     // thing swallowing a hundred threads.
     absorbs: ["Heard.", "Meant.", "Written.", "Sent."],
     cases: [
-      { said: "um so like can we push the call to four",          wrote: "Can we push the call to four?" },
-      { said: "the deploy is done but abhi testing baaki hai",    wrote: "The deploy is done, but abhi testing baaki hai." },
-      { said: "हाँ वो फाइल मैंने भेज दी थी कल शाम को",                  wrote: "हाँ, वो फाइल मैंने कल शाम भेज दी थी।" },
-      { said: "நான் இப்போ கிளம்பறேன் கொஞ்சம் லேட் ஆகும்",              wrote: "நான் இப்போ கிளம்பறேன், கொஞ்சம் லேட் ஆகும்." },
-      { said: "trensfer 2500 rupeez to ramesh tomorow",            wrote: "Transfer 2500 rupees to Ramesh tomorrow." },
-      { said: "আমি কাল অফিসে আসব না একটু কাজ আছে",                   wrote: "আমি কাল অফিসে আসব না, একটু কাজ আছে।" },
-      { said: "मी उद्या ऑफिसला येणार नाही जरा काम आहे",                wrote: "मी उद्या ऑफिसला येणार नाही, जरा काम आहे." },
-      { said: "eh o sea puedo llegar como a las siete",            wrote: "Puedo llegar como a las siete." },
-      { said: "నేను రేపు ఆఫీస్ కి రాను కొంచెం పని ఉంది",                  wrote: "నేను రేపు ఆఫీస్‌కి రాను, కొంచెం పని ఉంది." },
-      { said: "ਮੈਂ ਕੱਲ੍ਹ ਨਹੀਂ ਆ ਸਕਦਾ ਥੋੜ੍ਹਾ ਕੰਮ ਹੈ",                       wrote: "ਮੈਂ ਕੱਲ੍ਹ ਨਹੀਂ ਆ ਸਕਦਾ, ਥੋੜ੍ਹਾ ਕੰਮ ਹੈ।" },
-      { said: "હું કાલે ઓફિસે નહીં આવું થોડું કામ છે",                       wrote: "હું કાલે ઓફિસે નહીં આવું, થોડું કામ છે." },
-      { said: "ನಾನು ನಾಳೆ ಆಫೀಸಿಗೆ ಬರಲ್ಲ ಸ್ವಲ್ಪ ಕೆಲಸ ಇದೆ",               wrote: "ನಾನು ನಾಳೆ ಆಫೀಸಿಗೆ ಬರಲ್ಲ, ಸ್ವಲ್ಪ ಕೆಲಸ ಇದೆ." },
-      { said: "ഞാൻ നാളെ ഓഫീസിൽ വരില്ല കുറച്ച് ജോലി ഉണ്ട്",            wrote: "ഞാൻ നാളെ ഓഫീസിൽ വരില്ല, കുറച്ച് ജോലി ഉണ്ട്." },
-      { said: "ମୁଁ କାଲି ଅଫିସ ଆସିବି ନାହିଁ ଟିକେ କାମ ଅଛି",                   wrote: "ମୁଁ କାଲି ଅଫିସ ଆସିବି ନାହିଁ, ଟିକେ କାମ ଅଛି।" },
-      { said: "euh ben je peux arriver vers sept heures je pense", wrote: "Je peux arriver vers sept heures, je pense." },
-      { said: "é tipo assim eu posso chegar por volta das sete",   wrote: "Eu posso chegar por volta das sete." },
-      { said: "ähm also ich komme so gegen sieben glaube ich",     wrote: "Ich komme so gegen sieben, glaube ich." },
-      { said: "eh gimana ya saya bisa datang sekitar jam tujuh",   wrote: "Saya bisa datang sekitar jam tujuh." },
-      { said: "yani sey saat yedi gibi gelebilirim heralde",       wrote: "Yani saat yedi gibi gelebilirim, herhalde." },
-      { said: "ano eto nakaka pagod pero tapos na yung report",    wrote: "Nakakapagod, pero tapos na yung report." },
-      { said: "يعني ممكن نأجل الاجتماع لبكرة الساعة أربعة", wrote: "ممكن نأجل الاجتماع لبكرة الساعة أربعة؟" },
-      { said: "えっと明日の会議ちょっと遅れるかも", wrote: "明日の会議、少し遅れるかもしれません。" },
-      { said: "음 내일 회의 조금 늦을 것 같아요", wrote: "내일 회의에 조금 늦을 것 같아요." },
-      { said: "那个 我明天可能会晚一点到", wrote: "我明天可能会晚一点到。" },
-      { said: "ну короче я завтра приду часам к семи", wrote: "Я завтра приду часам к семи." },
-      { said: "คือว่า พรุ่งนี้ขอไปสายนิดนึงนะ", wrote: "พรุ่งนี้ขอไปสายนิดหนึ่งนะ" },
-      { said: "ờ thì mai mình đến hơi muộn xíu nha", wrote: "Mai mình đến hơi muộn một chút nhé." },
-      { said: "ε λοιπόν θα έρθω κατά τις εφτά νομίζω", wrote: "Θα έρθω κατά τις εφτά, νομίζω." },
-      { said: "אה אני אגיע בערך בשבע נראה לי", wrote: "אני אגיע בערך בשבע, נראה לי." },
-      { said: "yaani naweza kufika saa moja hivi", wrote: "Naweza kufika saa moja hivi." },
-      { said: "یعنی میں کل نہیں آ سکوں گا تھوڑا کام ہے", wrote: "میں کل نہیں آ سکوں گا، تھوڑا کام ہے۔" },
-      { said: "उम म भोलि अफिस आउँदिन अलि काम छ", wrote: "म भोलि अफिस आउँदिनँ, अलि काम छ।" },
-      { said: "cioè tipo posso arrivare verso le sette", wrote: "Posso arrivare verso le sette." },
-      { said: "eh dus ik kan rond zeven uur komen denk ik", wrote: "Ik kan rond zeven uur komen, denk ik." },
-      { said: "no więc mogę być koło siódmej chyba", wrote: "Mogę być koło siódmej, chyba." },
-      { said: "ну коротше я прийду десь о сьомій", wrote: "Я прийду десь о сьомій." },
-      { said: "یعنی فکر کنم حدود ساعت هفت برسم", wrote: "فکر کنم حدود ساعت هفت برسم." },
-      { said: "ඒ කියන්නේ මම හෙට ඔෆිස් එන්නේ නෑ පොඩි වැඩක් තියෙනවා", wrote: "මම හෙට ඔෆිස් එන්නේ නැහැ, පොඩි වැඩක් තියෙනවා." }
+      { said: "um so like can we push the call to four",          wrote: "Can we push the call to four?", lang: "English" },
+      { said: "the deploy is done but abhi testing baaki hai",    wrote: "The deploy is done, but abhi testing baaki hai.", lang: "Hinglish" },
+      { said: "हाँ वो फाइल मैंने भेज दी थी कल शाम को",                  wrote: "हाँ, वो फाइल मैंने कल शाम भेज दी थी।", lang: "Hindi" },
+      { said: "நான் இப்போ கிளம்பறேன் கொஞ்சம் லேட் ஆகும்",              wrote: "நான் இப்போ கிளம்பறேன், கொஞ்சம் லேட் ஆகும்.", lang: "Tamil" },
+      { said: "trensfer 2500 rupeez to ramesh tomorow",            wrote: "Transfer 2500 rupees to Ramesh tomorrow.", lang: "English" },
+      { said: "আমি কাল অফিসে আসব না একটু কাজ আছে",                   wrote: "আমি কাল অফিসে আসব না, একটু কাজ আছে।", lang: "Bengali" },
+      { said: "मी उद्या ऑफिसला येणार नाही जरा काम आहे",                wrote: "मी उद्या ऑफिसला येणार नाही, जरा काम आहे.", lang: "Marathi" },
+      { said: "eh o sea puedo llegar como a las siete",            wrote: "Puedo llegar como a las siete.", lang: "Spanish" },
+      { said: "నేను రేపు ఆఫీస్ కి రాను కొంచెం పని ఉంది",                  wrote: "నేను రేపు ఆఫీస్‌కి రాను, కొంచెం పని ఉంది.", lang: "Telugu" },
+      { said: "ਮੈਂ ਕੱਲ੍ਹ ਨਹੀਂ ਆ ਸਕਦਾ ਥੋੜ੍ਹਾ ਕੰਮ ਹੈ",                       wrote: "ਮੈਂ ਕੱਲ੍ਹ ਨਹੀਂ ਆ ਸਕਦਾ, ਥੋੜ੍ਹਾ ਕੰਮ ਹੈ।", lang: "Punjabi" },
+      { said: "હું કાલે ઓફિસે નહીં આવું થોડું કામ છે",                       wrote: "હું કાલે ઓફિસે નહીં આવું, થોડું કામ છે.", lang: "Gujarati" },
+      { said: "ನಾನು ನಾಳೆ ಆಫೀಸಿಗೆ ಬರಲ್ಲ ಸ್ವಲ್ಪ ಕೆಲಸ ಇದೆ",               wrote: "ನಾನು ನಾಳೆ ಆಫೀಸಿಗೆ ಬರಲ್ಲ, ಸ್ವಲ್ಪ ಕೆಲಸ ಇದೆ.", lang: "Kannada" },
+      { said: "ഞാൻ നാളെ ഓഫീസിൽ വരില്ല കുറച്ച് ജോലി ഉണ്ട്",            wrote: "ഞാൻ നാളെ ഓഫീസിൽ വരില്ല, കുറച്ച് ജോലി ഉണ്ട്.", lang: "Malayalam" },
+      { said: "ମୁଁ କାଲି ଅଫିସ ଆସିବି ନାହିଁ ଟିକେ କାମ ଅଛି",                   wrote: "ମୁଁ କାଲି ଅଫିସ ଆସିବି ନାହିଁ, ଟିକେ କାମ ଅଛି।", lang: "Odia" },
+      { said: "euh ben je peux arriver vers sept heures je pense", wrote: "Je peux arriver vers sept heures, je pense.", lang: "French" },
+      { said: "é tipo assim eu posso chegar por volta das sete",   wrote: "Eu posso chegar por volta das sete.", lang: "Portuguese" },
+      { said: "ähm also ich komme so gegen sieben glaube ich",     wrote: "Ich komme so gegen sieben, glaube ich.", lang: "German" },
+      { said: "eh gimana ya saya bisa datang sekitar jam tujuh",   wrote: "Saya bisa datang sekitar jam tujuh.", lang: "Indonesian" },
+      { said: "yani sey saat yedi gibi gelebilirim heralde",       wrote: "Yani saat yedi gibi gelebilirim, herhalde.", lang: "Turkish" },
+      { said: "ano eto nakaka pagod pero tapos na yung report",    wrote: "Nakakapagod, pero tapos na yung report.", lang: "Filipino" },
+      { said: "يعني ممكن نأجل الاجتماع لبكرة الساعة أربعة", wrote: "ممكن نأجل الاجتماع لبكرة الساعة أربعة؟", lang: "Arabic" },
+      { said: "えっと明日の会議ちょっと遅れるかも", wrote: "明日の会議、少し遅れるかもしれません。", lang: "Japanese" },
+      { said: "음 내일 회의 조금 늦을 것 같아요", wrote: "내일 회의에 조금 늦을 것 같아요.", lang: "Korean" },
+      { said: "那个 我明天可能会晚一点到", wrote: "我明天可能会晚一点到。", lang: "Chinese" },
+      { said: "ну короче я завтра приду часам к семи", wrote: "Я завтра приду часам к семи.", lang: "Russian" },
+      { said: "คือว่า พรุ่งนี้ขอไปสายนิดนึงนะ", wrote: "พรุ่งนี้ขอไปสายนิดหนึ่งนะ", lang: "Thai" },
+      { said: "ờ thì mai mình đến hơi muộn xíu nha", wrote: "Mai mình đến hơi muộn một chút nhé.", lang: "Vietnamese" },
+      { said: "ε λοιπόν θα έρθω κατά τις εφτά νομίζω", wrote: "Θα έρθω κατά τις εφτά, νομίζω.", lang: "Greek" },
+      { said: "אה אני אגיע בערך בשבע נראה לי", wrote: "אני אגיע בערך בשבע, נראה לי.", lang: "Hebrew" },
+      { said: "yaani naweza kufika saa moja hivi", wrote: "Naweza kufika saa moja hivi.", lang: "Swahili" },
+      { said: "یعنی میں کل نہیں آ سکوں گا تھوڑا کام ہے", wrote: "میں کل نہیں آ سکوں گا، تھوڑا کام ہے۔", lang: "Urdu" },
+      { said: "उम म भोलि अफिस आउँदिन अलि काम छ", wrote: "म भोलि अफिस आउँदिनँ, अलि काम छ।", lang: "Nepali" },
+      { said: "cioè tipo posso arrivare verso le sette", wrote: "Posso arrivare verso le sette.", lang: "Italian" },
+      { said: "eh dus ik kan rond zeven uur komen denk ik", wrote: "Ik kan rond zeven uur komen, denk ik.", lang: "Dutch" },
+      { said: "no więc mogę być koło siódmej chyba", wrote: "Mogę być koło siódmej, chyba.", lang: "Polish" },
+      { said: "ну коротше я прийду десь о сьомій", wrote: "Я прийду десь о сьомій.", lang: "Ukrainian" },
+      { said: "یعنی فکر کنم حدود ساعت هفت برسم", wrote: "فکر کنم حدود ساعت هفت برسم.", lang: "Persian" },
+      { said: "ඒ කියන්නේ මම හෙට ඔෆිස් එන්නේ නෑ පොඩි වැඩක් තියෙනවා", wrote: "මම හෙට ඔෆිස් එන්නේ නැහැ, පොඩි වැඩක් තියෙනවා.", lang: "Sinhala" }
     ],
     // THE WORDS BELOW THE RIVER. The backend's; these stand in until it
     // answers. {n} is the free monthly word count the backend reports.
@@ -843,7 +885,7 @@
      Measured on one machine, after the transform work: 60 threads 48fps, 78
      threads 39fps, 96 threads 32fps, 116 threads 28fps. Raising it is one
      number, and so is the frame rate it costs. */
-  var TANGLE = 64, END = [790, 284], VB = [1440, 520];
+  var TANGLE = 44, END = [790, 284], VB = [1440, 520];
   var cv = $("tangle"), g2 = cv.getContext("2d");
   /* HANDWRITTEN. Speech is a person, and a person writes by hand — so the
      mess arrives in handwriting, and only the word that swallows it is
@@ -904,7 +946,7 @@
     LANES.length = 0;
     // The threads leave through the box's right edge, at its middle height,
     // wherever the window has put that.
-    END[0] = VIS[2] + 40; END[1] = (VIS[1] + VIS[3]) / 2;
+    END[0] = VIS[2] + 260; END[1] = (VIS[1] + VIS[3]) / 2;
     var H = VIS[3] - VIS[1];
     for (var k = 0; k < TANGLE; k++) {
       // Round-robin across the three edges and evenly along each, with a
@@ -930,7 +972,7 @@
       u = Math.max(0, Math.min(1, u));
       // Off the box's left edge, spread a little past its top and bottom, so
       // the outer threads come in through the corners at a shallow angle.
-      sx = VIS[0] - 80 - r() * 320; sy = VIS[1] - H * 0.22 + u * H * 1.44;
+      sx = VIS[0] - 80 - r() * 320; sy = VIS[1] - H * 0.08 + u * H * 1.16;
 
       /* A CURRENT, NOT A SCATTER.
          The middle control point used to be thrown anywhere on the page,
@@ -943,7 +985,10 @@
          nothing is rotated where it meets the cursor. Threads still cross —
          top meets bottom, and the twist sends neighbours across each other —
          but they cross the way silk does, not the way string does. */
-      var dx = END[0] - sx, dy = END[1] - sy, dist = Math.sqrt(dx * dx + dy * dy);
+      // Each thread drifts to an exit of its own on the far edge: a current
+      // across the whole screen, not a funnel into one point.
+      var ey = sy + (r() - 0.5) * H * 0.5;
+      var dx = END[0] - sx, dy = ey - sy, dist = Math.sqrt(dx * dx + dy * dy);
       /* Each thread sets off LEVEL — the way it entered — twisted by a few
          degrees so neighbours cross, and only then bends in to the word.
          Level in, level out: the bend is in the middle, where a current
@@ -953,12 +998,6 @@
       // x must step rightward at every control point, or words hang upside
       // down. A twist that would send the first handle backward is clamped.
       var p1x = sx + Math.max(0.16, Math.cos(bear)) * h1, p1y = sy + Math.sin(bear) * h1;
-      /* ACROSS THE LETTER, NOT ONTO A POINT. A hundred curves ending on one
-         pixel pile up into a bright knot there, and a knot being erased is
-         what "cheap" looks like. Spread over the height of the first glyph
-         they arrive along its whole stem, and the letter reads as drinking
-         them in rather than as a dot being wiped. */
-      var ey = END[1] + (r() - 0.5) * H * 0.5;
       var p2x = END[0] - h2, p2y = ey + (r() - 0.5) * 6;
       if (p1x > p2x - 24) p1x = p2x - 24;
       var P = [sx, sy, p1x, p1y, p2x, p2y, END[0], ey];
@@ -980,11 +1019,11 @@
         pts: sample(P),
         face: FACES[k % FACES.length],
         bright: bright,             // kept: a near thread's arrival is felt more than a far one's
-        size: 11 + bright * 9,      // a hand is small at its x-height; a shade up from the type
+        size: 10 + bright * 7,      // a hand is small at its x-height
         fill: shade(bright, HUES[Math.floor(r() * HUES.length)]),
         track: (r() - 0.5) * 0.3,   // a hand is not squeezed, only a little uneven
         from: k, gap: 1.10 + r() * 0.55,
-        speed: 40 + bright * 108,
+        speed: 26 + bright * 72,
         // A slow breath, different on every thread, biggest at the far edge
         // and nothing at all by the caret. The field moves like something
         // alive instead of like a diagram.
@@ -1045,67 +1084,15 @@
       lay(L, own ? ownSaid : C.cases[L.from % n].said, L.gap);
       L.off = L.phase * L.period;
     });
-    setAbsorb(own ? absorbEl.textContent : words()[wordI % words().length]);
     // Reduced motion never starts the loop, and a loop that never starts
     // never paints: the left half was simply blank. One still frame is the
     // right answer — the picture without the movement, not no picture.
     if (reduced) paint(0);
   }
 
-  /** THE WORD, FITTED. A story word is set at the slot's size and shrunk
-   *  only if it would run past its column; the visitor's own sentence opens
-   *  the slot and wraps instead. */
-  var absorbEl = $("absorb"), ghostEl = $("absorbOld"), slotEl = $("mark"), mouthEl = $("mouth"), boxEl = $("box"), ownSaid = "";
-
-  /* THE GATE is the box's right edge. Every thread dissolves along its own
-     path over the last stretch before it and nothing is drawn past it, so
-     the current leaves the frame as light rather than being cut by it. Set
-     from the visible rectangle each time the box is measured. */
-  var GATE = 1400, FADE = 110;
-
-  function setAbsorb(text) {
-    absorbEl.textContent = text;
-    slotEl.classList.toggle("free", !!own);
-    absorbEl.style.fontSize = "";
-    if (own) return;
-    var room = mouthEl.clientWidth, w = absorbEl.offsetWidth;
-    if (w > room && room > 0) {
-      var fs = parseFloat(getComputedStyle(absorbEl).fontSize) || 60;
-      absorbEl.style.fontSize = Math.max(28, fs * room / w).toFixed(1) + "px";
-    }
-  }
-
-  function ownRiver(said, wrote) {
-    ownSaid = said;
-    LANES.forEach(function (L) { lay(L, said, L.gap); L.off = 0; });
-    setAbsorb(wrote);            // what it absorbed, in their own words
-    placePool();
-  }
-
-  /* THE STORY, ONE WORD AT A TIME. Heard, meant, written, sent: the word the
-     threads pour into changes every few seconds, in that order, and each
-     new one is born warm and cools, like everything else on this page. The
-     visitor's own sentence ends the story for good — what it actually
-     absorbed beats what it claims to. Driven from the frame loop, so it
-     runs only while the river does: never off screen, never under reduced
-     motion. */
-  var wrapEl = $("wordwrap"), ghostWrap = $("ghostwrap"), wordI = 0, wordAt = 0, WORD_HOLD = 3400, swapping = false;
-  function words() { return (C.absorbs && C.absorbs.length) ? C.absorbs : [C.absorb]; }
-  function swapWord(now) {
-    var list = words(); if (list.length < 2 || swapping) return;
-    swapping = true; wordAt = now;
-    // The ghost takes the old word, as it is right now, and carries it out.
-    ghostEl.textContent = absorbEl.textContent;
-    ghostEl.style.fontSize = absorbEl.style.fontSize;
-    ghostEl.style.color = absorbEl.style.color;
-    ghostWrap.classList.remove("leave"); void ghostWrap.offsetWidth; ghostWrap.classList.add("leave");
-    // The new one rolls up from beneath it.
-    wordI = (wordI + 1) % list.length;
-    setAbsorb(list[wordI]);
-    wrapEl.classList.remove("arrive"); void wrapEl.offsetWidth; wrapEl.classList.add("arrive");
-    warm = Math.max(warm, 0.55);
-    setTimeout(function () { swapping = false; }, 640);
-  }
+  /* THE GATE is past the far edge now: nothing dissolves inside the frame.
+     Kept as the erase line the painter guarantees nothing past. */
+  var GATE = 1400, FADE = 110, ownSaid = "";
 
   /** Slice, by hand, so the canvas shares the svg's coordinates exactly and
    *  the caret lands where the curves end. */
@@ -1127,7 +1114,7 @@
     ox = (w - VB[0] * scale) / 2; oy = (h - VB[1] * scale) / 2;
     VIS[0] = -ox / scale; VIS[1] = -oy / scale;
     VIS[2] = VIS[0] + w / scale; VIS[3] = VIS[1] + h / scale;
-    GATE = VIS[2] - 6;
+    GATE = VIS[2] + 400;      // nothing dissolves inside the frame; the edge fade is the exit
     build();
   }
 
@@ -1225,10 +1212,11 @@
     f = g2.createLinearGradient(EL, 0, EL + EW, 0);
     f.addColorStop(0, "#000"); f.addColorStop(1, "rgba(0,0,0,0)");
     g2.fillStyle = f; g2.fillRect(EL - OV, ET - OV, EW + OV, (EB - ET) + OV * 2);
-    // No right-hand fade any more. It softened the outgoing line, and there
-    // is no outgoing line — everything right of the convergence is erased
-    // outright a few lines below, so this was a gradient drawn every frame
-    // over a region that is already empty.
+    // The far edge fades too: the current leaves the screen the way it
+    // came in, thinning out rather than being cut.
+    f = g2.createLinearGradient(ER - 180, 0, ER, 0);
+    f.addColorStop(0, "rgba(0,0,0,0)"); f.addColorStop(1, "#000");
+    g2.fillStyle = f; g2.fillRect(ER - 180, ET - OV, 180 + OV, (EB - ET) + OV * 2);
     f = g2.createLinearGradient(0, ET, 0, ET + EW);
     f.addColorStop(0, "#000"); f.addColorStop(1, "rgba(0,0,0,0)");
     g2.fillStyle = f; g2.fillRect(EL - OV, ET - OV, (ER - EL) + OV * 2, EW + OV);
@@ -1320,63 +1308,29 @@
      grows and shrinks is the thing the words are about to be written at.   */
   var listening = false, voice = 0, level = 0;
 
-  /* The word swells a little with the voice while the microphone is open —
-     what the caret's height used to do, on the thing that replaced it. Scaled
-     about its own left edge, so it grows into the space it is filling rather
-     than sliding away from the threads arriving at it. */
-  /* AND IT ANSWERS THE FLOW. The word carries a soft wash of the accent
-     while the waves are merging into it, and the wash deepens with how fast
-     they are arriving — so a scroll is visible on the word before the page
-     has moved at all. At rest it is barely tinted; at full rush it is most
-     of the way to the accent; with the microphone open it is the accent
-     outright, because that is the one state that is not about the waves. */
-  /* AND IT DRINKS. Each time a phrase reaches the dissolve, the word warms
-     for a beat — more for a near thread than a far one — and the warmth
-     falls away in under half a second. A hundred threads at their own
-     paces make that a shimmer that never repeats, and it is the flow made
-     visible on the thing the flow is for. `warm` is the page's first
-     breath: the word is born amber and cools to the reading colour over
-     its first seconds, because just-born is the one state the accent is
-     for. */
-  var INK = [243, 226, 198], ACC = [232, 162, 60], tint = 0, glow = 0, warm = 0;
-  function drawAbsorb(live) {
-    voice += ((live ? level : 0) - voice) * 0.22;      // eased, or it judders
-    absorbEl.style.transform = "scale(" + (1 + voice * 0.07).toFixed(4) + ")";
-
-    var want = live ? 1 : 0.1 + glow * 0.22 + Math.min(1, (boost - 1) / 4.2) * 0.55;
-    if (want > 1) want = 1;
-    tint += (want - tint) * 0.16;
-    // Born as light, not as amber: a new word flashes white and cools to
-    // the reading pale. The accent stays for the microphone and for the
-    // wash of arrivals, which are the flow's, not the word's.
-    var c = [0, 1, 2].map(function (i) {
-      var v = INK[i] + (ACC[i] - INK[i]) * tint;
-      return Math.round(v + (255 - v) * warm);
-    });
-    absorbEl.style.color = "rgb(" + c.join(",") + ")";
-  }
-  drawAbsorb(false);
+  /* The pool's lift: kicked by the stage at each beat, gone in half a beat. */
+  var glow = 0;
 
   /* THE POOL BREATHES. A slow swell nobody could time, a lift for every
      arrival, and the voice filling it while the microphone is open. Two
      properties the compositor owns, so this costs the frame nothing. */
   var pool = $("pool");
   function breathe(t) {
-    var v = listening ? voice : 0;
+    var v = listening ? level : 0;
     pool.style.opacity = Math.min(1, 0.72 + glow * 0.38 + v * 0.5).toFixed(3);
     // Leaning with the flow, and scaled about its own core rather than its
     // box, so the breath is the light swelling and not a sheet sliding.
     pool.style.transform = "rotate(-2.5deg) scale(" + (1 + 0.03 * Math.sin(t * 0.42) + glow * 0.05 + v * 0.09).toFixed(4) + ")";
   }
-  /* The light sits where the threads leave: on the box's right edge, at its
-     middle height. Measured against the light's own box, and re-measured
-     whenever the box changes size. */
+  /* The light sits under the written line's first words, where the clean
+     sentence is born. Measured against the light's own box. */
   var light = $("light");
   function placePool() {
     var pw = pool.offsetWidth, ph = pool.offsetHeight;
     if (!pw) return;
-    var b = boxEl.getBoundingClientRect(), l = light.getBoundingClientRect();
-    var gx = b.right - l.left, gy = b.top + b.height / 2 - l.top;
+    var b = wroteLine.getBoundingClientRect(), l = light.getBoundingClientRect();
+    if (!b.width) return;
+    var gx = b.left + Math.min(b.width, 260) * 0.5 - l.left, gy = b.top + b.height / 2 - l.top;
     pool.style.left = (gx - pw * 0.46).toFixed(1) + "px";
     pool.style.top = (gy - ph * 0.5).toFixed(1) + "px";
   }
@@ -1387,27 +1341,12 @@
     var dt = Math.min(64, now - last); last = now;
     boost += (1 - boost) * Math.min(1, dt / 620);      // falls back to a walk
     glow *= Math.pow(0.5, dt / 420);                    // half a beat, and it is gone
-    warm *= Math.pow(0.5, dt / 700);                    // the flash of a birth, cooling
 
     for (var i = 0; i < LANES.length; i++) {
-      var L = LANES[i], was = L.off;
+      var L = LANES[i];
       L.off = (L.off + L.speed * boost * dt / 1000) % L.period;
-      // The visible phrase's first word sits at L.off along its curve. The
-      // frame it enters the dissolve, the word drinks.
-      var gs = L.pts[L.pts.length - 1].s - FADE;
-      if (was < gs && L.off >= gs) glow = Math.min(1, glow + 0.04 + L.bright * 0.16);
     }
     paint(now);
-
-    if (!own && !listening) {
-      // The hold shortens with the rush: a scroll from the top speeds the
-      // threads AND turns the words over faster, down to a floor where a
-      // word can still be read.
-      var hold = Math.max(760, WORD_HOLD / (1 + (boost - 1) * 0.75));
-      if (!wordAt) wordAt = now + 2600;      // the first word gets its entrance first
-      else if (now - wordAt > hold) swapWord(now);
-    }
-    drawAbsorb(listening);
     breathe(now / 1000);
   }
 
@@ -1436,6 +1375,8 @@
       var on = es[0].isIntersecting;
       if (on && !rraf && !reduced) { last = 0; rraf = requestAnimationFrame(river); }
       else if (!on && rraf) { cancelAnimationFrame(rraf); rraf = 0; }
+      // The sentence plays only while it can be seen.
+      seen = on; if (on) resumeStage(); else pauseStage();
     }, { threshold: 0 }).observe($("river"));
   } else {
     [].forEach.call(document.querySelectorAll(".reveal"), function (el) { el.classList.add("in"); });
@@ -1575,12 +1516,7 @@
   function stage(o) {
     var t = 0, on = false, gen = 0;
     var pill = $(o.pill), heard = $(o.heard), state = $(o.state), text = $(o.text), car = $(o.car);
-    function lit(full, n) {
-      text.innerHTML = "";
-      var cut = Math.max(0, full.length - n);
-      text.appendChild(document.createTextNode(full.slice(0, cut)));
-      if (n > 0) text.appendChild(el("span", "hl", full.slice(cut)));
-    }
+    function lit(full, n) { litInto(text, full, n); }
     function finish() {
       heard.textContent = o.said(); state.textContent = STATES.done;
       pill.classList.add("quiet"); pill.classList.add("done");
@@ -1652,6 +1588,7 @@
 
   function applyCopy() {
     $("micLabel").textContent = C.cta;
+    setText("labSaid", C.hero && C.hero.said);
     paintDownloads();
     paintBelow();
     mic.hidden = !site.demo;
@@ -1741,7 +1678,8 @@
       own = true;
       // Their sentence taking over the river IS the payoff. A line saying so
       // underneath was the page narrating what it had just done.
-      ownRiver(s, w || s);
+      ownSaid = s; loadRiver();
+      play({ said: s, wrote: w || s, lang: "" }, true);
       done();
     }).catch(function (e) { done(); say(e.message || "Try again."); });
   }
@@ -1760,7 +1698,7 @@
      arriving and with the column beside it. Re-laid whenever it moves. */
   var rt = 0;
   function relayout() { clearTimeout(rt); rt = setTimeout(function () { sizeCanvas(); loadRiver(); placePool(); }, 120); }
-  if (window.ResizeObserver) new ResizeObserver(relayout).observe(boxEl);
+  if (window.ResizeObserver) new ResizeObserver(relayout).observe(riverEl);
   window.addEventListener("load", placePool);
   markEl.addEventListener("keydown", function (e) {
     if (e.key === "Enter" || e.key === " ") { e.preventDefault(); toggle(); }
@@ -1768,6 +1706,129 @@
   document.addEventListener("keydown", function (e) {
     if (e.key === "Escape" && mic.getAttribute("aria-pressed") === "true") stop();
   });
+
+  /* =====================================================================
+     THE SENTENCE
+
+     The hero is the product doing its one thing, at hero size: a line as
+     somebody actually said it — ums, Hinglish, a typo, in their own hand
+     and colour — and under it the line it became. Four beats, named by the
+     four words of the story:
+
+       Heard.    the words land one by one, as they are spoken
+       Meant.    the fillers are struck through and the typos get the
+                 squiggle — what stays is what you meant
+       Written.  the clean line types itself out, newest letters warm
+       Sent.     it stands; then the next language
+
+     Thirty-eight languages in order, so within a minute a visitor from
+     anywhere has watched their own. The visitor's own recording, when the
+     demo is on, ends the loop: their sentence, held.
+     ================================================================== */
+  var stageEl = $("mark"), saidEl = $("said"), wroteLine = $("wrote"), wroteEl = $("wroteText"), carEl = $("wroteCar"),
+      langEl = $("lang"), stateEl = $("state"),
+      wrapEl = $("wordwrap"), ghostWrap = $("ghostwrap"), absorbEl = $("absorb"), ghostEl = $("absorbOld");
+  var caseI = 0, sgen = 0, stm = 0, staged = false, seen = true, current = null;
+
+  function litInto(node, full, n) {
+    node.innerHTML = "";
+    var cut = Math.max(0, full.length - n);
+    node.appendChild(document.createTextNode(full.slice(0, cut)));
+    if (n > 0) node.appendChild(el("span", "hl", full.slice(cut)));
+  }
+  function beats() { var a = C.absorbs || []; return a.length >= 4 ? a : ["Heard.", "Meant.", "Written.", "Sent."]; }
+  /* The state word rolls, like a line on a departures board. */
+  function roll(text) {
+    if (absorbEl.textContent === text) return;
+    ghostEl.textContent = absorbEl.textContent;
+    ghostWrap.classList.remove("leave"); void ghostWrap.offsetWidth; ghostWrap.classList.add("leave");
+    absorbEl.textContent = text;
+    wrapEl.classList.remove("arrive"); void wrapEl.offsetWidth; wrapEl.classList.add("arrive");
+  }
+  function norm(w) { return w.toLowerCase().replace(/[\p{P}\p{S}]+/gu, ""); }
+  function lev(a, b) {
+    var m = a.length, n = b.length, prev = [], cur = [], i, j, t;
+    for (j = 0; j <= n; j++) prev[j] = j;
+    for (i = 1; i <= m; i++) {
+      cur[0] = i;
+      for (j = 1; j <= n; j++) cur[j] = Math.min(prev[j] + 1, cur[j - 1] + 1, prev[j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1));
+      t = prev; prev = cur; cur = t;
+    }
+    return prev[n];
+  }
+  /* What became of each spoken word: kept as it was, fixed (a typo, a near
+     miss), or dropped (a filler). Kept is an exact match after case and
+     punctuation; fixed is within a letter or two of something in the
+     written line. A line where nothing matches — a script written without
+     spaces, a sentence recast whole — is all fixed and nothing dropped: it
+     was never thrown away, it was rewritten. */
+  function classify(parts, wrote) {
+    var ws = wrote.split(/\s+/).map(norm).filter(Boolean), set = {};
+    ws.forEach(function (x) { set[x] = 1; });
+    var out = parts.map(function (w) {
+      var n = norm(w); if (!n || set[n]) return "keep";
+      // A short word is never a near miss of another: "so" is not a typo
+      // of "to", it is a filler. Only a word long enough to be misspelt
+      // can have been.
+      if (n.length < 4) return "drop";
+      var lim = Math.max(1, Math.floor(n.length / 3));
+      for (var i = 0; i < ws.length; i++) if (Math.abs(ws[i].length - n.length) <= lim && lev(n, ws[i]) <= lim) return "fix";
+      return "drop";
+    });
+    if (!out.some(function (k) { return k !== "drop"; })) out = out.map(function () { return "fix"; });
+    return out;
+  }
+  function later(ms, fn) { var g = sgen; stm = setTimeout(function () { if (g === sgen) fn(); }, ms); }
+
+  function play(cs, hold) {
+    var g = ++sgen; clearTimeout(stm); current = cs;
+    stageEl.classList.remove("out"); stateEl.classList.remove("done");
+    langEl.textContent = cs.lang || ""; wroteEl.textContent = ""; carEl.classList.add("off");
+    saidEl.classList.remove("done"); saidEl.innerHTML = "";
+    var parts = cs.said.split(/\s+/).filter(Boolean), kinds = classify(parts, cs.wrote), spans = [], B = beats();
+    parts.forEach(function (w, i) {
+      var sp = el("span", "w", w);
+      sp.style.setProperty("--tilt", (((i * 7 + caseI * 13) % 11 - 5) * 0.45).toFixed(2) + "deg");
+      sp.style.color = "rgb(" + HUES[(i * 3 + caseI) % HUES.length].join(",") + ")";
+      saidEl.appendChild(sp); spans.push(sp);
+    });
+    if (reduced) {   // the last frame, standing
+      spans.forEach(function (sp, k) { sp.classList.add("in"); if (kinds[k] !== "keep") sp.classList.add(kinds[k]); });
+      absorbEl.textContent = B[3]; litInto(wroteEl, cs.wrote, 0); stateEl.classList.add("done"); saidEl.classList.add("done");
+      return;
+    }
+    roll(B[0]);
+    var i = 0;
+    (function hear() {
+      if (g !== sgen) return;
+      if (i < spans.length) { spans[i++].classList.add("in"); later((i === 1 ? 260 : 110) + Math.random() * 120, hear); return; }
+      later(460, meant);
+    })();
+    function meant() {
+      roll(B[1]);
+      spans.forEach(function (sp, k) { if (kinds[k] !== "keep") sp.classList.add(kinds[k]); });
+      glow = Math.min(1, glow + 0.4);
+      later(720, written);
+    }
+    function written() {
+      roll(B[2]); carEl.classList.remove("off"); glow = 1; placePool();
+      var j = 0, full = cs.wrote;
+      (function type() {
+        if (g !== sgen) return;
+        if (j < full.length) { j++; litInto(wroteEl, full.slice(0, j), Math.min(j, 12)); later(full[j - 1] === " " ? 44 : 16 + Math.random() * 24, type); return; }
+        litInto(wroteEl, full, 0); later(260, sent);
+      })();
+    }
+    function sent() {
+      roll(B[3]); carEl.classList.add("off"); stateEl.classList.add("done"); saidEl.classList.add("done");
+      if (hold) return;
+      later(2300, function () { stageEl.classList.add("out"); later(420, next); });
+    }
+  }
+  function next() { if (own) return; caseI = (caseI + 1) % C.cases.length; play(C.cases[caseI]); }
+  function resumeStage() { if (staged) return; staged = true; play(own && current ? current : C.cases[caseI], !!own); }
+  function pauseStage() { staged = false; sgen++; clearTimeout(stm); }
+  document.addEventListener("visibilitychange", function () { if (document.hidden) pauseStage(); else if (seen) resumeStage(); });
 
   // ---- boot ---------------------------------------------------------------
   applyCopy();
@@ -1778,9 +1839,10 @@
     // over the first second and a half, and the word fades up into that
     // rush already warm. The page opens on something happening, not on a
     // diagram that then starts.
-    if (!reduced) { boost = 5.5; warm = 1; }
+    if (!reduced) boost = 4;
     if (!reduced && !rraf) { last = 0; rraf = requestAnimationFrame(river); }
     placePool();
+    resumeStage();
   }
   // The river measures text along a path, so it must not be laid out before
   // the face lands or every offset is computed for a fallback and jumps.
