@@ -1479,7 +1479,7 @@
     var pill = $(o.pill), heard = $(o.heard), state = $(o.state), text = $(o.text), car = $(o.car);
     function lit(full, n) { litInto(text, full, n); }
     function finish() {
-      heard.textContent = o.said(); state.textContent = STATES.done;
+      liveText(heard, o.said()); liveText(state, STATES.done);
       pill.classList.add("quiet"); pill.classList.add("done");
       lit(o.wrote(), 0); car.classList.add("off");
     }
@@ -1487,15 +1487,15 @@
       var g = ++gen, said = o.said(), wrote = o.wrote(), i = 0, j = 0;
       clearTimeout(t);
       pill.classList.remove("quiet"); pill.classList.remove("done");
-      heard.textContent = ""; state.textContent = STATES.hear; text.innerHTML = ""; car.classList.add("off");
+      liveText(heard, ""); liveText(state, STATES.hear); litInto(text, "", 0); car.classList.add("off");
       (function hear() {
         if (g !== gen) return;
         if (i < said.length) {
           i = Math.min(said.length, i + 1 + (Math.random() < 0.3 ? 1 : 0));
-          heard.textContent = said.slice(0, i);
+          liveText(heard, said.slice(0, i));
           t = setTimeout(hear, 34 + Math.random() * 40); return;
         }
-        state.textContent = STATES.write; pill.classList.add("quiet"); car.classList.remove("off");
+        liveText(state, STATES.write); pill.classList.add("quiet"); car.classList.remove("off");
         t = setTimeout(write, 560);
       })();
       function write() {
@@ -1506,7 +1506,7 @@
           t = setTimeout(write, wrote[j - 1] === " " ? 40 : 18 + Math.random() * 26); return;
         }
         lit(wrote, 0); car.classList.add("off");
-        state.textContent = STATES.done; pill.classList.add("done");
+        liveText(state, STATES.done); pill.classList.add("done");
         t = setTimeout(function () { if (g === gen && on) run(); }, 4200);
       }
     }
@@ -1693,18 +1693,22 @@
   var caseI = 0, sgen = 0, stm = 0, staged = false, seen = true, current = null;
 
   function litInto(node, full, n) {
-    node.innerHTML = "";
-    var cut = Math.max(0, full.length - n);
-    node.appendChild(document.createTextNode(full.slice(0, cut)));
-    if (n > 0) node.appendChild(el("span", "hl", full.slice(cut)));
+    live(node, function () {
+      node.innerHTML = "";
+      var cut = Math.max(0, full.length - n);
+      node.appendChild(document.createTextNode(full.slice(0, cut)));
+      if (n > 0) node.appendChild(el("span", "hl", full.slice(cut)));
+    });
   }
+  /** Set text on a node the page is animating. */
+  function liveText(node, s) { live(node, function () { node.textContent = s; }); }
   function beats() { var a = C.absorbs || []; return a.length >= 4 ? a : ["Heard.", "Meant.", "Written.", "Sent."]; }
   /* The state word rolls, like a line on a departures board. */
   function roll(text) {
     if (absorbEl.textContent === text) return;
     ghostEl.textContent = absorbEl.textContent;
     ghostWrap.classList.remove("leave"); void ghostWrap.offsetWidth; ghostWrap.classList.add("leave");
-    absorbEl.textContent = text;
+    liveText(absorbEl, text);
     wrapEl.classList.remove("arrive"); void wrapEl.offsetWidth; wrapEl.classList.add("arrive");
   }
   function norm(w) { return w.toLowerCase().replace(/[\p{P}\p{S}]+/gu, ""); }
@@ -1914,7 +1918,7 @@
   function playApp() {
     var g = ++kgen; clearTimeout(ktm);
     var apps = C.apps.fields, f = apps[appI % apps.length], text = f.text;
-    kbApp.textContent = f.app;
+    liveText(kbApp, f.app);
     [].forEach.call($("applist").children, function (li, i) { li.classList.toggle("on", i === appI % apps.length); });
     // The keys are back for the next app, and the title reads as printed.
     kbEl.classList.remove("small"); kbEl.classList.remove("cut"); keyless.classList.remove("live");
@@ -1923,13 +1927,13 @@
     var slot = fieldFor(f), i = 0;
     // The first two words by key — the old way, at length — then the cut.
     var typed = (function () { var k = 0; for (var q = 0; q < text.length; q++) if (text[q] === " " && ++k === 2) return q; return Math.ceil(text.length / 3); })();
-    if (reduced) { kbEl.classList.add("small"); kbEl.style.height = KB_SMALL + "px"; if (kw) kw.classList.add("cut"); slot.t.textContent = text; slot.c.classList.add("off"); return; }
+    if (reduced) { kbEl.classList.add("small"); kbEl.style.height = KB_SMALL + "px"; if (kw) kw.classList.add("cut"); liveText(slot.t, text); slot.c.classList.add("off"); return; }
     (function press() {
       if (g !== kgen) return;
       if (i < typed) {
         var k = keyOf[text[i].toLowerCase()]; i++;
         if (k) { k.classList.add("down"); setTimeout(function () { if (g === kgen) k.classList.remove("down"); }, 230); }
-        slot.t.textContent = text.slice(0, i);
+        liveText(slot.t, text.slice(0, i));
         klater(300 + Math.random() * 80, press); return;
       }
       /* THE CUT. The title's "key" is struck through and "keyless" written
@@ -1947,7 +1951,7 @@
             var rest = text.slice(i).split(" "), j = 0;
             klater(520, function say() {
               if (g !== kgen) return;
-              if (j < rest.length) { j++; slot.t.textContent = text.slice(0, i) + rest.slice(0, j).join(" "); klater(95, say); return; }
+              if (j < rest.length) { j++; liveText(slot.t, text.slice(0, i) + rest.slice(0, j).join(" ")); klater(95, say); return; }
               keyless.classList.remove("live"); slot.c.classList.add("off");
               klater(2400, function () { appI++; playApp(); });
             });
@@ -1967,6 +1971,37 @@
     keyless.classList.remove("live");
   }
 
+  /* A RUN OWNS ITS ELEMENT. Half the text on this page is being written
+     by the page itself — the transcripts in the two windows, the line in
+     the phone, the sentence at the top — a character every few
+     milliseconds. A glitch run over one of those was wiped before a single
+     frame of it could be seen. So while a run holds an element, the page's
+     own writes into it are BUFFERED rather than applied, and the last one
+     lands the moment the run lets go: you hover, the line dissolves into
+     ones and zeros and resolves, and the typing catches up. Every animated
+     write on the page goes through here. */
+  var PENDING = [];
+  function frozen(node) {
+    if (!glitchOn) return null;
+    for (var p = node; p; p = p.parentElement) if (glitchOn.get(p)) return p;
+    return null;
+  }
+  function live(node, apply) {
+    if (frozen(node)) {
+      for (var i = 0; i < PENDING.length; i++) if (PENDING[i][0] === node) { PENDING[i][1] = apply; return; }
+      PENDING.push([node, apply]); return;
+    }
+    apply();
+  }
+  function flushPending() {
+    var rest = [];
+    for (var i = 0; i < PENDING.length; i++) {
+      if (frozen(PENDING[i][0])) rest.push(PENDING[i]);
+      else PENDING[i][1]();
+    }
+    PENDING = rest;
+  }
+
   /* =====================================================================
      THE GLITCH. Any text the cursor crosses flickers into ones and zeros
      and resolves back, left to right, in under a second — the page is made
@@ -1976,7 +2011,12 @@
      simply lets go. Never on touch, never under reduced motion.
      ================================================================== */
   var GLITCH_AT = "h1,h2,h3,p,li,a,button,span,b,i,em,strong,td,th,label,dt,dd,.k,.key,.gut";
+  /* Two marks: `glitchOn` while a run holds an element — which is also
+     what buffers the page's writes into it — and `cooling` for a moment
+     afterwards, because swapping an element's children under the cursor
+     fires mouseover again and would otherwise loop. */
   var glitchOn = typeof WeakMap === "function" ? new WeakMap() : null;
+  var cooling = glitchOn ? new WeakMap() : null;
   function textNodesOf(root) {
     var out = [], walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, null, false), nd;
     while ((nd = walker.nextNode())) {
@@ -1996,7 +2036,7 @@
      line breaks exactly where it did. When the run is over the original
      text node goes back, untouched. */
   function glitch(elm) {
-    if (!glitchOn || glitchOn.get(elm)) return;
+    if (!glitchOn || glitchOn.get(elm) || cooling.get(elm)) return;
     var nodes = textNodesOf(elm); if (!nodes.length) return;
     var total = 0; nodes.forEach(function (nd) { total += nd.nodeValue.length; });
     glitchOn.set(elm, true);
@@ -2018,7 +2058,10 @@
     flip();
     function undo() {
       wraps.forEach(function (x) { if (x.wrap.parentNode) x.wrap.parentNode.replaceChild(x.nd, x.wrap); });
-      setTimeout(function () { glitchOn.delete(elm); }, 500);
+      glitchOn.delete(elm);
+      flushPending();              // whatever the page wanted to write, now
+      cooling.set(elm, 1);
+      setTimeout(function () { cooling.delete(elm); }, 400);
     }
     (function step(now) {
       if (!t0) t0 = now;
