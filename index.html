@@ -197,6 +197,20 @@
   /* The word arrives last: the field is already flowing when it fades up to
      meet it, and the rush the script starts with is what it fades up into. */
   #mark { cursor: pointer; animation: fade 1.5s .7s both; }
+  /* THE SWAP. The old word leaves the way the threads travel — a few units
+     to the right, fading — and the next arrives from the side they arrive
+     from, letter by letter, each one a beat after the last. The wrapper
+     moves; the letters fade; the word itself keeps its own transform for
+     the breath. */
+  #wordwrap { transition: transform .5s cubic-bezier(.2, .8, .2, 1), opacity .26s ease; }
+  #wordwrap.out { transform: translateX(30px); opacity: 0; }
+  /* The new word is set while the old one is still going — never an empty
+     moment at the mouth of the river. The wrapper snaps back to full and to
+     the left with no transition; only the letters, each on its own beat,
+     and the slide to rest are animated. */
+  #wordwrap.pre { transform: translateX(-22px); opacity: 1; transition: none; }
+  .absorb tspan { animation: gin .36s cubic-bezier(.2, .8, .2, 1) both; }
+  @keyframes gin { from { opacity: 0; } to { opacity: 1; } }
   #mark:focus-visible { outline: 2px solid var(--white); outline-offset: 10px; border-radius: 8px; }
   /* The word's fill is set per frame in script — it washes with the accent
      as the waves merge and goes to it outright with the microphone open — so
@@ -485,7 +499,12 @@
          is the result and results are settled; it goes amber only while the
          microphone is open, which is the one moment it is still in play. -->
     <g id="mark" role="button" tabindex="0" aria-label="Speak">
-      <text id="absorb" class="absorb" x="762" y="284" dy=".33em">Exactly.</text>
+      <!-- The word is a story told four words long — heard, meant, written,
+           sent — and the wrapper is what carries each one out with the flow
+           and brings the next in from where the threads come from. -->
+      <g id="wordwrap">
+        <text id="absorb" class="absorb" x="762" y="284" dy=".33em">Heard.</text>
+      </g>
     </g>
   </svg>
 
@@ -643,7 +662,11 @@
     // The one word the whole field pours into. A word or two, never more:
     // it has to be read at a glance, at the size of the thing swallowing a
     // hundred threads.
-    absorb: "Exactly.",
+    absorb: "Heard.",
+    // The story the word tells, one word at a time, in this order. Each is
+    // two words at most: it has to be read at a glance at the size of a
+    // thing swallowing a hundred threads.
+    absorbs: ["Heard.", "Meant.", "Written.", "Sent."],
     cases: [
       { said: "um so like can we push the call to four",          wrote: "Can we push the call to four?" },
       { said: "the deploy is done but abhi testing baaki hai",    wrote: "The deploy is done, but abhi testing baaki hai." },
@@ -664,7 +687,25 @@
       { said: "ähm also ich komme so gegen sieben glaube ich",     wrote: "Ich komme so gegen sieben, glaube ich." },
       { said: "eh gimana ya saya bisa datang sekitar jam tujuh",   wrote: "Saya bisa datang sekitar jam tujuh." },
       { said: "yani sey saat yedi gibi gelebilirim heralde",       wrote: "Yani saat yedi gibi gelebilirim, herhalde." },
-      { said: "ano eto nakaka pagod pero tapos na yung report",    wrote: "Nakakapagod, pero tapos na yung report." }
+      { said: "ano eto nakaka pagod pero tapos na yung report",    wrote: "Nakakapagod, pero tapos na yung report." },
+      { said: "يعني ممكن نأجل الاجتماع لبكرة الساعة أربعة", wrote: "ممكن نأجل الاجتماع لبكرة الساعة أربعة؟" },
+      { said: "えっと明日の会議ちょっと遅れるかも", wrote: "明日の会議、少し遅れるかもしれません。" },
+      { said: "음 내일 회의 조금 늦을 것 같아요", wrote: "내일 회의에 조금 늦을 것 같아요." },
+      { said: "那个 我明天可能会晚一点到", wrote: "我明天可能会晚一点到。" },
+      { said: "ну короче я завтра приду часам к семи", wrote: "Я завтра приду часам к семи." },
+      { said: "คือว่า พรุ่งนี้ขอไปสายนิดนึงนะ", wrote: "พรุ่งนี้ขอไปสายนิดหนึ่งนะ" },
+      { said: "ờ thì mai mình đến hơi muộn xíu nha", wrote: "Mai mình đến hơi muộn một chút nhé." },
+      { said: "ε λοιπόν θα έρθω κατά τις εφτά νομίζω", wrote: "Θα έρθω κατά τις εφτά, νομίζω." },
+      { said: "אה אני אגיע בערך בשבע נראה לי", wrote: "אני אגיע בערך בשבע, נראה לי." },
+      { said: "yaani naweza kufika saa moja hivi", wrote: "Naweza kufika saa moja hivi." },
+      { said: "یعنی میں کل نہیں آ سکوں گا تھوڑا کام ہے", wrote: "میں کل نہیں آ سکوں گا، تھوڑا کام ہے۔" },
+      { said: "उम म भोलि अफिस आउँदिन अलि काम छ", wrote: "म भोलि अफिस आउँदिनँ, अलि काम छ।" },
+      { said: "cioè tipo posso arrivare verso le sette", wrote: "Posso arrivare verso le sette." },
+      { said: "eh dus ik kan rond zeven uur komen denk ik", wrote: "Ik kan rond zeven uur komen, denk ik." },
+      { said: "no więc mogę być koło siódmej chyba", wrote: "Mogę być koło siódmej, chyba." },
+      { said: "ну коротше я прийду десь о сьомій", wrote: "Я прийду десь о сьомій." },
+      { said: "یعنی فکر کنم حدود ساعت هفت برسم", wrote: "فکر کنم حدود ساعت هفت برسم." },
+      { said: "ඒ කියන්නේ මම හෙට ඔෆිස් එන්නේ නෑ පොඩි වැඩක් තියෙනවා", wrote: "මම හෙට ඔෆිස් එන්නේ නැහැ, පොඩි වැඩක් තියෙනවා." }
     ],
     // THE WORDS BELOW THE RIVER. The backend's; these stand in until it
     // answers. {n} is the free monthly word count the backend reports.
@@ -949,6 +990,10 @@
     var space = g2.measureText(" ").width + L.track;
     var end = L.pts[L.pts.length - 1].s;
     var parts = one.split(/\s+/).filter(Boolean);
+    // A right-to-left line starts at its right: laid along the thread from
+    // the far end, its last word goes down first, so what arrives at the
+    // word reads the way it is read.
+    if (/[\u0590-\u08FF\uFB1D-\uFDFF\uFE70-\uFEFF]/.test(one)) parts.reverse();
     L.words = []; var run = 0;
     for (var i = 0; i < parts.length; i++) {
       var t = parts[i], w = g2.measureText(t).width + L.track * t.length;
@@ -959,7 +1004,11 @@
         c += g2.measureText(t[q]).width + L.track;
         cum.push(c);
       }
-      L.words.push({ t: t, w: w, at: run, cum: cum });
+      // Only a simple script can be cut into pieces on a bend. Anything with
+      // combining marks or joining forms — Devanagari, Tamil, Arabic, Thai —
+      // is drawn whole, or the cut lands between a letter and its vowel sign
+      // and the word breaks into dotted circles.
+      L.words.push({ t: t, w: w, at: run, cum: cum, simple: /^[\u0020-\u024F\u0370-\u052F]+$/.test(t) });
       run += w + space;
     }
     L.period = Math.max(run + end * 0.12, end * (gap === undefined ? 1.18 : gap));
@@ -974,7 +1023,7 @@
       lay(L, C.cases[L.from % n].said, L.gap);
       L.off = L.phase * L.period;
     });
-    setAbsorb(C.absorb);
+    setAbsorb(own ? absorbEl.textContent : words()[wordI % words().length]);
     // Reduced motion never starts the loop, and a loop that never starts
     // never paints: the left half was simply blank. One still frame is the
     // right answer — the picture without the movement, not no picture.
@@ -1001,8 +1050,16 @@
     } catch (e) { /* not laid out yet; the default stands */ }
   }
 
+  var SVGNS = "http://www.w3.org/2000/svg";
   function setAbsorb(text) {
-    absorbEl.textContent = text;
+    // One tspan per letter, so each can arrive a beat after the last.
+    absorbEl.textContent = "";
+    text.split("").forEach(function (ch, i) {
+      var ts = document.createElementNS(SVGNS, "tspan");
+      ts.textContent = ch === " " ? "\u00A0" : ch;
+      ts.style.animationDelay = (i * 26) + "ms";
+      absorbEl.appendChild(ts);
+    });
     absorbEl.setAttribute("font-size", ABSIZE);
     var room = (VIS[2] > ABX ? VIS[2] : 1440) - ABX - 40;
     var w = absorbEl.getComputedTextLength() || 0;
@@ -1015,6 +1072,33 @@
   function ownRiver(said, wrote) {
     LANES.forEach(function (L) { lay(L, said, L.gap); L.off = 0; });
     setAbsorb(wrote);            // what it absorbed, in their own words
+    placePool();
+  }
+
+  /* THE STORY, ONE WORD AT A TIME. Heard, meant, written, sent: the word the
+     threads pour into changes every few seconds, in that order, and each
+     new one is born warm and cools, like everything else on this page. The
+     visitor's own sentence ends the story for good — what it actually
+     absorbed beats what it claims to. Driven from the frame loop, so it
+     runs only while the river does: never off screen, never under reduced
+     motion. */
+  var wrapEl = $("wordwrap"), wordI = 0, wordAt = 0, WORD_HOLD = 3400, swapping = false;
+  function words() { return (C.absorbs && C.absorbs.length) ? C.absorbs : [C.absorb]; }
+  function swapWord(now) {
+    var list = words(); if (list.length < 2 || swapping) return;
+    swapping = true; wordAt = now;
+    wrapEl.classList.add("out");
+    setTimeout(function () {
+      if (own) { swapping = false; wrapEl.classList.remove("out"); return; }
+      wordI = (wordI + 1) % list.length;
+      wrapEl.classList.add("pre"); wrapEl.classList.remove("out");
+      setAbsorb(list[wordI]);
+      placePool();
+      warm = Math.max(warm, 0.75);           // born warm
+      void wrapEl.getBoundingClientRect();   // the pre position lands before the move
+      wrapEl.classList.remove("pre");
+      swapping = false;
+    }, 230);
   }
 
   /** Slice, by hand, so the canvas shares the svg's coordinates exactly and
@@ -1084,7 +1168,7 @@
           var q2 = p;
           while (q2 < nP - 1 && pts[q2].s < s0 + W.w) q2++;
           var turn = Math.abs(pts[q2].a - pts[p].a);
-          var pieces = turn > 0.105 ? Math.min(W.t.length, Math.ceil(turn / 0.105)) : 1;
+          var pieces = W.simple && turn > 0.105 ? Math.min(W.t.length, Math.ceil(turn / 0.105)) : 1;
           var per = Math.ceil(W.t.length / pieces), h = p;
 
           for (var c0 = 0; c0 < W.t.length; c0 += per) {
@@ -1307,6 +1391,10 @@
     }
     paint(now);
 
+    if (!own && !listening) {
+      if (!wordAt) wordAt = now + 2600;      // the first word gets its entrance first
+      else if (now - wordAt > WORD_HOLD) swapWord(now);
+    }
     drawAbsorb(listening);
     breathe(now / 1000);
     // Both layers drift together, as a CSS transform rather than an attribute
