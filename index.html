@@ -176,16 +176,14 @@
   .hero[data-demo="on"] .invite { cursor: pointer; }
   .invite .hot { color: var(--amber); }
 
-  /* THE HEADLINE, for when there is no button to press. */
-  .heroline { margin: 0 0 6px; font-family: var(--serif); font-weight: 380; font-size: clamp(42px, 6.4vw, 92px); line-height: 1.02; letter-spacing: -.026em; color: var(--white); }
-  .hero[data-demo="on"] .heroline { display: none; }
-  .hero[data-demo="off"] .orb { display: none; }
 
   /* THE LINE. Both versions live in one box, one over the other, so the
      sentence never moves down the page as it changes. */
   .line { position: relative; width: 100%; margin-top: clamp(26px, 3.2vw, 44px); min-height: 2.6em; font-size: clamp(26px, 3.9vw, 52px); display: grid; align-items: center; transition: opacity .4s; }
-  .line.idle { opacity: .4; font-size: clamp(19px, 2.3vw, 30px); }
-  .line.idle .slot, .line.idle .sep { display: none; }
+  /* Until somebody speaks there is no sentence, so the line holds a place
+     for one rather than a claim about it. */
+  .ghostline { grid-area: 1 / 1; margin: 0; font-family: var(--serif); font-weight: 380; font-style: italic; color: var(--dim); transition: opacity .4s; }
+  .line.spoke .ghostline { opacity: 0; }
   .cap { position: absolute; left: 0; right: 0; top: -1.7em; margin: 0; display: flex; justify-content: center; align-items: center; gap: 12px; font-family: var(--mono); font-size: 11px; letter-spacing: .24em; text-transform: uppercase; color: var(--dim); }
   .cap .lang { color: var(--grey); }
   .cap .sep { opacity: .5; }
@@ -466,15 +464,20 @@
      colour change while it listens. All that happens is that the mark
      itself comes apart into its own pixels, black on the same white. */
   .kmic { position: relative; overflow: hidden; width: 48px; height: 48px; border-radius: 50%; background: #fff; display: grid; place-items: center; }
-  .kmic .mk { width: 74%; height: 62%; display: block; transition: opacity .16s; }
+  .kmic .mk { width: 54%; height: 46%; display: block; transition: opacity .16s; }
   .kmic canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
   .kmic.burst .mk { opacity: 0; }
   .k { position: relative; flex: 1 1 0; min-width: 0; height: 42px; border-radius: 6px; background: #fff; box-shadow: 0 1px 0 #898A8D; display: grid; place-items: center; font-family: var(--sans); font-size: 17px; color: #000; transition: transform .08s, background .08s; }
   .k.wide { flex: 1.5 1 0; background: #ABB0BA; font-size: 12px; }
   .k.space { flex: 5 1 0; font-size: 12px; color: #444; }
-  .k.mic { flex: 1.5 1 0; background: var(--ink); color: var(--white); transition: background .2s, color .2s; }
-  .k.mic svg { width: 16px; height: 16px; }
-  .k.mic.live { background: var(--amber); color: var(--ink); }
+  /* THE APP'S MIC KEY, in the row where the app puts it: a white circle
+     the height of a key, the mark tinted black inside it, no border and no
+     shadow. Pressed, the mark comes apart into its own pixels — the same
+     dispersion, on the same white — and nothing else about it changes. */
+  .k.mic { flex: 0 0 42px; height: 42px; border-radius: 50%; background: #fff; overflow: hidden; box-shadow: none; }
+  .k.mic .mk { width: 54%; height: 46%; display: block; transition: opacity .16s; }
+  .k.mic canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .k.mic.burst .mk { opacity: 0; }
   /* THE CUT. A pressed key is cut out of the board — it goes hollow and
      its letter lifts above it in a bigger key with a neck down to the hole,
      the way a real key does. Held, the lifted key gives way to a tray of
@@ -635,7 +638,7 @@
   }
   @media (max-width: 560px) {
     .line { font-size: 26px; min-height: 3.4em; }
-    .line.idle { font-size: 19px; }
+    .k.mic { flex: 0 0 38px; height: 38px; }
     .cap { gap: 10px; letter-spacing: .18em; }
     .speak span { font-size: 12.5px; }
     .tonegrid { grid-template-columns: minmax(0, 1fr); }
@@ -701,11 +704,11 @@
         </svg>
         <canvas id="heroDots" aria-hidden="true"></canvas>
       </button>
-      <h1 class="heroline" id="heroTitle">Talk. It writes.</h1>
       <p class="invite" id="micLabel">Press. Say anything.</p>
       <div class="stage" id="mark">
-        <div class="line idle" id="line">
-          <p class="cap"><span class="lang" id="lang"></span><span class="sep">/</span><span class="slot"><span class="roll" id="ghostwrap"><span class="absorb ghost" id="absorbOld" aria-hidden="true"></span></span><span class="roll" id="wordwrap"><span class="absorb" id="absorb">Heard.</span></span></span></p>
+        <div class="line" id="line">
+          <p class="cap"><span class="lang" id="lang"></span><span class="sep">/</span><span class="slot"><span class="roll" id="ghostwrap"><span class="absorb ghost" id="absorbOld" aria-hidden="true"></span></span><span class="roll" id="wordwrap"><span class="absorb" id="absorb"></span></span></span></p>
+          <p class="ghostline" id="ghostLine">Your words land here.</p>
           <p class="spoken" id="said" dir="auto"></p>
           <p class="written" id="wrote" dir="auto"></p>
           <div class="fly" id="fly" aria-hidden="true"></div>
@@ -887,8 +890,19 @@
 <script>
 (function () {
   "use strict";
+  /* WHERE THE BACKEND IS. On tailzu.space the page and the api are the
+     same server, so a relative path is right and needs no CORS. Anywhere
+     else — a file on disk, a preview, a staging host — the page has to be
+     told, or it silently 404s on its own origin and runs the whole site on
+     its fallbacks, with no copy, no prices and no demo. */
   var API = document.documentElement.getAttribute("data-api") || "";
-  if (!API && location.protocol === "file:") API = "https://api.tailzu.space";
+  if (!API && !/(^|\.)tailzu\.space$/.test(location.hostname)) API = "https://api.tailzu.space";
+
+  /* A LOOK AT THE DEMO WITHOUT THE SERVER. ?demo=1 shows the button as
+     though the backend had said yes, so the top screen can be reviewed
+     before DEMO_ENABLED is turned on. Pressing it still asks the real
+     server, which will say what it says. */
+  var forceDemo = /[?&]demo=1(&|$)/.test(location.search);
   var $ = function (id) { return document.getElementById(id); };
   var reduced = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
@@ -911,7 +925,7 @@
       listening: "Listening",
       writing: "Writing",
       again: "Say another.",
-      title: "Talk. It writes."
+      placeholder: "Your words land here."
     },
     // The story the word tells, one word at a time, in this order. Each is
     // two words at most: it has to be read at a glance at the size of a
@@ -1031,7 +1045,7 @@
     download: { get: "Download" },
     stores: { ios: "https://apps.apple.com/app/id6784811357", android: "https://play.google.com/store/apps/details?id=com.tulmi.app" }
   };
-  var site = { downloads: {}, demo: false, maxSeconds: 15, perMinute: 6, freeWords: 0 };
+  var site = { downloads: {}, demo: forceDemo, maxSeconds: 15, perMinute: 6, freeWords: 0 };
 
   /* =====================================================================
      THE RIVER
@@ -1606,12 +1620,15 @@
     // With the demo off there is no button to press, so the screen says
     // what it is instead and the sentences play through beneath.
     $("river").setAttribute("data-demo", site.demo ? "on" : "off");
-    setText("heroTitle", C.hero && C.hero.title);
-    if (!own) micLabel.textContent = site.demo ? idleWord() : "";
+    setText("ghostLine", C.hero && C.hero.placeholder);
+    if (!own) micLabel.textContent = idleWord();
     paintDownloads();
     paintBelow();
-    mic.hidden = !site.demo;
-    if (!site.demo) lineEl.classList.add("idle");
+    // The button is always there. The top screen IS the demo, so a page
+    // with no button is a page with no top screen; if the server has the
+    // demo switched off it says so when it is pressed, which is the one
+    // moment that is true rather than a guess made at load.
+    mic.hidden = false;
   }
 
   // ---- the microphone -----------------------------------------------------
@@ -1712,8 +1729,8 @@
       // Their sentence taking over the screen IS the payoff. A line saying
       // so underneath was the page narrating what it had just done.
       ownSaid = s; loadRiver();
-      lineEl.classList.remove("idle");
-      pauseStage(); staged = true;      // nothing plays over theirs
+      lineEl.classList.add("spoke");
+      pauseStage(); staged = true;
       resetStage(); play({ said: s, wrote: w || s, lang: "" }, true);
       done(); say(idleWord(), false, true);
     }).catch(function (e) { done(); say(e.message || "Try again."); });
@@ -1724,7 +1741,7 @@
     if (mic.getAttribute("aria-pressed") === "true") { stop(); return; }
     // Whatever was playing gets out of the way: the screen is theirs now.
     pauseStage(); staged = true;
-    stageEl.classList.remove("out"); lineEl.classList.remove("idle");
+    stageEl.classList.remove("out"); lineEl.classList.add("spoke");
     saidEl.innerHTML = ""; wroteLine.innerHTML = ""; flyEl.innerHTML = ""; saidEl.style.visibility = "";
     liveText(langEl, ""); absorbEl.textContent = "";
     start();
@@ -1920,8 +1937,11 @@
     }
   }
   function resetStage() { saidEl.style.visibility = ""; flyEl.innerHTML = ""; }
-  function next() { if (own) return; resetStage(); caseI = (caseI + 1) % C.cases.length; play(C.cases[caseI]); }
-  function resumeStage() { if (staged) return; staged = true; resetStage(); play(own && current ? current : C.cases[caseI], !!own); }
+  /* NOTHING PLAYS BUT THEIRS. The top screen used to cycle other people's
+     sentences under the button; it is a demo, so the only sentence it ever
+     shows is the one somebody said into it. */
+  function next() {}
+  function resumeStage() { if (staged || !own || !current) return; staged = true; resetStage(); play(current, true); }
   function pauseStage() { staged = false; sgen++; clearTimeout(stm); }
   document.addEventListener("visibilitychange", function () { if (document.hidden) pauseStage(); else if (seen) resumeStage(); });
 
@@ -1961,7 +1981,7 @@
      slow way and the fast way, side by side, in one picture. Then the next
      app. It runs only while it can be seen.
      ================================================================== */
-  var kbEl = $("kb"), rowsEl = $("kbRows"), keyless = $("keyless"), kbField = $("kbField"), kbApp = $("kbApp"), keyOf = {}, micKey = null, keyN = 0;
+  var kbEl = $("kb"), rowsEl = $("kbRows"), keyless = $("keyless"), kbField = $("kbField"), kbApp = $("kbApp"), keyOf = {}, micKey = null, rowDots = null, keyN = 0;
   var appI = 0, kgen = 0, ktm = 0, keysOn = false;
   /* The other forms a held letter offers, as the keyboard's own tray does. */
   var TRAYS = { a: "a à á â ä ã å", e: "e è é ê ë", i: "i ì í î ï", o: "o ò ó ô ö õ", u: "u ù ú û ü", c: "c ç ć", n: "n ñ ń", s: "s ß ś š", y: "y ÿ", z: "z ž ź", l: "l ł", d: "d đ", h: "h ħ" };
@@ -1985,8 +2005,9 @@
     var r4 = el("div", "krow r4");
     r4.appendChild(el("div", "k wide", "123"));
     micKey = el("div", "k mic");
-    micKey.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"></rect><path d="M5 11a7 7 0 0 0 14 0M12 18v3"></path></svg>';
+    micKey.innerHTML = '<svg class="mk" viewBox="170 228 680 512" aria-hidden="true"><line x1="346" y1="402" x2="270" y2="598" stroke="#000" stroke-width="9" stroke-linecap="round"/><line x1="444" y1="394" x2="554" y2="486" stroke="#000" stroke-width="30" stroke-dasharray="9 11"/><line x1="668" y1="478" x2="828" y2="243" stroke="#000" stroke-width="9" stroke-linecap="round"/><circle cx="828" cy="243" r="11" fill="#000"/><rect x="308" y="269" width="132" height="132" rx="28" fill="#000"/><rect x="558" y="478" width="132" height="132" rx="28" fill="#000"/><rect x="178" y="598" width="132" height="132" rx="28" fill="#000"/></svg><canvas></canvas>';
     r4.appendChild(micKey);
+    rowDots = MicDots(micKey.querySelector("canvas"), micKey, { dot: "#000", inset: 11 });
     var sp = el("div", "k space", "space"); keyOf[" "] = sp; r4.appendChild(sp);
     r4.appendChild(el("div", "k wide", "return"));
     rowsEl.appendChild(r4);
@@ -2041,7 +2062,9 @@
          above it by hand; the phone's keys fall at the same moment, in a
          wave; the board shrinks to the mic alone; the mic goes live and the
          rest of the line arrives by voice, a word at a time. */
+      micKey.classList.add("down"); if (rowDots) rowDots.start();
       klater(380, function () {
+        micKey.classList.remove("down"); if (rowDots) rowDots.stop();
         if (kw) kw.classList.add("cut");
         kbEl.style.height = (kbTall || kbEl.offsetHeight) + "px";   // something to leave from
         kbEl.classList.add("cut");
@@ -2078,9 +2101,11 @@
      stiffness 26, damping 0.8, snapping under 0.8 of a point or after six
      tenths of a second. Scaled to whatever size the circle is here.
      ================================================================== */
-  function markPoints(size, count) {
+  function markPoints(size, count, inset) {
     // The mark, drawn into its own grid, and its opaque pixels sampled.
-    var G = 44, inset = 6, box = G - inset * 2, c = document.createElement("canvas");
+    // `inset` is how far in from the circle the mark sits, in grid units —
+    // the app's is six of forty-four; a smaller mark is a bigger inset.
+    var G = 44, box = G - inset * 2, c = document.createElement("canvas");
     c.width = c.height = G;
     var x = c.getContext("2d"), VB = [170, 228, 680, 512];
     var k = Math.min(box / VB[2], box / VB[3]);
@@ -2103,7 +2128,9 @@
     for (var i = 0; i < all.length && out.length < count; i += step) out.push([all[i][0] * s, all[i][1] * s]);
     return out;
   }
-  function MicDots(canvas, host, dotColour) {
+  function MicDots(canvas, host, opts) {
+    opts = opts || {};
+    var dotColour = opts.dot;
     var g = canvas.getContext("2d"), dots = [], raf = 0, last = 0, size = 0, R = 0, DR = 1.3, home = [], back = false, backAt = 0, DPR = 1;
     function fit() {
       var w = canvas.clientWidth || 58;
@@ -2111,7 +2138,7 @@
       if (size === w && canvas.width) return;
       size = w; R = w / 2; DR = Math.max(0.9, w / 44);
       canvas.width = Math.round(w * DPR); canvas.height = Math.round(w * DPR);
-      home = markPoints(w, 60);
+      home = markPoints(w, 60, opts.inset || 6);
     }
     function start() {
       fit(); if (!home.length) return;
@@ -2184,8 +2211,8 @@
   }
   // The keyboard's key is the app's: black dots on white. The hero's own
   // button turns amber while it listens, so its dots are the ink.
-  var micDots = MicDots($("micDots"), $("kmic"), "#000");
-  var heroDots = MicDots($("heroDots"), $("mic"), "#0F0D0B");
+  var micDots = MicDots($("micDots"), $("kmic"), { dot: "#000", inset: 11 });
+  var heroDots = MicDots($("heroDots"), $("mic"), { dot: "#0F0D0B", inset: 8 });
 
   function resumeKeys() {
     if (keysOn) return; keysOn = true;
@@ -2194,7 +2221,7 @@
   function pauseKeys() {
     keysOn = false; kgen++; clearTimeout(ktm);
     [].forEach.call(document.querySelectorAll(".k.down, .k.hold"), function (k) { k.classList.remove("down"); k.classList.remove("hold"); });
-    if (micKey) micKey.classList.remove("live");
+    if (rowDots) rowDots.stop();
     keyless.classList.remove("live"); micDots.stop();
   }
 
@@ -2345,7 +2372,7 @@
     if (j && j.copy) { for (var k in j.copy) if (Object.prototype.hasOwnProperty.call(j.copy, k)) C[k] = j.copy[k]; }
     if (j) {
       site.downloads = j.downloads || {};
-      site.demo = !!j.demo;
+      site.demo = !!j.demo || forceDemo;
       site.maxSeconds = j.maxSeconds || 15;
       site.perMinute = j.perMinute || 6;
       site.freeWords = j.freeWords || 0;
