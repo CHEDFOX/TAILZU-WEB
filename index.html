@@ -486,11 +486,11 @@
       <div>
         <p class="kick" id="deskKick">On the desk</p>
         <h2 id="deskTitle">Mac and Windows too.</h2>
-        <p class="lede" id="deskLede">Press once. Talk. Press again. It's typed.</p>
+        <p class="lede" id="deskLede">Tap Ctrl twice. Talk. Tap twice. It's typed.</p>
       </div>
-      <!-- The chord the tray app actually binds by default: Ctrl (⌘ on a
-           Mac), Shift, Space. Press once to talk, again to paste. -->
-      <div class="chord" id="chord" role="img" aria-label="Control, Shift, Space"></div>
+      <!-- The tray app's way in: tap Ctrl twice (or Alt twice). Two keys
+           drawn is the gesture. -->
+      <div class="chord" id="chord" role="img" aria-label="Control, tapped twice"></div>
     </div>
   </div>
 </section>
@@ -602,8 +602,10 @@
     },
     desk: {
       kick: "On the desk", title: "Mac and Windows too.",
-      lede: "Press once. Talk. Press again. It's typed.",
-      keys: ["Ctrl", "Shift", "Space"], keysMac: ["⌘", "Shift", "Space"]
+      lede: "Tap Ctrl twice. Talk. Tap twice. It's typed.",
+      // The tray app's way in: a double-tap on Ctrl (or Alt). Two keys drawn
+      // is the gesture; `join` is what goes between them, and nothing does.
+      keys: ["Ctrl", "Ctrl"], join: ""
     },
     free: {
       kick: "Price", unit: "free words a month", title: "Free to start.",
@@ -1334,11 +1336,10 @@
     });
 
     setText("deskKick", C.desk.kick); setText("deskTitle", C.desk.title); setText("deskLede", C.desk.lede);
-    // The chord, for this visitor's desk: Command on a Mac, Control elsewhere.
+    // The gesture, drawn as keys: a double-tap is the same key twice.
     var chord = $("chord"); chord.innerHTML = "";
-    var keys = os() === "mac" ? C.desk.keysMac : C.desk.keys;
-    keys.forEach(function (k, i) {
-      if (i) chord.appendChild(el("i", null, "+"));
+    C.desk.keys.forEach(function (k, i) {
+      if (i && C.desk.join) chord.appendChild(el("i", null, C.desk.join));
       var d = el("div", "key" + (k.length > 5 ? " wide" : ""));
       d.appendChild(el("b", /^[^A-Za-z]$/.test(k) ? "glyph" : null, k));
       chord.appendChild(d);
