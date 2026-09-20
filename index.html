@@ -1219,7 +1219,11 @@
      one is published, and the download page when it is not. Nothing to
      choose, because the page already knows. The store links come with the
      copy, so they can change without a site deploy. */
-  var FILES = { win: "/downloads/Tailzu-Setup.exe", mac: "/downloads/Tailzu.dmg", linux: "/downloads/Tailzu.AppImage" };
+  // The installers come straight from the API host, not through the page's
+  // own origin: a hundred megabytes should not pass through a proxy in
+  // front of a static site. A click on one of these is the download.
+  var FILE_HOST = API || "https://api.tailzu.space";
+  var FILES = { win: FILE_HOST + "/downloads/Tailzu-Setup.exe", mac: FILE_HOST + "/downloads/Tailzu.dmg", linux: FILE_HOST + "/downloads/Tailzu.AppImage" };
   function target(k) {
     if (k === "ios" || k === "android") return (C.stores && C.stores[k]) || "/download";
     return site.downloads[k] ? FILES[k] : "/download";
