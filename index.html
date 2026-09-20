@@ -301,11 +301,15 @@
      does not jump when the board shrinks; the screen takes up whatever the
      board gives back, rather than leaving a hole under it. */
   .phone { width: 100%; max-width: 380px; margin: 0 auto; display: flex; flex-direction: column; border-radius: 40px; padding: 12px; background: #0B0A09; box-shadow: 0 50px 90px -40px rgba(0,0,0,.7), inset 0 0 0 1px rgba(255,255,255,.08); }
-  .screen { flex: 1 1 auto; background: #F2F2F7; border-radius: 30px 30px 0 0; padding: 22px 16px 16px; min-height: 178px; color: var(--ink2); }
+  .screen { position: relative; flex: 1 1 auto; background: #F2F2F7; border-radius: 30px 30px 0 0; padding: 22px 16px 16px; min-height: 178px; color: var(--ink2); }
   .appbar { display: flex; align-items: center; gap: 8px; font-family: var(--mono); font-size: 11px; letter-spacing: .2em; text-transform: uppercase; color: var(--ink2-soft); margin-bottom: 14px; }
   .appdot { width: 8px; height: 8px; border-radius: 50%; background: var(--teal); }
   .appfield .bubble, .appfield .mail, .appfield .memo, .appfield .search { font-size: 15px; }
   .appfield .car { height: 1em; vertical-align: -.15em; }
+  /* The caption while an instruction is being said: low on the screen,
+     above the keys, the way the desktop app captions a live dictation. */
+  .spoken { position: absolute; left: 18px; right: 18px; bottom: 12px; font-size: 13px; line-height: 1.35; font-style: italic; color: var(--ink2-soft); opacity: 0; transition: opacity .25s; pointer-events: none; }
+  .spoken.on { opacity: 1; }
   /* THE CUT, AND WHAT IS LEFT. A few taps on the keys, then the keys are
      cut away — each one lifts a little and drops out of the board, in a
      wave from the first key to the last — and the board shrinks to what a
@@ -572,6 +576,10 @@
         <div class="screen">
           <div class="appbar"><span class="appdot"></span><span id="kbApp">Message</span></div>
           <div class="appfield" id="kbField"></div>
+          <!-- What is being said, when it is not the sentence itself: an
+               instruction, in whatever language, and the result lands in the
+               field. -->
+          <div class="spoken" id="kbSpoken" dir="auto"></div>
         </div>
         <div class="kb" id="kb">
           <div class="rows" id="kbRows"></div>
@@ -828,17 +836,17 @@
       cut: "key", fix: "keyless",
       fields: [
         { kind: "message", app: "Message", text: "Can we push the call to four?" },
-        { kind: "mail", app: "Mail", to: "To: Priya", text: "The deploy is done, but abhi testing baaki hai." },
+        { kind: "mail", app: "Mail", to: "To: Priya", say: "Priya ko bolo deploy ho gaya, testing baaki hai", text: "Hi Priya — the deploy is done; testing is still pending." },
+        { kind: "search", app: "Maps", say: "चाय की दुकान जो अभी खुली हो", text: "Chai shop open now" },
+        { kind: "message", app: "WhatsApp", say: "dile a Marta que llego diez minutos tarde", text: "Marta, llego diez minutos tarde. ¿Pides por mí?" },
         { kind: "memo", app: "Notes", text: "Transfer 2500 rupees to Ramesh tomorrow." },
-        { kind: "search", app: "Search", text: "Flights to Goa, Friday evening" },
-        { kind: "message", app: "WhatsApp", text: "Running ten late, order for me?" },
-        { kind: "memo", app: "Reminders", text: "Call Amma before nine." },
-        { kind: "search", app: "Maps", text: "Chai near me, open now" },
-        { kind: "mail", app: "Mail", to: "To: Landlord", text: "Rent goes out on the first, as always." },
-        { kind: "message", app: "Slack", text: "PR is up. Two files, no migrations." },
-        { kind: "memo", app: "Notes", text: "Milk, dahi, two lemons, batteries." },
-        { kind: "search", app: "YouTube", text: "How to fix a squeaky door" },
-        { kind: "message", app: "Message", text: "Hum paanch minute mein pahunch rahe hain." }
+        { kind: "message", app: "Slack", say: "tell the team the PR is up, two files, no migrations", text: "PR is up — two files, no migrations. Reviews welcome." },
+        { kind: "memo", app: "Reminders", say: "remind me to call Amma before nine", text: "Call Amma before 9." },
+        { kind: "search", app: "YouTube", text: "きしむドアの直し方" },
+        { kind: "mail", app: "Mail", to: "To: Landlord", say: "reply politely that rent goes out on the first", text: "Hello — the rent goes out on the first, as always. Thank you." },
+        { kind: "message", app: "Message", say: "bol do hum paanch minute mein pahunch rahe hain", text: "We'll be there in five minutes." },
+        { kind: "memo", app: "Notes", say: "liste de courses : lait, deux citrons, piles", text: "Lait, deux citrons, piles." },
+        { kind: "message", app: "WhatsApp", say: "أخبر سامي أنني سأتأخر عشر دقائق", text: "سامي، سأتأخر عشر دقائق." }
       ]
     },
     desk: {
@@ -1770,6 +1778,7 @@
     var box, t = el("span"), c = el("span", "car");
     if (f.kind === "mail") { box = el("div", "mail"); box.appendChild(el("div", "to", f.to || "")); var body = el("div"); body.appendChild(t); body.appendChild(c); box.appendChild(body); }
     else { box = el("div", f.kind === "message" ? "bubble" : f.kind === "memo" ? "memo" : "search"); box.appendChild(t); box.appendChild(c); }
+    box.setAttribute("dir", "auto");        // a right-to-left sentence reads its own way
     kbField.appendChild(box);
     return { t: t, c: c };
   }
@@ -1786,10 +1795,21 @@
      them; the mark comes apart into its own pixels; and the same sentence
      is said, over the time speech actually takes. What is left on the
      screen is two numbers.                                             */
+  /* How long a line takes to say: its words, or for a script written
+     without spaces, about one beat per five characters. */
+  function beats(s) {
+    var w = s.split(/\s+/).filter(Boolean).length;
+    return Math.max(w, Math.round(s.replace(/\s/g, "").length / 5));
+  }
+  var kbSpoken = $("kbSpoken");
   function playApp(said) {
     var g = ++kgen; clearTimeout(ktm);
     var apps = C.apps.fields, f = apps[appI % apps.length], text = said || f.text;
+    // An instruction: what is said is not the sentence, it is what to do,
+    // in whatever language — and the sentence is what lands.
+    var say = (!said && f.say) || "";
     liveText(kbApp, said ? (C.hero.said || "Said") : f.app);
+    kbSpoken.classList.remove("on"); liveText(kbSpoken, "");
     // The keys are back, and the title reads as printed.
     kbEl.classList.remove("small"); kbEl.classList.remove("cut");
     if (micKey) micKey.classList.remove("live");
@@ -1803,7 +1823,7 @@
       if (kw) kw.classList.add("cut");
       liveText(slot.t, text); slot.c.classList.add("off");
       cTyped.still(true, text.length + 2, text.length * 0.16);
-      cSaid.still(false, 0, text.split(/\s+/).length / SPEECH_WPS);
+      cSaid.still(false, 0, beats(say || text) / SPEECH_WPS);
       return;
     }
     // A visitor's own sentence skips the typing: they already did it the
@@ -1861,20 +1881,35 @@
     function speak() {
       if (g !== kgen) return;
       micKey.classList.add("live"); rowDots.start(); cSaid.start(false);
-      var words = text.split(/\s+/).filter(Boolean), at = 0;
-      var chunk = Math.max(1, Math.ceil(words.length / 6)), per = Math.round(1000 / SPEECH_WPS) * chunk;
-      (function say() {
+      // What is spoken: the sentence itself, or the instruction — in which
+      // case it runs as a caption low on the screen, and the field waits.
+      var spoken = say || text, words = spoken.split(/\s+/).filter(Boolean), at = 0;
+      var chunk = Math.max(1, Math.ceil(words.length / 6));
+      var per = Math.round(1000 / SPEECH_WPS) * chunk * (beats(spoken) / Math.max(1, words.length));
+      if (say) kbSpoken.classList.add("on");
+      function finish() {
+        liveText(slot.t, text); cSaid.stop();
+        micKey.classList.remove("live"); rowDots.stop(); slot.c.classList.add("off");
+        kbSpoken.classList.remove("on");
+        if (said) return;                   // theirs stays
+        klater(3000, function () { appI++; playApp(); });
+      }
+      // The machine writes: the result lands in three quick strokes.
+      function land() {
+        var out = text.split(/\s+/).filter(Boolean), k = 0, step = Math.max(1, Math.ceil(out.length / 3));
+        (function write() {
+          if (g !== kgen) return;
+          k = Math.min(out.length, k + step);
+          liveText(slot.t, out.slice(0, k).join(" "));
+          if (k < out.length) klater(140, write); else finish();
+        })();
+      }
+      (function talk() {
         if (g !== kgen) return;
-        if (at >= words.length) {
-          liveText(slot.t, text); cSaid.stop();
-          micKey.classList.remove("live"); rowDots.stop(); slot.c.classList.add("off");
-          if (said) return;                 // theirs stays
-          klater(3000, function () { appI++; playApp(); });
-          return;
-        }
+        if (at >= words.length) { if (say) land(); else finish(); return; }
         at = Math.min(words.length, at + chunk);
-        liveText(slot.t, words.slice(0, at).join(" "));
-        klater(per, say);
+        liveText(say ? kbSpoken : slot.t, words.slice(0, at).join(" "));
+        klater(per, talk);
       })();
     }
   }
