@@ -197,26 +197,24 @@
   /* The word arrives last: the field is already flowing when it fades up to
      meet it, and the rush the script starts with is what it fades up into. */
   #mark { cursor: pointer; animation: fade 1.5s .7s both; }
-  /* THE SWAP is a pull of focus. The old word goes soft and drifts on with
-     the flow while the new one comes into focus behind it, arriving from
-     the side the threads arrive from. Two texts on the same anchor: a ghost
-     that carries the old word out, and the word itself, which only ever
-     arrives. Nothing types, nothing ticks — one breath, and it has changed.
-     The wrapper carries the slide so the word's own transform stays free
-     for the swell. */
-  #wordwrap { transition: transform .6s cubic-bezier(.2, .8, .2, 1); }
-  #wordwrap.pre { transform: translateX(-18px); transition: none; }
+  /* THE SWAP is a roll. Inside a window one line tall, the old word rises
+     out of the top and the new one rises in from the bottom, on the same
+     easing, at the same time, like a line on a departures board. No blur,
+     no glow, no typing: a clean mechanical change that reads as the next
+     line of the same story. */
   .ghost { opacity: 0; pointer-events: none; }
-  .ghost.leave { animation: leave .58s cubic-bezier(.4, 0, .2, 1) both; }
-  @keyframes leave {
-    from { opacity: 1; filter: blur(0); transform: translateX(0); }
-    to   { opacity: 0; filter: blur(7px); transform: translateX(28px); }
+  #ghostwrap.leave { animation: rollout .62s cubic-bezier(.3, .7, .2, 1) both; }
+  #wordwrap.arrive { animation: rollin .62s cubic-bezier(.3, .7, .2, 1) both; }
+  @keyframes rollout {
+    from { transform: translateY(0); opacity: 1; }
+    70%  { opacity: 1; }
+    to   { transform: translateY(-96px); opacity: 0; }
   }
-  #absorb.arrive { animation: arrive .62s cubic-bezier(.2, .8, .2, 1) both; }
-  @keyframes arrive {
-    from { opacity: 0; filter: blur(9px); }
-    to   { opacity: 1; filter: blur(0); }
+  @keyframes rollin {
+    from { transform: translateY(96px); }
+    to   { transform: translateY(0); }
   }
+  #ghostwrap.leave .ghost { opacity: 1; }
   #mark:focus-visible { outline: 2px solid var(--white); outline-offset: 10px; border-radius: 8px; }
   /* The word's fill is set per frame in script — it washes with the accent
      as the waves merge and goes to it outright with the microphone open — so
@@ -508,9 +506,14 @@
       <!-- The word is a story told four words long — heard, meant, written,
            sent — and the wrapper is what carries each one out with the flow
            and brings the next in from where the threads come from. -->
-      <g id="wordwrap">
-        <text id="absorbOld" class="absorb ghost" x="762" y="284" dy=".33em" aria-hidden="true"></text>
-        <text id="absorb" class="absorb" x="762" y="284" dy=".33em">Heard.</text>
+      <!-- The words roll: the old one up and out, the new one up from
+           beneath, inside a window the height of one line. Each text has a
+           wrapper of its own to carry the roll, so the word's own transform
+           stays free for the swell. -->
+      <clipPath id="wordclip"><rect x="700" y="214" width="1000" height="140"/></clipPath>
+      <g clip-path="url(#wordclip)">
+        <g id="ghostwrap"><text id="absorbOld" class="absorb ghost" x="762" y="284" dy=".33em" aria-hidden="true"></text></g>
+        <g id="wordwrap"><text id="absorb" class="absorb" x="762" y="284" dy=".33em">Heard.</text></g>
       </g>
     </g>
   </svg>
@@ -1081,7 +1084,7 @@
      absorbed beats what it claims to. Driven from the frame loop, so it
      runs only while the river does: never off screen, never under reduced
      motion. */
-  var wrapEl = $("wordwrap"), ghostEl = $("absorbOld"), wordI = 0, wordAt = 0, WORD_HOLD = 3400, swapping = false;
+  var wrapEl = $("wordwrap"), ghostWrap = $("ghostwrap"), ghostEl = $("absorbOld"), wordI = 0, wordAt = 0, WORD_HOLD = 3400, swapping = false;
   function words() { return (C.absorbs && C.absorbs.length) ? C.absorbs : [C.absorb]; }
   function swapWord(now) {
     var list = words(); if (list.length < 2 || swapping) return;
@@ -1090,17 +1093,14 @@
     ghostEl.textContent = absorbEl.textContent;
     ghostEl.setAttribute("font-size", absorbEl.getAttribute("font-size") || ABSIZE);
     ghostEl.style.fill = absorbEl.style.fill;
-    ghostEl.classList.remove("leave"); void ghostEl.getBBox(); ghostEl.classList.add("leave");
-    // The new one comes into focus behind it, from the left, born as light.
+    ghostWrap.classList.remove("leave"); void ghostWrap.getBBox(); ghostWrap.classList.add("leave");
+    // The new one rolls up from beneath it.
     wordI = (wordI + 1) % list.length;
-    wrapEl.classList.add("pre");
     setAbsorb(list[wordI]);
     placePool();
-    absorbEl.classList.remove("arrive"); void absorbEl.getBBox(); absorbEl.classList.add("arrive");
-    warm = Math.max(warm, 0.9);
-    void wrapEl.getBoundingClientRect();     // the pre position lands before the move
-    wrapEl.classList.remove("pre");
-    setTimeout(function () { swapping = false; }, 620);
+    wrapEl.classList.remove("arrive"); void wrapEl.getBBox(); wrapEl.classList.add("arrive");
+    warm = Math.max(warm, 0.55);
+    setTimeout(function () { swapping = false; }, 640);
   }
 
   /** Slice, by hand, so the canvas shares the svg's coordinates exactly and
