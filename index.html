@@ -303,6 +303,26 @@
   .key b.glyph { font-size: 40px; }
   .chord .cap { margin: 0; }
 
+  /* FOR DEVELOPERS. A terminal on the ink, the one dark field among the
+     colours, because that is what a terminal is. The command types itself
+     when the field comes into view and the answer follows it, once. */
+  .on-ink { background: var(--ink); color: var(--white); }
+  .on-ink .lede { color: var(--grey); }
+  .term { max-width: 900px; border-radius: 16px; background: #171412; border: 1px solid rgba(243,226,198,.12); overflow: hidden; box-shadow: 0 30px 60px -30px rgba(0,0,0,.7); }
+  .tbar { display: flex; align-items: center; gap: 8px; padding: 12px 14px; border-bottom: 1px solid rgba(243,226,198,.08); }
+  .tbar span { width: 10px; height: 10px; border-radius: 50%; background: rgba(243,226,198,.16); }
+  .tbar button { margin-left: auto; appearance: none; border: 1px solid rgba(243,226,198,.16); background: none; color: var(--grey); border-radius: 999px; padding: 5px 12px; font-family: var(--mono); font-size: 11px; letter-spacing: .14em; text-transform: uppercase; cursor: pointer; transition: color .2s, border-color .2s; }
+  .tbar button:hover { color: var(--white); border-color: rgba(243,226,198,.36); }
+  .tbody { margin: 0; padding: 22px 24px 26px; font-family: var(--mono); font-size: 14px; line-height: 1.75; color: var(--white); white-space: pre-wrap; word-break: break-word; }
+  .prompt { color: var(--dim); }
+  .cursor { display: inline-block; width: .6em; height: 1.1em; vertical-align: -.2em; background: var(--white); animation: blink 1s steps(1) infinite; }
+  .cursor.off { display: none; }
+  @keyframes blink { 50% { opacity: 0; } }
+  .out { color: var(--grey); }
+  .out .k { color: #8FC7F0; }
+  .out .v { color: var(--white); }
+  .fine { margin: 18px 0 0; font-family: var(--mono); font-size: 11px; letter-spacing: .16em; text-transform: uppercase; color: var(--dim); }
+
   /* THE PRICE. A title, a line, the buttons. */
   .free { max-width: 720px; }
   .free .dl { justify-content: flex-start; margin-top: 28px; }
@@ -491,6 +511,24 @@
   </div>
 </section>
 
+<!-- FOR DEVELOPERS. The same demo the button uses, as one request. Real
+     endpoint, real limits, real answer — the first case of the river, as
+     the API returns it. Shown only while the demo is switched on. -->
+<section class="band on-ink reveal" id="dev" hidden>
+  <div class="wrap">
+    <div class="head">
+      <div><p class="kick" id="devKick">For developers</p><h2 id="devTitle">Try it from a terminal.</h2></div>
+      <p class="lede" id="devLede">One request. Audio in, a sentence out.</p>
+    </div>
+    <div class="term" id="term">
+      <div class="tbar"><span></span><span></span><span></span><button type="button" id="copyCmd">Copy</button></div>
+      <pre class="tbody"><code><span class="prompt">$ </span><span id="cmd"></span><span class="cursor" id="cur"></span>
+<span class="out" id="out"></span></code></pre>
+    </div>
+    <p class="fine" id="devNote"></p>
+  </div>
+</section>
+
 <section class="band on-sun reveal" id="free">
   <div class="wrap">
     <div class="free">
@@ -599,6 +637,11 @@
       title: "Free to start.",
       lede: "Upgrade when you need more."
     },
+    dev: {
+      kick: "For developers", title: "Try it from a terminal.",
+      lede: "One request. Audio in, a sentence out.",
+      note: "No key. {perMinute} a minute. {maxSeconds} seconds each. webm, mp4, ogg."
+    },
     faq: {
       kick: "Questions", title: "Asked, answered.",
       items: [
@@ -614,7 +657,7 @@
     },
     download: { win: "Windows", mac: "macOS", linux: "Linux", ios: "iPhone", android: "Android", soon: "soon" }
   };
-  var site = { downloads: {}, demo: false, maxSeconds: 15 };
+  var site = { downloads: {}, demo: false, maxSeconds: 15, perMinute: 6, freeWords: 0 };
 
   /* =====================================================================
      THE RIVER
@@ -1286,7 +1329,12 @@
     if (text != null) e.textContent = text;
     return e;
   }
-  function fill(s) { return String(s).replace(/\{n\}/g, String(site.freeWords || 800)); }
+  function fill(s) {
+    return String(s)
+      .replace(/\{n\}/g, String(site.freeWords || 800))
+      .replace(/\{maxSeconds\}/g, String(site.maxSeconds || 15))
+      .replace(/\{perMinute\}/g, String(site.perMinute || 6));
+  }
   function setText(id, s) { var e = $(id); if (e && s != null) e.textContent = fill(s); }
 
   function paintBelow() {
@@ -1338,6 +1386,8 @@
 
     setText("freeTitle", C.free.title); setText("freeLede", C.free.lede);
 
+    paintDev();
+
     setText("faqKick", C.faq.kick); setText("faqTitle", C.faq.title);
     var fq = $("faq"); fq.innerHTML = "";
     C.faq.items.forEach(function (it) {
@@ -1347,6 +1397,60 @@
       fq.appendChild(d);
     });
   }
+
+  /* ---------------------------------------------------------------------
+     FOR DEVELOPERS
+
+     The command is built from the page's own API origin and the endpoint
+     the button uses; the answer is the river's first case, as the API
+     returns it. The field is hidden while the demo is off, because a
+     command that answers 404 is not an invitation. The command types
+     itself the first time the field is seen; under reduced motion it is
+     simply there. */
+  var devEl = $("dev"), cmdEl = $("cmd"), outEl = $("out"), curEl = $("cur"), typed = false, devT = 0;
+  function devCmd() { return "curl -F audio=@clip.webm " + (API || "https://api.tailzu.space") + "/v1/demo/transcribe"; }
+  function devAnswer() {
+    var c = C.cases[0] || { said: "", wrote: "" };
+    outEl.innerHTML = "";
+    function line(s) { outEl.appendChild(document.createTextNode(s)); }
+    function kv(k, v, last) {
+      line("  ");
+      outEl.appendChild(el("span", "k", JSON.stringify(k)));
+      line(": ");
+      outEl.appendChild(el("span", "v", JSON.stringify(v)));
+      line(last ? "\n" : ",\n");
+    }
+    line("{\n"); kv("transcript", c.said); kv("cleanedText", c.wrote, true); line("}");
+  }
+  function typeCmd() {
+    var s = devCmd(), i = 0;
+    cmdEl.textContent = ""; outEl.innerHTML = ""; curEl.classList.remove("off");
+    clearTimeout(devT);
+    (function step() {
+      if (i < s.length) { cmdEl.textContent = s.slice(0, ++i); devT = setTimeout(step, 14 + Math.random() * 30); return; }
+      devT = setTimeout(function () { curEl.classList.add("off"); devAnswer(); }, 520);
+    })();
+  }
+  function paintDev() {
+    devEl.hidden = !site.demo;
+    if (!site.demo) return;
+    setText("devKick", C.dev.kick); setText("devTitle", C.dev.title); setText("devLede", C.dev.lede);
+    setText("devNote", C.dev.note);
+    if (reduced || typed) { cmdEl.textContent = devCmd(); curEl.classList.add("off"); devAnswer(); }
+  }
+  if (window.IntersectionObserver) {
+    new IntersectionObserver(function (es) {
+      if (!es[0].isIntersecting || typed || devEl.hidden) return;
+      typed = true;
+      if (reduced) { cmdEl.textContent = devCmd(); curEl.classList.add("off"); devAnswer(); } else typeCmd();
+    }, { threshold: 0.35 }).observe(devEl);
+  } else { typed = true; }
+  $("copyCmd").addEventListener("click", function () {
+    var b = this;
+    function did(ok) { b.textContent = ok ? "Copied" : "Copy"; setTimeout(function () { b.textContent = "Copy"; }, 1600); }
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(devCmd()).then(function () { did(true); }, function () { did(false); });
+    else did(false);
+  });
 
   function applyCopy() {
     $("micLabel").textContent = C.cta;
@@ -1522,6 +1626,8 @@
       site.downloads = j.downloads || {};
       site.demo = !!j.demo;
       site.maxSeconds = j.maxSeconds || 15;
+      site.perMinute = j.perMinute || 6;
+      site.freeWords = j.freeWords || 0;
     }
     applyCopy();
     if (!own) { sizeCanvas(); loadRiver(); }        // the server may have sent other lines
