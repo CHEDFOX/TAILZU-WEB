@@ -118,14 +118,20 @@
      nowhere to go and the whole band reads as evenly busy. This is the page's
      own ink at four per cent — warm light, no new colour — and it is what
      makes the caret the subject rather than one more mark among a hundred. */
+  /* THE BOX AND THE WORD. The current runs inside a rounded window and the
+     word it becomes stands outside it, beside it on a wide screen and under
+     it on a phone. Two things, side by side: the mess, framed, and the one
+     clean word it turns into, free of the frame. */
   .river {
-    /* ONE SCREEN. There is no second viewport: the band, the title and the
-       buttons are the page. So the band gives up height on a short window
-       rather than pushing the buttons below the fold — sliced, a shorter
-       band is cropped top and bottom and the word stays centred, it does not
-       zoom. Floor at 380, which is where the entries start to be lost. */
-    position: relative; margin-top: 22px; margin-bottom: 64px; height: clamp(380px, calc(100vh - 330px), 520px); animation: fade 1.4s .35s both;
+    position: relative; margin: 26px 0 76px; display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
+    gap: 32px 52px; align-items: center; animation: fade 1.4s .35s both;
   }
+  .box {
+    position: relative; height: clamp(320px, calc(100vh - 380px), 440px); border-radius: 30px; overflow: hidden;
+    background: #130E2F; border: 1px solid rgba(243,226,198,.1);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.05), 0 50px 90px -50px rgba(0,0,0,.7);
+  }
+  .mouth { display: flex; flex-direction: column; align-items: flex-start; gap: 26px; min-width: 0; }
   /* THE LIGHT IS ALIVE. The pool is its own layer under the threads, and
      the script breathes it: it swells a little on a slow cycle, brightens
      for a beat each time a phrase reaches the word, and fills with the
@@ -183,24 +189,29 @@
   /* One line, and every decision on it made on purpose: the optical size the
      face was cut for, a hair of tracking, and nothing else on the page set
      like it. That contrast is the whole product in one picture. */
+  /* THE SLOT is one line tall and clips: the words roll through it. Its
+     font size is the word's, so the roll distance can be written in ems.
+     The word arrives last: the field is already flowing when it fades up to
+     meet it, and the rush the script starts with is what it fades up into. */
+  .slot {
+    position: relative; display: block; width: 100%; height: 1.16em; overflow: hidden; cursor: pointer;
+    font-family: var(--serif); font-size: clamp(60px, 7.4vw, 108px); line-height: 1.1; letter-spacing: -.022em;
+    animation: fade 1.5s .7s both;
+  }
+  .roll { display: block; }
+  #ghostwrap { position: absolute; left: 0; top: 0; }
   .absorb {
     /* A shade under the regular weight. At this size the thinner stem lets
        the ground show through the letter, which is how a word set in a fine
        serif reads as printed rather than painted. */
-    font-family: var(--serif); font-size: 104px; font-weight: 380;
-    font-optical-sizing: auto; letter-spacing: -.022em; fill: var(--white);
-    transition: fill .25s;
+    display: inline-block; font-weight: 380; font-optical-sizing: auto; color: var(--white);
+    white-space: nowrap; transform-origin: left center; transition: color .25s;
   }
-  /* Both layers of the river sit on top of each other and drift together.
-     will-change keeps them on their own layers, so the drift moves a painted
-     surface instead of asking for it to be painted again. */
-  #tangle, #riverSvg { position: absolute; inset: 0; width: 100%; height: 100%; display: block; will-change: transform; }
-  #tangle { z-index: 1; }
-  #riverSvg { z-index: 2; }
-
-  /* The word arrives last: the field is already flowing when it fades up to
-     meet it, and the rush the script starts with is what it fades up into. */
-  #mark { cursor: pointer; animation: fade 1.5s .7s both; }
+  /* The visitor's own sentence is as long as they made it: the slot opens
+     up and the line wraps, at a size a sentence can be read at. */
+  .slot.free { height: auto; overflow: visible; font-size: clamp(26px, 3vw, 40px); line-height: 1.18; }
+  .slot.free .absorb { white-space: normal; }
+  #tangle { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
   /* THE SWAP is a roll. Inside a window one line tall, the old word rises
      out of the top and the new one rises in from the bottom, on the same
      easing, at the same time, like a line on a departures board. No blur,
@@ -212,31 +223,27 @@
   @keyframes rollout {
     from { transform: translateY(0); opacity: 1; }
     70%  { opacity: 1; }
-    to   { transform: translateY(-124px); opacity: 0; }
+    to   { transform: translateY(-1.2em); opacity: 0; }
   }
   @keyframes rollin {
-    from { transform: translateY(124px); }
+    from { transform: translateY(1.2em); }
     to   { transform: translateY(0); }
   }
   #ghostwrap.leave .ghost { opacity: 1; }
   #mark:focus-visible { outline: 2px solid var(--white); outline-offset: 10px; border-radius: 8px; }
-  /* The word's fill is set per frame in script — it washes with the accent
+  /* The word's colour is set per frame in script — it washes with the accent
      as the waves merge and goes to it outright with the microphone open — so
-     there is no rule for it here. An inline fill beats a class selector, and
-     a rule that can never apply is worse than no rule. */
+     there is no rule for it here. */
 
-  /* The control sits under the mark; its position is measured, not guessed,
-     because the svg is sliced and the mark lands somewhere different at
-     every window width. */
+  /* The control sits under the word, in flow. */
   .speak {
-    /* Above the svg, which is a box the pointer can land on. */
-    position: absolute; z-index: 3; left: 50%; top: 78%; transform: translateX(-50%);
+    position: relative;
     display: inline-flex; align-items: center; gap: 9px; height: 46px; padding: 0 22px;
     border: 0; border-radius: 999px; background: var(--white); color: var(--ink);
     font-size: 13px; font-weight: 500; cursor: pointer; white-space: nowrap;
     transition: background .18s, transform .18s; -webkit-tap-highlight-color: transparent;
   }
-  .speak:hover { opacity: .9; transform: translateX(-50%) translateY(-1px); }
+  .speak:hover { opacity: .9; transform: translateY(-1px); }
   .speak[aria-pressed="true"] { background: var(--amber); }
   .speak svg { width: 16px; height: 16px; }
   /* With the demo off there is no button at all. A control that does nothing,
@@ -433,7 +440,8 @@
   .reveal.in { opacity: 1; transform: none; }
 
   @media (max-width: 900px) {
-    .river { height: 380px; }
+    .river { grid-template-columns: minmax(0, 1fr); gap: 26px; margin-bottom: 60px; }
+    .box { height: 340px; }
     .mast nav a:not(.cta) { display: none; }
     .band .head, .desk { grid-template-columns: minmax(0, 1fr); }
     .free { padding-top: 46px; }
@@ -445,7 +453,7 @@
     .band { padding: 76px 0; }
   }
   @media (max-width: 560px) {
-    .river { height: 320px; }
+    .box { height: 280px; border-radius: 22px; }
     .speak span { font-size: 12.5px; }
     .tonegrid, .fields { grid-template-columns: minmax(0, 1fr); }
     .key { width: 84px; height: 84px; }
@@ -486,54 +494,36 @@
 
 </div>
 
-<div class="river" id="river">
-  <!-- The pool of light, under everything, breathed by the script. -->
-  <div class="light" id="light" aria-hidden="true"><div class="pool" id="pool"></div></div>
-  <!-- The tangle is drawn on a canvas, not in the svg. Two dozen moving
-       textPaths cost the page two thirds of its frame rate: changing one
-       offset re-lays its whole string out along its curve, and that is a
-       layout the browser cannot skip. Measured — freezing the offsets alone
-       took it from 23fps back to 59. -->
-  <canvas id="tangle" aria-hidden="true"></canvas>
-
-  <svg id="riverSvg" viewBox="0 0 1440 520" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
-    <!-- THE ABSORBER. There is no caret and no second stream: a hundred
-         threads of everybody's mess pour in from off the screen and are
-         swallowed by one word. That is the whole product in one picture and
-         it needs no divider down the middle to say so — the two sides were
-         only ever two because something stood between them.
-         Anchored at the convergence and running right, so it takes the side
-         the outgoing line used to have. The convergence moves with it: the
-         threads have to END where the word starts, or the gap comes back. It is the reading colour, because it
-         is the result and results are settled; it goes amber only while the
-         microphone is open, which is the one moment it is still in play. -->
-    <g id="mark" role="button" tabindex="0" aria-label="Speak">
-      <!-- The word is a story told four words long — heard, meant, written,
-           sent — and the wrapper is what carries each one out with the flow
-           and brings the next in from where the threads come from. -->
-      <!-- The words roll: the old one up and out, the new one up from
-           beneath, inside a window the height of one line. Each text has a
-           wrapper of its own to carry the roll, so the word's own transform
-           stays free for the swell. -->
-      <!-- A nested svg is the window, not a clipPath: a viewport clips its
-           own overflow in the compositor, so a child carried by a css
-           animation stays inside it. A clip-path on a group let the rolling
-           words out of the slot. Its viewBox equals its place in the parent,
-           so every coordinate inside is the parent's coordinate. -->
-      <svg id="wordslot" x="640" y="194" width="1100" height="180" viewBox="640 194 1100 180" overflow="hidden">
-        <g id="ghostwrap"><text id="absorbOld" class="absorb ghost" x="762" y="284" dy=".33em" aria-hidden="true"></text></g>
-        <g id="wordwrap"><text id="absorb" class="absorb" x="762" y="284" dy=".33em">Heard.</text></g>
-      </svg>
-    </g>
-  </svg>
-
-  <button class="speak" id="mic" aria-pressed="false">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-      <rect x="9" y="3" width="6" height="11" rx="3"></rect>
-      <path d="M5 11a7 7 0 0 0 14 0"></path><path d="M12 18v3M9 21h6"></path>
-    </svg>
-    <span id="micLabel">Speak</span>
-  </button>
+<div class="wrap">
+  <div class="river" id="river">
+    <!-- THE BOX. Everything anybody said, in every hand and colour, runs
+         inside a rounded window toward its right edge, where the pool of
+         light sits and the threads leave. The tangle is drawn on a canvas,
+         not in an svg: two dozen moving textPaths cost the page two thirds
+         of its frame rate. -->
+    <div class="box" id="box">
+      <div class="light" id="light" aria-hidden="true"><div class="pool" id="pool"></div></div>
+      <canvas id="tangle" aria-hidden="true"></canvas>
+    </div>
+    <!-- THE WORD, outside the box. What the current becomes: one word set
+         in type, rolling through the story — heard, meant, written, sent —
+         and the visitor's own sentence once they have spoken. Each text has
+         a wrapper of its own to carry the roll, so the word's own transform
+         stays free for the swell. -->
+    <div class="mouth" id="mouth">
+      <div class="slot" id="mark" role="button" tabindex="0" aria-label="Speak">
+        <span class="roll" id="ghostwrap"><span class="absorb ghost" id="absorbOld" aria-hidden="true"></span></span>
+        <span class="roll" id="wordwrap"><span class="absorb" id="absorb">Heard.</span></span>
+      </div>
+      <button class="speak" id="mic" aria-pressed="false">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <rect x="9" y="3" width="6" height="11" rx="3"></rect>
+          <path d="M5 11a7 7 0 0 0 14 0"></path><path d="M12 18v3M9 21h6"></path>
+        </svg>
+        <span id="micLabel">Speak</span>
+      </button>
+    </div>
+  </div>
 </div>
 
 <!-- No words under the river. The river is the headline, and the page
@@ -813,8 +803,7 @@
      sentence flows out. The page stops arguing and hands the argument over.
      ================================================================== */
   var own = null;                 // set once the visitor's own clip has run
-  var rraf = 0, last = 0, svgEl = $("riverSvg");
-  var mx = 0, my = 0, tx = 0, ty = 0;
+  var rraf = 0, last = 0;
 
   /**
    * Four lanes. Three carry the mess in and one carries the sentence out, and
@@ -913,6 +902,10 @@
   function build() {
     var r = seeded(20260919);
     LANES.length = 0;
+    // The threads leave through the box's right edge, at its middle height,
+    // wherever the window has put that.
+    END[0] = VIS[2] + 40; END[1] = (VIS[1] + VIS[3]) / 2;
+    var H = VIS[3] - VIS[1];
     for (var k = 0; k < TANGLE; k++) {
       // Round-robin across the three edges and evenly along each, with a
       // jitter on top. Leaving the side to chance clusters them — and it
@@ -935,7 +928,9 @@
       var per = TANGLE, slot = k, sx, sy;
       var u = (slot + 0.5) / per + (r() - 0.5) * 0.9 / per;
       u = Math.max(0, Math.min(1, u));
-      sx = -380 - r() * 300; sy = -120 + u * 780;
+      // Off the box's left edge, spread a little past its top and bottom, so
+      // the outer threads come in through the corners at a shallow angle.
+      sx = VIS[0] - 80 - r() * 320; sy = VIS[1] - H * 0.22 + u * H * 1.44;
 
       /* A CURRENT, NOT A SCATTER.
          The middle control point used to be thrown anywhere on the page,
@@ -963,7 +958,7 @@
          what "cheap" looks like. Spread over the height of the first glyph
          they arrive along its whole stem, and the letter reads as drinking
          them in rather than as a dot being wiped. */
-      var ey = END[1] + (r() - 0.5) * 120;
+      var ey = END[1] + (r() - 0.5) * H * 0.5;
       var p2x = END[0] - h2, p2y = ey + (r() - 0.5) * 6;
       if (p1x > p2x - 24) p1x = p2x - 24;
       var P = [sx, sy, p1x, p1y, p2x, p2y, END[0], ey];
@@ -998,7 +993,6 @@
       });
     }
   }
-  build();
 
   /**
    * ONE PHRASE PER THREAD, NOT A RIBBON.
@@ -1048,7 +1042,7 @@
     LANES.forEach(function (L) {
       // One sentence each, a different one per thread, so twenty languages
       // are in the air at once and no two threads read the same thing.
-      lay(L, C.cases[L.from % n].said, L.gap);
+      lay(L, own ? ownSaid : C.cases[L.from % n].said, L.gap);
       L.off = L.phase * L.period;
     });
     setAbsorb(own ? absorbEl.textContent : words()[wordI % words().length]);
@@ -1058,35 +1052,27 @@
     if (reduced) paint(0);
   }
 
-  /** THE WORD, FITTED. The svg is sliced, so how much room there is to the
-   *  right of the anchor depends on the window — and a visitor's own sentence
-   *  replaces the word once they have spoken, at whatever length they spoke.
-   *  Set big, measured, and shrunk only if it would run off. */
-  var absorbEl = $("absorb"), ghostEl = $("absorbOld"), slotEl = $("wordslot"), ABX = 762, ABSIZE = 104, ownSaid = "";
+  /** THE WORD, FITTED. A story word is set at the slot's size and shrunk
+   *  only if it would run past its column; the visitor's own sentence opens
+   *  the slot and wraps instead. */
+  var absorbEl = $("absorb"), ghostEl = $("absorbOld"), slotEl = $("mark"), mouthEl = $("mouth"), boxEl = $("box"), ownSaid = "";
 
-  /* THE GATE is the word's own left edge, measured rather than guessed.
-     Everything on the canvas stops there: the threads merge into the stem of
-     the first letter and nothing is drawn past it. Anchoring this to a number
-     typed by hand put the cut a few units off the glyph at one font size and
-     a dozen off at another, and a thread visible inside the word reads as a
-     mistake rather than as an arrival. */
-  var GATE = 768, FADE = 210;
-  function measureGate() {
-    try {
-      var bb = absorbEl.getBBox();
-      if (bb && bb.width) GATE = bb.x + 1;    // one unit inside the stem
-    } catch (e) { /* not laid out yet; the default stands */ }
-  }
+  /* THE GATE is the box's right edge. Every thread dissolves along its own
+     path over the last stretch before it and nothing is drawn past it, so
+     the current leaves the frame as light rather than being cut by it. Set
+     from the visible rectangle each time the box is measured. */
+  var GATE = 1400, FADE = 110;
 
   function setAbsorb(text) {
     absorbEl.textContent = text;
-    absorbEl.setAttribute("font-size", ABSIZE);
-    var room = (VIS[2] > ABX ? VIS[2] : 1440) - ABX - 40;
-    var w = absorbEl.getComputedTextLength() || 0;
+    slotEl.classList.toggle("free", !!own);
+    absorbEl.style.fontSize = "";
+    if (own) return;
+    var room = mouthEl.clientWidth, w = absorbEl.offsetWidth;
     if (w > room && room > 0) {
-      absorbEl.setAttribute("font-size", Math.max(20, ABSIZE * room / w).toFixed(1));
+      var fs = parseFloat(getComputedStyle(absorbEl).fontSize) || 60;
+      absorbEl.style.fontSize = Math.max(28, fs * room / w).toFixed(1) + "px";
     }
-    measureGate();
   }
 
   function ownRiver(said, wrote) {
@@ -1110,14 +1096,13 @@
     swapping = true; wordAt = now;
     // The ghost takes the old word, as it is right now, and carries it out.
     ghostEl.textContent = absorbEl.textContent;
-    ghostEl.setAttribute("font-size", absorbEl.getAttribute("font-size") || ABSIZE);
-    ghostEl.style.fill = absorbEl.style.fill;
-    ghostWrap.classList.remove("leave"); void ghostWrap.getBBox(); ghostWrap.classList.add("leave");
+    ghostEl.style.fontSize = absorbEl.style.fontSize;
+    ghostEl.style.color = absorbEl.style.color;
+    ghostWrap.classList.remove("leave"); void ghostWrap.offsetWidth; ghostWrap.classList.add("leave");
     // The new one rolls up from beneath it.
     wordI = (wordI + 1) % list.length;
     setAbsorb(list[wordI]);
-    placePool();
-    wrapEl.classList.remove("arrive"); void wrapEl.getBBox(); wrapEl.classList.add("arrive");
+    wrapEl.classList.remove("arrive"); void wrapEl.offsetWidth; wrapEl.classList.add("arrive");
     warm = Math.max(warm, 0.55);
     setTimeout(function () { swapping = false; }, 640);
   }
@@ -1142,24 +1127,8 @@
     ox = (w - VB[0] * scale) / 2; oy = (h - VB[1] * scale) / 2;
     VIS[0] = -ox / scale; VIS[1] = -oy / scale;
     VIS[2] = VIS[0] + w / scale; VIS[3] = VIS[1] + h / scale;
-    fitMouth();
-  }
-  /* THE MOUTH MOVES WITH THE WINDOW. The drawing is sliced, so on a phone
-     the visible strip is a third of the viewBox and a mouth fixed at its
-     centre lands two thirds of the way across the screen, with no room for
-     the word. So the mouth sits at a fraction of what is VISIBLE: a little
-     past the middle on a wide screen, a third of the way on a narrow one,
-     and the threads are rebuilt to arrive there. */
-  var ABX0 = 762;
-  function fitMouth() {
-    var vw = VIS[2] - VIS[0];
-    var want = vw >= 1180 ? ABX0 : Math.round(VIS[0] + vw * (vw < 700 ? 0.34 : 0.44));
-    if (want === ABX) return;
-    ABX = want; END[0] = ABX + 28;
-    absorbEl.setAttribute("x", ABX); ghostEl.setAttribute("x", ABX);
-    slotEl.setAttribute("x", ABX - 122); slotEl.setAttribute("viewBox", (ABX - 122) + " 194 1100 180");
+    GATE = VIS[2] - 6;
     build();
-    if (C.cases) LANES.forEach(function (L) { lay(L, own ? ownSaid : C.cases[L.from % C.cases.length].said, L.gap); L.off = L.phase * L.period; });
   }
 
   function paint(t) {
@@ -1349,7 +1318,7 @@
      It holds still and blinks while nothing is happening. With the microphone
      open it stops blinking, turns amber and breathes with the voice, so what
      grows and shrinks is the thing the words are about to be written at.   */
-  var MID = 284, listening = false, voice = 0, level = 0;
+  var listening = false, voice = 0, level = 0;
 
   /* The word swells a little with the voice while the microphone is open —
      what the caret's height used to do, on the thing that replaced it. Scaled
@@ -1372,9 +1341,7 @@
   var INK = [243, 226, 198], ACC = [232, 162, 60], tint = 0, glow = 0, warm = 0;
   function drawAbsorb(live) {
     voice += ((live ? level : 0) - voice) * 0.22;      // eased, or it judders
-    var k = (1 + voice * 0.07).toFixed(4);
-    absorbEl.setAttribute("transform",
-      "translate(" + ABX + " " + MID + ") scale(" + k + ") translate(" + (-ABX) + " " + (-MID) + ")");
+    absorbEl.style.transform = "scale(" + (1 + voice * 0.07).toFixed(4) + ")";
 
     var want = live ? 1 : 0.1 + glow * 0.22 + Math.min(1, (boost - 1) / 4.2) * 0.55;
     if (want > 1) want = 1;
@@ -1386,7 +1353,7 @@
       var v = INK[i] + (ACC[i] - INK[i]) * tint;
       return Math.round(v + (255 - v) * warm);
     });
-    absorbEl.style.fill = "rgb(" + c.join(",") + ")";
+    absorbEl.style.color = "rgb(" + c.join(",") + ")";
   }
   drawAbsorb(false);
 
@@ -1401,17 +1368,16 @@
     // box, so the breath is the light swelling and not a sheet sliding.
     pool.style.transform = "rotate(-2.5deg) scale(" + (1 + 0.03 * Math.sin(t * 0.42) + glow * 0.05 + v * 0.09).toFixed(4) + ")";
   }
-  /* The light belongs to the word. Its core sits a little left of the first
-     letter, where the threads die, at whatever place the sliced svg has put
-     the word for this window — so it is measured, like the button, and
-     re-measured whenever the band changes size. */
+  /* The light sits where the threads leave: on the box's right edge, at its
+     middle height. Measured against the light's own box, and re-measured
+     whenever the box changes size. */
   var light = $("light");
   function placePool() {
     var pw = pool.offsetWidth, ph = pool.offsetHeight;
-    if (!pw || !scale) return;
-    // The word's place in band pixels, then into the light's own box.
-    var gx = (GATE - VIS[0]) * scale - light.offsetLeft, gy = (MID - VIS[1]) * scale - light.offsetTop;
-    pool.style.left = (gx - pw * 0.46 + 16).toFixed(1) + "px";
+    if (!pw) return;
+    var b = boxEl.getBoundingClientRect(), l = light.getBoundingClientRect();
+    var gx = b.right - l.left, gy = b.top + b.height / 2 - l.top;
+    pool.style.left = (gx - pw * 0.46).toFixed(1) + "px";
     pool.style.top = (gy - ph * 0.5).toFixed(1) + "px";
   }
 
@@ -1443,21 +1409,12 @@
     }
     drawAbsorb(listening);
     breathe(now / 1000);
-    // Both layers drift together, as a CSS transform rather than an attribute
-    // — the browser can move a painted layer without repainting what is on it.
-    tx += (mx - tx) * 0.06; ty += (my - ty) * 0.06;
-    var sc = Math.max(-40, Math.min(40, (window.pageYOffset || 0) * 0.06));
-    var d = "translate(" + tx.toFixed(1) + "px," + (ty - sc).toFixed(1) + "px)";
-    cv.style.transform = d; svgEl.style.transform = d;
   }
 
   var riverEl = $("river");
-  riverEl.addEventListener("pointermove", function (e) {
-    var r = riverEl.getBoundingClientRect();
-    mx = ((e.clientX - r.left) / r.width - 0.5) * 34;
-    my = ((e.clientY - r.top) / r.height - 0.5) * 20;
-  });
-  riverEl.addEventListener("pointerleave", function () { mx = 0; my = 0; });
+  /* No drift under the pointer any more. The picture used to lean toward
+     the cursor, and a thing that moves when nobody asked it to reads as
+     shaking, not as depth. The current is the only motion in the box. */
 
   /* A second ownRiver lived here, left over from the lanes version. Function
      declarations hoist, so it silently REPLACED the real one above — and it
@@ -1798,29 +1755,13 @@
   var markEl = $("mark");
   markEl.addEventListener("click", toggle);
 
-  /**
-   * The button goes under the mark, and where that is has to be measured. The
-   * river's svg is sliced, so the mark lands at a different place and a
-   * different size at every window width — a percentage from the top is right
-   * at one width and wrong at all the others.
-   */
-  function placeControl() {
-    var m = markEl.getBoundingClientRect(), r = riverEl.getBoundingClientRect();
-    if (!m.width || !r.width) return;
-    var cx = m.left + m.width / 2 - r.left;
-    // Clamped, because a wider window scales the sliced svg up and pushes the
-    // mark's foot past the bottom of the band — where the sheet, which is
-    // painted over it, would swallow the button.
-    var y = Math.min(m.bottom - r.top + 30, r.height - 118);
-    mic.style.left = cx + "px"; mic.style.top = y + "px";
-    placePool();
-  }
-  // Measured once is measured too early: the first call can land before the
-  // band has its final box, and then the button sits somewhere the mark is
-  // not. Re-measure whenever the band changes size, which covers the late
-  // layout, the fonts arriving and the window being dragged.
-  if (window.ResizeObserver) new ResizeObserver(placeControl).observe(riverEl);
-  window.addEventListener("load", placeControl);
+  /* The box is measured, never assumed: the canvas is sliced to whatever
+     size the grid gives it, and that changes with the window, with the fonts
+     arriving and with the column beside it. Re-laid whenever it moves. */
+  var rt = 0;
+  function relayout() { clearTimeout(rt); rt = setTimeout(function () { sizeCanvas(); loadRiver(); placePool(); }, 120); }
+  if (window.ResizeObserver) new ResizeObserver(relayout).observe(boxEl);
+  window.addEventListener("load", placePool);
   markEl.addEventListener("keydown", function (e) {
     if (e.key === "Enter" || e.key === " ") { e.preventDefault(); toggle(); }
   });
@@ -1839,18 +1780,13 @@
     // diagram that then starts.
     if (!reduced) { boost = 5.5; warm = 1; }
     if (!reduced && !rraf) { last = 0; rraf = requestAnimationFrame(river); }
-    placeControl();
     placePool();
   }
   // The river measures text along a path, so it must not be laid out before
   // the face lands or every offset is computed for a fallback and jumps.
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(boot); else window.addEventListener("load", boot);
 
-  var rt = 0;
-  window.addEventListener("resize", function () {
-    clearTimeout(rt);
-    rt = setTimeout(function () { sizeCanvas(); loadRiver(); placeControl(); measureGate(); }, 200);
-  });
+  window.addEventListener("resize", relayout);
 
   // The hand comes from the font host, and the canvas measures words in
   // whatever face it has at the time. A phrase laid out in the fallback and
@@ -1858,7 +1794,7 @@
   // is laid out again once the hand has arrived.
   if (document.fonts && document.fonts.load) {
     Promise.all([document.fonts.load("14px Caveat"), document.fonts.load("14px Kalam")])
-      .then(function () { if (!own) loadRiver(); measureGate(); }, function () {});
+      .then(function () { if (!own) loadRiver(); }, function () {});
   }
 
   fetch(API + "/v1/site").then(function (r) { return r.json(); }).then(function (j) {
