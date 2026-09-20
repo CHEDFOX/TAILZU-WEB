@@ -129,36 +129,74 @@
      nowhere to go and the whole band reads as evenly busy. This is the page's
      own ink at four per cent — warm light, no new colour — and it is what
      makes the caret the subject rather than one more mark among a hundred. */
-  /* THE HERO IS ONE SENTENCE THAT REWRITES ITSELF.
-     A line as somebody said it — ums, Hinglish, a typo, in their own hand
-     and colour — and then, in the same place, the line it became, set in
-     type. The words themselves travel: each kept word flies from where it
-     was handwritten to where it is typeset and lands as the letterform,
-     while the fillers fall away. Nothing else is on the screen but a small
-     caption and a way in. The current runs behind it at a whisper. */
+  /* THE HERO IS THE DEMO.
+     Nothing on this screen claims anything. There is a button, an
+     invitation, and a space where a sentence goes. Press it, say anything,
+     and your own words land in your own hand — ums, half-thoughts, the lot
+     — and then rewrite themselves into type in front of you. The visitor's
+     own voice is the proof, and no headline can do what that does.
+
+     With the demo switched off at the server there is no button, because a
+     control that does nothing is worse than none: the screen falls back to
+     a line and the sentences other people said, playing through. */
   .hero {
-    position: relative; overflow: hidden; margin: 0; padding: 30px 0 56px;
-    min-height: clamp(520px, 82vh, 760px); display: grid; grid-template-columns: minmax(0, 1fr); align-items: center;
+    position: relative; overflow: hidden; margin: 0; padding: 34px 0 56px;
+    min-height: clamp(540px, 86vh, 800px); display: grid; grid-template-columns: minmax(0, 1fr); align-items: center;
     animation: fade 1.2s .2s both;
   }
   .hero .wrap { position: relative; z-index: 2; width: 100%; min-width: 0; }
-  .stage { position: relative; max-width: 1000px; margin: 0 auto; text-align: center; }
-  /* The caption: the language, and the word for what is happening to it.
-     The only small text on the screen. */
-  .cap { margin: 0 0 clamp(26px, 3.4vw, 44px); display: flex; justify-content: center; align-items: center; gap: 14px; font-family: var(--mono); font-size: 11px; letter-spacing: .24em; text-transform: uppercase; color: var(--dim); transition: opacity .38s; }
+  .deck { max-width: 1000px; margin: 0 auto; text-align: center; display: flex; flex-direction: column; align-items: center; }
+
+  /* THE BUTTON. The app's own mark in a circle, at a size that asks to be
+     pressed. It breathes while it waits; while it listens the mark comes
+     apart into its own pixels and a ring swells with the voice. */
+  .orb {
+    position: relative; width: clamp(104px, 12vw, 132px); height: clamp(104px, 12vw, 132px);
+    border: 0; padding: 0; border-radius: 50%; background: var(--ink); cursor: pointer;
+    display: grid; place-items: center; overflow: hidden;
+    box-shadow: 0 26px 60px -24px rgba(0,0,0,.75), 0 0 0 14px rgba(28,22,64,.55), 0 0 0 30px rgba(28,22,64,.3), inset 0 1px 0 rgba(243,226,198,.1);
+    transition: background .3s, transform .3s cubic-bezier(.2,.8,.2,1);
+    animation: waiting 4.6s ease-in-out infinite;
+  }
+  @keyframes waiting { 50% { transform: scale(1.035); } }
+  .orb:hover { transform: scale(1.06); }
+  .orb:active { transform: scale(.97); }
+  .orb .mk { width: 66%; height: 66%; display: block; transition: opacity .16s; position: relative; z-index: 2; }
+  .orb canvas { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 2; }
+  .orb.burst .mk { opacity: 0; }
+  .orb[aria-pressed="true"] { background: var(--amber); animation: none; }
+  /* The ring is the voice: it is scaled from script, so it costs nothing. */
+  .ring { position: absolute; inset: -2px; border-radius: 50%; border: 2px solid var(--amber); opacity: 0; transform: scale(1); transition: opacity .3s; pointer-events: none; }
+  .orb[aria-pressed="true"] .ring { opacity: .55; }
+  .orb[hidden] { display: none; }
+
+  /* THE INVITATION, and everything the button ever has to say: pressed,
+     listening, writing, written, or a reason it could not. One line. */
+  .invite { margin: clamp(20px, 2.6vw, 30px) 0 0; min-height: 1.4em; font-family: var(--mono); font-size: 12px; letter-spacing: .24em; text-transform: uppercase; color: var(--grey); transition: color .3s; }
+  .hero[data-demo="on"] .invite { cursor: pointer; }
+  .invite .hot { color: var(--amber); }
+
+  /* THE HEADLINE, for when there is no button to press. */
+  .heroline { margin: 0 0 6px; font-family: var(--serif); font-weight: 380; font-size: clamp(42px, 6.4vw, 92px); line-height: 1.02; letter-spacing: -.026em; color: var(--white); }
+  .hero[data-demo="on"] .heroline { display: none; }
+  .hero[data-demo="off"] .orb { display: none; }
+
+  /* THE LINE. Both versions live in one box, one over the other, so the
+     sentence never moves down the page as it changes. */
+  .line { position: relative; width: 100%; margin-top: clamp(26px, 3.2vw, 44px); min-height: 2.6em; font-size: clamp(26px, 3.9vw, 52px); display: grid; align-items: center; transition: opacity .4s; }
+  .line.idle { opacity: .4; font-size: clamp(19px, 2.3vw, 30px); }
+  .line.idle .slot, .line.idle .sep { display: none; }
+  .cap { position: absolute; left: 0; right: 0; top: -1.7em; margin: 0; display: flex; justify-content: center; align-items: center; gap: 12px; font-family: var(--mono); font-size: 11px; letter-spacing: .24em; text-transform: uppercase; color: var(--dim); }
   .cap .lang { color: var(--grey); }
   .cap .sep { opacity: .5; }
-  /* THE LINE. Both versions live in one box, one over the other, so the
-     sentence never moves down the page as it changes. The box is as tall
-     as the tallest line either of them needs, measured in ems of the
-     written face, so nothing below it ever jumps. */
-  .line { position: relative; min-height: 2.4em; font-size: clamp(30px, 4.6vw, 62px); display: grid; align-items: center; }
+  /* Their own sentence carries no language name, so the separator that
+     would stand alone beside it is not drawn. */
+  .cap .lang:empty + .sep { display: none; }
   .spoken, .written { grid-area: 1 / 1; margin: 0; display: flex; flex-wrap: wrap; justify-content: center; align-items: baseline; }
-  /* A hand, not a face: each word lands with its own tilt and its own
-     colour, the way speech arrives — alive, uneven, nobody's typography. */
-  .spoken {
-    gap: .06em .34em; font-family: 'Caveat', 'Kalam', cursive; font-weight: 600; font-size: .86em; line-height: 1.26;
-  }
+  /* A hand, not a face: each word lands with its own tilt, the way speech
+     arrives — alive, uneven, nobody's typography. One colour, the page's
+     own pale: eight of them read as a children's book. */
+  .spoken { gap: .06em .34em; font-family: 'Caveat', 'Kalam', cursive; font-weight: 600; font-size: .92em; line-height: 1.26; color: var(--grey); }
   .spoken .w {
     display: inline-block; opacity: 0; transform: translateY(10px) rotate(var(--tilt, 0deg));
     text-decoration-thickness: 2px; text-underline-offset: .1em; text-decoration-color: transparent;
@@ -169,8 +207,6 @@
      has seen under their own spelling. The two marks the world knows. */
   .spoken .w.drop { opacity: .34; text-decoration-line: line-through; text-decoration-color: currentColor; }
   .spoken .w.fix { text-decoration-line: underline; text-decoration-style: wavy; text-decoration-color: var(--rose); }
-  /* And then the typo is fixed where it stands: the word becomes what it
-     should have been and the squiggle turns into a clean green line. */
   .spoken .w.fixed { text-decoration-line: underline; text-decoration-style: solid; text-decoration-color: #6EE7A8; }
   /* WRITTEN. Type, where the spoken line was a hand: that contrast is the
      product, and it happens in one place. */
@@ -180,11 +216,10 @@
   }
   .written .w { display: inline-block; opacity: 0; transform: translateY(6px); transition: opacity .34s, transform .44s cubic-bezier(.2,.8,.2,1); }
   .written .w.in { opacity: 1; transform: none; }
-  /* THE FLIGHT. While the line is turning into type, each kept word is
-     copied into this layer at the place it was handwritten and animated to
-     the place it is typeset, growing to the typeset word's own width as it
-     fades — so the word you said becomes the word that was written, rather
-     than one line swapping for another. */
+  /* THE FLIGHT. Each kept word is copied here at the place it was
+     handwritten and animated to the place it is typeset, growing to that
+     word's own width as it fades — so the word you said becomes the word
+     that was written, rather than one line swapping for another. */
   .fly { position: absolute; inset: 0; pointer-events: none; z-index: 3; }
   .fly span {
     position: absolute; display: inline-block; white-space: nowrap; transform-origin: left center;
@@ -192,10 +227,9 @@
     transform: translate(0, 0) scale(1); opacity: 1;
     transition: transform .62s cubic-bezier(.3,.75,.2,1), opacity .62s ease-in;
   }
-  .stage.out .cap, .stage.out .line { opacity: 0; transition: opacity .34s; }
-  .herodl { margin: clamp(30px, 4vw, 52px) 0 0; text-align: center; }
-  .on-violet .get-it, .hero .get-it { background: var(--white); color: var(--ink); }
-  .hero .speak { margin-top: 26px; }
+  .stage.out .cap, .stage.out .spoken, .stage.out .written { opacity: 0; transition: opacity .34s; }
+  .herodl { margin: clamp(30px, 4vw, 48px) 0 0; }
+  .hero .get-it { background: var(--white); color: var(--ink); }
   /* THE LIGHT IS ALIVE. The pool is its own layer under the threads, and
      the script breathes it: it swells a little on a slow cycle, brightens
      for a beat each time a phrase reaches the word, and fills with the
@@ -259,12 +293,12 @@
   .roll { display: block; }
   #ghostwrap { position: absolute; left: 0; top: 0; }
   .absorb { display: inline-block; white-space: nowrap; }
-  #tangle { position: absolute; inset: 0; width: 100%; height: 100%; display: block; opacity: .3; z-index: 1; }
+  #tangle { position: absolute; inset: 0; width: 100%; height: 100%; display: block; opacity: .22; z-index: 1; }
   /* Calm ground under the sentence, centred on it: the current stays alive
      at the edges of the screen and is hushed where the words are. */
   .plate {
     position: absolute; z-index: 1; left: -5%; top: 0; width: 110%; height: 100%; pointer-events: none;
-    background: radial-gradient(ellipse 52% 46% at 50% 50%, rgba(28,22,64,.97) 0%, rgba(28,22,64,.9) 34%, rgba(28,22,64,.52) 60%, rgba(28,22,64,0) 80%);
+    background: radial-gradient(ellipse 54% 52% at 50% 46%, rgba(28,22,64,.98) 0%, rgba(28,22,64,.94) 38%, rgba(28,22,64,.62) 62%, rgba(28,22,64,0) 84%);
   }
   /* THE SWAP is a roll. Inside a window one line tall, the old word rises
      out of the top and the new one rises in from the bottom, on the same
@@ -427,13 +461,14 @@
   /* What remains after the cut: the mic, alone in the keyboard. */
   .keyless { position: absolute; inset: 0; display: grid; place-items: center; transform: translateY(40px); opacity: 0; transition: transform .45s cubic-bezier(.2,.8,.2,1) .15s, opacity .3s .15s; }
   .kb.small .keyless { transform: none; opacity: 1; }
-  .kmic { position: relative; overflow: hidden; width: 58px; height: 58px; border-radius: 50%; background: var(--ink); display: grid; place-items: center; box-shadow: 0 12px 26px -12px rgba(0,0,0,.6); transition: background .25s, transform .25s; }
-  /* The app's own key: the mark at rest, and while it is listening the
-     mark itself comes apart — its pixels are the particles. */
-  .kmic .mk { width: 72%; height: 72%; display: block; transition: opacity .16s; }
+  /* THE APP'S MIC KEY, exactly: a white circle the size of a key, with
+     the brand mark tinted black inside it — no border, no shadow, no
+     colour change while it listens. All that happens is that the mark
+     itself comes apart into its own pixels, black on the same white. */
+  .kmic { position: relative; overflow: hidden; width: 48px; height: 48px; border-radius: 50%; background: #fff; display: grid; place-items: center; }
+  .kmic .mk { width: 74%; height: 62%; display: block; transition: opacity .16s; }
   .kmic canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
   .kmic.burst .mk { opacity: 0; }
-  .keyless.live .kmic { background: var(--amber); transform: scale(1.08); }
   .k { position: relative; flex: 1 1 0; min-width: 0; height: 42px; border-radius: 6px; background: #fff; box-shadow: 0 1px 0 #898A8D; display: grid; place-items: center; font-family: var(--sans); font-size: 17px; color: #000; transition: transform .08s, background .08s; }
   .k.wide { flex: 1.5 1 0; background: #ABB0BA; font-size: 12px; }
   .k.space { flex: 5 1 0; font-size: 12px; color: #444; }
@@ -599,7 +634,8 @@
     .band { padding: 76px 0; }
   }
   @media (max-width: 560px) {
-    .line { font-size: 28px; min-height: 3.2em; }
+    .line { font-size: 26px; min-height: 3.4em; }
+    .line.idle { font-size: 19px; }
     .cap { gap: 10px; letter-spacing: .18em; }
     .speak span { font-size: 12.5px; }
     .tonegrid { grid-template-columns: minmax(0, 1fr); }
@@ -648,25 +684,35 @@
        are and stays alive at the edges. -->
   <div class="plate" aria-hidden="true"></div>
   <div class="wrap">
-    <!-- THE SENTENCE. A line as somebody said it, and — in the same
-         place, by the same words — the line it became. The stage is the
-         control too: with the demo on, pressing it opens the mic. -->
-    <div class="stage" id="mark" role="button" tabindex="0" aria-label="Speak">
-      <p class="cap"><span class="lang" id="lang"></span><span class="sep">/</span><span class="slot"><span class="roll" id="ghostwrap"><span class="absorb ghost" id="absorbOld" aria-hidden="true"></span></span><span class="roll" id="wordwrap"><span class="absorb" id="absorb">Heard.</span></span></span></p>
-      <div class="line" id="line">
-        <p class="spoken" id="said" dir="auto"></p>
-        <p class="written" id="wrote" dir="auto"></p>
-        <div class="fly" id="fly" aria-hidden="true"></div>
+    <!-- THE DEMO IS THE HERO. The button, what it has to say, and the
+         place a sentence lands: theirs if they press it, other people's
+         until they do. -->
+    <div class="deck">
+      <button class="orb" id="mic" aria-pressed="false" aria-label="Speak">
+        <span class="ring" id="ring" aria-hidden="true"></span>
+        <svg class="mk" viewBox="170 228 680 512" aria-hidden="true">
+          <line x1="346" y1="402" x2="270" y2="598" stroke="#E9CBA2" stroke-width="9" stroke-linecap="round"/>
+          <line x1="444" y1="394" x2="554" y2="486" stroke="#E8A23C" stroke-width="30" stroke-dasharray="9 11"/>
+          <line x1="668" y1="478" x2="828" y2="243" stroke="#C77A3A" stroke-width="9" stroke-linecap="round"/>
+          <circle cx="828" cy="243" r="11" fill="#B06240"/>
+          <rect x="308" y="269" width="132" height="132" rx="28" fill="#F4F1EA"/>
+          <rect x="558" y="478" width="132" height="132" rx="28" fill="#F4F1EA"/>
+          <rect x="178" y="598" width="132" height="132" rx="28" fill="#F4F1EA"/>
+        </svg>
+        <canvas id="heroDots" aria-hidden="true"></canvas>
+      </button>
+      <h1 class="heroline" id="heroTitle">Talk. It writes.</h1>
+      <p class="invite" id="micLabel">Press. Say anything.</p>
+      <div class="stage" id="mark">
+        <div class="line idle" id="line">
+          <p class="cap"><span class="lang" id="lang"></span><span class="sep">/</span><span class="slot"><span class="roll" id="ghostwrap"><span class="absorb ghost" id="absorbOld" aria-hidden="true"></span></span><span class="roll" id="wordwrap"><span class="absorb" id="absorb">Heard.</span></span></span></p>
+          <p class="spoken" id="said" dir="auto"></p>
+          <p class="written" id="wrote" dir="auto"></p>
+          <div class="fly" id="fly" aria-hidden="true"></div>
+        </div>
       </div>
+      <p class="herodl"><a class="get-it" data-dl href="/download">Download</a></p>
     </div>
-    <button class="speak" id="mic" aria-pressed="false">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-        <rect x="9" y="3" width="6" height="11" rx="3"></rect>
-        <path d="M5 11a7 7 0 0 0 14 0"></path><path d="M12 18v3M9 21h6"></path>
-      </svg>
-      <span id="micLabel">Speak</span>
-    </button>
-    <p class="herodl"><a class="get-it" data-dl href="/download">Download</a></p>
   </div>
 </section>
 
@@ -738,14 +784,15 @@
           <div class="rows" id="kbRows"></div>
           <!-- What is left when the keys are cut: the mic. -->
           <div class="keyless" id="keyless"><span class="kmic" id="kmic">
+            <!-- The mark, tinted black, the way the app's key carries it. -->
             <svg class="mk" viewBox="170 228 680 512" aria-hidden="true">
-              <line x1="346" y1="402" x2="270" y2="598" stroke="#E9CBA2" stroke-width="9" stroke-linecap="round"/>
-              <line x1="444" y1="394" x2="554" y2="486" stroke="#E8A23C" stroke-width="30" stroke-dasharray="9 11"/>
-              <line x1="668" y1="478" x2="828" y2="243" stroke="#C77A3A" stroke-width="9" stroke-linecap="round"/>
-              <circle cx="828" cy="243" r="11" fill="#B06240"/>
-              <rect x="308" y="269" width="132" height="132" rx="28" fill="#F4F1EA"/>
-              <rect x="558" y="478" width="132" height="132" rx="28" fill="#F4F1EA"/>
-              <rect x="178" y="598" width="132" height="132" rx="28" fill="#F4F1EA"/>
+              <line x1="346" y1="402" x2="270" y2="598" stroke="#000" stroke-width="9" stroke-linecap="round"/>
+              <line x1="444" y1="394" x2="554" y2="486" stroke="#000" stroke-width="30" stroke-dasharray="9 11"/>
+              <line x1="668" y1="478" x2="828" y2="243" stroke="#000" stroke-width="9" stroke-linecap="round"/>
+              <circle cx="828" cy="243" r="11" fill="#000"/>
+              <rect x="308" y="269" width="132" height="132" rx="28" fill="#000"/>
+              <rect x="558" y="478" width="132" height="132" rx="28" fill="#000"/>
+              <rect x="178" y="598" width="132" height="132" rx="28" fill="#000"/>
             </svg>
             <canvas id="micDots" aria-hidden="true"></canvas>
           </span>          </div>
@@ -854,8 +901,18 @@
     // it has to be read at a glance, at the size of the thing swallowing a
     // hundred threads.
     absorb: "Heard.",
-    // The hero's one label, over the line as somebody said it.
-    hero: { said: "You said" },
+    // THE HERO IS THE DEMO, and this is everything it ever says: the
+    // invitation, the three states, and what it offers once they have
+    // heard it. `title` is the headline for when the demo is switched off
+    // at the server and there is no button to press.
+    hero: {
+      said: "You said",
+      invite: "Press. Say anything.",
+      listening: "Listening",
+      writing: "Writing",
+      again: "Say another.",
+      title: "Talk. It writes."
+    },
     // The story the word tells, one word at a time, in this order. Each is
     // two words at most: it has to be read at a glance at the size of a
     // thing swallowing a hundred threads.
@@ -1293,7 +1350,7 @@
   /* The hero's current, in colour, keeping time for the pool; and one per
      screen below it, in that screen's own lighter shade — ink at a whisper
      on the light fields, pale at a whisper on the dark — calmer and fewer. */
-  var hero = Current($("tangle"), { count: 36, tick: function (dt, now) { glow *= Math.pow(0.5, dt / 420); breathe(now / 1000); } });
+  var hero = Current($("tangle"), { count: 26, tick: function (dt, now) { glow *= Math.pow(0.5, dt / 420); breathe(now / 1000); } });
   var currents = [hero], ownSaid = "";
   [].forEach.call(document.querySelectorAll("canvas.current"), function (c, i) {
     var ink = c.getAttribute("data-shade") === "ink";
@@ -1363,10 +1420,12 @@
      left to say anything — which is the right number of places. It wears a
      message for a moment and goes back to being a button. */
   var sayT = 0;
-  function say(msg) {
+  function idleWord() { return own ? (C.hero.again || "Again") : (C.hero.invite || "Press. Say anything."); }
+  function say(msg, hot, hold) {
     clearTimeout(sayT);
     micLabel.textContent = msg;
-    sayT = setTimeout(function () { micLabel.textContent = own ? C.again : C.cta; }, 3200);
+    micLabel.classList.toggle("hot", !!hot);
+    if (!hold) sayT = setTimeout(function () { micLabel.classList.remove("hot"); micLabel.textContent = idleWord(); }, 3200);
   }
 
   /* ---------------------------------------------------------------------
@@ -1544,11 +1603,15 @@
   }
 
   function applyCopy() {
-    $("micLabel").textContent = C.cta;
-    setText("labSaid", C.hero && C.hero.said);
+    // With the demo off there is no button to press, so the screen says
+    // what it is instead and the sentences play through beneath.
+    $("river").setAttribute("data-demo", site.demo ? "on" : "off");
+    setText("heroTitle", C.hero && C.hero.title);
+    if (!own) micLabel.textContent = site.demo ? idleWord() : "";
     paintDownloads();
     paintBelow();
     mic.hidden = !site.demo;
+    if (!site.demo) lineEl.classList.add("idle");
   }
 
   // ---- the microphone -----------------------------------------------------
@@ -1573,14 +1636,20 @@
       rec.onstop = upload;
       rec.start();
       startedAt = Date.now(); heard = false; lastLoud = startedAt;
-      mic.setAttribute("aria-pressed", "true"); micLabel.textContent = C.ctaHeld;
-      riverEl.classList.add("on"); listening = true;
-      level(s);
+      mic.setAttribute("aria-pressed", "true"); say(C.hero.listening || "Listening", true, true);
+      listening = true; heroDots.start(); ringOn();
+      meter(s);
       hard = setTimeout(stop, site.maxSeconds * 1000);
-    }).catch(function () { say(C.micDenied); });
+    }, function () { say(C.micDenied); });   // only the permission itself
   }
 
-  function level(s) {
+  /* THE LEVEL. One number, not a bank of them: the ring has a single
+     radius, so the loudness of the whole voice is all there is to read.
+     Named apart from `level` itself — they shared a name, the variable won
+     the hoist, and every session died on "level is not a function" the
+     instant the microphone opened: no meter, no ring, and no stopping when
+     you paused, all reported as a blocked microphone. */
+  function meter(s) {
     try {
       actx = new (window.AudioContext || window.webkitAudioContext)();
       analyser = actx.createAnalyser(); analyser.fftSize = 128;
@@ -1609,14 +1678,21 @@
     analyser = null;
     if (actx) { try { actx.close(); } catch (e) {} actx = null; }
     mic.setAttribute("aria-pressed", "false");
-    riverEl.classList.remove("on"); listening = false;
+    listening = false; heroDots.stop(); ringOff();
     level = 0;
-    if (rec && rec.state !== "inactive") { busy = true; micLabel.textContent = C.writing; rec.stop(); }
-    else micLabel.textContent = C.cta;
+    if (rec && rec.state !== "inactive") { busy = true; say(C.hero.writing || "Writing", true, true); rec.stop(); }
+    else say(idleWord(), false, true);
     if (stream_) { stream_.getTracks().forEach(function (t) { t.stop(); }); stream_ = null; }
   }
 
-  function done() { busy = false; micLabel.textContent = own ? C.again : C.cta; }
+  function done() { busy = false; }
+  /* The ring is the voice. Two properties the compositor owns. */
+  var ringEl = $("ring"), rraf2 = 0;
+  function ringOn() {
+    if (rraf2) return;
+    (function tick() { rraf2 = requestAnimationFrame(tick); ringEl.style.transform = "scale(" + (1 + level * 0.16).toFixed(3) + ")"; })();
+  }
+  function ringOff() { if (rraf2) { cancelAnimationFrame(rraf2); rraf2 = 0; } ringEl.style.transform = "scale(1)"; }
 
   function upload() {
     var m = (rec && rec.mimeType) || "audio/webm";
@@ -1633,22 +1709,28 @@
       var s = (j.transcript || "").trim(), w = (j.cleanedText || "").trim();
       if (!s && !w) throw new Error("Nothing heard.");
       own = true;
-      // Their sentence taking over the river IS the payoff. A line saying so
-      // underneath was the page narrating what it had just done.
+      // Their sentence taking over the screen IS the payoff. A line saying
+      // so underneath was the page narrating what it had just done.
       ownSaid = s; loadRiver();
-      play({ said: s, wrote: w || s, lang: "" }, true);
-      done();
+      lineEl.classList.remove("idle");
+      pauseStage(); staged = true;      // nothing plays over theirs
+      resetStage(); play({ said: s, wrote: w || s, lang: "" }, true);
+      done(); say(idleWord(), false, true);
     }).catch(function (e) { done(); say(e.message || "Try again."); });
   }
 
   function toggle() {
-    if (mic.hidden) return;      // the caret is still clickable when it is
-    if (mic.getAttribute("aria-pressed") === "true") stop(); else start();
+    if (mic.hidden) return;
+    if (mic.getAttribute("aria-pressed") === "true") { stop(); return; }
+    // Whatever was playing gets out of the way: the screen is theirs now.
+    pauseStage(); staged = true;
+    stageEl.classList.remove("out"); lineEl.classList.remove("idle");
+    saidEl.innerHTML = ""; wroteLine.innerHTML = ""; flyEl.innerHTML = ""; saidEl.style.visibility = "";
+    liveText(langEl, ""); absorbEl.textContent = "";
+    start();
   }
   mic.addEventListener("click", toggle);
-  // The mark is the control too: it is the thing that looks like it does this.
-  var markEl = $("mark");
-  markEl.addEventListener("click", toggle);
+  micLabel.addEventListener("click", function () { if (!mic.hidden) toggle(); });
 
   /* The box is measured, never assumed: the canvas is sliced to whatever
      size the grid gives it, and that changes with the window, with the fonts
@@ -1657,9 +1739,6 @@
   function relayout() { clearTimeout(rt); rt = setTimeout(function () { sizeCanvas(); loadRiver(); placePool(); }, 120); }
   if (window.ResizeObserver) new ResizeObserver(relayout).observe(riverEl);
   window.addEventListener("load", placePool);
-  markEl.addEventListener("keydown", function (e) {
-    if (e.key === "Enter" || e.key === " ") { e.preventDefault(); toggle(); }
-  });
   document.addEventListener("keydown", function (e) {
     if (e.key === "Escape" && mic.getAttribute("aria-pressed") === "true") stop();
   });
@@ -1761,8 +1840,10 @@
     saidEl.innerHTML = "";
     parts.forEach(function (w, i) {
       var sp = el("span", "w", w);
+      // One colour, the page's own pale. Eight of them read as a
+      // children's book, and the threads behind are already every colour
+      // there is; the contrast that matters is hand against type.
       sp.style.setProperty("--tilt", (((i * 7 + caseI * 13) % 11 - 5) * 0.34).toFixed(2) + "deg");
-      sp.style.color = "rgb(" + HUES[(i * 3 + caseI) % HUES.length].join(",") + ")";
       saidEl.appendChild(sp); spans.push(sp);
     });
     wroteLine.innerHTML = "";
@@ -1805,14 +1886,14 @@
       var box = lineEl.getBoundingClientRect();
       var from = spans.map(function (sp) { return sp.getBoundingClientRect(); });
       var to = wspans.map(function (sp) { return sp.getBoundingClientRect(); });
-      var size = getComputedStyle(spans[0] || saidEl).fontSize;
+      var face = getComputedStyle(spans[0] || saidEl), size = face.fontSize, ink = face.color;
       saidEl.style.visibility = "hidden";
       spans.forEach(function (sp, k) {
         var r = from[k]; if (!r.width) return;
         var c = el("span", null, sp.textContent);
         c.style.left = (r.left - box.left).toFixed(1) + "px";
         c.style.top = (r.top - box.top).toFixed(1) + "px";
-        c.style.fontSize = size; c.style.color = sp.style.color;
+        c.style.fontSize = size; c.style.color = ink;
         flyEl.appendChild(c);
         var j = kinds[k].j, t = j >= 0 ? to[j] : null;
         requestAnimationFrame(function () {
@@ -2022,7 +2103,7 @@
     for (var i = 0; i < all.length && out.length < count; i += step) out.push([all[i][0] * s, all[i][1] * s]);
     return out;
   }
-  function MicDots(canvas, host) {
+  function MicDots(canvas, host, dotColour) {
     var g = canvas.getContext("2d"), dots = [], raf = 0, last = 0, size = 0, R = 0, DR = 1.3, home = [], back = false, backAt = 0, DPR = 1;
     function fit() {
       var w = canvas.clientWidth || 58;
@@ -2094,14 +2175,17 @@
       }
       g.setTransform(DPR, 0, 0, DPR, 0, 0);
       g.clearRect(0, 0, size, size);
-      g.fillStyle = "#0F0D0B";
+      g.fillStyle = dotColour || "#0F0D0B";
       for (i = 0; i < dots.length; i++) {
         g.beginPath(); g.arc(dots[i].x, dots[i].y, DR, 0, 6.2832); g.fill();
       }
     }
     return { start: start, stop: stop };
   }
-  var micDots = MicDots($("micDots"), $("kmic"));
+  // The keyboard's key is the app's: black dots on white. The hero's own
+  // button turns amber while it listens, so its dots are the ink.
+  var micDots = MicDots($("micDots"), $("kmic"), "#000");
+  var heroDots = MicDots($("heroDots"), $("mic"), "#0F0D0B");
 
   function resumeKeys() {
     if (keysOn) return; keysOn = true;
