@@ -260,10 +260,10 @@
 
   /* THE STEPS. Three, numbered, because they happen in this order. Big
      numerals in the serif, so the order is the picture. */
-  .steps { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 28px; }
+  .steps { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 28px; }
   .step { border-top: 1.5px solid rgba(27,23,18,.35); padding-top: 22px; }
   .step .n { font-family: var(--serif); font-size: 56px; line-height: 1; letter-spacing: -.03em; margin: 0 0 18px; }
-  .step h3 { margin: 0 0 10px; font-family: var(--sans); font-weight: 500; font-size: 20px; letter-spacing: -.01em; }
+  .step h3 { margin: 0; font-family: var(--serif); font-weight: 400; font-size: clamp(22px, 2vw, 28px); line-height: 1.15; letter-spacing: -.015em; text-wrap: balance; }
   .step p { margin: 0; color: var(--ink2-soft); font-size: 16px; line-height: 1.55; }
 
   /* THE TONES. One line said, four cards written, each card the colour of
@@ -303,11 +303,9 @@
   .key b.glyph { font-size: 40px; }
   .chord .cap { margin: 0; }
 
-  /* THE PRICE. One number, big. */
-  .free { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 32px 64px; align-items: end; }
-  .free .big { font-family: var(--serif); font-size: clamp(64px, 9vw, 128px); line-height: .95; letter-spacing: -.04em; margin: 0; font-variant-numeric: tabular-nums; }
-  .free .big small { display: block; font-family: var(--mono); font-size: 11px; letter-spacing: .22em; text-transform: uppercase; margin-top: 14px; opacity: .72; }
-  .free .dl { justify-content: flex-start; margin-top: 22px; }
+  /* THE PRICE. A title, a line, the buttons. */
+  .free { max-width: 720px; }
+  .free .dl { justify-content: flex-start; margin-top: 28px; }
   .on-sun .dl a { background: rgba(27,23,18,.08); border-color: rgba(27,23,18,.16); box-shadow: none; color: var(--ink2); }
   .on-sun .dl a:hover { background: rgba(27,23,18,.14); }
   .on-sun .dl a.primary { background: var(--ink2); border-color: var(--ink2); color: var(--sun); }
@@ -359,9 +357,9 @@
   @media (max-width: 900px) {
     .river { height: 380px; }
     .mast nav a:not(.cta) { display: none; }
-    .getin, .band .head, .desk, .free { grid-template-columns: minmax(0, 1fr); }
+    .band .head, .desk { grid-template-columns: minmax(0, 1fr); }
     .dl { justify-content: flex-start; }
-    .steps { grid-template-columns: minmax(0, 1fr); gap: 18px; }
+    .steps { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
     .tonegrid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     .faq { grid-template-columns: minmax(0, 1fr); }
     .band { padding: 76px 0; }
@@ -399,9 +397,9 @@
         <rect x="178" y="598" width="132" height="132" rx="28" fill="#F4F1EA"/>
       </svg>
     </a>
+    <!-- One thing in the header: the download. Privacy and Terms live in
+         the footer, where they are looked for. -->
     <nav>
-      <a href="/privacy">Privacy</a>
-      <a href="/terms">Terms</a>
       <a href="/download" class="cta" id="navdl">Download</a>
     </nav>
   </header>
@@ -453,7 +451,6 @@
   <div class="wrap">
     <div class="head">
       <div><p class="kick" id="howKick">How it works</p><h2 id="howTitle">Talk. It writes.</h2></div>
-      <p class="lede" id="howLede">Three seconds. No script.</p>
     </div>
     <div class="steps" id="steps"></div>
   </div>
@@ -474,7 +471,6 @@
   <div class="wrap">
     <div class="head">
       <div><p class="kick" id="appsKick">Everywhere</p><h2 id="appsTitle">It's a keyboard.</h2></div>
-      <p class="lede" id="appsLede">Every app. Every field. No copy-paste.</p>
     </div>
     <div class="fields" id="fields"></div>
   </div>
@@ -498,15 +494,9 @@
 <section class="band on-sun reveal" id="free">
   <div class="wrap">
     <div class="free">
-      <div>
-        <p class="kick" id="freeKick">Price</p>
-        <p class="big"><span id="freeN">800</span><small id="freeUnit">free words a month</small></p>
-      </div>
-      <div>
-        <h2 id="freeTitle">Free to start.</h2>
-        <p class="lede" id="freeLede">No card. Upgrade when you need more.</p>
-        <div class="dl" id="dl2"></div>
-      </div>
+      <h2 id="freeTitle">Free to start.</h2>
+      <p class="lede" id="freeLede">Upgrade when you need more.</p>
+      <div class="dl" id="dl2"></div>
     </div>
   </div>
 </section>
@@ -572,11 +562,11 @@
     // answers. {n} is the free monthly word count the backend reports.
     how: {
       kick: "How it works", title: "Talk. It writes.",
-      lede: "Three seconds. No script.",
       steps: [
-        { title: "Speak", text: "Tap the mic. Talk like you do." },
-        { title: "It listens", text: "22 Indian languages. Most of the world's. Mix two." },
-        { title: "It writes", text: "Fillers gone. Facts kept. Send." }
+        { title: "You speak." },
+        { title: "It hears what you mean." },
+        { title: "Written." },
+        { title: "Tap Ctrl. Take control." }
       ]
     },
     tone: {
@@ -592,7 +582,6 @@
     },
     apps: {
       kick: "Everywhere", title: "It's a keyboard.",
-      lede: "Every app. Every field. No copy-paste.",
       fields: [
         { kind: "message", app: "Message", text: "Can we push the call to four?" },
         { kind: "mail", app: "Mail", to: "To: Priya", text: "The deploy is done, but abhi testing baaki hai." },
@@ -608,17 +597,20 @@
       keys: ["Ctrl", "Ctrl"], join: ""
     },
     free: {
-      kick: "Price", unit: "free words a month", title: "Free to start.",
-      lede: "No card. Upgrade when you need more."
+      title: "Free to start.",
+      lede: "Upgrade when you need more."
     },
     faq: {
       kick: "Questions", title: "Asked, answered.",
       items: [
         { q: "Does it work in WhatsApp?", a: "Yes. It's a keyboard. Every app." },
-        { q: "Which languages?", a: "22 Indian. Most of the world's. Mix two." },
+        { q: "Which languages?", a: "22 Indian. Most of the world's." },
+        { q: "Hinglish?", a: "Native. Two languages stay two." },
         { q: "Does it change what I said?", a: "It cleans. It never rewrites. Names and amounts stay." },
+        { q: "Can I change the tone?", a: "One tap on the keyboard." },
         { q: "Is it free?", a: "{n} words a month, free. Then upgrade." },
-        { q: "Phone or desk?", a: "Both. A keyboard on the phone. A key on the desk." }
+        { q: "Why Full Access on iPhone?", a: "It's how a keyboard reaches the internet." },
+        { q: "Offline?", a: "No. It needs a connection to hear you." }
       ]
     },
     download: { win: "Windows", mac: "macOS", linux: "Linux", ios: "iPhone", android: "Android", soon: "soon" }
@@ -1299,13 +1291,13 @@
   function setText(id, s) { var e = $(id); if (e && s != null) e.textContent = fill(s); }
 
   function paintBelow() {
-    setText("howKick", C.how.kick); setText("howTitle", C.how.title); setText("howLede", C.how.lede);
+    setText("howKick", C.how.kick); setText("howTitle", C.how.title);
     var steps = $("steps"); steps.innerHTML = "";
     C.how.steps.forEach(function (s, i) {
       var d = el("div", "step");
       d.appendChild(el("p", "n", "0" + (i + 1)));
       d.appendChild(el("h3", null, s.title));
-      d.appendChild(el("p", null, s.text));
+      if (s.text) d.appendChild(el("p", null, s.text));
       steps.appendChild(d);
     });
 
@@ -1319,7 +1311,7 @@
       tg.appendChild(d);
     });
 
-    setText("appsKick", C.apps.kick); setText("appsTitle", C.apps.title); setText("appsLede", C.apps.lede);
+    setText("appsKick", C.apps.kick); setText("appsTitle", C.apps.title);
     var fs = $("fields"); fs.innerHTML = "";
     C.apps.fields.forEach(function (f) {
       var d = el("div", "field");
@@ -1345,7 +1337,6 @@
       chord.appendChild(d);
     });
 
-    setText("freeKick", C.free.kick); setText("freeN", "{n}"); setText("freeUnit", C.free.unit);
     setText("freeTitle", C.free.title); setText("freeLede", C.free.lede);
 
     setText("faqKick", C.faq.kick); setText("faqTitle", C.faq.title);
