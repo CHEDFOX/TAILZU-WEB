@@ -303,30 +303,57 @@
   .key b.glyph { font-size: 40px; }
   .chord .cap { margin: 0; }
 
-  /* FOR DEVELOPERS. A terminal on the ink, the one dark field among the
-     colours, because that is what a terminal is. The command types itself
-     when the field comes into view and the answer follows it, once. */
+  /* THE STAGE. A window with something being said above it and the clean
+     line landing inside it, used twice: a chat box for the machines and an
+     editor for the people who talk to them for a living. The pill is the
+     phone's own keyboard bar, in miniature: what it heard, and what it is
+     doing about it. */
+  .on-lilac { background: #E9E3FB; color: var(--ink2); }
+  .on-lilac .lede { color: var(--ink2-soft); }
   .on-ink { background: var(--ink); color: var(--white); }
   .on-ink .lede { color: var(--grey); }
-  .term { max-width: 900px; border-radius: 16px; background: #171412; border: 1px solid rgba(243,226,198,.12); overflow: hidden; box-shadow: 0 30px 60px -30px rgba(0,0,0,.7); }
-  .tbar { display: flex; align-items: center; gap: 8px; padding: 12px 14px; border-bottom: 1px solid rgba(243,226,198,.08); }
-  .tbar span { width: 10px; height: 10px; border-radius: 50%; background: rgba(243,226,198,.16); }
-  .tbar button { margin-left: auto; appearance: none; border: 1px solid rgba(243,226,198,.16); background: none; color: var(--grey); border-radius: 999px; padding: 5px 12px; font-family: var(--mono); font-size: 11px; letter-spacing: .14em; text-transform: uppercase; cursor: pointer; transition: color .2s, border-color .2s; }
-  .tbar button:hover { color: var(--white); border-color: rgba(243,226,198,.36); }
-  .tbody { margin: 0; padding: 22px 24px 26px; font-family: var(--mono); font-size: 14px; line-height: 1.75; color: var(--white); white-space: pre-wrap; word-break: break-word; }
-  .prompt { color: var(--dim); }
-  .cursor { display: inline-block; width: .6em; height: 1.1em; vertical-align: -.2em; background: var(--white); animation: blink 1s steps(1) infinite; }
-  .cursor.off { display: none; }
+  .stagebox { position: relative; max-width: 860px; margin: 0 auto; padding-top: 26px; }
+  .pill {
+    position: absolute; top: 0; left: 50%; transform: translateX(-50%); z-index: 2; max-width: 92%;
+    display: flex; align-items: center; gap: 12px; padding: 10px 16px; border-radius: 999px;
+    background: var(--ink); color: var(--white); font-family: var(--mono); font-size: 12px; letter-spacing: .02em;
+    box-shadow: 0 18px 40px -16px rgba(0,0,0,.55);
+  }
+  .wave { display: inline-flex; align-items: center; gap: 2px; height: 14px; }
+  .wave i { width: 2px; height: 30%; background: var(--white); border-radius: 1px; animation: bar .9s ease-in-out infinite; }
+  .wave i:nth-child(2) { animation-delay: .15s; } .wave i:nth-child(3) { animation-delay: .3s; } .wave i:nth-child(4) { animation-delay: .45s; }
+  .pill.quiet .wave i { animation: none; height: 30%; }
+  @keyframes bar { 50% { height: 100%; } }
+  .heard { max-width: 460px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--grey); }
+  .heard::before { content: "\201C"; } .heard::after { content: "\201D"; }
+  .state { letter-spacing: .18em; text-transform: uppercase; font-size: 10.5px; color: var(--amber); white-space: nowrap; }
+  .pill.done .state { color: #6EE7A8; }
+  .win { margin-top: 22px; border-radius: 16px; background: #fff; color: var(--ink2); overflow: hidden; box-shadow: 0 30px 70px -30px rgba(0,0,0,.35); border: 1px solid rgba(27,23,18,.08); }
+  .wbar { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-bottom: 1px solid var(--line); font-size: 13px; }
+  .dots { display: inline-flex; gap: 6px; } .dots i { width: 10px; height: 10px; border-radius: 50%; background: rgba(27,23,18,.14); }
+  .wname { font-weight: 500; } .wtag { margin-left: auto; font-family: var(--mono); font-size: 10.5px; letter-spacing: .18em; text-transform: uppercase; color: var(--ink2-soft); }
+  .wbody { padding: 22px 24px; min-height: 190px; font-size: 16px; line-height: 1.65; }
+  .typing { margin: 0; white-space: pre-wrap; text-wrap: pretty; }
+  .typing .hl { background: #FFF1A8; border-radius: 2px; }
+  .car { display: inline-block; width: 2px; height: 1.05em; vertical-align: -.18em; background: currentColor; margin-left: 1px; animation: blink 1s steps(1) infinite; }
+  .car.off { display: none; }
   @keyframes blink { 50% { opacity: 0; } }
-  .out { color: var(--grey); }
-  .out .k { color: #8FC7F0; }
-  .out .v { color: var(--white); }
-  .fine { margin: 18px 0 0; font-family: var(--mono); font-size: 11px; letter-spacing: .16em; text-transform: uppercase; color: var(--dim); }
-  .fine .ask { color: var(--white); border-bottom: 1px solid rgba(243,226,198,.35); margin-left: 14px; }
-  .devfacts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; max-width: 900px; margin: 0 0 36px; }
-  .devfacts div { border-top: 1px solid rgba(243,226,198,.18); padding-top: 16px; }
-  .devfacts .k { font-family: var(--mono); font-size: 11px; letter-spacing: .2em; text-transform: uppercase; color: var(--dim); margin: 0 0 8px; }
-  .devfacts p { margin: 0; color: var(--white); font-size: 16px; line-height: 1.5; }
+  .wfoot { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 16px; border-top: 1px solid var(--line); }
+  .tabs { display: flex; gap: 6px; }
+  .tabs button { appearance: none; border: 1px solid var(--line); background: none; color: var(--ink2-soft); border-radius: 999px; padding: 6px 12px; font-family: var(--mono); font-size: 11px; letter-spacing: .12em; text-transform: uppercase; cursor: pointer; transition: color .2s, border-color .2s, background .2s; }
+  .tabs button[aria-selected="true"] { background: var(--ink2); border-color: var(--ink2); color: #fff; }
+  .send { width: 32px; height: 32px; border-radius: 50%; background: var(--ink2); color: #fff; display: grid; place-items: center; font-size: 16px; }
+  /* The editor: the same window, dark, with a gutter. */
+  .win.editor { background: #1C1917; color: var(--white); border-color: rgba(243,226,198,.12); }
+  .win.editor .wbar { border-bottom-color: rgba(243,226,198,.1); }
+  .win.editor .dots i { background: rgba(243,226,198,.16); }
+  .win.editor .wtag { color: var(--dim); }
+  .win.editor .ftab { font-family: var(--mono); font-size: 12px; color: var(--white); background: rgba(243,226,198,.08); padding: 4px 10px; border-radius: 6px; }
+  .win.editor .wbody { display: grid; grid-template-columns: 34px minmax(0, 1fr); gap: 0 14px; font-family: var(--mono); font-size: 14px; line-height: 1.75; padding: 18px 20px; }
+  .win.editor .gut { color: var(--dim); text-align: right; user-select: none; white-space: pre; }
+  .win.editor .typing { color: var(--grey); }
+  .win.editor .typing .hl { background: rgba(232,162,60,.28); }
+  .win.editor .wfoot { border-top-color: rgba(243,226,198,.1); font-family: var(--mono); font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--dim); }
 
   /* THE PRICE. A title, a line, one button, and the three marks. */
   .free { position: relative; max-width: 720px; }
@@ -390,7 +417,6 @@
     .logos { right: auto; left: 28px; top: 0; }
     .dl { justify-content: flex-start; }
     .steps { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
-    .devfacts { grid-template-columns: minmax(0, 1fr); gap: 14px; }
     .tonegrid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     .faq { grid-template-columns: minmax(0, 1fr); }
     .band { padding: 76px 0; }
@@ -498,6 +524,26 @@
   </div>
 </section>
 
+<!-- THE MACHINES. Say it rough, and a clean prompt lands in the box of
+     whichever machine you talk to. Three tabs, one line, the same picture
+     the phone shows in its own keyboard bar. -->
+<section class="band on-lilac reveal" id="llm">
+  <div class="wrap">
+    <div class="head">
+      <div><p class="kick" id="llmKick">Prompts</p><h2 id="llmTitle">Talk to the machine.</h2></div>
+      <p class="lede" id="llmLede">Say it rough. A clean prompt lands in the box.</p>
+    </div>
+    <div class="stagebox">
+      <div class="pill" id="llmPill"><span class="wave"><i></i><i></i><i></i><i></i></span><span class="heard" id="llmHeard"></span><span class="state" id="llmState"></span></div>
+      <div class="win">
+        <div class="wbar"><span class="dots"><i></i><i></i><i></i></span><span class="wname" id="llmName">ChatGPT</span><span class="wtag" id="llmTag">New chat</span></div>
+        <div class="wbody"><p class="typing"><span id="llmText"></span><span class="car" id="llmCar"></span></p></div>
+        <div class="wfoot"><span class="tabs" id="llmTabs" role="tablist" aria-label="Which machine"></span><span class="send" aria-hidden="true">↑</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
 <section class="band on-indigo reveal" id="apps">
   <div class="wrap">
     <div class="head">
@@ -522,22 +568,27 @@
   </div>
 </section>
 
-<!-- FOR DEVELOPERS. The same demo the button uses, as one request. Real
-     endpoint, real limits, real answer — the first case of the river, as
-     the API returns it. Shown only while the demo is switched on. -->
-<section class="band on-ink reveal" id="dev" hidden>
+<!-- FOR DEVELOPERS. The same picture as the machines above, in the window
+     a developer lives in: something said, and the change landing where the
+     cursor is, typed clean. -->
+<section class="band on-ink reveal" id="dev">
   <div class="wrap">
     <div class="head">
-      <div><p class="kick" id="devKick">For developers</p><h2 id="devTitle">Try it from a terminal.</h2></div>
-      <p class="lede" id="devLede">One request. Audio in, a sentence out.</p>
+      <div><p class="kick" id="devKick">For developers</p><h2 id="devTitle">Talk to your editor.</h2></div>
+      <p class="lede" id="devLede">Say the change. It lands where the cursor is.</p>
     </div>
-    <div class="devfacts" id="devFacts"></div>
-    <div class="term" id="term">
-      <div class="tbar"><span></span><span></span><span></span><button type="button" id="copyCmd">Copy</button></div>
-      <pre class="tbody"><code><span class="prompt">$ </span><span id="cmd"></span><span class="cursor" id="cur"></span>
-<span class="out" id="out"></span></code></pre>
+    <div class="stagebox">
+      <div class="pill" id="devPill"><span class="wave"><i></i><i></i><i></i><i></i></span><span class="heard" id="devHeard"></span><span class="state" id="devState"></span></div>
+      <div class="win editor">
+        <div class="wbar"><span class="dots"><i></i><i></i><i></i></span><span class="ftab" id="devFile">upload.ts</span><span class="wtag" id="devApp">Cursor</span></div>
+        <div class="wbody"><div class="gut">1
+2
+3
+4
+5</div><p class="typing"><span id="devText"></span><span class="car" id="devCar"></span></p></div>
+        <div class="wfoot"><span id="devFoot">TypeScript</span><span>UTF-8</span></div>
+      </div>
     </div>
-    <p class="fine"><span id="devNote"></span> <a class="ask" id="devAsk" href="#"></a></p>
   </div>
 </section>
 
@@ -656,16 +707,19 @@
       title: "Free to start.",
       lede: "Upgrade when you need more."
     },
+    llm: {
+      kick: "Prompts", title: "Talk to the machine.",
+      lede: "Say it rough. A clean prompt lands in the box.",
+      targets: ["ChatGPT", "Claude", "Grok"], tag: "New chat",
+      said: "okay so um help me think through pricing for the team plan like per seat or usage or maybe both and what could go wrong with each",
+      wrote: "Help me think through pricing for the team plan: per seat, usage-based, or a hybrid of the two. For each, give the price point, the target customer and the biggest risk."
+    },
     dev: {
-      kick: "For developers", title: "Built to be built on.",
-      lede: "Every screen is JSON from the server. The apps are renderers.",
-      facts: [
-        { k: "One endpoint", t: "Audio in. Clean text out. 22 Indian languages." },
-        { k: "Server-driven UI", t: "A screen ships without a release." },
-        { k: "Desktop hook", t: "A tray app. Hotkey, record, paste anywhere." }
-      ],
-      note: "No key. {perMinute} a minute. {maxSeconds} seconds each. webm, mp4, ogg.",
-      ask: "Want a key?", mail: "hello@tailzu.space"
+      kick: "For developers", title: "Talk to your editor.",
+      lede: "Say the change. It lands where the cursor is.",
+      app: "Cursor", file: "upload.ts", lang: "TypeScript",
+      said: "um add a retry to the upload thing like three attempts with backoff and log every failure",
+      wrote: "// Add a retry to the upload: three attempts with exponential backoff. Log each failure."
     },
     faq: {
       kick: "Questions", title: "Asked, answered.",
@@ -1405,7 +1459,7 @@
 
     setText("freeTitle", C.free.title); setText("freeLede", C.free.lede);
 
-    paintDev();
+    paintStages();
 
     setText("faqKick", C.faq.kick); setText("faqTitle", C.faq.title);
     var fq = $("faq"); fq.innerHTML = "";
@@ -1418,64 +1472,91 @@
   }
 
   /* ---------------------------------------------------------------------
-     FOR DEVELOPERS
+     THE STAGES
 
-     The command is built from the page's own API origin and the endpoint
-     the button uses; the answer is the river's first case, as the API
-     returns it. The field is hidden while the demo is off, because a
-     command that answers 404 is not an invitation. The command types
-     itself the first time the field is seen; under reduced motion it is
-     simply there. */
-  var devEl = $("dev"), cmdEl = $("cmd"), outEl = $("out"), curEl = $("cur"), typed = false, devT = 0;
-  function devCmd() { return "curl -F audio=@clip.webm " + (API || "https://api.tailzu.space") + "/v1/demo/transcribe"; }
-  function devAnswer() {
-    var c = C.cases[0] || { said: "", wrote: "" };
-    outEl.innerHTML = "";
-    function line(s) { outEl.appendChild(document.createTextNode(s)); }
-    function kv(k, v, last) {
-      line("  ");
-      outEl.appendChild(el("span", "k", JSON.stringify(k)));
-      line(": ");
-      outEl.appendChild(el("span", "v", JSON.stringify(v)));
-      line(last ? "\n" : ",\n");
+     One driver for both windows. It hears — the said line runs through the
+     pill the way the keyboard's own bar shows a transcript — then writes:
+     the clean line types into the window with its newest words lit, the
+     caret goes out, the pill says Written, and after a breath it goes
+     round again. It runs only while its field is on the screen and stops
+     the moment it is not; under reduced motion it stands at the end. */
+  var STATES = { hear: "Listening", write: "Writing", done: "Written" };
+  function stage(o) {
+    var t = 0, on = false, gen = 0;
+    var pill = $(o.pill), heard = $(o.heard), state = $(o.state), text = $(o.text), car = $(o.car);
+    function lit(full, n) {
+      text.innerHTML = "";
+      var cut = Math.max(0, full.length - n);
+      text.appendChild(document.createTextNode(full.slice(0, cut)));
+      if (n > 0) text.appendChild(el("span", "hl", full.slice(cut)));
     }
-    line("{\n"); kv("transcript", c.said); kv("cleanedText", c.wrote, true); line("}");
+    function finish() {
+      heard.textContent = o.said(); state.textContent = STATES.done;
+      pill.classList.add("quiet"); pill.classList.add("done");
+      lit(o.wrote(), 0); car.classList.add("off");
+    }
+    function run() {
+      var g = ++gen, said = o.said(), wrote = o.wrote(), i = 0, j = 0;
+      clearTimeout(t);
+      pill.classList.remove("quiet"); pill.classList.remove("done");
+      heard.textContent = ""; state.textContent = STATES.hear; text.innerHTML = ""; car.classList.add("off");
+      (function hear() {
+        if (g !== gen) return;
+        if (i < said.length) {
+          i = Math.min(said.length, i + 1 + (Math.random() < 0.3 ? 1 : 0));
+          heard.textContent = said.slice(0, i);
+          t = setTimeout(hear, 34 + Math.random() * 40); return;
+        }
+        state.textContent = STATES.write; pill.classList.add("quiet"); car.classList.remove("off");
+        t = setTimeout(write, 560);
+      })();
+      function write() {
+        if (g !== gen) return;
+        if (j < wrote.length) {
+          j = Math.min(wrote.length, j + 1);
+          lit(wrote.slice(0, j), Math.min(j, 14));
+          t = setTimeout(write, wrote[j - 1] === " " ? 40 : 18 + Math.random() * 26); return;
+        }
+        lit(wrote, 0); car.classList.add("off");
+        state.textContent = STATES.done; pill.classList.add("done");
+        t = setTimeout(function () { if (g === gen && on) run(); }, 4200);
+      }
+    }
+    if (window.IntersectionObserver) {
+      new IntersectionObserver(function (es) {
+        on = es[0].isIntersecting;
+        if (!on) { clearTimeout(t); gen++; return; }
+        if (reduced) finish(); else run();
+      }, { threshold: 0.3 }).observe($(o.section));
+    } else { finish(); }
+    document.addEventListener("visibilitychange", function () { if (document.hidden) { clearTimeout(t); gen++; } else if (on && !reduced) run(); });
+    return { restart: function () { if (on && !reduced) run(); else finish(); } };
   }
-  function typeCmd() {
-    var s = devCmd(), i = 0;
-    cmdEl.textContent = ""; outEl.innerHTML = ""; curEl.classList.remove("off");
-    clearTimeout(devT);
-    (function step() {
-      if (i < s.length) { cmdEl.textContent = s.slice(0, ++i); devT = setTimeout(step, 14 + Math.random() * 30); return; }
-      devT = setTimeout(function () { curEl.classList.add("off"); devAnswer(); }, 520);
-    })();
-  }
-  function paintDev() {
-    devEl.hidden = !site.demo;
-    if (!site.demo) return;
-    setText("devKick", C.dev.kick); setText("devTitle", C.dev.title); setText("devLede", C.dev.lede);
-    var df = $("devFacts"); df.innerHTML = "";
-    (C.dev.facts || []).forEach(function (f) {
-      var d = el("div"); d.appendChild(el("p", "k", f.k)); d.appendChild(el("p", null, f.t)); df.appendChild(d);
+
+  var llmI = 0;
+  var llmStage = stage({ section: "llm", pill: "llmPill", heard: "llmHeard", state: "llmState", text: "llmText", car: "llmCar",
+                         said: function () { return C.llm.said; }, wrote: function () { return C.llm.wrote; } });
+  var devStage = stage({ section: "dev", pill: "devPill", heard: "devHeard", state: "devState", text: "devText", car: "devCar",
+                         said: function () { return C.dev.said; }, wrote: function () { return C.dev.wrote; } });
+
+  function paintStages() {
+    setText("llmKick", C.llm.kick); setText("llmTitle", C.llm.title); setText("llmLede", C.llm.lede);
+    var tabs = $("llmTabs"); tabs.innerHTML = "";
+    C.llm.targets.forEach(function (name, i) {
+      var b = el("button", null, name); b.type = "button"; b.setAttribute("role", "tab");
+      b.setAttribute("aria-selected", i === llmI ? "true" : "false");
+      b.addEventListener("click", function () {
+        llmI = i; $("llmName").textContent = name;
+        [].forEach.call(tabs.children, function (x, k) { x.setAttribute("aria-selected", k === i ? "true" : "false"); });
+        llmStage.restart();
+      });
+      tabs.appendChild(b);
     });
-    setText("devNote", C.dev.note);
-    var ask = $("devAsk");
-    if (C.dev.mail) { ask.textContent = C.dev.ask; ask.href = "mailto:" + C.dev.mail; ask.hidden = false; } else ask.hidden = true;
-    if (reduced || typed) { cmdEl.textContent = devCmd(); curEl.classList.add("off"); devAnswer(); }
+    $("llmName").textContent = C.llm.targets[llmI] || "";
+    setText("llmTag", C.llm.tag);
+    setText("devKick", C.dev.kick); setText("devTitle", C.dev.title); setText("devLede", C.dev.lede);
+    setText("devFile", C.dev.file); setText("devApp", C.dev.app); setText("devFoot", C.dev.lang);
   }
-  if (window.IntersectionObserver) {
-    new IntersectionObserver(function (es) {
-      if (!es[0].isIntersecting || typed || devEl.hidden) return;
-      typed = true;
-      if (reduced) { cmdEl.textContent = devCmd(); curEl.classList.add("off"); devAnswer(); } else typeCmd();
-    }, { threshold: 0.35 }).observe(devEl);
-  } else { typed = true; }
-  $("copyCmd").addEventListener("click", function () {
-    var b = this;
-    function did(ok) { b.textContent = ok ? "Copied" : "Copy"; setTimeout(function () { b.textContent = "Copy"; }, 1600); }
-    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(devCmd()).then(function () { did(true); }, function () { did(false); });
-    else did(false);
-  });
 
   function applyCopy() {
     $("micLabel").textContent = C.cta;
