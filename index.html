@@ -160,7 +160,9 @@
      keyboard." until the keys go, and then, the way an editor marks a
      proof, "key" is struck through and "keyless" is written above it. */
   .hero {
-    position: relative; overflow: hidden; background: var(--ink); margin: 0; padding: clamp(40px, 7vh, 84px) 0 clamp(52px, 9vh, 104px);
+    /* Room above: the first screen opens on ground, and the sentence sits
+       a good way down it. */
+    position: relative; overflow: hidden; background: var(--ink); margin: 0; padding: clamp(96px, 17vh, 190px) 0 clamp(52px, 9vh, 104px);
     animation: fade 1.1s .15s both;
   }
   .hero .wrap { position: relative; z-index: 2; }
@@ -1645,7 +1647,9 @@
       var r = screens[i].getBoundingClientRect();
       if (r.top <= mid && r.bottom > mid) { cur = screens[i]; break; }
     }
-    mast.classList.toggle("stuck", (window.pageYOffset || 0) > 8);
+    // No ground under the mark on the first screen: it is plain ink there
+    // already, and a band would only draw a line across the hero.
+    mast.classList.toggle("stuck", (window.pageYOffset || 0) > 8 && !(cur && cur.id === "river"));
     if (!cur) return;
     var tone = cur.getAttribute("data-tone");
     if (tone !== mastTone) { mastTone = tone; mast.setAttribute("data-tone", tone); }
