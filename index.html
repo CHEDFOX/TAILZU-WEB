@@ -153,9 +153,21 @@
   /* The mark is the button: it goes to the store or the installer for
      whatever this visitor is on. Nothing else in the header. */
   .mark { grid-column: 2; justify-self: center; display: inline-flex; align-items: center; padding: .06rem .1rem; border-radius: .12rem; cursor: pointer; }
-  .mark svg { height: .32rem; width: auto; display: block; transition: transform .25s cubic-bezier(.2,.8,.2,1); }
-  .mark:hover svg { transform: scale(1.08); }
-  .mark:active svg { transform: scale(.98); }
+  .mark svg { height: .26rem; width: auto; display: block; transition: transform .25s cubic-bezier(.2,.8,.2,1); }
+  /* A LITTLE SHAKE, NOT A GROW. The mark and the three platform marks
+     answer a hover the same way: a quick shiver that settles, once per
+     visit of the pointer — the way a key rattles when a finger lands on it.
+     Under reduced motion the global rule below takes it away. */
+  @keyframes shake {
+    0%, 100% { transform: translateX(0) rotate(0); }
+    18% { transform: translateX(-.015rem) rotate(-7deg); }
+    36% { transform: translateX(.014rem) rotate(6deg); }
+    54% { transform: translateX(-.01rem) rotate(-4deg); }
+    72% { transform: translateX(.006rem) rotate(2deg); }
+    88% { transform: translateX(-.002rem) rotate(-1deg); }
+  }
+  .mark:hover svg { animation: shake .48s ease-in-out; }
+  .mark:active svg { transform: scale(.96); }
   .mark rect { transition: fill .3s; }
   .mast[data-tone="light"] .mark rect { fill: var(--ink2); }
 
@@ -309,14 +321,20 @@
   .said { margin: 0 0 .26rem; font-family: 'Caveat', 'Kalam', cursive; font-size: .36rem; line-height: 1.25; color: var(--ink2-soft); }
   .said::before { content: "you said: "; font-family: var(--mono); font-size: .11rem; letter-spacing: .18em; text-transform: uppercase; vertical-align: middle; margin-right: .1rem; opacity: .8; }
   .tonegrid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: .14rem; }
-  .tcard { border-radius: .18rem; padding: .24rem .24rem .26rem; min-height: 2.2rem; display: flex; flex-direction: column; justify-content: space-between; transition: transform .25s cubic-bezier(.2,.8,.2,1); }
+  .tcard { border-radius: .18rem; padding: .22rem .22rem .24rem; min-height: 1.62rem; display: flex; flex-direction: column; justify-content: space-between; transition: transform .25s cubic-bezier(.2,.8,.2,1); }
   .tcard:hover { transform: translateY(-.04rem); }
   .tcard .tn { font-family: var(--mono); font-size: .11rem; letter-spacing: .2em; text-transform: uppercase; opacity: .8; }
-  .tcard p { margin: .22rem 0 0; font-family: var(--serif); font-size: .24rem; line-height: 1.25; letter-spacing: -.01em; text-wrap: pretty; }
+  .tcard p { margin: .16rem 0 0; font-family: var(--serif); font-size: .22rem; line-height: 1.25; letter-spacing: -.01em; text-wrap: pretty; }
   .t0 { background: var(--sky); color: var(--ink2); }
   .t1 { background: var(--rose); color: #fff; }
   .t2 { background: var(--indigo); color: #fff; }
   .t3 { background: var(--sun); color: var(--ink2); }
+  /* The four nobody expects, in four colours of their own: a second row
+     that does not repeat the first. */
+  .t4 { background: var(--teal); color: #fff; }
+  .t5 { background: var(--saffron); color: var(--ink2); }
+  .t6 { background: var(--leaf); color: var(--ink2); }
+  .t7 { background: var(--ink2); color: var(--paper); }
 
   /* THE APPS. Four text fields as the apps draw them, each carrying a line
      Tailzu wrote, so the claim "everywhere you type" is four places. */
@@ -497,7 +515,8 @@
   .free { position: relative; max-width: 7.2rem; }
   .free .dl { justify-content: flex-start; margin-top: .28rem; }
   .logos { position: absolute; right: .28rem; bottom: .3rem; z-index: 2; display: flex; gap: .2rem; }
-  .logos svg { width: .26rem; height: .26rem; fill: var(--ink2); opacity: .82; }
+  .logos svg { width: .26rem; height: .26rem; fill: var(--ink2); opacity: .82; transition: opacity .2s; }
+  .logos svg:hover { opacity: 1; animation: shake .48s ease-in-out; }
   .on-sun .dl a.primary { height: .56rem; padding: 0 .34rem; font-size: .15rem; }
   .on-sun .dl a { background: rgba(27,23,18,.08); border-color: rgba(27,23,18,.16); box-shadow: none; color: var(--ink2); }
   .on-sun .dl a:hover { background: rgba(27,23,18,.14); }
@@ -594,10 +613,13 @@
     .key { width: .84rem; height: .84rem; }
     .key.wide { width: 1.3rem; }
 
-    .said { font-size: .24rem; margin-bottom: .18rem; }
-    .tonegrid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .1rem; }
-    .tcard { min-height: 1.5rem; padding: .16rem; border-radius: .14rem; }
-    .tcard p { margin-top: .14rem; font-size: .16rem; }
+    .said { font-size: .21rem; margin-bottom: .14rem; }
+    .said::before { font-size: .09rem; margin-right: .06rem; }
+    .tonegrid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .08rem; }
+    .tcard { min-height: 0; padding: .12rem .13rem .13rem; border-radius: .12rem; }
+    .tcard .tn { font-size: .09rem; }
+    .tcard p { margin-top: .08rem; font-size: .135rem; line-height: 1.22; }
+    #tone .head { margin-bottom: .2rem; }
 
     .logos { right: .2rem; bottom: .22rem; }
 
@@ -904,7 +926,11 @@
         { name: "Neutral", text: "Can you send the file tonight? It's fairly urgent." },
         { name: "Casual",  text: "Hey, can you send the file tonight? Kinda urgent." },
         { name: "Formal",  text: "Could you please send the file this evening? It is time-sensitive." },
-        { name: "Excited", text: "Can you send the file tonight? Can't wait to dig in!" }
+        { name: "Excited", text: "Can you send the file tonight? Can't wait to dig in!" },
+        { name: "Shakespeare",   text: "Prithee, send the file ere night doth fall. 'Tis most urgent." },
+        { name: "Pirate",        text: "Arr, send the file tonight, matey. It be urgent." },
+        { name: "Movie Trailer", text: "One file. One night. And time is running out." },
+        { name: "Noir",          text: "The file. Tonight. In this town, urgent means yesterday." }
       ]
     },
     apps: {
@@ -955,7 +981,7 @@
       title: "Asked, answered.",
       items: [
         { q: "Does it work in WhatsApp?", a: "Yes. It's a keyboard. Every app." },
-        { q: "Which languages?", a: "22 Indian. Most of the world's." },
+        { q: "Which languages?", a: "Most of the world's." },
         { q: "Hinglish?", a: "Native. Two languages stay two." },
         { q: "Does it change what I said?", a: "It cleans. It never rewrites. Names and amounts stay." },
         { q: "Can I change the tone?", a: "One tap on the keyboard." },
@@ -1406,7 +1432,7 @@
     setText("toneSaid", C.tone.said);
     var tg = $("toneGrid"); tg.innerHTML = "";
     C.tone.tones.forEach(function (t, i) {
-      var d = el("div", "tcard t" + (i % 4));
+      var d = el("div", "tcard t" + (i % 8));
       d.appendChild(el("span", "tn", t.name));
       d.appendChild(el("p", null, t.text));
       tg.appendChild(d);
