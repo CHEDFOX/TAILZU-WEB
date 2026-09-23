@@ -166,7 +166,11 @@
     72% { transform: translateX(.006rem) rotate(2deg); }
     88% { transform: translateX(-.002rem) rotate(-1deg); }
   }
-  .mark:hover svg { animation: shake .48s ease-in-out; }
+  /* A pointer shakes it by hovering; a finger by landing on it (the
+     script adds .shake). Hover is kept to screens that really hover, so a
+     phone's sticky tap-hover never runs it a second time. */
+  @media (hover: hover) { .mark:hover svg, .logos svg:hover { animation: shake .48s ease-in-out; } }
+  .mark svg.shake, .logos svg.shake { animation: shake .48s ease-in-out; }
   .mark:active svg { transform: scale(.96); }
   .mark rect { transition: fill .3s; }
   .mast[data-tone="light"] .mark rect { fill: var(--ink2); }
@@ -516,7 +520,7 @@
   .free .dl { justify-content: flex-start; margin-top: .28rem; }
   .logos { position: absolute; right: .28rem; bottom: .3rem; z-index: 2; display: flex; gap: .2rem; }
   .logos svg { width: .26rem; height: .26rem; fill: var(--ink2); opacity: .82; transition: opacity .2s; }
-  .logos svg:hover { opacity: 1; animation: shake .48s ease-in-out; }
+  .logos svg:hover, .logos svg.shake { opacity: 1; }
   .on-sun .dl a.primary { height: .56rem; padding: 0 .34rem; font-size: .15rem; }
   .on-sun .dl a { background: rgba(27,23,18,.08); border-color: rgba(27,23,18,.16); box-shadow: none; color: var(--ink2); }
   .on-sun .dl a:hover { background: rgba(27,23,18,.14); }
@@ -2203,7 +2207,9 @@
      at a time: the one the cursor is on, not the line it sits in, so a
      sweep across a sentence leaves a trail. Every text, including what
      the page is writing itself: a write that lands mid-run waits for the
-     run to let go. Never on touch, never under reduced motion.
+     run to let go. On every device: a pointer drives it by hovering, a
+     finger by touching — the word it lands on, and every word it drags or
+     scrolls across. Never under reduced motion.
      ================================================================== */
   var GLITCH_AT = "h1,h2,h3,p,li,a,button,span,b,i,em,strong,td,th,label,dt,dd,.k,.key,.gut";
   /* `glitchOn` counts the runs holding an element — which is also what
@@ -2276,16 +2282,42 @@
       if (k < 1) requestAnimationFrame(step); else undo();
     })(performance.now());
   }
-  if (!reduced && !coarse && glitchOn) {
+  if (!reduced && glitchOn) {
     var moveRaf = 0, mx = 0, my = 0;
-    document.addEventListener("mousemove", function (e) {
-      mx = e.clientX; my = e.clientY;
+    /* One word per frame, wherever the point is by then. The tap a phone
+       sends after a touch lands on a word already in its box, which the
+       word finder refuses, so a tap never runs the same word twice. */
+    var aim = function (x, y) {
+      mx = x; my = y;
       if (moveRaf) return;
       moveRaf = requestAnimationFrame(function () {
         moveRaf = 0;
         var w = wordAt(mx, my);
         if (w) glitchWord(w);
       });
+    };
+    document.addEventListener("mousemove", function (e) { aim(e.clientX, e.clientY); }, { passive: true });
+    // A finger has no hover: it is the word it touches, and while it moves
+    // — dragging, or holding on as the page scrolls under it — every word
+    // that passes beneath it. Passive, so the page scrolls as it always did.
+    var touch = function (e) { var t = e.touches && e.touches[0]; if (t) aim(t.clientX, t.clientY); };
+    document.addEventListener("touchstart", touch, { passive: true });
+    document.addEventListener("touchmove", touch, { passive: true });
+  }
+
+  /* THE SHAKE, BY TOUCH. A mouse shakes the marks by hovering (the css);
+     a finger has nothing to hover with, so landing on one does it instead.
+     The class is taken off when the shiver ends, so the next touch runs it
+     again rather than finding it already there. */
+  if (!reduced) {
+    var SHAKERS = ".mark svg, .logos svg";
+    var shake = function (s) { s.classList.remove("shake"); void s.getBoundingClientRect(); s.classList.add("shake"); };
+    [].forEach.call(document.querySelectorAll(SHAKERS), function (s) {
+      s.addEventListener("animationend", function (e) { if (e.animationName === "shake") s.classList.remove("shake"); });
+    });
+    document.addEventListener("touchstart", function (e) {
+      var s = e.target && e.target.closest && e.target.closest(SHAKERS);
+      if (s) shake(s);
     }, { passive: true });
   }
 
