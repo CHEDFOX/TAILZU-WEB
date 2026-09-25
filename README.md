@@ -11,6 +11,25 @@ carried them as HTML since before there was a site. Publishing a file of the
 same name here overrides the built-in page; deleting it brings the built-in
 page back, so the legal text is never unreachable.
 
+## Publishing
+
+```
+git pull --rebase origin claude/repo-analysis-verdict-6lpyaw
+scp index.html root@91.108.104.168:~/tulmi/site/
+```
+
+The backend serves the file at `/` with a one-minute cache, so the page is
+live within a minute of the copy. Nothing restarts.
+
+## The mic key is the phone's
+
+The hero keyboard's mic key runs the same renderer the phones do: the mark
+drawn from the server's geometry, moved by the server's program. Both come
+with `/v1/site` as `mic` — mark, program, inset — and the page carries a copy
+of them (between `MIC-BEGIN` and `MIC-END`) until the server answers. A new
+mic key is a backend deploy; this file does not change for it. The copy is
+refreshed by the backend's `sync` step when the program changes.
+
 ## The colours are the app's
 
 Not a palette for a website. `STATS_UI` in the backend's `catalog.ts` is the
