@@ -13,13 +13,11 @@ page back, so the legal text is never unreachable.
 
 ## Publishing
 
-```
-git pull --rebase origin claude/repo-analysis-verdict-6lpyaw
-scp index.html root@91.108.104.168:~/tulmi/site/
-```
-
-The backend serves the file at `/` with a one-minute cache, so the page is
-live within a minute of the copy. Nothing restarts.
+The site is on Vercel, deployed from this repo: a push to
+`claude/repo-analysis-verdict-6lpyaw` is the deploy, live in under a minute.
+`vercel.json` proxies `/v1/*`, `/download`, `/downloads/*`, `/privacy`,
+`/terms` and `/.well-known/*` to the API, so the page and the API share the
+apex. Nothing is copied to the VPS for the site.
 
 ## The mic key is the phone's
 
@@ -355,7 +353,11 @@ Open `index.html` in a browser. It fetches its copy and download state from
 `<html>` tag. Everything it asks for has an inline fallback, so it is a
 complete page before the first byte of that answer arrives.
 
-## Publish
+## The API's own copy
+
+The API also serves a copy of this page at `api.tailzu.space/`, from
+`~/tulmi/site/` on the VPS, for anyone who lands on the API host by mistake.
+It is not the site; refresh it whenever you like:
 
 ```
 scp index.html root@91.108.104.168:~/tulmi/site/
