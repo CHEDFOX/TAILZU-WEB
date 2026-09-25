@@ -421,7 +421,7 @@
      through it at rest; the parts flying out and the wave wrapping the key
      as a ring that rises with the voice while it listens. The one alive
      thing on the board, and the one place the amber is. */
-  .k.mic { flex: 0 0 .42rem; height: .42rem; border-radius: 50%; background: var(--amber); overflow: hidden; box-shadow: none; transition: transform .3s, box-shadow .3s; z-index: 3; }
+  .k.mic { flex: 0 0 .42rem; height: .42rem; border-radius: 50%; background: var(--amber); overflow: hidden; box-shadow: none; transition: transform .3s, box-shadow .3s; z-index: 3; cursor: pointer; }
   .k.mic.live { transform: scale(1.12); box-shadow: 0 0 0 .06rem rgba(232,162,60,.18); }
   .k.mic .mk { width: 100%; height: 100%; display: block; overflow: visible; }
   /* THE CUT. A pressed key is cut out of the board — it goes hollow and
@@ -1587,6 +1587,8 @@
       startedAt = Date.now(); heard = false; lastLoud = startedAt;
       mic.setAttribute("aria-pressed", "true"); say(C.hero.listening || "Listening", true, true);
       listening = true;
+      // The key listens: the ring, on the visitor's own voice.
+      if (micKey && micProg) { micKey.classList.add("live"); micProg.start(); }
       meter(s);
       hard = setTimeout(stop, site.maxSeconds * 1000);
     }, function () { say(C.micDenied); });   // only the permission itself
@@ -1631,6 +1633,7 @@
     listening = false;
     level = 0;
     micLevel = null;
+    if (micKey && micProg) { micKey.classList.remove("live"); micProg.stop(); }
     if (rec && rec.state !== "inactive") { busy = true; say(C.hero.writing || "Writing", true, true); rec.stop(); }
     else say(idleWord(), false, true);
     if (stream_) { stream_.getTracks().forEach(function (t) { t.stop(); }); stream_ = null; }
@@ -1826,6 +1829,12 @@
     // The real key: the server's mark and program, the page's microphone
     // level while a visitor speaks, a performed voice while the page does.
     micProg = TailzuMic(micKey.querySelector("svg"), MIC, "#000", function () { return micLevel; });
+    // It is the key: tap it to speak, tap it again to stop — the same key
+    // the visitor will press on the phone. It does what the button under
+    // the phone does, so there is one microphone, not two.
+    micKey.setAttribute("role", "button"); micKey.setAttribute("tabindex", "0"); micKey.setAttribute("aria-label", "Dictate");
+    micKey.addEventListener("click", function () { toggle(); });
+    micKey.addEventListener("keydown", function (e) { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); toggle(); } });
     var sp = el("div", "k space", "space"); keyOf[" "] = sp; r4.appendChild(sp);
     r4.appendChild(el("div", "k wide ret", "return"));
     rowsEl.appendChild(r4);
