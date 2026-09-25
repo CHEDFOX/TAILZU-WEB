@@ -415,19 +415,15 @@
   .k.space { flex: 5 1 0; font-size: .12rem; color: #444; }
   .k.ret { flex: 1.6 1 0; }
   .k.num { flex: 1.3 1 0; }
-  /* THE APP'S MIC KEY, in the row where the app puts it: a white circle
-     the height of a key, the mark tinted black inside it, no border and no
-     shadow. Pressed, the mark comes apart into its own pixels — the same
-     dispersion, on the same white — and nothing else about it changes. */
-  /* THE MIC. A white circle the size of a key with the mark tinted black
-     inside it — and while it is listening the circle is the accent, with
-     the mark's own pixels loose on top of it. It is the one alive thing on
-     the board, so it is the one place the amber is. */
-  .k.mic { flex: 0 0 .42rem; height: .42rem; border-radius: 50%; background: #fff; overflow: hidden; box-shadow: none; transition: transform .3s, background .3s, box-shadow .3s; z-index: 3; }
-  .k.mic.live { background: var(--amber); transform: scale(1.12); box-shadow: 0 0 0 .06rem rgba(232,162,60,.18); }
-  .k.mic .mk { width: 54%; height: 46%; display: block; transition: opacity .16s; }
-  .k.mic canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
-  .k.mic.burst .mk { opacity: 0; }
+  /* THE MIC. The keyboard's own mic key, in the row where the app puts it:
+     the amber circle the size of a key, the mark drawn inside it from the
+     server's geometry and moved by the server's program — the signal running
+     through it at rest; the parts flying out and the wave wrapping the key
+     as a ring that rises with the voice while it listens. The one alive
+     thing on the board, and the one place the amber is. */
+  .k.mic { flex: 0 0 .42rem; height: .42rem; border-radius: 50%; background: var(--amber); overflow: hidden; box-shadow: none; transition: transform .3s, box-shadow .3s; z-index: 3; }
+  .k.mic.live { transform: scale(1.12); box-shadow: 0 0 0 .06rem rgba(232,162,60,.18); }
+  .k.mic .mk { width: 100%; height: 100%; display: block; overflow: visible; }
   /* THE CUT. A pressed key is cut out of the board — it goes hollow and
      its letter lifts above it in a bigger key with a neck down to the hole,
      the way a real key does. Held, the lifted key gives way to a tray of
@@ -844,6 +840,8 @@
   var forceDemo = /[?&]demo=1(&|$)/.test(location.search);
   var $ = function (id) { return document.getElementById(id); };
   var reduced = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  // The visitor's own voice, while the page's microphone is open; null otherwise.
+  var micLevel = null;
 
   // ---- copy: the backend's, with this as the fallback --------------------
   var C = {
@@ -1615,6 +1613,7 @@
       var sum = 0, n = Math.floor(buf.length / 2);
       for (var i = 0; i < n; i++) sum += buf[i] / 255;
       level = Math.min(1, (sum / n) * 3.2);
+      micLevel = level;
       var now = Date.now();
       if (level > 0.19) { heard = true; lastLoud = now; }
       // It stops itself when you pause. A pitch is one breath long.
@@ -1631,6 +1630,7 @@
     mic.setAttribute("aria-pressed", "false");
     listening = false;
     level = 0;
+    micLevel = null;
     if (rec && rec.state !== "inactive") { busy = true; say(C.hero.writing || "Writing", true, true); rec.stop(); }
     else say(idleWord(), false, true);
     if (stream_) { stream_.getTracks().forEach(function (t) { t.stop(); }); stream_ = null; }
@@ -1797,7 +1797,7 @@
      slow way and the fast way, side by side, in one picture. Then the next
      app. It runs only while it can be seen.
      ================================================================== */
-  var kbEl = $("kb"), rowsEl = $("kbRows"), kbField = $("kbField"), kbApp = $("kbApp"), keyOf = {}, micKey = null, rowDots = null, keyN = 0;
+  var kbEl = $("kb"), rowsEl = $("kbRows"), kbField = $("kbField"), kbApp = $("kbApp"), keyOf = {}, micKey = null, micProg = null, keyN = 0;
   var appI = 0, kgen = 0, ktm = 0, keysOn = false;
   /* The other forms a held letter offers, as the keyboard's own tray does. */
   var TRAYS = { a: "a à á â ä ã å", e: "e è é ê ë", i: "i ì í î ï", o: "o ò ó ô ö õ", u: "u ù ú û ü", c: "c ç ć", n: "n ñ ń", s: "s ß ś š", y: "y ÿ", z: "z ž ź", l: "l ł", d: "d đ", h: "h ħ" };
@@ -1821,9 +1821,11 @@
     var r4 = el("div", "krow r4");
     r4.appendChild(el("div", "k wide num", "123"));
     micKey = el("div", "k mic");
-    micKey.innerHTML = '<svg class="mk" viewBox="170 228 680 512" aria-hidden="true"><line x1="346" y1="402" x2="270" y2="598" stroke="#000" stroke-width="9" stroke-linecap="round"/><line x1="444" y1="394" x2="554" y2="486" stroke="#000" stroke-width="30" stroke-dasharray="9 11"/><line x1="668" y1="478" x2="828" y2="243" stroke="#000" stroke-width="9" stroke-linecap="round"/><circle cx="828" cy="243" r="11" fill="#000"/><rect x="308" y="269" width="132" height="132" rx="28" fill="#000"/><rect x="558" y="478" width="132" height="132" rx="28" fill="#000"/><rect x="178" y="598" width="132" height="132" rx="28" fill="#000"/></svg><canvas></canvas>';
+    micKey.innerHTML = '<svg class="mk" aria-hidden="true"></svg>';
     r4.appendChild(micKey);
-    rowDots = MicDots(micKey.querySelector("canvas"), micKey, { dot: "#000", inset: 11 });
+    // The real key: the server's mark and program, the page's microphone
+    // level while a visitor speaks, a performed voice while the page does.
+    micProg = TailzuMic(micKey.querySelector("svg"), MIC, "#000", function () { return micLevel; });
     var sp = el("div", "k space", "space"); keyOf[" "] = sp; r4.appendChild(sp);
     r4.appendChild(el("div", "k wide ret", "return"));
     rowsEl.appendChild(r4);
@@ -1993,7 +1995,7 @@
        the clock that stops at the end of it is true. */
     function speak() {
       if (g !== kgen) return;
-      micKey.classList.add("live"); rowDots.start(); cSaid.start(false);
+      micKey.classList.add("live"); micProg.start(); cSaid.start(false);
       // What is spoken: the sentence itself, or the instruction — in which
       // case it runs as a caption low on the screen, and the field waits.
       var spoken = say || text, words = spoken.split(/\s+/).filter(Boolean), at = 0;
@@ -2002,7 +2004,7 @@
       if (say) kbSpoken.classList.add("on");
       function finish() {
         liveText(slot.t, text); cSaid.stop();
-        micKey.classList.remove("live"); rowDots.stop(); slot.c.classList.add("off");
+        micKey.classList.remove("live"); micProg.stop(); slot.c.classList.add("off");
         kbSpoken.classList.remove("on");
         if (said) return;                   // theirs stays
         klater(3000, function () { appI++; playApp(); });
@@ -2026,133 +2028,314 @@
       })();
     }
   }
-  /* =====================================================================
-     THE MIC COMES APART — the app's own, brought over exactly.
-
-     The keyboard's mic key does not pulse or glow. The brand mark's own
-     opaque pixels are sampled, each becomes a dot, and on the first word
-     they burst outward and go on knocking about inside the circle for as
-     long as it is listening; when it stops they spring back into the mark.
-     The numbers are the app's: the mark drawn into a 44-unit grid inset 6
-     and aspect-fit, every pixel over alpha 90 a candidate, even-stride
-     sampled down to sixty; velocity outward through the dot's own place,
-     twisted by up to half a radian, at 55 to 110 points a second; the wall
-     reflects about the radial normal; equal-mass elastic collisions
-     between dots; drag 0.99 a frame under a floor of 24 points a second,
-     so the swarm never settles; and on stop a damped spring home at
-     stiffness 26, damping 0.8, snapping under 0.8 of a point or after six
-     tenths of a second. Scaled to whatever size the circle is here.
-     ================================================================== */
-  function markPoints(size, count, inset) {
-    // The mark, drawn into its own grid, and its opaque pixels sampled.
-    // `inset` is how far in from the circle the mark sits, in grid units —
-    // the app's is six of forty-four; a smaller mark is a bigger inset.
-    var G = 44, box = G - inset * 2, c = document.createElement("canvas");
-    c.width = c.height = G;
-    var x = c.getContext("2d"), VB = [170, 228, 680, 512];
-    var k = Math.min(box / VB[2], box / VB[3]);
-    x.translate((G - VB[2] * k) / 2 - VB[0] * k, (G - VB[3] * k) / 2 - VB[1] * k);
-    x.scale(k, k);
-    x.strokeStyle = x.fillStyle = "#fff"; x.lineCap = "round";
-    x.lineWidth = 9;  x.beginPath(); x.moveTo(346, 402); x.lineTo(270, 598); x.stroke();
-    x.lineWidth = 30; x.setLineDash([9, 11]); x.beginPath(); x.moveTo(444, 394); x.lineTo(554, 486); x.stroke(); x.setLineDash([]);
-    x.lineWidth = 9;  x.beginPath(); x.moveTo(668, 478); x.lineTo(828, 243); x.stroke();
-    x.beginPath(); x.arc(828, 243, 11, 0, 6.2832); x.fill();
-    [[308, 269], [558, 478], [178, 598]].forEach(function (r) {
-      x.beginPath();
-      if (x.roundRect) x.roundRect(r[0], r[1], 132, 132, 28); else x.rect(r[0], r[1], 132, 132);
-      x.fill();
-    });
-    var d = x.getImageData(0, 0, G, G).data, all = [];
-    for (var py = 0; py < G; py++) for (var px = 0; px < G; px++) if (d[(py * G + px) * 4 + 3] > 90) all.push([px, py]);
-    if (!all.length) return [];
-    var step = Math.max(1, Math.floor(all.length / count)), out = [], s = size / G;
-    for (var i = 0; i < all.length && out.length < count; i += step) out.push([all[i][0] * s, all[i][1] * s]);
-    return out;
-  }
-  function MicDots(canvas, host, opts) {
-    opts = opts || {};
-    var dotColour = opts.dot;
-    var g = canvas.getContext("2d"), dots = [], raf = 0, last = 0, size = 0, R = 0, DR = 1.3, home = [], back = false, backAt = 0, DPR = 1;
-    function fit() {
-      var w = canvas.clientWidth || 58;
-      DPR = Math.min(2, window.devicePixelRatio || 1);
-      if (size === w && canvas.width) return;
-      // Finer than the app's 0.9 of a point: on a page the circle is seen
-      // from further away, and a dot that is bold there reads as a crumb.
-      size = w; R = w / 2; DR = Math.max(0.5, w / 76);
-      canvas.width = Math.round(w * DPR); canvas.height = Math.round(w * DPR);
-      home = markPoints(w, 60, opts.inset || 6);
+  /* THE MIC KEY THE SERVER SENDS, until /v1/site answers with the live one. */
+  var MIC = /* MIC-BEGIN */ { "mark": {"viewBox":[170,228,680,512],"fit":"circle","tint":true,"shapes":[{"id":"line1","kind":"line","x1":346,"y1":402,"x2":270,"y2":598,"width":9,"cap":"round","color":"#E9CBA2"},{"id":"link","kind":"bars","x1":444,"y1":394,"x2":554,"y2":486,"thick":6,"heights":[28,36,41,46,43,34,28],"swell":{"thick":1.3,"height":1.9},"color":"#E8A23C"},{"id":"line2","kind":"line","x1":668,"y1":478,"x2":828,"y2":243,"width":9,"cap":"round","color":"#C77A3A"},{"id":"dot","kind":"circle","cx":828,"cy":243,"r":11,"color":"#B06240"},{"id":"a","kind":"rect","x":308,"y":269,"w":132,"h":132,"rx":28,"color":"#F4F1EA"},{"id":"b","kind":"rect","x":558,"y":478,"w":132,"h":132,"rx":28,"color":"#F4F1EA"},{"id":"c","kind":"rect","x":178,"y":598,"w":132,"h":132,"rx":28,"color":"#F4F1EA"}]}, "program": {"version": 1, "fps": {"idle": 24, "rec": 60}, "colors": {"signal": "#F4F1EA"}, "vars": {"period": 3.6, "n": 6, "breathe": 4.2, "bscale": 1.06, "out": 1.9, "spin": 40, "arc": 0.22, "shrink": 0.45, "gather": 0.05, "stagger": 0.07, "bspeed": 12, "bbounce": 0.6, "bturb": 0.14, "btumble": 1, "bstagger": 0.05, "lift": 2.8, "wait": 0.25, "krad": 1.636, "ring": 0.72, "nt": 42, "tick": 0.05, "swell": 0.15, "sweep": 1.1, "turn": 0.12, "voice": 0.75, "bloom": 0.35, "breath": 0.035}, "funcs": {"turbs": {"args": [], "expr": "rec ? 0 : bturb*R*abs(p)*(0.6*sin(t*11 + k*2.1) + 0.4*sin(t*17 + k*0.7))"}, "turbr": {"args": [], "expr": "rec ? 0 : bturb*R*0.5*abs(p)*sin(t*13 + k*1.3)"}, "side": {"args": [], "expr": "arc*R*sin(pi*clamp(p, 0, 1))*sign + turbs()"}, "along": {"args": [], "expr": "out*R*p + turbr()"}, "ang": {"args": ["k"], "expr": "tau*k/nt + turn*t"}, "rr": {"args": [], "expr": "krad*R*ring*(bloom + (1 - bloom)*q)*(1 + breath*lv)/lift"}, "cr": {"args": ["k"], "expr": "0.6*crest(ang(k)*2 - sweep*t) + 0.4*crest(ang(k)*3 + sweep*0.7*t + 1)"}, "th": {"args": ["k"], "expr": "(tick*krad*R*(0.5 + 0.5*height(k % cols)/46) + swell*krad*R*cr(k)*(1 - voice + voice*lv))/lift*q"}, "tx": {"args": ["k", "s"], "expr": "(x1 + x2)/2 + (lx*cos(ang(k)) + nx*sin(ang(k)))*(rr() + th(k)*s)"}, "ty": {"args": ["k", "s"], "expr": "(y1 + y2)/2 + (ly*cos(ang(k)) + ny*sin(ang(k)))*(rr() + th(k)*s)"}}, "springs": {"p": {"scope": "shape", "rest": 0, "target": "rec ? (since < k*stagger ? 0 : (since < k*stagger + 0.1 ? -gather : 1)) : (since >= (n - 1 - k)*bstagger + 0.12 ? 0 : prev)", "rate": "rec ? 6.5 : bspeed", "damp": "rec ? 1 : bbounce"}, "q": {"scope": "global", "rest": 0, "target": "rec ? (since >= wait ? 1 : 0) : 0", "rate": "7", "damp": "1"}, "lv": {"scope": "global", "rest": 0, "target": "rec ? level : 0", "rate": "16", "damp": "1"}}, "mark": {"scale": "1 + (bscale - 1)*(0.5 - 0.5*cos(tau*t/breathe))"}, "shapes": {"a": {"vars": {"k": 0, "sign": 1}, "dx": "dir.x*along() - dir.y*side()", "dy": "dir.y*along() + dir.x*side()", "rot": "(spin + (rec ? 0 : btumble*360))*p*sign", "scale": "1 - shrink*clamp(p, 0, 1)", "opacity": "1 - smooth(0.55, 1, clamp(p, 0, 1))", "mix": "rec ? 0 : ramp(t % period, 0.92, 0.42)"}, "b": {"vars": {"k": 1, "sign": -1}, "dx": "dir.x*along() - dir.y*side()", "dy": "dir.y*along() + dir.x*side()", "rot": "(spin + (rec ? 0 : btumble*360))*p*sign", "scale": "1 - shrink*clamp(p, 0, 1)", "opacity": "1 - smooth(0.55, 1, clamp(p, 0, 1))", "mix": "rec ? 0 : ramp(t % period, 2.33, 0.42)"}, "line1": {"vars": {"k": 2, "sign": 1}, "dx": "dir.x*along() - dir.y*side()", "dy": "dir.y*along() + dir.x*side()", "rot": "(spin + (rec ? 0 : btumble*360))*p*sign", "scale": "1 - shrink*clamp(p, 0, 1)", "opacity": "1 - smooth(0.55, 1, clamp(p, 0, 1))"}, "line2": {"vars": {"k": 3, "sign": -1}, "dx": "dir.x*along() - dir.y*side()", "dy": "dir.y*along() + dir.x*side()", "rot": "(spin + (rec ? 0 : btumble*360))*p*sign", "scale": "1 - shrink*clamp(p, 0, 1)", "opacity": "1 - smooth(0.55, 1, clamp(p, 0, 1))"}, "c": {"vars": {"k": 4, "sign": 1}, "dx": "dir.x*along() - dir.y*side()", "dy": "dir.y*along() + dir.x*side()", "rot": "(spin + (rec ? 0 : btumble*360))*p*sign", "scale": "1 - shrink*clamp(p, 0, 1)", "opacity": "1 - smooth(0.55, 1, clamp(p, 0, 1))", "mix": "rec ? 0 : ramp(t % period, 0.33, 0.42)"}, "dot": {"vars": {"k": 5, "sign": -1}, "dx": "dir.x*along() - dir.y*side()", "dy": "dir.y*along() + dir.x*side()", "rot": "(spin + (rec ? 0 : btumble*360))*p*sign", "scale": "1 - shrink*clamp(p, 0, 1)", "opacity": "1 - smooth(0.55, 1, clamp(p, 0, 1))"}, "link": {"dx": "(cx - home.x)*q", "dy": "(cy - home.y)*q", "rot": "(180 - atan2(y2 - y1, x2 - x1)*180/pi)*q", "scale": "1 + (lift - 1)*q", "rise": "max(q*clamp(0.2*cr(i*6) + 1.1*lv*(0.6 + 0.4*sin(t*9 + i*1.7)), 0, 1), run(f, t % period, 1.33, 0.95, 0.3)*(1 - q))", "lean": "0"}}, "emit": [{"attach": "link", "kind": "line", "repeat": ["nt"], "as": ["k"], "x1": "tx(k, -0.3)", "y1": "ty(k, -0.3)", "x2": "tx(k, 0.7)", "y2": "ty(k, 0.7)", "opacity": "q*(0.42 + 0.5*cr(k)*(0.5 + 0.5*lv))", "width": "thick*1.5", "color": "ink"}], "settle": {"eps": 0.002, "timeout": 1.4}}, "inset": 7 } /* MIC-END */;
+  /* THE MIC KEY, AS THE KEYBOARD DRAWS IT. The server sends the mark's
+     shapes and a program — numbers, springs, one expression per property —
+     and this is the same renderer the phones run, so the key on this page
+     does exactly what the key on the phone does, idle and recording alike.
+     A new mic key is a backend deploy; this page never changes for it. */
+  var TailzuMic = (function () {
+    var NS = "http://www.w3.org/2000/svg";
+    var clamp = function (v, a, b) { return v < a ? a : v > b ? b : v; };
+  /* THE MOTION LANGUAGE — one small evaluator, the same on every platform.
+     Numbers only. An expression is arithmetic, comparisons, && || !, ?:,
+     built-in functions, the program's own functions, and names looked up in
+     the context. Anything unknown or non-finite is 0: a bad program is a
+     still mark, never a crash. */
+  var Lang = (function () {
+    var TOK = /(\d+\.?\d*(?:[eE][+-]?\d+)?)|([A-Za-z_][A-Za-z0-9_.]*)|(\|\||&&|==|!=|<=|>=|[-+*\/%^<>!?:(),])/y;
+    function tokenize(src) {
+      var out = [], i = 0;
+      while (i < src.length) {
+        if (/\s/.test(src[i])) { i++; continue; }
+        TOK.lastIndex = i; var m = TOK.exec(src);
+        if (!m || m.index !== i) throw new Error("bad character at " + i + ": " + src.slice(i, i + 12));
+        i = TOK.lastIndex;
+        out.push(m[1] != null ? { t: "n", v: parseFloat(m[1]) } : m[2] != null ? { t: "id", v: m[2] } : { t: "op", v: m[3] });
+      }
+      return out;
     }
-    function start() {
-      fit(); if (!home.length) return;
-      back = false; host.classList.add("burst");
-      var c = R, sc = size / 44;
-      dots = home.map(function (h) {
-        var dx = h[0] - c, dy = h[1] - c, len = Math.sqrt(dx * dx + dy * dy), a;
-        if (len > 0.5) { dx /= len; dy /= len; } else { a = Math.random() * 6.2832; dx = Math.cos(a); dy = Math.sin(a); }
-        var j = (Math.random() - 0.5), rx = dx * Math.cos(j) - dy * Math.sin(j), ry = dx * Math.sin(j) + dy * Math.cos(j);
-        var burst = (55 + Math.random() * 55) * sc;
-        return { x: h[0], y: h[1], vx: rx * burst, vy: ry * burst, hx: h[0], hy: h[1] };
-      });
-      if (!raf && !reduced) { last = 0; raf = requestAnimationFrame(step); }
+    function parse(src) {
+      var toks = tokenize(String(src)), pos = 0;
+      function peek() { return toks[pos]; }
+      function isOp(v) { var k = toks[pos]; return k && k.t === "op" && k.v === v; }
+      function take(v) { if (!isOp(v)) throw new Error("expected " + v + " in " + src); pos++; }
+      function ternary() { var c = or(); if (isOp("?")) { pos++; var a = ternary(); take(":"); var b = ternary(); return ["?", c, a, b]; } return c; }
+      function or() { var l = and(); while (isOp("||")) { pos++; l = ["||", l, and()]; } return l; }
+      function and() { var l = eq(); while (isOp("&&")) { pos++; l = ["&&", l, eq()]; } return l; }
+      function eq() { var l = rel(); while (isOp("==") || isOp("!=")) { var o = toks[pos++].v; l = [o, l, rel()]; } return l; }
+      function rel() { var l = add(); while (isOp("<") || isOp("<=") || isOp(">") || isOp(">=")) { var o = toks[pos++].v; l = [o, l, add()]; } return l; }
+      function add() { var l = mul(); while (isOp("+") || isOp("-")) { var o = toks[pos++].v; l = [o, l, mul()]; } return l; }
+      function mul() { var l = unary(); while (isOp("*") || isOp("/") || isOp("%")) { var o = toks[pos++].v; l = [o, l, unary()]; } return l; }
+      function unary() { if (isOp("-")) { pos++; return ["neg", unary()]; } if (isOp("!")) { pos++; return ["not", unary()]; } return power(); }
+      function power() { var b = primary(); if (isOp("^")) { pos++; return ["^", b, unary()]; } return b; }
+      function primary() {
+        var k = peek(); if (!k) throw new Error("unexpected end of " + src);
+        if (k.t === "n") { pos++; return ["n", k.v]; }
+        if (k.t === "id") {
+          pos++;
+          if (isOp("(")) { pos++; var args = []; if (!isOp(")")) { args.push(ternary()); while (isOp(",")) { pos++; args.push(ternary()); } } take(")"); return ["call", k.v, args]; }
+          return ["v", k.v];
+        }
+        if (isOp("(")) { pos++; var e = ternary(); take(")"); return e; }
+        throw new Error("unexpected " + k.v + " in " + src);
+      }
+      var ast = ternary();
+      if (pos < toks.length) throw new Error("trailing " + toks[pos].v + " in " + src);
+      return ast;
     }
-    function stop() { if (!dots.length) { host.classList.remove("burst"); return; } back = true; backAt = 0; }
-    function step(now) {
-      raf = requestAnimationFrame(step);
-      if (!last) last = now;
-      var dt = Math.min(1 / 30, (now - last) / 1000); last = now;
-      var i, j, d, c = R, lim = R - DR, floor = 24 * (size / 44), most = 0;
-      if (back) {
-        backAt += dt;
-        for (i = 0; i < dots.length; i++) {
-          d = dots[i];
-          d.vx = (d.vx + (d.hx - d.x) * 26 * dt) * 0.8;
-          d.vy = (d.vy + (d.hy - d.y) * 26 * dt) * 0.8;
-          d.x += d.vx * dt; d.y += d.vy * dt;
-          most = Math.max(most, Math.abs(d.hx - d.x), Math.abs(d.hy - d.y));
-        }
-        if (most < 0.8 || backAt > 0.6) {   // home, or near enough: the crisp mark takes over
-          dots = []; host.classList.remove("burst");
-          g.setTransform(1, 0, 0, 1, 0, 0); g.clearRect(0, 0, canvas.width, canvas.height);
-          cancelAnimationFrame(raf); raf = 0; return;
-        }
-      } else {
-        for (i = 0; i < dots.length; i++) {
-          d = dots[i];
-          d.x += d.vx * dt; d.y += d.vy * dt;
-          // The wall reflects about the radial normal.
-          var ox = d.x - c, oy = d.y - c, len = Math.sqrt(ox * ox + oy * oy);
-          if (len > lim && len > 0) {
-            var nx = ox / len, ny = oy / len, vn = d.vx * nx + d.vy * ny;
-            d.vx -= 2 * vn * nx; d.vy -= 2 * vn * ny;
-            d.x = c + nx * lim; d.y = c + ny * lim;
+    var B = {
+      sin: Math.sin, cos: Math.cos, tan: Math.tan, abs: Math.abs, sqrt: function (x) { return x < 0 ? 0 : Math.sqrt(x); }, floor: Math.floor, ceil: Math.ceil, round: Math.round, exp: Math.exp,
+      log: function (x) { return x > 0 ? Math.log(x) : 0; }, atan2: Math.atan2, min: Math.min, max: Math.max, pow: function (a, b) { return a < 0 && b !== Math.floor(b) ? 0 : Math.pow(a, b); }, hypot: Math.hypot,
+      clamp: function (x, a, b) { return x < a ? a : x > b ? b : x; },
+      smooth: function (a, b, x) { var u = b === a ? (x >= b ? 1 : 0) : Math.min(1, Math.max(0, (x - a) / (b - a))); return u * u * (3 - 2 * u); },
+      lerp: function (a, b, u) { return a + (b - a) * u; },
+      crest: function (x) { var s = Math.sin(x); return s > 0 ? Math.pow(s, 1.6) : 0; },
+      // On over `edge` seconds at `at`, held for `len`, off over `edge`: the splash's hold.
+      ramp: function (x, at, len, edge) { edge = edge || 0.06; return x < at ? 0 : x < at + edge ? (x - at) / edge : x < at + len ? 1 : x < at + len + edge ? 1 - (x - at - len) / edge : 0; },
+      // A crest of `width` (of the line) that starts wholly before the line at `at` and is wholly past it `dur` later: how far up the bar at `f` is.
+      run: function (f, x, at, dur, width) { var u = (x - at) / dur; if (u < 0 || u > 1) return 0; var half = width / 2, c = u * (1 + width) - half, q = Math.abs(f - c) / half; return q >= 1 ? 0 : 0.5 + 0.5 * Math.cos(Math.PI * q); },
+      noise: function (x) { return Math.sin(x * 1.7) * Math.sin(x * 0.61 + 2.1); },
+    };
+    function ev(n, ctx, funcs, depth) {
+      var a, b;
+      switch (n[0]) {
+        case "n": return n[1];
+        case "v": { var v = ctx[n[1]]; return typeof v === "number" && isFinite(v) ? v : 0; }
+        case "neg": return -ev(n[1], ctx, funcs, depth);
+        case "not": return ev(n[1], ctx, funcs, depth) ? 0 : 1;
+        case "?": return ev(n[1], ctx, funcs, depth) ? ev(n[2], ctx, funcs, depth) : ev(n[3], ctx, funcs, depth);
+        case "||": return (ev(n[1], ctx, funcs, depth) || ev(n[2], ctx, funcs, depth)) ? 1 : 0;
+        case "&&": return (ev(n[1], ctx, funcs, depth) && ev(n[2], ctx, funcs, depth)) ? 1 : 0;
+        case "call": {
+          var name = n[1], args = n[2], f = funcs && funcs[name];
+          if (f) {
+            if ((depth || 0) > 8) return 0;
+            var c2 = Object.create(ctx); for (var i = 0; i < f.args.length; i++) c2[f.args[i]] = i < args.length ? ev(args[i], ctx, funcs, depth) : 0;
+            return fin(ev(f.ast, c2, funcs, (depth || 0) + 1));
           }
-          // Drag, under a floor, so the swarm never settles.
-          d.vx *= 0.99; d.vy *= 0.99;
-          var sp = Math.sqrt(d.vx * d.vx + d.vy * d.vy);
-          if (sp > 0 && sp < floor) { d.vx = d.vx / sp * floor; d.vy = d.vy / sp * floor; }
-        }
-        // Equal-mass elastic collisions.
-        var minD = 2 * DR;
-        for (i = 0; i < dots.length; i++) for (j = i + 1; j < dots.length; j++) {
-          var a = dots[i], b = dots[j], dx = b.x - a.x, dy = b.y - a.y, dd = Math.sqrt(dx * dx + dy * dy);
-          if (dd >= minD || dd === 0) continue;
-          var ux = dx / dd, uy = dy / dd, push = (minD - dd) / 2;
-          a.x -= ux * push; a.y -= uy * push; b.x += ux * push; b.y += uy * push;
-          var rvn = (b.vx - a.vx) * ux + (b.vy - a.vy) * uy;
-          if (rvn < 0) { a.vx += rvn * ux; a.vy += rvn * uy; b.vx -= rvn * ux; b.vy -= rvn * uy; }
+          var bf = B[name];
+          if (bf) { var vals = []; for (var j = 0; j < args.length; j++) vals.push(ev(args[j], ctx, funcs, depth)); return fin(bf.apply(null, vals)); }
+          var cf = ctx["fn:" + name];       // a function the renderer lends the program, such as height(i)
+          if (typeof cf === "function") { var vs = []; for (var q = 0; q < args.length; q++) vs.push(ev(args[q], ctx, funcs, depth)); return fin(cf.apply(null, vs)); }
+          return 0;
         }
       }
-      g.setTransform(DPR, 0, 0, DPR, 0, 0);
-      g.clearRect(0, 0, size, size);
-      g.fillStyle = dotColour || "#0F0D0B";
-      for (i = 0; i < dots.length; i++) {
-        g.beginPath(); g.arc(dots[i].x, dots[i].y, DR, 0, 6.2832); g.fill();
+      a = ev(n[1], ctx, funcs, depth); b = ev(n[2], ctx, funcs, depth);
+      switch (n[0]) {
+        case "+": return a + b; case "-": return a - b; case "*": return a * b;
+        case "/": return b === 0 ? 0 : a / b; case "%": return b === 0 ? 0 : a - Math.floor(a / b) * b;
+        case "^": return fin(Math.pow(a, b));
+        case "<": return a < b ? 1 : 0; case "<=": return a <= b ? 1 : 0; case ">": return a > b ? 1 : 0; case ">=": return a >= b ? 1 : 0;
+        case "==": return a === b ? 1 : 0; case "!=": return a !== b ? 1 : 0;
+      }
+      return 0;
+    }
+    function fin(x) { return typeof x === "number" && isFinite(x) ? x : 0; }
+    /* A compiled program: every expression parsed once, functions bound. */
+    function compile(spec) {
+      var P = { spec: spec, funcs: {}, vars: spec.vars || {}, springs: {}, shapes: {}, emit: [], mark: {}, errors: [] };
+      function X(src, where) { try { return parse(src); } catch (e) { P.errors.push(where + ": " + e.message); return ["n", 0]; } }
+      Object.keys(spec.funcs || {}).forEach(function (k) { var f = spec.funcs[k]; P.funcs[k] = { args: f.args || [], ast: X(f.expr, "funcs." + k) }; });
+      Object.keys(spec.springs || {}).forEach(function (k) { var s = spec.springs[k]; P.springs[k] = { scope: s.scope === "shape" ? "shape" : "global", rest: +s.rest || 0, target: X(s.target || "0", "springs." + k + ".target"), rate: X(s.rate || "8", "springs." + k + ".rate"), damp: X(s.damp || "1", "springs." + k + ".damp") }; });
+      Object.keys(spec.mark || {}).forEach(function (k) { P.mark[k] = X(spec.mark[k], "mark." + k); });
+      Object.keys(spec.shapes || {}).forEach(function (id) { var sh = spec.shapes[id], c = { vars: sh.vars || {}, props: {} }; Object.keys(sh).forEach(function (k) { if (k !== "vars") c.props[k] = X(sh[k], "shapes." + id + "." + k); }); P.shapes[id] = c; });
+      (spec.emit || []).forEach(function (e, n) {
+        var c = { attach: e.attach, kind: e.kind, repeat: (e.repeat || []).map(function (r, j) { return X(r, "emit[" + n + "].repeat[" + j + "]"); }), as: e.as || [], color: e.color || "ink", opacity: X(e.opacity || "1", "emit[" + n + "].opacity"), width: X(e.width || "1", "emit[" + n + "].width") };
+        if (Array.isArray(e.points)) c.points = e.points.map(function (p, j) { return [X(p[0], "emit[" + n + "].points[" + j + "].x"), X(p[1], "emit[" + n + "].points[" + j + "].y")]; });
+        else if (e.points) c.gen = { count: X(e.points.count || "0", "emit[" + n + "].points.count"), as: e.points.as || "i", x: X(e.points.x || "0", "emit[" + n + "].points.x"), y: X(e.points.y || "0", "emit[" + n + "].points.y") };
+        ["x1", "y1", "x2", "y2", "cx", "cy", "r"].forEach(function (k) { if (e[k] != null) c[k] = X(e[k], "emit[" + n + "]." + k); });
+        P.emit.push(c);
+      });
+      return P;
+    }
+    return { parse: parse, ev: ev, compile: compile, builtins: B };
+  })();
+  /* A voice, performed: phrases with syllables in them, and pauses. Stands in
+     for the microphone while the page speaks a sentence of its own. */
+  var performed = { level: 0, t: 0, phrase: 0, until: 0, talking: false, tick: function (dt, on) {
+    if (!on) { this.level += (0 - this.level) * Math.min(1, dt * 6); return; }
+    this.t += dt;
+    if (this.t >= this.until) { this.talking = !this.talking; this.t = 0; this.until = this.talking ? 0.9 + Math.random() * 1.6 : 0.5 + Math.random() * 1.1; this.phrase = Math.random() * 6.28; }
+    var target = this.talking ? clamp(0.45 + 0.35 * Math.sin(this.t * 24 + this.phrase) + 0.2 * Math.sin(this.t * 9.3) + (Math.random() - 0.5) * 0.2, 0.08, 1) : 0.03 + Math.random() * 0.03;
+    this.level += (target - this.level) * Math.min(1, dt * (target > this.level ? 22 : 7));
+  } };
+  function renderMark(svg, sp, fg, inset) {
+    var m = sp.mark;
+    svg.innerHTML = "";
+    var vb = m.viewBox, L = Math.hypot(vb[2], vb[3]) * (36 / Math.max(1, 36 - 2 * (inset || 0)));
+    svg.setAttribute("viewBox", [vb[0] + vb[2] / 2 - L / 2, vb[1] + vb[3] / 2 - L / 2, L, L].join(" "));
+    var outer = document.createElementNS(NS, "g"); svg.appendChild(outer);
+    var scene = { outer: outer, shapes: {} };
+    m.shapes.forEach(function (sh) {
+      var color = m.tint ? fg : sh.color, holder = document.createElementNS(NS, "g"), el, bars = null;
+      outer.appendChild(holder);
+      if (sh.kind === "rect") { el = document.createElementNS(NS, "rect"); el.setAttribute("x", sh.x); el.setAttribute("y", sh.y); el.setAttribute("width", sh.w); el.setAttribute("height", sh.h); el.setAttribute("rx", sh.rx || 0); el.setAttribute("fill", color); }
+      else if (sh.kind === "circle") { el = document.createElementNS(NS, "circle"); el.setAttribute("cx", sh.cx); el.setAttribute("cy", sh.cy); el.setAttribute("r", sh.r); el.setAttribute("fill", color); }
+      else if (sh.kind === "bars") {
+        el = document.createElementNS(NS, "g"); el.setAttribute("stroke", color);
+        var n = sh.heights.length, bdx = sh.x2 - sh.x1, bdy = sh.y2 - sh.y1, bL = Math.hypot(bdx, bdy) || 1, nx = -bdy / bL, ny = bdx / bL, sw = sh.swell || { thick: 1.3, height: 1.9 };
+        bars = [];
+        sh.heights.forEach(function (hh, i) {
+          var t = (i + 0.5) / n, cx = sh.x1 + bdx * t, cy = sh.y1 + bdy * t, bar = document.createElementNS(NS, "line");
+          el.appendChild(bar);
+          var d = { el: bar, i: i, f: t, cx: cx, cy: cy, h0: hh, set: function (k, lean) {
+            var h = hh * (1 + ((sw.height || 1.9) - 1) * k), w = (sh.thick || 6) * (1 + ((sw.thick || 1.3) - 1) * k), lx = (lean || 0) * (bdx / bL) * h, ly = (lean || 0) * (bdy / bL) * h;
+            bar.setAttribute("x1", (cx - nx * h / 2).toFixed(2)); bar.setAttribute("y1", (cy - ny * h / 2).toFixed(2)); bar.setAttribute("x2", (cx + nx * h / 2 + lx).toFixed(2)); bar.setAttribute("y2", (cy + ny * h / 2 + ly).toFixed(2));
+            bar.setAttribute("stroke-width", w.toFixed(2));
+          } };
+          d.set(0, 0); bars.push(d);
+        });
+      }
+      else { el = document.createElementNS(NS, "line"); el.setAttribute("x1", sh.x1); el.setAttribute("y1", sh.y1); el.setAttribute("x2", sh.x2); el.setAttribute("y2", sh.y2); el.setAttribute("stroke", color); el.setAttribute("stroke-width", sh.width || 1); el.setAttribute("stroke-linecap", sh.cap || "butt"); if (sh.dash) el.setAttribute("stroke-dasharray", sh.dash.join(" ")); }
+      holder.appendChild(el);
+      scene.shapes[sh.id || ("#" + Object.keys(scene.shapes).length)] = { sh: sh, holder: holder, el: el, ink: color, bars: bars };
+    });
+    return scene;
+  }
+  function Program(scene, sp, levelOf) {
+    var P = Lang.compile(sp.program || {}), m = sp.mark, vb = m.viewBox;
+    var cx0 = vb[0] + vb[2] / 2, cy0 = vb[1] + vb[3] / 2, U = Math.min(vb[2], vb[3]), R = Math.hypot(vb[2], vb[3]) / 2;
+    var sig = (sp.program && sp.program.colors && sp.program.colors.signal) || "#F4F1EA";
+    var fps = (sp.program && sp.program.fps) || {}, settle = (sp.program && sp.program.settle) || {};
+    var G = Object.create(null);
+    Object.keys(P.vars).forEach(function (k) { G[k] = +P.vars[k]; });
+    G.pi = Math.PI; G.tau = 2 * Math.PI; G.e = Math.E; G.cx = cx0; G.cy = cy0; G.U = U; G.R = R; G.vbw = vb[2]; G.vbh = vb[3];
+    G.t = 0; G.rec = 0; G.since = 0; G.level = 0;
+    var state = { t: 0, rec: 0, flipped: 0, level: 0, settling: false, done: null, raf: 0, last: 0, gone: false };
+    var springs = {};                       // "name" or "name@shape" → { v, vel, prev }
+    function spring(name, shapeId) { var key = shapeId ? name + "@" + shapeId : name; return springs[key] || (springs[key] = { v: P.springs[name].rest, vel: 0, prev: P.springs[name].rest }); }
+    function evx(ast, ctx) { return Lang.ev(ast, ctx, P.funcs, 0); }
+    var mix = function (a, b, k) {
+      k = clamp(k, 0, 1); var pa = parseInt(a.slice(1), 16), pb = parseInt(b.slice(1), 16), out = 0, sh;
+      for (sh = 16; sh >= 0; sh -= 8) { var ca = (pa >> sh) & 255, cb = (pb >> sh) & 255; out |= Math.round(ca + (cb - ca) * k) << sh; }
+      return "#" + ("000000" + out.toString(16)).slice(-6);
+    };
+    // Each shape's context: its geometry, its own numbers, its springs.
+    var shapes = Object.keys(scene.shapes).map(function (id) {
+      var sc = scene.shapes[id], sh = sc.sh, ctx = Object.create(G), hx, hy;
+      if (sh.kind === "rect") { hx = sh.x + sh.w / 2; hy = sh.y + sh.h / 2; ctx.w = sh.w; ctx.h = sh.h; }
+      else if (sh.kind === "circle") { hx = sh.cx; hy = sh.cy; ctx.r = sh.r; }
+      else {
+        hx = (sh.x1 + sh.x2) / 2; hy = (sh.y1 + sh.y2) / 2;
+        var dx = sh.x2 - sh.x1, dy = sh.y2 - sh.y1, L = Math.hypot(dx, dy) || 1;
+        ctx.x1 = sh.x1; ctx.y1 = sh.y1; ctx.x2 = sh.x2; ctx.y2 = sh.y2; ctx.L = L; ctx.lx = dx / L; ctx.ly = dy / L; ctx.nx = -dy / L; ctx.ny = dx / L;
+        var bx = -ctx.nx * 0.85 - ctx.lx * 0.35, by = -ctx.ny * 0.85 - ctx.ly * 0.35, bl = Math.hypot(bx, by) || 1; ctx.bx = bx / bl; ctx.by = by / bl;
+        ctx.width = sh.width || 1;
+        if (sh.kind === "bars") { ctx.thick = sh.thick || 6; ctx.cols = sh.heights.length; ctx.swh = (sh.swell && sh.swell.height) || 1.9; ctx.swt = (sh.swell && sh.swell.thick) || 1.3; ctx["fn:height"] = function (i) { var j = Math.max(0, Math.min(sh.heights.length - 1, Math.round(i))); return sh.heights[j]; }; }
+      }
+      ctx["home.x"] = hx; ctx["home.y"] = hy;
+      var ddx = hx - cx0, ddy = hy - cy0, dl = Math.hypot(ddx, ddy) || 1; ctx["dir.x"] = ddx / dl; ctx["dir.y"] = ddy / dl;
+      var comp = P.shapes[id] || { vars: {}, props: {} };
+      Object.keys(comp.vars).forEach(function (k) { ctx[k] = +comp.vars[k]; });
+      return { id: id, sc: sc, sh: sh, ctx: ctx, comp: comp, hx: hx, hy: hy };
+    });
+    var byId = {}; shapes.forEach(function (s) { byId[s.id] = s; });
+    // What the program draws around a shape: a pool of elements per entry, behind the shape.
+    var emits = P.emit.map(function (e) { return { e: e, els: [], host: byId[e.attach] }; });
+    function element(em, n) {
+      var el = em.els[n];
+      if (!el) {
+        el = document.createElementNS(NS, em.e.kind === "line" ? "line" : em.e.kind === "circle" ? "circle" : em.e.kind === "polygon" ? "polygon" : "polyline");
+        el.setAttribute("stroke-linejoin", "round"); em.els[n] = el;
+        em.host.sc.holder.insertBefore(el, em.host.sc.el);
+      }
+      return el;
+    }
+    function frame(now) {
+      state.raf = requestAnimationFrame(frame);
+      var want = state.rec ? (fps.rec || 60) : (fps.idle || 24);
+      if (state.last && now - state.last < 1000 / want - 1) return;
+      var dt = Math.min(1 / 20, state.last ? (now - state.last) / 1000 : 1 / 60); state.last = now;
+      state.t += dt;
+      // The voice: the page's own microphone when it is open, else a performed one while recording.
+      var lv = levelOf ? levelOf() : null;
+      if (lv == null) { performed.tick(dt, !!state.rec); lv = performed.level; }
+      state.level = clamp(+lv || 0, 0, 1);
+      G.t = state.t; G.rec = state.rec; G.since = state.t - state.flipped; G.level = state.level;
+      // Global springs first, then everything else may read them.
+      var quiet = true, eps = settle.eps != null ? settle.eps : 0.002;
+      Object.keys(P.springs).forEach(function (name) {
+        var s = P.springs[name]; if (s.scope !== "global") return;
+        var st = spring(name); G.prev = st.prev; var target = evx(s.target, G), w = Math.max(0.1, evx(s.rate, G)), z = Math.max(0, evx(s.damp, G));
+        st.prev = target; st.vel += (target - st.v) * w * w * dt - 2 * z * w * st.vel * dt; st.v += st.vel * dt; G[name] = st.v;
+        if (Math.abs(st.v - target) > eps || Math.abs(st.vel) > eps * 10) quiet = false;
+      });
+      if (P.mark.scale || P.mark.rot || P.mark.opacity) {
+        var ms = P.mark.scale ? evx(P.mark.scale, G) : 1, mr = P.mark.rot ? evx(P.mark.rot, G) : 0;
+        scene.outer.setAttribute("transform", "translate(" + cx0 + " " + cy0 + ") rotate(" + mr.toFixed(2) + ") scale(" + ms.toFixed(4) + ") translate(" + (-cx0) + " " + (-cy0) + ")");
+        if (P.mark.opacity) scene.outer.style.opacity = clamp(evx(P.mark.opacity, G), 0, 1).toFixed(3);
+      }
+      shapes.forEach(function (s) {
+        var ctx = s.ctx, pr = s.comp.props;
+        Object.keys(P.springs).forEach(function (name) {
+          var sp2 = P.springs[name]; if (sp2.scope !== "shape") return;
+          var st = spring(name, s.id); ctx.prev = st.prev; var target = evx(sp2.target, ctx), w = Math.max(0.1, evx(sp2.rate, ctx)), z = Math.max(0, evx(sp2.damp, ctx));
+          st.prev = target; st.vel += (target - st.v) * w * w * dt - 2 * z * w * st.vel * dt; st.v += st.vel * dt; ctx[name] = st.v;
+          if (Math.abs(st.v - target) > eps || Math.abs(st.vel) > eps * 10) quiet = false;
+        });
+        if (pr.dx || pr.dy || pr.rot || pr.scale) {
+          var dx = pr.dx ? evx(pr.dx, ctx) : 0, dy = pr.dy ? evx(pr.dy, ctx) : 0, rot = pr.rot ? evx(pr.rot, ctx) : 0, sc = pr.scale ? evx(pr.scale, ctx) : 1;
+          s.sc.holder.setAttribute("transform", "translate(" + dx.toFixed(2) + " " + dy.toFixed(2) + ") translate(" + s.hx + " " + s.hy + ") rotate(" + rot.toFixed(2) + ") scale(" + sc.toFixed(4) + ") translate(" + (-s.hx) + " " + (-s.hy) + ")");
+        }
+        if (pr.opacity) s.sc.holder.style.opacity = clamp(evx(pr.opacity, ctx), 0, 1).toFixed(3);
+        if (pr.mix) { var col = mix(s.sc.ink, sig, evx(pr.mix, ctx)); if (s.sh.kind === "line") s.sc.el.setAttribute("stroke", col); else if (s.sh.kind === "bars") s.sc.el.setAttribute("stroke", col); else s.sc.el.setAttribute("fill", col); }
+        if (s.sc.bars && (pr.rise || pr.lean)) s.sc.bars.forEach(function (b) {
+          var bc = Object.create(ctx); bc.i = b.i; bc.f = b.f; bc.hgt = b.h0;
+          var rise = pr.rise ? clamp(evx(pr.rise, bc), 0, 1) : 0; bc.rise = rise;
+          var lean = pr.lean ? evx(pr.lean, bc) : 0;
+          b.set(rise, lean);
+        });
+      });
+      emits.forEach(function (em) {
+        var e = em.e, host = em.host, used = 0; if (!host) return;
+        var base = host.ctx, counts = e.repeat.map(function (r) { return Math.max(0, Math.min(64, Math.floor(evx(r, base)))); });
+        var n0 = counts[0] != null ? counts[0] : 1, n1 = counts[1] != null ? counts[1] : 1, color = e.color === "signal" ? sig : host.sc.ink;
+        for (var a = 0; a < n0; a++) for (var b = 0; b < n1; b++) {
+          var ctx = Object.create(base); if (e.as[0]) ctx[e.as[0]] = a; if (e.as[1]) ctx[e.as[1]] = b;
+          var el = element(em, used++), pts = [];
+          if (e.points) e.points.forEach(function (p) { pts.push(evx(p[0], ctx).toFixed(2) + "," + evx(p[1], ctx).toFixed(2)); });
+          else if (e.gen) { var cnt = Math.max(0, Math.min(64, Math.floor(evx(e.gen.count, ctx)))); for (var j = 0; j < cnt; j++) { ctx[e.gen.as] = j; pts.push(evx(e.gen.x, ctx).toFixed(2) + "," + evx(e.gen.y, ctx).toFixed(2)); } }
+          if (e.kind === "line") { el.setAttribute("x1", evx(e.x1 || ["n", 0], ctx)); el.setAttribute("y1", evx(e.y1 || ["n", 0], ctx)); el.setAttribute("x2", evx(e.x2 || ["n", 0], ctx)); el.setAttribute("y2", evx(e.y2 || ["n", 0], ctx)); el.setAttribute("stroke", color); el.setAttribute("stroke-width", evx(e.width, ctx).toFixed(2)); }
+          else if (e.kind === "circle") { el.setAttribute("cx", evx(e.cx || ["n", 0], ctx)); el.setAttribute("cy", evx(e.cy || ["n", 0], ctx)); el.setAttribute("r", Math.max(0, evx(e.r || ["n", 1], ctx))); el.setAttribute("fill", color); }
+          else { el.setAttribute("points", pts.join(" ")); if (e.kind === "polygon") { el.setAttribute("fill", color); el.setAttribute("stroke", "none"); } else { el.setAttribute("fill", "none"); el.setAttribute("stroke", color); el.setAttribute("stroke-width", evx(e.width, ctx).toFixed(2)); } }
+          el.style.opacity = clamp(evx(e.opacity, ctx), 0, 1).toFixed(3);
+        }
+        for (var u = used; u < em.els.length; u++) em.els[u].style.opacity = "0";
+      });
+      // Home: the recording is over and every spring is at rest, or its time is up.
+      if (state.settling && (quiet || G.since > (settle.timeout != null ? settle.timeout : 1.4))) {
+        Object.keys(springs).forEach(function (k) { springs[k].vel = 0; });
+        state.settling = false; var d = state.done; state.done = null; if (d) d();
       }
     }
-    return { start: start, stop: stop };
+    if (!reduced) { state.last = 0; state.raf = requestAnimationFrame(frame); }
+    return {
+      errors: P.errors,
+      start: function () { if (state.rec) return; state.rec = 1; state.flipped = state.t; state.settling = false; state.done = null; },
+      stop: function (done) { if (!state.rec) { done(); return; } state.rec = 0; state.flipped = state.t; state.settling = true; state.done = done; if (reduced) { state.settling = false; done(); } },
+      recording: function () { return !!state.rec; },
+      dispose: function () { cancelAnimationFrame(state.raf); state.raf = 0; },
+    };
   }
+    /* One key: `mic` is { mark, program, inset } as /v1/site sends it. */
+    return function (svg, mic, fg, levelOf) {
+      var prog = null, rec = false;
+      function paint(m) {
+        if (prog) prog.dispose();
+        var sp = { mark: m.mark, program: m.program };
+        prog = Program(renderMark(svg, sp, fg, m.inset), sp, levelOf);
+        if (rec) prog.start();
+      }
+      paint(mic);
+      return {
+        start: function () { rec = true; prog.start(); },
+        stop: function () { rec = false; prog.stop(function () {}); },
+        repaint: paint,
+      };
+    };
+  })();
   // The keyboard's key is the app's: black dots on white. The hero's own
   // button turns amber while it listens, so its dots are the ink.
 
@@ -2163,9 +2346,8 @@
   function pauseKeys() {
     keysOn = false; kgen++; clearTimeout(ktm);
     [].forEach.call(document.querySelectorAll(".k.down, .k.hold"), function (k) { k.classList.remove("down"); k.classList.remove("hold"); });
-    if (rowDots) rowDots.stop();
+    if (micProg) micProg.stop();
     if (micKey) micKey.classList.remove("live");
-    if (rowDots) rowDots.stop();
     dustClear();
   }
 
@@ -2354,6 +2536,8 @@
       site.maxSeconds = j.maxSeconds || 15;
       site.perMinute = j.perMinute || 6;
       site.freeWords = j.freeWords || 0;
+      // The mic key as the server has it today: same mark, same program as the phones.
+      if (j.mic && j.mic.mark && j.mic.program) { MIC = j.mic; if (micProg) micProg.repaint(MIC); }
     }
     applyCopy();
     if (!own) { sizeCanvas(); loadRiver(); }        // the server may have sent other lines
