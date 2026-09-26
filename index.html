@@ -2537,9 +2537,61 @@
       .then(function () { if (!own) loadRiver(); }, function () {});
   }
 
+  // Deep merge: the server can change one line inside a section's copy
+  // without resending the section (the old merge replaced whole top-level
+  // keys, so a partial object wiped the rest of that section).
+  function mergeInto(dst, src) {
+    for (var k in src) {
+      if (!Object.prototype.hasOwnProperty.call(src, k)) continue;
+      var v = src[k];
+      if (v && typeof v === "object" && !Array.isArray(v) && dst[k] && typeof dst[k] === "object" && !Array.isArray(dst[k])) mergeInto(dst[k], v);
+      else dst[k] = v;
+    }
+  }
+  // THE PAGE'S LOOK AND ORDER, FROM THE SERVER. theme: CSS custom properties
+  // ({ "amber": "#E8A23C" } sets --amber); layout: { order: [section ids],
+  // hidden: [ids], bands: { id: "on-paper" } }; meta: { title, description }.
+  // Everything absent keeps what this file draws.
+  function applyShape(j) {
+    var root = document.documentElement;
+    if (j.theme && typeof j.theme === "object") {
+      for (var t in j.theme) {
+        var val = String(j.theme[t]);
+        if (/^[a-z0-9-]{1,40}$/i.test(t) && !/[;{}<>]/.test(val)) root.style.setProperty("--" + t, val);
+      }
+    }
+    var L = j.layout || {};
+    var footer = document.querySelector("footer");
+    if (Array.isArray(L.order) && footer) {
+      L.order.forEach(function (id) {
+        var el = document.getElementById(id);
+        if (el && el.tagName === "SECTION" && el.parentNode === footer.parentNode) footer.parentNode.insertBefore(el, footer);
+      });
+    }
+    if (Array.isArray(L.hidden)) {
+      Array.prototype.forEach.call(document.querySelectorAll("section[id]"), function (el) {
+        el.hidden = L.hidden.indexOf(el.id) >= 0;
+      });
+    }
+    if (L.bands && typeof L.bands === "object") {
+      for (var id in L.bands) {
+        var sec = document.getElementById(id), band = String(L.bands[id]);
+        if (sec && /^on-[a-z-]+$/.test(band)) {
+          sec.className = sec.className.replace(/\bon-[a-z-]+\b/g, "").trim() + " " + band;
+        }
+      }
+    }
+    if (j.meta && typeof j.meta === "object") {
+      if (typeof j.meta.title === "string" && j.meta.title) document.title = j.meta.title;
+      var d = document.querySelector('meta[name="description"]');
+      if (d && typeof j.meta.description === "string" && j.meta.description) d.setAttribute("content", j.meta.description);
+    }
+  }
+
   fetch(API + "/v1/site").then(function (r) { return r.json(); }).then(function (j) {
-    if (j && j.copy) { for (var k in j.copy) if (Object.prototype.hasOwnProperty.call(j.copy, k)) C[k] = j.copy[k]; }
+    if (j && j.copy) mergeInto(C, j.copy);
     if (j) {
+      try { applyShape(j); } catch (e) { /* a bad shape never breaks the page */ }
       site.downloads = j.downloads || {};
       site.demo = !!j.demo || forceDemo;
       site.maxSeconds = j.maxSeconds || 15;
