@@ -25,6 +25,10 @@
       "destination": "https://api.tailzu.space/pricing"
     },
     {
+      "source": "/pay",
+      "destination": "https://api.tailzu.space/pay"
+    },
+    {
       "source": "/.well-known/:path*",
       "destination": "https://api.tailzu.space/.well-known/:path*"
     }
