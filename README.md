@@ -1,23 +1,52 @@
 # tailzu.space
 
-One file. No build, no framework, no dependencies, no tracker.
+No build, no framework, no dependencies, no tracker.
 
 ```
-index.html      the landing page — the river, the word, the buttons, the live microphone
+index.html            the landing page — the river, the word, the buttons, the live microphone
+robots.txt            every search engine and AI assistant welcome; the API is not a page
+favicon.svg           the mark, as the header draws it (the icon source)
+favicon.ico           48/32/16, for crawlers and browsers that want a raster
+apple-touch-icon.png  180 × 180
+icon-512.png          the logo in the page's structured data
+og.png                the card a shared link unfurls into (1200 × 630)
+<key>.txt             the IndexNow key (tulmi/scripts/indexnow.sh)
 ```
 
-`/privacy`, `/terms` and `/download` are served by the backend, which has
-carried them as HTML since before there was a site. Publishing a file of the
-same name here overrides the built-in page; deleting it brings the built-in
-page back, so the legal text is never unreachable.
+The pictures are rendered, not drawn by hand: `tools/media/render-site.mjs`
+in the frontend repo writes og.png and the icons from `og.html` and this
+folder's favicon.svg.
+
+## What machines read
+
+The page's words come from `/v1/site` once its script runs; most crawlers
+(the ones behind ChatGPT, Claude and Perplexity, and every link preview) do
+not run it. So the backend also writes them INTO the HTML, between the
+`SEO:` markers: the title, summary, canonical, link card, icons and
+structured data in the head, and the steps, the tones and the questions in
+the body. Never edit between the markers; edit the backend and sync:
+
+```
+cd TAILZU-BACKEND/tulmi && npx tsx scripts/sync-site.mts ../../tailzu-web/index.html
+```
+
+`--check` fails when the page and the backend disagree.
+
+`/languages`, `/languages/<name>`, `/faq`, `/sitemap.xml`, `/llms.txt` and
+`/llms-full.txt` are the backend's too (src/seo), served through the rewrites
+below and canonical here.
+
+`/privacy`, `/terms`, `/pricing` and `/download` are served by the backend,
+which has carried them as HTML since before there was a site.
 
 ## Publishing
 
 The site is on Vercel, deployed from this repo: a push to
 `claude/repo-analysis-verdict-6lpyaw` is the deploy, live in under a minute.
 `vercel.json` proxies `/v1/*`, `/download`, `/downloads/*`, `/privacy`,
-`/terms` and `/.well-known/*` to the API, so the page and the API share the
-apex. Nothing is copied to the VPS for the site.
+`/terms`, `/pricing`, `/pay`, `/languages*`, `/faq`, `/sitemap.xml`,
+`/llms*.txt` and `/.well-known/*` to the API, so the page and the API share
+the apex. Nothing is copied to the VPS for the site.
 
 ## The mic key is the phone's
 
