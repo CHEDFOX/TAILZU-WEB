@@ -3,19 +3,35 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Tailzu</title>
-<meta name="description" content="Talk. It writes. Speak Hindi, Hinglish or any of 22 Indian languages — your own words come back spelled in English letters, ready to send, in any app.">
 <meta name="theme-color" content="#0F0D0B">
-<!-- THE MARK IS THE FAVICON, exactly as the header draws it: the same
-     nine shapes, nested at their own coordinates so the two cannot
-     drift apart. The only thing the icon adds is the ground under it
-     and a margin, because a tab gives a logo sixteen pixels and the
-     mark on its own artboard would spend most of them on air.
-     Inline: nine shapes are smaller than the request that would fetch
-     them, and one file is the whole site. -->
-<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%201000%201000%22%3E%20%3Crect%20width=%221000%22%20height=%221000%22%20fill=%22%230F0D0B%22/%3E%20%3Csvg%20x=%2270%22%20y=%22176%22%20width=%22860%22%20height=%22648%22%20viewBox=%22170%20228%20680%20512%22%3E%20%3Cline%20x1=%22346%22%20y1=%22402%22%20x2=%22270%22%20y2=%22598%22%20stroke=%22%23E9CBA2%22%20stroke-width=%229%22%20stroke-linecap=%22round%22/%3E%20%3Cline%20x1=%22444%22%20y1=%22394%22%20x2=%22554%22%20y2=%22486%22%20stroke=%22%23E8A23C%22%20stroke-width=%2230%22%20stroke-dasharray=%229%2011%22/%3E%20%3Cline%20x1=%22668%22%20y1=%22478%22%20x2=%22828%22%20y2=%22243%22%20stroke=%22%23C77A3A%22%20stroke-width=%229%22%20stroke-linecap=%22round%22/%3E%20%3Ccircle%20cx=%22828%22%20cy=%22243%22%20r=%2211%22%20fill=%22%23B06240%22/%3E%20%3Crect%20x=%22308%22%20y=%22269%22%20width=%22132%22%20height=%22132%22%20rx=%2228%22%20fill=%22%23F4F1EA%22/%3E%20%3Crect%20x=%22558%22%20y=%22478%22%20width=%22132%22%20height=%22132%22%20rx=%2228%22%20fill=%22%23F4F1EA%22/%3E%20%3Crect%20x=%22178%22%20y=%22598%22%20width=%22132%22%20height=%22132%22%20rx=%2228%22%20fill=%22%23F4F1EA%22/%3E%20%3C/svg%3E%20%3C/svg%3E">
+<!-- SEO:HEAD
+     Written by the backend (tulmi/scripts/sync-site.mts) from src/seo/facts.ts:
+     the title, the summary, the canonical, the link card, the icons and the
+     structured data. Edit them there and sync; an edit here is overwritten. -->
+<title>Tailzu — AI Voice Typing for Hindi, Hinglish &amp; 22 Indian Languages</title>
+<meta name="description" content="Talk. It writes. Speak Hindi, Hinglish or any of 22 Indian languages and clean, ready-to-send text lands in any app. iPhone, Android, Windows and Mac.">
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+<link rel="canonical" href="https://tailzu.space/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Tailzu">
+<meta property="og:locale" content="en_IN">
+<meta property="og:url" content="https://tailzu.space/">
 <meta property="og:title" content="Tailzu — say it badly, send it perfect">
-<meta property="og:description" content="Talk. It writes. Your words, spelled in English letters — not translated, not in an alphabet you don't type.">
+<meta property="og:description" content="Talk. It writes. Your words, spelled the way you type — not translated, not in an alphabet you don't type.">
+<meta property="og:image" content="https://tailzu.space/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Tailzu. Talk. It writes. A sentence said roughly, written clean.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Tailzu — say it badly, send it perfect">
+<meta name="twitter:description" content="Talk. It writes. Your words, spelled the way you type — not translated, not in an alphabet you don't type.">
+<meta name="twitter:image" content="https://tailzu.space/og.png">
+<meta name="apple-itunes-app" content="app-id=6784811357">
+<link rel="icon" href="https://tailzu.space/favicon.ico" sizes="48x48">
+<link rel="icon" href="https://tailzu.space/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="https://tailzu.space/apple-touch-icon.png">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://tailzu.space/#org","name":"Tailzu","url":"https://tailzu.space/","logo":{"@type":"ImageObject","url":"https://tailzu.space/icon-512.png","width":512,"height":512},"parentOrganization":{"@type":"Organization","name":"Xooteq Lab Private Limited","url":"https://xooteq.com"}},{"@type":"WebSite","@id":"https://tailzu.space/#website","name":"Tailzu","url":"https://tailzu.space/","inLanguage":"en","publisher":{"@id":"https://tailzu.space/#org"}},{"@type":"SoftwareApplication","@id":"https://tailzu.space/#app","name":"Tailzu","alternateName":"Tailzu Voice Keyboard","description":"Tailzu is an AI voice keyboard for iPhone, Android, Windows and Mac. You speak in Hindi, Hinglish, any of India's 22 scheduled languages, English or dozens more, and clean, ready-to-send text lands in any app: filler gone, punctuation in, names and numbers kept exactly as you said them.","url":"https://tailzu.space/","applicationCategory":"UtilitiesApplication","applicationSubCategory":"Voice keyboard","operatingSystem":"iOS, Android, Windows, macOS","downloadUrl":["https://apps.apple.com/app/id6784811357","https://play.google.com/store/apps/details?id=com.tulmi.app","https://tailzu.space/download"],"installUrl":["https://apps.apple.com/app/id6784811357","https://play.google.com/store/apps/details?id=com.tulmi.app"],"sameAs":["https://apps.apple.com/app/id6784811357","https://play.google.com/store/apps/details?id=com.tulmi.app"],"image":"https://tailzu.space/og.png","publisher":{"@id":"https://tailzu.space/#org"},"offers":[{"@type":"Offer","name":"Free","price":"0","priceCurrency":"USD","description":"800 words a month."},{"@type":"Offer","name":"Lite","price":"9.99","priceCurrency":"USD","priceSpecification":{"@type":"UnitPriceSpecification","price":"9.99","priceCurrency":"USD","billingDuration":"P1M","unitCode":"MON"},"description":"Unlimited words, billed monthly."},{"@type":"Offer","name":"Elite","price":"59.99","priceCurrency":"USD","priceSpecification":{"@type":"UnitPriceSpecification","price":"59.99","priceCurrency":"USD","billingDuration":"P1Y","unitCode":"ANN"},"description":"Unlimited words, billed yearly. 7 days free in the app."}],"featureList":["Voice typing in all 22 scheduled languages of India, Hinglish and English","Voice typing in 23 more languages, including Spanish, Arabic and Japanese","Removes filler words and adds punctuation; keeps names, numbers and amounts exactly","Keeps mixed languages mixed: Hinglish stays Hinglish","Writes in the native script or in English letters","16 voices that set the tone of every message","Works as a keyboard in every app on iPhone and Android","Desktop app for Windows and Mac: tap Ctrl twice, talk, and the text is pasted at the cursor"],"inLanguage":"en","availableOnDevice":"iPhone, Android phone, Windows PC, Mac"},{"@type":"WebPage","@id":"https://tailzu.space/","url":"https://tailzu.space/","name":"Tailzu","description":"Talk. It writes. Speak Hindi, Hinglish or any of 22 Indian languages and clean, ready-to-send text lands in any app. iPhone, Android, Windows and Mac.","inLanguage":"en","isPartOf":{"@id":"https://tailzu.space/#website"},"about":{"@id":"https://tailzu.space/#app"}},{"@type":"FAQPage","@id":"https://tailzu.space/#faq","mainEntity":[{"@type":"Question","name":"What is Tailzu?","acceptedAnswer":{"@type":"Answer","text":"A voice keyboard. Talk in any language, send clean text."}},{"@type":"Question","name":"Does it work in WhatsApp?","acceptedAnswer":{"@type":"Answer","text":"Yes. It's a keyboard, so every app."}},{"@type":"Question","name":"Which languages?","acceptedAnswer":{"@type":"Answer","text":"22 Indian languages, Hinglish, English and 20+ more."}},{"@type":"Question","name":"Hinglish?","acceptedAnswer":{"@type":"Answer","text":"Native. Two languages stay two."}},{"@type":"Question","name":"Does it change what I said?","acceptedAnswer":{"@type":"Answer","text":"It cleans. It never rewrites. Names and amounts stay."}},{"@type":"Question","name":"Is it free?","acceptedAnswer":{"@type":"Answer","text":"800 words a month, free. Then upgrade."}},{"@type":"Question","name":"Is my voice stored?","acceptedAnswer":{"@type":"Answer","text":"Not by default. Audio is deleted once it's written."}},{"@type":"Question","name":"Offline?","acceptedAnswer":{"@type":"Answer","text":"No. It needs a connection to hear you."}}]}]}</script>
+<!-- /SEO:HEAD -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300..500;1,6..72,300..500&family=Instrument+Sans:wght@400;500&family=IBM+Plex+Mono:wght@400&family=Caveat:wght@400..700&family=Kalam:wght@400;700&display=swap">
@@ -702,7 +718,7 @@
     <div class="head">
       <div><h2 id="howTitle">Talk. It writes.</h2></div>
     </div>
-    <div class="steps" id="steps"></div>
+    <div class="steps" id="steps"><!-- SEO:steps --><div class="step"><p class="n">01</p><h3>You speak.</h3></div><div class="step"><p class="n">02</p><h3>It hears what you mean.</h3></div><div class="step"><p class="n">03</p><h3>Written.</h3></div><!-- /SEO:steps --></div>
     <p class="getrow"><a class="get-it" data-dl href="/download">Download</a></p>
   </div>
 </section>
@@ -749,8 +765,8 @@
       <div><h2 id="toneTitle">Same words. Your tone.</h2></div>
       <p class="lede" id="toneLede">Pick once. Every message wears it.</p>
     </div>
-    <p class="said" id="toneSaid"></p>
-    <div class="tonegrid" id="toneGrid"></div>
+    <p class="said" id="toneSaid"><!-- SEO:toneSaid -->hey can u send the file tonight its kinda urgent<!-- /SEO:toneSaid --></p>
+    <div class="tonegrid" id="toneGrid"><!-- SEO:toneGrid --><div class="tcard t0"><span class="tn">Neutral</span><p>Can you send the file tonight? It's fairly urgent.</p></div><div class="tcard t1"><span class="tn">Casual</span><p>Hey, can you send the file tonight? Kinda urgent.</p></div><div class="tcard t2"><span class="tn">Formal</span><p>Could you please send the file this evening? It is time-sensitive.</p></div><div class="tcard t3"><span class="tn">Excited</span><p>Can you send the file tonight? Can't wait to dig in!</p></div><div class="tcard t4"><span class="tn">Shakespeare</span><p>Prithee, send the file ere night doth fall. 'Tis most urgent.</p></div><div class="tcard t5"><span class="tn">Pirate</span><p>Arr, send the file tonight, matey. It be urgent.</p></div><div class="tcard t6"><span class="tn">Movie Trailer</span><p>One file. One night. And time is running out.</p></div><div class="tcard t7"><span class="tn">Noir</span><p>The file. Tonight. In this town, urgent means yesterday.</p></div><!-- /SEO:toneGrid --></div>
     <p class="getrow"><a class="get-it" data-dl href="/download">Download</a></p>
   </div>
 </section>
@@ -801,7 +817,7 @@
     <div class="head">
       <div><h2 id="faqTitle">Asked, answered.</h2></div>
     </div>
-    <div class="faq" id="faq"></div>
+    <div class="faq" id="faq"><!-- SEO:faq --><div class="qa"><h3>What is Tailzu?</h3><p>A voice keyboard. Talk in any language, send clean text.</p></div><div class="qa"><h3>Does it work in WhatsApp?</h3><p>Yes. It's a keyboard, so every app.</p></div><div class="qa"><h3>Which languages?</h3><p>22 Indian languages, Hinglish, English and 20+ more.</p></div><div class="qa"><h3>Hinglish?</h3><p>Native. Two languages stay two.</p></div><div class="qa"><h3>Does it change what I said?</h3><p>It cleans. It never rewrites. Names and amounts stay.</p></div><div class="qa"><h3>Is it free?</h3><p>800 words a month, free. Then upgrade.</p></div><div class="qa"><h3>Is my voice stored?</h3><p>Not by default. Audio is deleted once it's written.</p></div><div class="qa"><h3>Offline?</h3><p>No. It needs a connection to hear you.</p></div><!-- /SEO:faq --></div>
     <p class="getrow"><a class="get-it" data-dl href="/download">Download</a></p>
   </div>
 </section>
@@ -816,7 +832,7 @@
 <footer data-tone="dark">
   <div class="wrap"><div class="in">
     <span>© 2026 Tailzu</span>
-    <nav><a href="/pricing">Pricing</a><a href="/privacy">Privacy</a><a href="/terms">Terms</a><a href="/download">Download</a></nav>
+    <nav><a href="/languages">Languages</a><a href="/faq">FAQ</a><a href="/pricing">Pricing</a><a href="/privacy">Privacy</a><a href="/terms">Terms</a><a href="/download">Download</a></nav>
   </div></div>
 </footer>
 
@@ -979,19 +995,21 @@
       said: "um add a retry to the upload thing like three attempts with backoff and log every failure",
       wrote: "// Add a retry to the upload: three attempts with exponential backoff. Log each failure."
     },
+    // SEO:faqCopy — the backend's SITE_UI.faq, written by tulmi/scripts/sync-site.mts
     faq: {
       title: "Asked, answered.",
       items: [
-        { q: "Does it work in WhatsApp?", a: "Yes. It's a keyboard. Every app." },
-        { q: "Which languages?", a: "Most of the world's." },
+        { q: "What is Tailzu?", a: "A voice keyboard. Talk in any language, send clean text." },
+        { q: "Does it work in WhatsApp?", a: "Yes. It's a keyboard, so every app." },
+        { q: "Which languages?", a: "22 Indian languages, Hinglish, English and 20+ more." },
         { q: "Hinglish?", a: "Native. Two languages stay two." },
         { q: "Does it change what I said?", a: "It cleans. It never rewrites. Names and amounts stay." },
-        { q: "Can I change the tone?", a: "One tap on the keyboard." },
         { q: "Is it free?", a: "{n} words a month, free. Then upgrade." },
-        { q: "Why Full Access on iPhone?", a: "It's how a keyboard reaches the internet." },
+        { q: "Is my voice stored?", a: "Not by default. Audio is deleted once it's written." },
         { q: "Offline?", a: "No. It needs a connection to hear you." }
       ]
     },
+    // /SEO:faqCopy
     download: { get: "Download" },
     stores: { ios: "https://apps.apple.com/app/id6784811357", android: "https://play.google.com/store/apps/details?id=com.tulmi.app" }
   };

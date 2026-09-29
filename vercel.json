@@ -31,6 +31,59 @@
     {
       "source": "/.well-known/:path*",
       "destination": "https://api.tailzu.space/.well-known/:path*"
+    },
+    {
+      "source": "/languages",
+      "destination": "https://api.tailzu.space/languages"
+    },
+    {
+      "source": "/languages/:slug",
+      "destination": "https://api.tailzu.space/languages/:slug"
+    },
+    {
+      "source": "/faq",
+      "destination": "https://api.tailzu.space/faq"
+    },
+    {
+      "source": "/sitemap.xml",
+      "destination": "https://api.tailzu.space/sitemap.xml"
+    },
+    {
+      "source": "/llms.txt",
+      "destination": "https://api.tailzu.space/llms.txt"
+    },
+    {
+      "source": "/llms-full.txt",
+      "destination": "https://api.tailzu.space/llms-full.txt"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/og.png",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=86400"
+        }
+      ]
+    },
+    {
+      "source": "/(favicon.svg|favicon.ico|apple-touch-icon.png|icon-512.png)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=604800"
+        }
+      ]
+    },
+    {
+      "source": "/robots.txt",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=3600"
+        }
+      ]
     }
   ]
 }
