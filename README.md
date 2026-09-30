@@ -28,6 +28,7 @@ the body. Never edit between the markers; edit the backend and sync:
 
 ```
 cd TAILZU-BACKEND/tulmi && npx tsx scripts/sync-site.mts ../../tailzu-web/index.html
+cd ../../tailzu-web && node csp.mjs
 ```
 
 `--check` fails when the page and the backend disagree.
@@ -43,10 +44,22 @@ which has carried them as HTML since before there was a site.
 
 The site is on Vercel, deployed from this repo: a push to
 `claude/repo-analysis-verdict-6lpyaw` is the deploy, live in under a minute.
-`vercel.json` proxies `/v1/*`, `/download`, `/downloads/*`, `/privacy`,
-`/terms`, `/pricing`, `/pay`, `/languages*`, `/faq`, `/sitemap.xml`,
-`/llms*.txt` and `/.well-known/*` to the API, so the page and the API share
-the apex. Nothing is copied to the VPS for the site.
+`vercel.json` proxies `/v1/site`, `/v1/demo/transcribe`, `/v1/pay/report`,
+`/download`, the three installers under `/downloads/`, `/privacy`, `/terms`,
+`/pricing`, `/pay`, `/languages*`, `/faq`, `/sitemap.xml`, `/llms*.txt` and
+`/.well-known/*` to the API — only what the pages call, never the rest of the
+API. Nothing is copied to the VPS for the site; `.vercelignore` keeps this
+file, `csp.mjs` and `scratchpad/` off the site.
+
+**The page's Content-Security-Policy allows its inline script and style by
+hash.** Any edit to either — and every sync that changes the FAQ, which is
+written inside the script — changes the hash, and a stale hash stops the
+script. After editing or syncing, and before pushing:
+
+```
+node csp.mjs            # writes the hashes into vercel.json
+node csp.mjs --check    # fails when vercel.json is stale
+```
 
 ## The mic key is the phone's
 
