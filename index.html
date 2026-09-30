@@ -53,20 +53,9 @@
        an unfinished one whatever its colours are. .52 is 4.71:1 and clears AA
        for small text; .62 is 6.26:1. Same hue, same family, nothing new —
        the page just stops whispering. */
-    /* THREE SURFACES, NOT TWO — the same hue, further up.
-       The app has a ground and a card, and two values over a whole page is
-       what made this hard rather than calm: everything was either the void
-       or the one thing on it. A page is also read further away and on a
-       brighter screen than a phone in the hand, where the same values sit
-       darker and flatter. So the ground stays exactly the app's and the
-       ladder is built upward from it — a wash for whole sections, a surface
-       for the card, a raise for the small things that sit on the card.
-
-       #211C17 is the ceiling, not a preference: above it --dim drops under
-       4.5:1 and the labels stop clearing AA. scratchpad/contrast.js prints
-       the table for any surface you are thinking of. */
-    --ink: #0F0D0B; --wash: #141110; --card: #211C17; --raise: rgba(243,226,198,.055);
-    --rule: rgba(243,226,198,.15);
+    /* scratchpad/contrast.js prints the table for any surface you are
+       thinking of. */
+    --ink: #0F0D0B; --raise: rgba(243,226,198,.055);
     --white: #F3E2C6; --grey: rgba(243,226,198,.62); --dim: rgba(243,226,198,.52);
     --amber: #E8A23C;
     /* THE COLOURS BELOW THE RIVER. The hero stays the app's dark, and the
@@ -77,14 +66,10 @@
        Text on every field is measured: ink on the warm ones, white on the
        deep ones, never a mid-tone on a mid-tone. */
     --paper: #FBF8F2; --ink2: #1B1712; --ink2-soft: rgba(27,23,18,.66); --line: rgba(27,23,18,.12);
-    --saffron: #F4A72C; --saffron-deep: #B8650C;
+    --saffron: #F4A72C;
     --indigo: #2A2878; --indigo-deep: #17163F;
     --teal: #167D71; --teal-deep: #0C4F47;
     --sun: #F7CF4A; --rose: #E4587B; --sky: #DCEBF7; --leaf: #DDF3E3; --butter: #FFF3C2;
-    /* THE HERO'S OWN FIELD. The page is a walk through fields of colour, so
-       the first screen is one too — a deep violet, not a black void with a
-       spotlight in it. Warm handwriting and a pale word on a cool ground. */
-    --violet: #1C1640;
     --serif: 'Newsreader', Georgia, 'Times New Roman', serif;
     --sans: 'Instrument Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
     --mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
@@ -138,7 +123,6 @@
   /* width, as well as the cap: a section is a flex column now, and a flex
      item with auto margins shrinks to its content instead of filling. */
   .wrap { width: 100%; max-width: 11.4rem; margin: 0 auto; padding: 0 .28rem; }
-  .eye { font-family: var(--mono); font-size: .11rem; letter-spacing: .2em; text-transform: uppercase; }
 
   /* ---- masthead ---------------------------------------------------------
      THE HEADER RIDES EVERY SCREEN. It sticks, the mark in the middle and
@@ -191,28 +175,6 @@
   .mark rect { transition: fill .3s; }
   .mast[data-tone="light"] .mark rect { fill: var(--ink2); }
 
-  /* ---- the one title ---------------------------------------------------
-     Over the buttons, four words at most, not in the accent. Nothing over
-     the river: the river is the headline.                                 */
-  .get h3 { margin: 0 0 .08rem; font-family: var(--serif); font-weight: 400; font-size: .34rem; line-height: 1.05; letter-spacing: -.02em; text-wrap: balance; }
-
-  /* ---- the ribbon ------------------------------------------------------
-     There is no hero above this any more, so this IS the hero. Many in, one
-     out — the shape of the product and the shape of the picture. The button
-     sits on the crossing, because pressing it puts your own voice through
-     the same funnel.
-
-     The height stays 520. It is tempting to grow it now that it is the first
-     thing, and growing it is wrong: the svg is SLICED, so a taller band does
-     not show more of the drawing, it zooms into the middle of it and crops
-     the sides. Tried at 660 — the threads lost their entry points off the
-     left edge and the one line going the other way ran off the right.      */
-  /* A POOL OF LIGHT AT THE CARET.
-     The eye goes to the brightest place before it reads anything, so the
-     brightest place should be where the thing happens. A flat ground gives it
-     nowhere to go and the whole band reads as evenly busy. This is the page's
-     own ink at four per cent — warm light, no new colour — and it is what
-     makes the caret the subject rather than one more mark among a hundred. */
   /* THE HERO IS THE KEYBOARD, ON THE CLOCK.
      The most concrete thing this product has is the keyboard itself, and
      the sharpest thing that can be said about it is what it costs. So the
@@ -242,15 +204,9 @@
      is sizing, and the whole thing collapses to a sliver. */
   .topgrid { display: grid; grid-template-columns: minmax(0, 1fr) 3.8rem; gap: .72rem; align-items: center; }
   .pitch { min-width: 0; }
-  /* THE CORRECTION, at hero scale. Room above it for the hand. */
-  .kbtitle { margin: 0 0 .62rem; padding-top: .46em; font-family: var(--serif); font-weight: 380; font-optical-sizing: auto; font-size: .778rem; line-height: 1.02; letter-spacing: -.028em; color: var(--white); }
-  .kw { position: relative; display: inline-block; }
-  .cutword { position: relative; display: inline-block; transition: color .4s .15s; }
-  .cutword::after { content: ""; position: absolute; left: -3%; right: -3%; top: 55%; height: .07em; border-radius: .02rem; background: var(--rose); transform: scaleX(0) rotate(-3deg); transform-origin: left center; transition: transform .38s cubic-bezier(.2,.8,.2,1); }
-  .kw.cut .cutword { color: rgba(243,226,198,.34); }
-  .kw.cut .cutword::after { transform: scaleX(1) rotate(-3deg); }
-  .fix { position: absolute; left: -.06em; bottom: 76%; font-family: 'Caveat', 'Kalam', cursive; font-weight: 600; font-size: .62em; line-height: 1; letter-spacing: 0; color: var(--sun); white-space: nowrap; transform: rotate(-6deg); transform-origin: left bottom; clip-path: inset(-20% 100% -20% 0); transition: clip-path .62s cubic-bezier(.2,.8,.2,1) .3s; }
-  .kw.cut .fix { clip-path: inset(-20% -12% -20% 0); }
+  /* THE CORRECTION, at hero scale. Room above it for the hand. The title
+     opts out of the page's capitals; the script does them by hand. */
+  .kbtitle { margin: 0 0 .62rem; padding-top: .5em; font-family: var(--serif); font-weight: 380; font-optical-sizing: auto; font-size: .778rem; line-height: 1.02; letter-spacing: -.028em; color: var(--white); text-transform: none; }
 
   /* THE TWO NUMBERS. Both stay on the screen: a number you have to
      remember is a number you never compare. Taps, not just seconds —
@@ -263,7 +219,7 @@
   .rrow.on .rlab { color: var(--white); }
   .rrow.typed .rtime { color: var(--rose); }
   .rrow.voice .rtime { color: var(--amber); }
-  .herodl { margin: 0; }
+  .herodl, .microw { margin: 0; }
   .hero .get-it { background: var(--white); color: var(--ink); height: .5rem; padding: 0 .28rem; font-size: .14rem; }
   /* The demo, when the server has it on: one line of small type under the
      button, which is also where it says anything it has to say. */
@@ -288,7 +244,6 @@
      piece of the same material and not a white sticker. */
   .dl a.primary { background: linear-gradient(180deg, #F8EBD3, var(--white) 55%); border-color: var(--white); box-shadow: inset 0 .01rem 0 rgba(255,255,255,.55), 0 .14rem .34rem -.18rem rgba(243,226,198,.35); color: var(--ink); font-weight: 500; }
   .dl a.primary:hover { opacity: .88; }
-  .dl a.soon { opacity: .4; pointer-events: none; }
 
   /* ---- the fields -------------------------------------------------------
      Each section is a field of one colour, edge to edge, and the type on it
@@ -356,8 +311,6 @@
   .t6 { background: var(--leaf); color: var(--ink2); }
   .t7 { background: var(--ink2); color: var(--paper); }
 
-  /* THE APPS. Four text fields as the apps draw them, each carrying a line
-     Tailzu wrote, so the claim "everywhere you type" is four places. */
   /* THE PHONE. The keyboard as it is on the phone, typing into whichever
      app is open: a key goes down and its letter pops up over it the way a
      real key does — and then the mic key, and the rest of the line lands
@@ -367,8 +320,6 @@
      it by hand. It's a keyless board. The strike draws itself, the hand
      writes itself left to right, and the phone's keys fall at the same
      moment. Room above the title for the hand. */
-  #appsTitle { padding-top: .5em; }
-  .kbtitle { text-transform: none; }
   .kw { position: relative; display: inline-block; }
   .cutword { position: relative; display: inline-block; transition: color .4s .15s; }
   .cutword::after { content: ""; position: absolute; left: -3%; right: -3%; top: 55%; height: .07em; border-radius: .02rem; background: var(--rose); transform: scaleX(0) rotate(-3deg); transform-origin: left center; transition: transform .38s cubic-bezier(.2,.8,.2,1); }
@@ -442,20 +393,13 @@
   .k.mic .mk { width: 100%; height: 100%; display: block; overflow: visible; }
   /* THE CUT. A pressed key is cut out of the board — it goes hollow and
      its letter lifts above it in a bigger key with a neck down to the hole,
-     the way a real key does. Held, the lifted key gives way to a tray of
-     small keys over it: the letter's other forms, the one it means lit. */
+     the way a real key does. */
   .k.down { transform: translateY(.02rem); background: #B8BCC6; box-shadow: inset 0 .02rem .04rem rgba(0,0,0,.26); }
   .k.letter.down { color: transparent; }
   .k.mic.down { background: var(--amber); box-shadow: none; }
   .k .pop { position: absolute; left: 50%; bottom: calc(100% + .06rem); width: 168%; height: .62rem; border-radius: .11rem; background: #fff; box-shadow: 0 .04rem .12rem rgba(0,0,0,.32), 0 0 0 .005rem rgba(0,0,0,.08); display: grid; place-items: center; font-size: .31rem; color: #000; opacity: 0; transform: translateX(-50%) translateY(.12rem) scale(.6); transform-origin: 50% 100%; transition: opacity .1s, transform .15s cubic-bezier(.2,.8,.2,1); pointer-events: none; z-index: 2; }
   .k .pop::after { content: ""; position: absolute; top: calc(100% - .01rem); left: 19%; right: 19%; height: .13rem; background: #fff; border-radius: 0 0 .05rem .05rem; }
   .k.down .pop { opacity: 1; transform: translateX(-50%) translateY(0) scale(1); }
-  .k.hold .pop { opacity: 0; }
-  .k .tray { position: absolute; left: -.06rem; bottom: calc(100% + .08rem); display: flex; gap: .04rem; padding: .06rem; border-radius: .13rem; background: #fff; box-shadow: 0 .08rem .22rem rgba(0,0,0,.34), 0 0 0 .005rem rgba(0,0,0,.08); opacity: 0; transform: translateY(.12rem) scale(.7); transform-origin: 10% 100%; transition: opacity .12s, transform .2s cubic-bezier(.2,.8,.2,1); pointer-events: none; z-index: 3; }
-  .k .tray.r { left: auto; right: -.06rem; transform-origin: 90% 100%; }
-  .k.hold .tray { opacity: 1; transform: translateY(0) scale(1); }
-  .tray i { font-style: normal; display: grid; place-items: center; width: .3rem; height: .4rem; border-radius: .07rem; font-size: .2rem; color: #000; }
-  .tray i.on { background: #0A84FF; color: #fff; }
   .bubble { display: inline-block; max-width: 92%; padding: .12rem .16rem; border-radius: .18rem .18rem .04rem .18rem; background: var(--leaf); color: var(--ink2); font-size: .16rem; line-height: 1.4; }
   .mail { background: #fff; color: var(--ink2); border-radius: .1rem; padding: .14rem .16rem; font-size: .16rem; line-height: 1.45; }
   .mail .to { font-family: var(--mono); font-size: .11rem; letter-spacing: .12em; color: var(--ink2-soft); margin-bottom: .08rem; }
@@ -559,7 +503,7 @@
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .95 0 0 0 0 .89 0 0 0 0 .78 0 0 0 .6 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
     background-size: 2rem 2rem;
   }
-  .wrap, .river, .get, .band, footer { position: relative; z-index: 1; }
+  .wrap, .band, footer { position: relative; z-index: 1; }
 
   /* THE MARK IS ALIVE, QUIETLY. The hatched link is the product — one square
      becoming another — so the hatching travels along it, from the first
@@ -581,7 +525,7 @@
   .reveal { opacity: 0; transform: translateY(.26rem); transition: opacity .9s cubic-bezier(.2,.85,.25,1), transform .9s cubic-bezier(.2,.85,.25,1); }
   .reveal.in { opacity: 1; transform: none; }
 
-      /* THE TALL CANVAS, 390 x 844. Same sections, same order, same motion,
+  /* THE TALL CANVAS, 390 x 844. Same sections, same order, same motion,
      one screen each. What sat side by side stacks in reading order — left
      first, so the title, then the phone — and the type is set for a canvas
      a quarter as wide. Nothing here is a breakpoint: it is keyed on the
@@ -686,7 +630,7 @@
         <p class="herodl"><a class="get-it" data-dl href="/download">Download</a></p>
         <!-- The demo, when the server has it on. One line, and the only
              place anything about the microphone is ever said. -->
-        <p style="margin:0"><button class="tiny" id="mic" aria-pressed="false" hidden><span id="micLabel">Say one yourself</span></button></p>
+        <p class="microw"><button class="tiny" id="mic" aria-pressed="false" hidden><span id="micLabel">Say one yourself</span></button></p>
       </div>
       <div class="phone" aria-hidden="true">
         <div class="screen">
@@ -705,9 +649,6 @@
     </div>
   </div>
 </section>
-
-<!-- No words under the river. The river is the headline, and the page
-     opens straight into colour. The buttons live on the price field. -->
 
 <!-- THE FIELDS. Six of them, each one colour, each one thing:
      how it works, the tones, the apps, the desk, the price, the questions.
@@ -822,13 +763,6 @@
   </div>
 </section>
 
-<!-- THE MACHINES. Say it rough, and a clean prompt lands in the box of
-     whichever machine you talk to. Three tabs, one line, the same picture
-     the phone shows in its own keyboard bar. -->
-
-<!-- FOR DEVELOPERS. The same picture as the machines above, in the window
-     a developer lives in: something said, and the change landing where the
-     cursor is, typed clean. -->
 <footer data-tone="dark">
   <div class="wrap"><div class="in">
     <span>© 2026 Tailzu</span>
@@ -861,17 +795,10 @@
 
   // ---- copy: the backend's, with this as the fallback --------------------
   var C = {
-    get: "Free to start.",
-    cta: "Speak", ctaHeld: "Stop", writing: "Writing…", again: "Again",
     micDenied: "Mic blocked.",
-    // The one word the whole field pours into. A word or two, never more:
-    // it has to be read at a glance, at the size of the thing swallowing a
-    // hundred threads.
-    absorb: "Heard.",
     // THE HERO IS THE DEMO, and this is everything it ever says: the
     // invitation, the three states, and what it offers once they have
-    // heard it. `title` is the headline for when the demo is switched off
-    // at the server and there is no button to press.
+    // heard it.
     hero: {
       said: "Said",
       typed: "Typed",
@@ -882,10 +809,6 @@
       writing: "Writing",
       again: "Say another."
     },
-    // The story the word tells, one word at a time, in this order. Each is
-    // two words at most: it has to be read at a glance at the size of a
-    // thing swallowing a hundred threads.
-    absorbs: ["Heard.", "Meant.", "Written.", "Sent."],
     cases: [
       { said: "um so like can we push the call to four",          wrote: "Can we push the call to four?", lang: "English" },
       { said: "the deploy is done but abhi testing baaki hai",    wrote: "The deploy is done, but abhi testing baaki hai.", lang: "Hinglish" },
@@ -1073,12 +996,6 @@
       return ((t ^ t >>> 14) >>> 0) / 4294967296;
     };
   }
-  /* The page's own colours, for the hero's threads: saffron, rose, sky,
-     leaf, sun, ember, pale, lilac. Depth does the rest — a near thread is
-     bright, big and fast, a far one dim, small and slow. */
-  var HUES = [[246,164,32], [242,84,128], [124,196,255], [110,232,168], [255,210,63], [255,122,69], [243,226,198], [201,184,255]];
-  function shade(b, hue) { return "rgba(" + hue.join(",") + "," + (0.32 + 0.68 * b).toFixed(3) + ")"; }
-
   /** The curve as a polyline: position and heading at intervals of arc length,
    *  so a word can be placed by distance without solving the bezier again. */
   function sample(P) {
@@ -1125,14 +1042,12 @@
   }, { passive: true });
 
   /**
-   * One current. `o.count` threads; `o.tone` [r,g,b] with `o.alpha` [lo,hi]
-   * for a single-colour current, or the page's hues without it; `o.calm`
-   * for a slower one; `o.tick(dt, now)` runs once per frame for whatever
-   * else keeps time with it.
+   * One current. `o.count` threads in `o.tone` [r,g,b] at `o.alpha` [lo,hi];
+   * `o.calm` for a slower one.
    */
   function Current(canvas, o) {
     var g = canvas.getContext("2d"), lanes = [], VIS = [0, 0, VB[0], VB[1]];
-    var DPR = 1, scale = 1, ox = 0, oy = 0, raf = 0, last = 0, ready = false;
+    var DPR = 1, scale = 1, raf = 0, last = 0, ready = false;
     var count = o.count || 44, calm = o.calm ? 0.6 : 1;
 
     /* ONE CURRENT, FROM THE LEFT. Every thread enters along the left edge,
@@ -1160,12 +1075,12 @@
         var p2x = EX - h2, p2y = ey + (r() - 0.5) * 6;
         if (p1x > p2x - 24) p1x = p2x - 24;
         var b = r(), bright = b > 0.78 ? 0.80 + r() * 0.20 : b > 0.46 ? 0.48 + r() * 0.30 : 0.22 + r() * 0.24;
-        var hue = HUES[Math.floor(r() * HUES.length)];
+        r();                          // (a hue, once) — kept so the seeded scatter is unchanged
         lanes.push({
           pts: sample([sx, sy, p1x, p1y, p2x, p2y, EX, ey]),
           face: FACES[k % FACES.length], bright: bright,
           size: 10 + bright * 7,      // a hand is small at its x-height
-          fill: o.tone ? "rgba(" + o.tone.join(",") + "," + (o.alpha[0] + (o.alpha[1] - o.alpha[0]) * bright).toFixed(3) + ")" : shade(bright, hue),
+          fill: "rgba(" + o.tone.join(",") + "," + (o.alpha[0] + (o.alpha[1] - o.alpha[0]) * bright).toFixed(3) + ")",
           track: (r() - 0.5) * 0.3,   // a hand is not squeezed, only a little uneven
           from: k + (o.seed || 0), gap: 1.10 + r() * 0.55,
           speed: (26 + bright * 72) * calm,
@@ -1223,7 +1138,6 @@
       DPR = Math.min(2, window.devicePixelRatio || 1);
       canvas.width = Math.round(w * DPR); canvas.height = Math.round(h * DPR);
       scale = unit() * 1.3;
-      ox = 0; oy = 0;
       VIS[0] = 0; VIS[1] = 0; VIS[2] = w / scale; VIS[3] = h / scale;
       build();
     }
@@ -1234,7 +1148,7 @@
       g.setTransform(1, 0, 0, 1, 0, 0);
       g.clearRect(0, 0, canvas.width, canvas.height);
       g.textBaseline = "middle";
-      var K = DPR * scale, TX = DPR * ox, TY = DPR * oy;
+      var K = DPR * scale;
 
       /* A word is a straight run of glyphs; the line under it is not. The
          angle is taken at the word's MIDDLE, and a word whose heading turns
@@ -1268,14 +1182,14 @@
               while (g3 < nP - 1 && pts[g3].s < sA) g3++;
               while (g3 > 0 && pts[g3].s > sA) g3--;
               var qa = pts[g3], cs = Math.cos(am), sn = Math.sin(am);
-              g.setTransform(K * cs, K * sn, -K * sn, K * cs, K * qa.x + TX, K * (qa.y + sway * (end - qa.s)) + TY);
+              g.setTransform(K * cs, K * sn, -K * sn, K * cs, K * qa.x, K * (qa.y + sway * (end - qa.s)));
               g.fillText(W.t.slice(c0, c1), 0, 0);
             }
           }
           p = 0;
         }
       }
-      g.setTransform(K, 0, 0, K, TX, TY);
+      g.setTransform(K, 0, 0, K, 0, 0);
 
       /* The edges fade HERE rather than by a css mask: a compositor mask
          over a canvas redrawn every frame re-rasterises it every frame; four
@@ -1304,7 +1218,6 @@
       if (!last) last = now;
       var dt = Math.min(64, now - last); last = now;
       relax(now);
-      if (o.tick) o.tick(dt, now);
       for (var i = 0; i < lanes.length; i++) { var L = lanes[i]; L.off = (L.off + L.speed * boost * dt / 1000) % L.period; }
       paint(now);
     }
@@ -1316,7 +1229,7 @@
   /* One current per screen below the hero, in that screen's own lighter
      shade — ink at a whisper on the light fields, pale at a whisper on the
      dark. The hero has none: it is one sentence on plain ground. */
-  var currents = [], ownSaid = "";
+  var currents = [];
   [].forEach.call(document.querySelectorAll("canvas.current"), function (c, i) {
     var ink = c.getAttribute("data-shade") === "ink";
     currents.push(Current(c, { count: 22, calm: true, seed: (i + 1) * 97, tone: ink ? [27, 23, 18] : [243, 226, 198], alpha: ink ? [0.07, 0.13] : [0.09, 0.17] }));
@@ -1346,8 +1259,7 @@
 
   } else {
     [].forEach.call(document.querySelectorAll(".reveal"), function (el) { el.classList.add("in"); });
-    currents.forEach(function (c) { c.start(); });
-    resumeKeys();
+    currents.forEach(function (c) { c.start(); });   // boot() starts the keys
   }
 
   // ---- downloads ----------------------------------------------------------
@@ -1370,7 +1282,8 @@
   var FILE_HOST = API || "https://api.tailzu.space";
   var FILES = { win: FILE_HOST + "/downloads/Tailzu-Setup.exe", mac: FILE_HOST + "/downloads/Tailzu.dmg", linux: FILE_HOST + "/downloads/Tailzu.AppImage" };
   function target(k) {
-    if (k === "ios" || k === "android") return (C.stores && C.stores[k]) || "/download";
+    // A store link is the server's, and only ever an https address.
+    if (k === "ios" || k === "android") return C.stores && /^https:\/\//.test(C.stores[k]) ? C.stores[k] : "/download";
     return site.downloads[k] ? FILES[k] : "/download";
   }
   function paintDownloads() {
@@ -1388,11 +1301,10 @@
      message for a moment and goes back to being a button. */
   var sayT = 0;
   function idleWord() { return own ? (C.hero.again || "Again") : (C.hero.invite || "Press. Say anything."); }
-  function say(msg, hot, hold) {
+  function say(msg, hold) {
     clearTimeout(sayT);
     micLabel.textContent = msg;
-    micLabel.classList.toggle("hot", !!hot);
-    if (!hold) sayT = setTimeout(function () { micLabel.classList.remove("hot"); micLabel.textContent = idleWord(); }, 3200);
+    if (!hold) sayT = setTimeout(function () { micLabel.textContent = idleWord(); }, 3200);
   }
 
   /* ---------------------------------------------------------------------
@@ -1547,8 +1459,8 @@
   var llmI = 0;
   var llmStage = stage({ section: "llm", pill: "llmPill", heard: "llmHeard", state: "llmState", text: "llmText", car: "llmCar",
                          said: function () { return C.llm.said; }, wrote: function () { return C.llm.wrote; } });
-  var devStage = stage({ section: "dev", pill: "devPill", heard: "devHeard", state: "devState", text: "devText", car: "devCar",
-                         said: function () { return C.dev.said; }, wrote: function () { return C.dev.wrote; } });
+  stage({ section: "dev", pill: "devPill", heard: "devHeard", state: "devState", text: "devText", car: "devCar",
+                  said: function () { return C.dev.said; }, wrote: function () { return C.dev.wrote; } });
 
   function paintStages() {
     setText("llmTitle", C.llm.title); setText("llmLede", C.llm.lede);
@@ -1584,17 +1496,24 @@
   // ---- the microphone -----------------------------------------------------
   var mic = $("mic"), micLabel = $("micLabel");
   var rec = null, stream_ = null, chunks = [], actx = null, analyser = null, vraf = 0;
-  var startedAt = 0, heard = false, lastLoud = 0, hard = 0, busy = false;
+  var heard = false, lastLoud = 0, hard = 0, busy = false;
 
   function pickMime() {
     var c = ["audio/webm;codecs=opus", "audio/webm", "audio/mp4", "audio/ogg;codecs=opus"];
-    for (var i = 0; i < c.length; i++) if (window.MediaRecorder && MediaRecorder.isTypeSupported(c[i])) return c[i];
+    for (var i = 0; i < c.length; i++) if (MediaRecorder.isTypeSupported(c[i])) return c[i];
     return "";
   }
   function ext(m) { return /mp4/.test(m) ? "m4a" : /ogg/.test(m) ? "ogg" : "webm"; }
 
+  /* The microphone could not be had, or a recording could not be made:
+     say so, let go of anything opened, and give the phone its loop back. */
+  function failed() {
+    if (rec) { rec.onstop = null; if (rec.state !== "inactive") try { rec.stop(); } catch (e) {} rec = null; }
+    stop(); say(C.micDenied); resumeAfter();
+  }
   function start() {
     if (busy) return;
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia || !window.MediaRecorder) { failed(); return; }
     navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true } }).then(function (s) {
       stream_ = s; chunks = [];
       var m = pickMime();
@@ -1602,22 +1521,19 @@
       rec.ondataavailable = function (e) { if (e.data && e.data.size) chunks.push(e.data); };
       rec.onstop = upload;
       rec.start();
-      startedAt = Date.now(); heard = false; lastLoud = startedAt;
-      mic.setAttribute("aria-pressed", "true"); say(C.hero.listening || "Listening", true, true);
-      listening = true;
+      heard = false; lastLoud = Date.now();
+      mic.setAttribute("aria-pressed", "true"); say(C.hero.listening || "Listening", true);
       // The key listens: the ring, on the visitor's own voice.
       if (micKey && micProg) { micKey.classList.add("live"); micProg.start(); }
       meter(s);
-      hard = setTimeout(stop, site.maxSeconds * 1000);
-    }, function () { say(C.micDenied); });   // only the permission itself
+      // A second under the server's cap, so a clip stopped by the clock is
+      // never refused for being a hair too long.
+      hard = setTimeout(stop, Math.max(1, site.maxSeconds - 1) * 1000);
+    }).catch(failed);
   }
 
   /* THE LEVEL. One number, not a bank of them: the ring has a single
-     radius, so the loudness of the whole voice is all there is to read.
-     Named apart from `level` itself — they shared a name, the variable won
-     the hoist, and every session died on "level is not a function" the
-     instant the microphone opened: no meter, no ring, and no stopping when
-     you paused, all reported as a blocked microphone. */
+     radius, so the loudness of the whole voice is all there is to read. */
   function meter(s) {
     try {
       actx = new (window.AudioContext || window.webkitAudioContext)();
@@ -1628,13 +1544,10 @@
     (function tick() {
       if (!analyser) return;
       analyser.getByteFrequencyData(buf);
-      // One number, not a bank of them: the caret has a single height, so
-      // the loudness of the whole voice is all there is to read.
       var sum = 0, n = Math.floor(buf.length / 2);
       for (var i = 0; i < n; i++) sum += buf[i] / 255;
-      level = Math.min(1, (sum / n) * 3.2);
+      var level = Math.min(1, (sum / n) * 3.2), now = Date.now();
       micLevel = level;
-      var now = Date.now();
       if (level > 0.19) { heard = true; lastLoud = now; }
       // It stops itself when you pause. A pitch is one breath long.
       if (heard && now - lastLoud > 1400) { stop(); return; }
@@ -1648,16 +1561,16 @@
     analyser = null;
     if (actx) { try { actx.close(); } catch (e) {} actx = null; }
     mic.setAttribute("aria-pressed", "false");
-    listening = false;
-    level = 0;
     micLevel = null;
     if (micKey && micProg) { micKey.classList.remove("live"); micProg.stop(); }
-    if (rec && rec.state !== "inactive") { busy = true; say(C.hero.writing || "Writing", true, true); rec.stop(); }
-    else say(idleWord(), false, true);
+    if (rec && rec.state !== "inactive") { busy = true; say(C.hero.writing || "Writing", true); rec.stop(); }
+    else say(idleWord(), true);
     if (stream_) { stream_.getTracks().forEach(function (t) { t.stop(); }); stream_ = null; }
   }
 
-  function done() { busy = false; }
+  /* The visitor's turn is over without a sentence of theirs to show: the
+     phone goes back to its own loop, if it can be seen. */
+  function resumeAfter() { staged = false; if (seen && !document.hidden) resumeStage(); }
 
   function upload() {
     var m = (rec && rec.mimeType) || "audio/webm";
@@ -1677,10 +1590,9 @@
       // Their own sentence, in the phone, on the clock — and it stays:
       // what the page actually did beats every example it was showing.
       ownSaid = w || s;
-      kgen++; clearTimeout(ktm);
       playApp(ownSaid);
-      done(); say(idleWord(), false, true);
-    }).catch(function (e) { done(); say(e.message || "Try again."); });
+      busy = false; say(idleWord(), true);
+    }).catch(function (e) { busy = false; say(e.message || "Try again."); resumeAfter(); });
   }
 
   function toggle() {
@@ -1722,7 +1634,7 @@
      demo is on, ends the loop: their sentence, held.
      ================================================================== */
   var rowTyped = $("rowTyped"), rowSaid = $("rowSaid");
-  var caseI = 0, sgen = 0, stm = 0, staged = false, seen = true, current = null, ownSaid = "";
+  var staged = false, seen = true, ownSaid = "";
 
   /** Set text on a node the page is animating. */
   function liveText(node, s) { live(node, function () { node.textContent = s; }); }
@@ -1818,23 +1730,16 @@
      slow way and the fast way, side by side, in one picture. Then the next
      app. It runs only while it can be seen.
      ================================================================== */
-  var kbEl = $("kb"), rowsEl = $("kbRows"), kbField = $("kbField"), kbApp = $("kbApp"), keyOf = {}, micKey = null, micProg = null, keyN = 0;
+  var kbEl = $("kb"), rowsEl = $("kbRows"), kbField = $("kbField"), kbApp = $("kbApp"), keyOf = {}, micKey = null, micProg = null;
   var appI = 0, kgen = 0, ktm = 0, keysOn = false;
-  /* The other forms a held letter offers, as the keyboard's own tray does. */
-  var TRAYS = { a: "a à á â ä ã å", e: "e è é ê ë", i: "i ì í î ï", o: "o ò ó ô ö õ", u: "u ù ú û ü", c: "c ç ć", n: "n ñ ń", s: "s ß ś š", y: "y ÿ", z: "z ž ź", l: "l ł", d: "d đ", h: "h ħ" };
   function buildKeys() {
-    rowsEl.innerHTML = ""; keyOf = {}; keyN = 0;
+    rowsEl.innerHTML = ""; keyOf = {};
     ["qwertyuiop", "asdfghjkl", "zxcvbnm"].forEach(function (row, ri) {
       var r = el("div", "krow r" + (ri + 1));
       if (ri === 2) r.appendChild(el("div", "k wide", "\u21E7"));
-      row.split("").forEach(function (ch, ci) {
+      row.split("").forEach(function (ch) {
         var k = el("div", "k letter", ch), pop = el("span", "pop", ch);
         pop.setAttribute("aria-hidden", "true"); k.appendChild(pop); keyOf[ch] = k; r.appendChild(k);
-        if (TRAYS[ch]) {
-          var tray = el("span", "tray" + (ci >= row.length / 2 ? " r" : ""));
-          TRAYS[ch].split(" ").forEach(function (alt) { tray.appendChild(el("i", alt === ch ? "on" : null, alt)); });
-          k.appendChild(tray); k.tray = true;
-        }
       });
       if (ri === 2) r.appendChild(el("div", "k wide", "\u232B"));
       rowsEl.appendChild(r);
@@ -2177,7 +2082,7 @@
       });
       return P;
     }
-    return { parse: parse, ev: ev, compile: compile, builtins: B };
+    return { ev: ev, compile: compile };
   })();
   /* A voice, performed: phrases with syllables in them, and pauses. Stands in
      for the microphone while the page speaks a sentence of its own. */
@@ -2230,7 +2135,7 @@
     Object.keys(P.vars).forEach(function (k) { G[k] = +P.vars[k]; });
     G.pi = Math.PI; G.tau = 2 * Math.PI; G.e = Math.E; G.cx = cx0; G.cy = cy0; G.U = U; G.R = R; G.vbw = vb[2]; G.vbh = vb[3];
     G.t = 0; G.rec = 0; G.since = 0; G.level = 0;
-    var state = { t: 0, rec: 0, flipped: 0, level: 0, settling: false, done: null, raf: 0, last: 0, gone: false };
+    var state = { t: 0, rec: 0, flipped: 0, level: 0, settling: false, done: null, raf: 0, last: 0 };
     var springs = {};                       // "name" or "name@shape" → { v, vel, prev }
     function spring(name, shapeId) { var key = shapeId ? name + "@" + shapeId : name; return springs[key] || (springs[key] = { v: P.springs[name].rest, vel: 0, prev: P.springs[name].rest }); }
     function evx(ast, ctx) { return Lang.ev(ast, ctx, P.funcs, 0); }
@@ -2339,10 +2244,8 @@
     }
     if (!reduced) { state.last = 0; state.raf = requestAnimationFrame(frame); }
     return {
-      errors: P.errors,
       start: function () { if (state.rec) return; state.rec = 1; state.flipped = state.t; state.settling = false; state.done = null; },
       stop: function (done) { if (!state.rec) { done(); return; } state.rec = 0; state.flipped = state.t; state.settling = true; state.done = done; if (reduced) { state.settling = false; done(); } },
-      recording: function () { return !!state.rec; },
       dispose: function () { cancelAnimationFrame(state.raf); state.raf = 0; },
     };
   }
@@ -2363,16 +2266,13 @@
       };
     };
   })();
-  // The keyboard's key is the app's: black dots on white. The hero's own
-  // button turns amber while it listens, so its dots are the ink.
-
   function resumeKeys() {
     if (keysOn) return; keysOn = true;
     if (rowsEl.children.length) playApp(own ? ownSaid : null);
   }
   function pauseKeys() {
     keysOn = false; kgen++; clearTimeout(ktm);
-    [].forEach.call(document.querySelectorAll(".k.down, .k.hold"), function (k) { k.classList.remove("down"); k.classList.remove("hold"); });
+    [].forEach.call(document.querySelectorAll(".k.down"), function (k) { k.classList.remove("down"); });
     if (micProg) micProg.stop();
     if (micKey) micKey.classList.remove("live");
     dustClear();
@@ -2560,7 +2460,8 @@
   // keys, so a partial object wiped the rest of that section).
   function mergeInto(dst, src) {
     for (var k in src) {
-      if (!Object.prototype.hasOwnProperty.call(src, k)) continue;
+      // JSON can carry an own "__proto__"; merged, it would reach Object.prototype.
+      if (!Object.prototype.hasOwnProperty.call(src, k) || k === "__proto__" || k === "constructor" || k === "prototype") continue;
       var v = src[k];
       if (v && typeof v === "object" && !Array.isArray(v) && dst[k] && typeof dst[k] === "object" && !Array.isArray(dst[k])) mergeInto(dst[k], v);
       else dst[k] = v;
