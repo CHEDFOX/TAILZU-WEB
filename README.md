@@ -43,7 +43,7 @@ which has carried them as HTML since before there was a site.
 ## Publishing
 
 The site is on Vercel, deployed from this repo: a push to
-`claude/repo-analysis-verdict-6lpyaw` is the deploy, live in under a minute.
+`main` (Vercel's production branch) is the deploy, live in under a minute.
 `vercel.json` proxies `/v1/site`, `/v1/demo/transcribe`, `/v1/pay/report`,
 `/download`, the three installers under `/downloads/`, `/privacy`, `/terms`,
 `/pricing`, `/pay`, `/languages*`, `/faq`, `/sitemap.xml`, `/llms*.txt` and
