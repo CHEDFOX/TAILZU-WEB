@@ -9,6 +9,8 @@
     { "source": "/terms", "destination": "https://api.tailzu.space/terms" },
     { "source": "/pricing", "destination": "https://api.tailzu.space/pricing" },
     { "source": "/pay", "destination": "https://api.tailzu.space/pay" },
+    { "source": "/pay/manage", "destination": "https://api.tailzu.space/pay/manage" },
+    { "source": "/v1/pay/razorpay/:action(subscription|verify|cancel)", "destination": "https://api.tailzu.space/v1/pay/razorpay/:action" },
     { "source": "/.well-known/:path*", "destination": "https://api.tailzu.space/.well-known/:path*" },
     { "source": "/languages", "destination": "https://api.tailzu.space/languages" },
     { "source": "/languages/:slug", "destination": "https://api.tailzu.space/languages/:slug" },
