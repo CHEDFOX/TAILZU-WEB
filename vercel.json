@@ -31,7 +31,7 @@
     {
       "source": "/(|index\\.html)",
       "headers": [
-        { "key": "Content-Security-Policy", "value": "default-src 'none'; script-src 'self' 'sha256-bp9FCix+DcyriMXWwdxZZeKnRzNNBww1Tl7pRF4d3/k='; style-src 'self' 'sha256-sjohOLF5GB15g/VCUG/+ZxLV4Csw2q5JhFQmxw5pQrI=' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' https://tailzu.space data:; connect-src 'self' https://api.tailzu.space; base-uri 'self'; form-action 'none'; frame-ancestors 'none'; object-src 'none'" }
+        { "key": "Content-Security-Policy", "value": "default-src 'none'; script-src 'self' 'sha256-tlacZCmLpxIpeAIzwx0LJKVG5bNkwUgUsW8mFbeTFPI='; style-src 'self' 'sha256-sjohOLF5GB15g/VCUG/+ZxLV4Csw2q5JhFQmxw5pQrI=' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' https://tailzu.space data:; connect-src 'self' https://api.tailzu.space; base-uri 'self'; form-action 'none'; frame-ancestors 'none'; object-src 'none'" }
       ]
     },
     {
