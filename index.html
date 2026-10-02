@@ -906,8 +906,14 @@
       title: "AI is already conversational.",
       lede: "Your computer should be too. Say it once.",
       targets: ["ChatGPT", "Claude", "Grok"], more: "and more", tag: "New chat",
-      said: "okay so um help me think through pricing for the team plan like per seat or usage or maybe both and what could go wrong with each",
-      wrote: "Help me think through pricing for the team plan: per seat, usage-based, or a hybrid of the two. For each, give the price point, the target customer and the biggest risk."
+      // One per machine, in the order of the targets.
+      prompts: [
+        { said: "okay so um explain black holes but like to a golden retriever", wrote: "Explain black holes to a golden retriever." },
+        { said: "uh write a breakup letter from my alarm clock to me, dramatic but polite", wrote: "Write a dramatic but polite breakup letter from my alarm clock to me." },
+        { said: "so um if cats ran the stock market what would crash first and why", wrote: "If cats ran the stock market, what would crash first, and why?" }
+      ],
+      said: "okay so um explain black holes but like to a golden retriever",
+      wrote: "Explain black holes to a golden retriever."
     },
     dev: {
       title: "Your hands don't have to be the bottleneck.",
@@ -1444,7 +1450,7 @@
         }
         lit(wrote, 0); car.classList.add("off");
         liveText(state, STATES.done); pill.classList.add("done");
-        t = setTimeout(function () { if (g === gen && on) run(); }, 4200);
+        t = setTimeout(function () { if (g === gen && on) { if (o.next) o.next(); run(); } }, 4200);
       }
     }
     if (window.IntersectionObserver) {
@@ -1458,9 +1464,19 @@
     return { restart: function () { if (on && !reduced) run(); else finish(); } };
   }
 
+  /* EACH MACHINE ITS OWN PROMPT. The tab picks it; when one has been
+     written, the next tab takes over, so the screen shows all of them
+     without anyone having to click. A copy with no per-machine prompts
+     plays its one said/wrote on every tab, as it always did. */
   var llmI = 0;
+  function llmPrompt() { var p = C.llm.prompts; return (p && p[llmI]) || C.llm; }
+  function llmSelect(i) {
+    llmI = i; $("llmName").textContent = C.llm.targets[i] || "";
+    [].forEach.call($("llmTabs").querySelectorAll("button"), function (x, k) { x.setAttribute("aria-selected", k === i ? "true" : "false"); });
+  }
   var llmStage = stage({ section: "llm", pill: "llmPill", heard: "llmHeard", state: "llmState", text: "llmText", car: "llmCar",
-                         said: function () { return C.llm.said; }, wrote: function () { return C.llm.wrote; } });
+                         said: function () { return llmPrompt().said; }, wrote: function () { return llmPrompt().wrote; },
+                         next: function () { var n = C.llm.targets.length; if (C.llm.prompts && n > 1) llmSelect((llmI + 1) % n); } });
   stage({ section: "dev", pill: "devPill", heard: "devHeard", state: "devState", text: "devText", car: "devCar",
                   said: function () { return C.dev.said; }, wrote: function () { return C.dev.wrote; } });
 
@@ -1470,11 +1486,7 @@
     C.llm.targets.forEach(function (name, i) {
       var b = el("button", null, name); b.type = "button"; b.setAttribute("role", "tab");
       b.setAttribute("aria-selected", i === llmI ? "true" : "false");
-      b.addEventListener("click", function () {
-        llmI = i; $("llmName").textContent = name;
-        [].forEach.call(tabs.children, function (x, k) { x.setAttribute("aria-selected", k === i ? "true" : "false"); });
-        llmStage.restart();
-      });
+      b.addEventListener("click", function () { llmSelect(i); llmStage.restart(); });
       tabs.appendChild(b);
     });
     if (C.llm.more) tabs.appendChild(el("span", "more", C.llm.more));
