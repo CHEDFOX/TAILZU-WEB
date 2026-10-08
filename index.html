@@ -1287,7 +1287,12 @@
   var FILES = { win: FILE_HOST + "/downloads/Tailzu-Setup.exe", mac: FILE_HOST + "/downloads/Tailzu.dmg", linux: FILE_HOST + "/downloads/Tailzu.AppImage" };
   function target(k) {
     // A store link is the server's, and only ever an https address.
-    if (k === "ios" || k === "android") return C.stores && /^https:\/\//.test(C.stores[k]) ? C.stores[k] : "/download";
+    var store = function (s) { return C.stores && /^https:\/\//.test(C.stores[s] || "") ? C.stores[s] : ""; };
+    if (k === "ios" || k === "android") return store(k) || "/download";
+    // Windows goes to the Microsoft Store once the server names a listing:
+    // signed by Microsoft, no SmartScreen warning, and it updates itself. The
+    // unsigned installer is the fallback, and stays on /download.
+    if (k === "win" && store("windows")) return store("windows");
     return site.downloads[k] ? FILES[k] : "/download";
   }
   function paintDownloads() {
