@@ -1,6 +1,7 @@
 # tailzu.space
 
-No build, no framework, no dependencies, no tracker.
+No build, no framework, no dependencies. One tracker, Meta's pixel, and
+only for ads: see [Meta's pixel](#metas-pixel).
 
 ```
 index.html            the landing page — the river, the word, the buttons, the live microphone
@@ -44,7 +45,7 @@ which has carried them as HTML since before there was a site.
 
 The site is on Vercel, deployed from this repo: a push to
 `main` (Vercel's production branch) is the deploy, live in under a minute.
-`vercel.json` proxies `/v1/site`, `/v1/demo/transcribe`, `/v1/pay/report`,
+`vercel.json` proxies `/v1/site`, `/v1/site/event`, `/site-events.js`, `/v1/demo/transcribe`, `/v1/pay/report`,
 `/download`, the three installers under `/downloads/`, `/privacy`, `/terms`,
 `/pricing`, `/pay`, `/languages*`, `/faq`, `/sitemap.xml`, `/llms*.txt` and
 `/.well-known/*` to the API — only what the pages call, never the rest of the
@@ -60,6 +61,24 @@ script. After editing or syncing, and before pushing:
 node csp.mjs            # writes the hashes into vercel.json
 node csp.mjs --check    # fails when vercel.json is stale
 ```
+
+## Meta's pixel
+
+`<script src="/site-events.js">` in the head is Meta's pixel, served by the
+API (`src/ads/meta.ts`) through the rewrite in `vercel.json`, so the dataset
+id is set once, in the API's `.env` (`META_PIXEL_ID`), and the API's own pages
+(/download, /pricing, /faq…) load the same file. Until it is set the file is
+empty. It reports the page view, `ViewContent` on /download and /pricing, and
+`Lead` when a link to an installer or a store is clicked; each Lead is also
+posted to `/v1/site/event`, which the API copies to Meta's Conversions API
+under the same event id, so a blocked pixel still counts and Meta counts it
+once.
+
+It does not load for a visitor whose browser asks not to be tracked (Global
+Privacy Control, Do Not Track), nor, while there is no consent banner, for one
+whose clock is in Europe (`META_SKIP_EUROPE`). The CSP allows
+`connect.facebook.net` and `www.facebook.com` for it, and nothing else of
+Meta's; `node csp.mjs` keeps those hosts.
 
 ## The mic key is the phone's
 
