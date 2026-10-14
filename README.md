@@ -5,6 +5,7 @@ only for ads: see [Meta's pixel](#metas-pixel).
 
 ```
 index.html            the landing page — the river, the word, the buttons, the live microphone
+api/                  Meta's pixel and its Conversions API copy (see Meta's pixel)
 robots.txt            every search engine and AI assistant welcome; the API is not a page
 favicon.svg           the mark, as the header draws it (the icon source)
 favicon.ico           48/32/16, for crawlers and browsers that want a raster
@@ -64,15 +65,26 @@ node csp.mjs --check    # fails when vercel.json is stale
 
 ## Meta's pixel
 
-`<script src="/site-events.js">` in the head is Meta's pixel, served by the
-API (`src/ads/meta.ts`) through the rewrite in `vercel.json`, so the dataset
-id is set once, in the API's `.env` (`META_PIXEL_ID`), and the API's own pages
-(/download, /pricing, /faq…) load the same file. Until it is set the file is
-empty. It reports the page view, `ViewContent` on /download and /pricing, and
-`Lead` when a link to an installer or a store is clicked; each Lead is also
-posted to `/v1/site/event`, which the API copies to Meta's Conversions API
-under the same event id, so a blocked pixel still counts and Meta counts it
-once.
+`<script src="/site-events.js">` in the head is Meta's pixel. Vercel serves
+it, from `api/site-events.js` through the rewrite in `vercel.json`, with the
+dataset id from the project's environment variables (Vercel → Settings →
+Environment Variables): `META_PIXEL_ID`, and `META_CAPI_TOKEN` for the
+Conversions API. Other names work too, as long as the id's name says PIXEL or
+DATASET and the token's says TOKEN. A change there needs a redeploy. The API's
+own pages (/download, /pricing, /faq…) come through the same site, so they
+load the same file. Until the id is set the file is one comment, and the
+first line of the file says whether the Conversions API is on.
+
+It reports the page view, `ViewContent` on /download and /pricing, and `Lead`
+when a link to an installer or a store is clicked. Each Lead is also posted
+to `/v1/site/event` (`api/site-event.js`), which copies it to Meta's
+Conversions API under the same event id, so a blocked pixel still counts and
+Meta counts it once.
+
+What only the API sees (an account made, its first dictation, a subscription
+paid for, the phone apps' milestones) the API reports itself, from its own
+`.env` (`src/ads/meta.ts`, which keeps the same script; change one, change
+both).
 
 It does not load for a visitor whose browser asks not to be tracked (Global
 Privacy Control, Do Not Track), nor, while there is no consent banner, for one

@@ -1,8 +1,8 @@
 {
   "rewrites": [
     { "source": "/v1/site", "destination": "https://api.tailzu.space/v1/site" },
-    { "source": "/v1/site/event", "destination": "https://api.tailzu.space/v1/site/event" },
-    { "source": "/site-events.js", "destination": "https://api.tailzu.space/site-events.js" },
+    { "source": "/v1/site/event", "destination": "/api/site-event" },
+    { "source": "/site-events.js", "destination": "/api/site-events" },
     { "source": "/v1/demo/transcribe", "destination": "https://api.tailzu.space/v1/demo/transcribe" },
     { "source": "/v1/pay/report", "destination": "https://api.tailzu.space/v1/pay/report" },
     { "source": "/download", "destination": "https://api.tailzu.space/download" },
