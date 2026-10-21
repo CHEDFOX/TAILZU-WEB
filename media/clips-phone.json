@@ -1,0 +1,564 @@
+{
+ "clips": [
+  {
+   "id": "mummy",
+   "device": "phone",
+   "w": 540,
+   "h": 1170,
+   "dur": 5.1,
+   "webm": "/media/mummy.webm",
+   "mp4": "/media/mummy.mp4",
+   "poster": "/media/mummy.webp",
+   "cuts": [
+    {
+     "from": 0.0,
+     "to": 1.6,
+     "what": "Setup: autocorrect has mangled the Hinglish text to Mummy ('Hand mummy as rash hu, Ghana rakh do', the wrong words flagged) and Mummy is worried: 'Ghana??', 'Rash?? Beta theek ho?'",
+     "src": [
+      6.55,
+      8.15
+     ]
+    },
+    {
+     "from": 1.6,
+     "to": 2.6,
+     "what": "The voice: the Tailzu keyboard is listening, the line handwritten as said ('haan mummy aa raha hoon khana rakh do')",
+     "src": [
+      9.2,
+      10.2
+     ]
+    },
+    {
+     "from": 2.6,
+     "to": 4.0,
+     "what": "The said line morphs into the right text in the field: 'Haan mummy, aa raha hoon. Khana rakh do.'",
+     "src": [
+      10.55,
+      11.95
+     ]
+    },
+    {
+     "from": 4.0,
+     "to": 5.1,
+     "what": "Payoff: sent, and Mummy answers 'Aaja beta, garam kar rahi hoon.'",
+     "src": [
+      12.75,
+      13.85
+     ]
+    }
+   ],
+   "onScreen": "[cut 1] Hand mummy as rash hu, Ghana rakh do (sent, the wrong words flagged) / Ghana?? / Rash?? Beta theek ho? [cut 2] Zu Professional Friendly Witty / Listening / haan mummy aa raha hoon khana rakh do (handwritten, as said) [cut 3] Haan mummy, aa raha hoon. Khana rakh do. (the said line turns into the written one) [cut 4] Haan mummy, aa raha hoon. Khana rakh do. (sent) / Aaja beta, garam kar rahi hoon. / Press. Say anything.  (header: Mummy, online; clock 8:47)",
+   "said": "haan mummy aa raha hoon khana rakh do",
+   "saidOnScreen": true,
+   "island": {
+    "x": 195,
+    "y": 13,
+    "w": 151,
+    "h": 40,
+    "r": 20
+   },
+   "homeIndicator": true,
+   "cornersPainted": true,
+   "bottomExtended": 272,
+   "bytes": {
+    "webm": 203889,
+    "mp4": 194381,
+    "poster": 20628
+   },
+   "crops": [
+    {
+     "src": [
+      6.55,
+      8.15
+     ],
+     "x": 127,
+     "y": 539,
+     "w": 826,
+     "h": 1381,
+     "outH": 903
+    },
+    {
+     "src": [
+      9.2,
+      10.2
+     ],
+     "x": 124,
+     "y": 538,
+     "w": 832,
+     "h": 1382,
+     "outH": 897
+    },
+    {
+     "src": [
+      10.55,
+      11.95
+     ],
+     "x": 123,
+     "y": 534,
+     "w": 834,
+     "h": 1386,
+     "outH": 897
+    },
+    {
+     "src": [
+      12.75,
+      13.85
+     ],
+     "x": 120,
+     "y": 530,
+     "w": 838,
+     "h": 1390,
+     "outH": 896
+    }
+   ]
+  },
+  {
+   "id": "boss",
+   "device": "phone",
+   "w": 540,
+   "h": 1170,
+   "dur": 4.47,
+   "webm": "/media/boss.webm",
+   "mp4": "/media/boss.mp4",
+   "poster": "/media/boss.webp",
+   "cuts": [
+    {
+     "from": 0.0,
+     "to": 1.4,
+     "what": "Setup and voice: the boss asked 'Is the report done?' at 11:04; Tailzu is listening to the casual line 'bro chill its almost done sending in 5', handwritten as said",
+     "src": [
+      1.45,
+      2.85
+     ]
+    },
+    {
+     "from": 1.4,
+     "to": 2.07,
+     "what": "Tone Shakespeare: the same reply, 'Fear not, my liege. The report is well nigh done...'",
+     "src": [
+      6.3,
+      6.95
+     ]
+    },
+    {
+     "from": 2.07,
+     "to": 2.67,
+     "what": "Tone Noir: 'The report's almost done. Five minutes. In this town, that's a lifetime.'",
+     "src": [
+      8.75,
+      9.35
+     ]
+    },
+    {
+     "from": 2.67,
+     "to": 4.47,
+     "what": "Payoff: the Professional reply is sent ('Almost done. I'll send the report in five minutes.') and the boss answers 'Great, thanks!'",
+     "src": [
+      11.0,
+      12.8
+     ]
+    }
+   ],
+   "onScreen": "[cut 1] Is the report done? / bro chill its almost done sending in 5 (handwritten, as said) / Zu Professional Shakespeare Pirate Movie Trailer Noir / Listening [cut 2] Fear not, my liege. The report is well nigh done, and shall reach thee anon. (Shakespeare lit) [cut 3] The report's almost done. Five minutes. In this town, that's a lifetime. (Noir lit) [cut 4] Almost done. I'll send the report in five minutes. (Professional, sent) / Great, thanks!  (header: Boss, online; clock 11:04)",
+   "said": "bro chill its almost done sending in 5",
+   "saidOnScreen": true,
+   "island": {
+    "x": 193,
+    "y": 9,
+    "w": 154,
+    "h": 45,
+    "r": 22
+   },
+   "homeIndicator": true,
+   "cornersPainted": true,
+   "bottomExtended": 267,
+   "bytes": {
+    "webm": 136308,
+    "mp4": 119586,
+    "poster": 15498
+   },
+   "crops": [
+    {
+     "src": [
+      1.45,
+      2.85
+     ],
+     "x": 133,
+     "y": 550,
+     "w": 816,
+     "h": 1370,
+     "outH": 907
+    },
+    {
+     "src": [
+      6.3,
+      6.95
+     ],
+     "x": 129,
+     "y": 542,
+     "w": 822,
+     "h": 1378,
+     "outH": 905
+    },
+    {
+     "src": [
+      8.75,
+      9.35
+     ],
+     "x": 127,
+     "y": 540,
+     "w": 828,
+     "h": 1380,
+     "outH": 900
+    },
+    {
+     "src": [
+      11.0,
+      12.8
+     ],
+     "x": 125,
+     "y": 532,
+     "w": 834,
+     "h": 1388,
+     "outH": 899
+    }
+   ]
+  },
+  {
+   "id": "marta",
+   "device": "phone",
+   "w": 540,
+   "h": 1170,
+   "dur": 4.67,
+   "webm": "/media/marta.webm",
+   "mp4": "/media/marta.mp4",
+   "poster": "/media/marta.webp",
+   "cuts": [
+    {
+     "from": 0.0,
+     "to": 1.0,
+     "what": "Setup: Marta asks '¿Dónde estás?' and only speaks Spanish; the field is empty, Tailzu is pressed to listen",
+     "src": [
+      1.3,
+      2.3
+     ]
+    },
+    {
+     "from": 1.0,
+     "to": 2.27,
+     "what": "The voice: the Hinglish line is handwritten as said ('Marta ko bolo main das minute late hoon, spanish mein likho') and the instruction 'spanish mein likho' is underlined",
+     "src": [
+      3.7,
+      4.95
+     ]
+    },
+    {
+     "from": 2.27,
+     "to": 3.1,
+     "what": "The Spanish lands in the field: 'Marta, llego diez minutos tarde.'",
+     "src": [
+      6.0,
+      6.85
+     ]
+    },
+    {
+     "from": 3.1,
+     "to": 4.67,
+     "what": "Payoff: sent in Spanish, and Marta answers '¡Perfecto! Te espero.'",
+     "src": [
+      7.75,
+      9.3
+     ]
+    }
+   ],
+   "onScreen": "[cut 1] ¿Dónde estás? / Message / Zu Professional Friendly Witty / Press. Say anything. [cut 2] Marta ko bolo main das minute late hoon, spanish mein likho (handwritten, 'spanish mein likho' underlined) / Listening [cut 3] Marta, llego diez minutos tarde. [cut 4] Marta, llego diez minutos tarde. (sent) / ¡Perfecto! Te espero.  (header: Marta, online; clock 7:52)",
+   "said": "Marta ko bolo main das minute late hoon, spanish mein likho",
+   "saidOnScreen": true,
+   "island": {
+    "x": 195,
+    "y": 13,
+    "w": 151,
+    "h": 41,
+    "r": 20
+   },
+   "homeIndicator": true,
+   "cornersPainted": true,
+   "bottomExtended": 268,
+   "bytes": {
+    "webm": 128390,
+    "mp4": 118182,
+    "poster": 12036
+   },
+   "crops": [
+    {
+     "src": [
+      1.3,
+      2.3
+     ],
+     "x": 131,
+     "y": 545,
+     "w": 818,
+     "h": 1375,
+     "outH": 908
+    },
+    {
+     "src": [
+      3.7,
+      4.95
+     ],
+     "x": 128,
+     "y": 539,
+     "w": 824,
+     "h": 1381,
+     "outH": 905
+    },
+    {
+     "src": [
+      6.0,
+      6.85
+     ],
+     "x": 125,
+     "y": 535,
+     "w": 830,
+     "h": 1385,
+     "outH": 901
+    },
+    {
+     "src": [
+      7.75,
+      9.3
+     ],
+     "x": 123,
+     "y": 536,
+     "w": 834,
+     "h": 1384,
+     "outH": 896
+    }
+   ]
+  },
+  {
+   "id": "sweet",
+   "device": "phone",
+   "w": 540,
+   "h": 1170,
+   "dur": 5.4,
+   "webm": "/media/sweet.webm",
+   "mp4": "/media/sweet.mp4",
+   "poster": "/media/sweet.webp",
+   "cuts": [
+    {
+     "from": 0.0,
+     "to": 1.2,
+     "what": "Setup: a message from Kabir arrives as a banner ('Pahunch gaya 🙂 nikal gayi?'), tap, WhatsApp opens",
+     "src": [
+      0.7,
+      1.9
+     ]
+    },
+    {
+     "from": 1.2,
+     "to": 2.2,
+     "what": "The voice: a finger taps the Tailzu key on the keyboard and it turns to its recording ring, Tailzu is listening (she says it aloud, messy, with the instructions)",
+     "src": [
+      2.95,
+      3.95
+     ]
+    },
+    {
+     "from": 2.2,
+     "to": 3.4,
+     "what": "The words land in the field, written the way she asked: 'Babe, I'm running 20 min late, metro is packed 😩 Order the paneer thing for me? Can't wait to see you ❤️'",
+     "src": [
+      17.3,
+      18.5
+     ]
+    },
+    {
+     "from": 3.4,
+     "to": 5.4,
+     "what": "Payoff: sent, and Kabir answers 'Done 😄 paneer ordered. Aaram se aao ❤️'",
+     "src": [
+      19.9,
+      21.6
+     ]
+    }
+   ],
+   "onScreen": "[cut 1] Kabir ❤️ / Pahunch gaya 🙂 nikal gayi? (banner, then the chat) [cut 2] Today / Booked the table for 10 🙂 / Yesss 😍 nikal rahi hoon / Pahunch gaya 🙂 nikal gayi? (the keyboard, ZU) [cut 3] Babe, I'm running 20 min late, metro is packed 😩 Order the paneer thing for me? Can't wait to see you ❤️ [cut 4] the same message, sent / Done 😄 paneer ordered. Aaram se aao ❤️  (clock 9:41)",
+   "said": "hey Tailzu, umm, tell him I'll be like... twenty minutes late, metro is packed, and ask him to order the paneer thing for me, make it sweet, not like I'm annoyed, and add a heart",
+   "saidOnScreen": false,
+   "island": {
+    "x": 184,
+    "y": 13,
+    "w": 173,
+    "h": 51,
+    "r": 25
+   },
+   "homeIndicator": true,
+   "cornersPainted": true,
+   "bottomExtended": 0,
+   "bytes": {
+    "webm": 308315,
+    "mp4": 217824,
+    "poster": 52046
+   },
+   "crops": [
+    {
+     "src": [
+      0.7,
+      1.9
+     ],
+     "x": 185,
+     "y": 130,
+     "w": 711,
+     "h": 1541,
+     "outH": 1170
+    },
+    {
+     "src": [
+      2.95,
+      3.95
+     ],
+     "x": 185,
+     "y": 130,
+     "w": 711,
+     "h": 1541,
+     "outH": 1170
+    },
+    {
+     "src": [
+      17.3,
+      18.5
+     ],
+     "x": 185,
+     "y": 130,
+     "w": 711,
+     "h": 1541,
+     "outH": 1170
+    },
+    {
+     "src": [
+      19.9,
+      21.6
+     ],
+     "x": 185,
+     "y": 130,
+     "w": 711,
+     "h": 1541,
+     "outH": 1170
+    }
+   ]
+  },
+  {
+   "id": "prompt",
+   "device": "phone",
+   "w": 540,
+   "h": 1170,
+   "dur": 5.2,
+   "webm": "/media/prompt.webm",
+   "mp4": "/media/prompt.mp4",
+   "poster": "/media/prompt.webp",
+   "cuts": [
+    {
+     "from": 0.0,
+     "to": 1.4,
+     "what": "Setup: the iPhone home screen, tap ChatGPT, it opens on 'What can I help with?'",
+     "src": [
+      0.55,
+      1.95
+     ]
+    },
+    {
+     "from": 1.4,
+     "to": 2.3,
+     "what": "The voice: a finger taps the Tailzu key on the keyboard and it turns to its recording ring, Tailzu is listening (the rambling is said aloud)",
+     "src": [
+      2.65,
+      3.55
+     ]
+    },
+    {
+     "from": 2.3,
+     "to": 3.2,
+     "what": "The words land in the field as one clean prompt: 'Explain black holes to a golden retriever.'",
+     "src": [
+      8.55,
+      9.45
+     ]
+    },
+    {
+     "from": 3.2,
+     "to": 5.2,
+     "what": "Payoff: the clean prompt is sent and ChatGPT answers 'Okay, buddy. Imagine a ball so heavy that everything nearby gets pulled in, even light...'",
+     "src": [
+      11.9,
+      13.4
+     ]
+    }
+   ],
+   "onScreen": "[cut 1] iPhone home screen (San Francisco 53°, apps) / ChatGPT / What can I help with? / Ask anything [cut 2] the keyboard, ZU [cut 3] Explain black holes to a golden retriever. [cut 4] Explain black holes to a golden retriever. (sent) / Okay, buddy. Imagine a ball so heavy that everything nearby gets pulled in, even light, and nothing can run back out. That's a black hole. Good boy.  (clock 9:41)",
+   "said": "okay so um explain black holes but like to a golden retriever",
+   "saidOnScreen": false,
+   "island": {
+    "x": 184,
+    "y": 13,
+    "w": 173,
+    "h": 51,
+    "r": 25
+   },
+   "homeIndicator": true,
+   "cornersPainted": true,
+   "bottomExtended": 0,
+   "bytes": {
+    "webm": 212414,
+    "mp4": 166677,
+    "poster": 50248
+   },
+   "crops": [
+    {
+     "src": [
+      0.55,
+      1.95
+     ],
+     "x": 185,
+     "y": 130,
+     "w": 711,
+     "h": 1541,
+     "outH": 1170
+    },
+    {
+     "src": [
+      2.65,
+      3.55
+     ],
+     "x": 185,
+     "y": 130,
+     "w": 711,
+     "h": 1541,
+     "outH": 1170
+    },
+    {
+     "src": [
+      8.55,
+      9.45
+     ],
+     "x": 185,
+     "y": 130,
+     "w": 711,
+     "h": 1541,
+     "outH": 1170
+    },
+    {
+     "src": [
+      11.9,
+      13.4
+     ],
+     "x": 185,
+     "y": 130,
+     "w": 711,
+     "h": 1541,
+     "outH": 1170
+    }
+   ]
+  }
+ ]
+}

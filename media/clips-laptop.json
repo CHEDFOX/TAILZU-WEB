@@ -1,0 +1,350 @@
+{
+ "clips": [
+  {
+   "id": "zara",
+   "device": "laptop",
+   "w": 1280,
+   "h": 800,
+   "dur": 5.733,
+   "webm": "/media/zara.webm",
+   "mp4": "/media/zara.mp4",
+   "poster": "/media/zara.webp",
+   "cuts": [
+    {
+     "from": 0.0,
+     "to": 1.8,
+     "what": "Name it: the Tailzu window's 'Its name' page. The placeholder 'A name of your own' fills with 'Zara' as it is typed, SAVE is clicked and the heading turns from 'Tailzu' to 'Tailzu, or Zara'.",
+     "bot": "present",
+     "src": [
+      5.55,
+      7.35
+     ]
+    },
+    {
+     "from": 1.8,
+     "to": 2.933,
+     "what": "It reads the screen: a Road Runners group chat in Messages. Tailzu marks what it understood: a ring on the group name with the tags THE GROUP and THE RIDE, then a ring round Anthony's 'bent my fork' message tagged ANTHONY'S FORK.",
+     "bot": "tap",
+     "src": [
+      14.75,
+      15.883
+     ]
+    },
+    {
+     "from": 2.933,
+     "to": 4.033,
+     "what": "Talk to it: the reply it wrote sits in the message box, is sent and lands as a blue bubble marked Delivered: 'I'm in for the long weekend ride! Anthony, is your fork fixed yet?' (right names, right context).",
+     "bot": "tada",
+     "src": [
+      26.0,
+      27.1
+     ]
+    },
+    {
+     "from": 4.033,
+     "to": 5.733,
+     "what": "Select and say the change: a paragraph of lecture notes (Theory of 9 Types of Intelligence) is highlighted, then rewritten in place into three short lines. Held on the clean text.",
+     "bot": "thumbs",
+     "src": [
+      33.0,
+      34.3
+     ],
+     "freezeEnd": 0.4
+    }
+   ],
+   "onScreen": "[cut 1] Tailzu (window title) / TODAY INSIGHTS WORDS VOICES TRAIN / ITS NAME / Tailzu (then: Tailzu, or Zara) / Tailzu is its name, and always works. Give it a name of your own too, and call it either while you talk: \"Zara, make it formal.\" / A name of your own (placeholder, then Zara typed) / SAVE / TAILZU ONLY [cut 2] Messages, Road Runners: Search, Darla, Kristina, Rich, Road Runners 9:41 AM Spring training here we come / The long weekend is coming up. Who's down for a ride? / Sounds good! My new frame is finally ready for a test run. Even treated myself to a carbon fiber saddle! / Can we plan for 40-50 miles, depending on the weather and how we're feeling? / Been waiting for this! I'm in / What kind of tires are you running now? / Anthony Wu: Still recovering from the last ride when I bent my fork / tags THE GROUP, THE RIDE, ANTHONY'S FORK / Lol you handled that one like a champ! [cut 3] What kind of tires are you running now? / Still recovering from the last ride when I bent my fork / Lol you handled that one like a champ! / Sophie Sun: Spring training here we come / I'm in for the long weekend ride! (cyclist emoji) Anthony, is your fork fixed yet? (smile emoji) / Delivered [cut 4] Triarchic Theory / Focuses on how people apply knowledge, not just how they gain and store it. / Separates intelligence into three categories: Analytical Intelligence, Practical Intelligence, Creative Intelligence / Theory of 9 Types of Intelligence / (selected) Proposes intelligence consists of 9 distinct types, each representing different ways of processing information. / Types include linguistic, logical-mathematical, musical, visual-spatial, bodily-kinesthetic, interpersonal, intrapersonal, naturalistic, and existential. / Everyone has a unique combination of these intelligences, which can be developed over time. / Some debate whether these are distinct intelligences or just talents. -> Nine kinds of smart: words, logic, music, space, body, people, self, nature and big questions. / Everyone has their own mix, and it can grow. / Some say they are just talents. [all cuts] macOS menu bar (app name and menus at the left, battery, Wi-Fi, search, control centre and the clock at the right, the camera notch in the middle) and the Dock (Finder to Trash) under the Tailzu pill. Cuts 1 and 4 show the app's own menu names (Tailzu / Notes); cuts 2 and 3 are Messages.",
+   "island": true,
+   "islandNote": "The camera notch IS in every cut now: it is part of the Mac's own menu bar (Apple's 16-inch MacBook Pro picture), top centre. The page must not draw a second notch over it, and the top ~37 px of the 800 px frame hold the menu bar, not content.",
+   "bytes": {
+    "webm": 364947,
+    "mp4": 297204,
+    "poster": 30954
+   },
+   "crops": [
+    {
+     "src": [
+      5.55,
+      7.35
+     ],
+     "mode": "screen=1",
+     "x": 0,
+     "y": 0,
+     "w": 2560,
+     "h": 1600,
+     "outW": 1280,
+     "outH": 800
+    },
+    {
+     "src": [
+      14.75,
+      15.883
+     ],
+     "mode": "screen=1",
+     "x": 0,
+     "y": 0,
+     "w": 2560,
+     "h": 1600,
+     "outW": 1280,
+     "outH": 800
+    },
+    {
+     "src": [
+      26.0,
+      27.1
+     ],
+     "mode": "screen=1",
+     "x": 0,
+     "y": 0,
+     "w": 2560,
+     "h": 1600,
+     "outW": 1280,
+     "outH": 800
+    },
+    {
+     "src": [
+      33.0,
+      34.3
+     ],
+     "mode": "screen=1",
+     "x": 0,
+     "y": 0,
+     "w": 2560,
+     "h": 1600,
+     "outW": 1280,
+     "outH": 800
+    }
+   ],
+   "screen": "Every cut is the Mac's WHOLE screen at its real scale (menu bar to Dock, no camera, no zoom, no pan, no lesson cards, no captions, no presenter, no end card), rendered from the film's own scene with the page flag social.html ?screen=1 at 2560x1600 and scaled to 1280x800. The Mac's screen is 1.54:1 (1728x1122 pt), so the 16:10 frame is filled at the left and right (about 24 px each at 1280 wide) with the wallpaper's own edge columns drawn out; the screen is not stretched. Text is the real size: at 1280 wide the Tailzu window is about 800 px wide.",
+   "screenFlag": "tools/media/social.html ?render=film&id=lessonMacZara&screen=1&w=2560&h=1600; source times in cuts[].src are film times, as before"
+  },
+  {
+   "id": "notes",
+   "device": "laptop",
+   "w": 1280,
+   "h": 800,
+   "dur": 5.267,
+   "webm": "/media/notes.webm",
+   "mp4": "/media/notes.mp4",
+   "poster": "/media/notes.webp",
+   "cuts": [
+    {
+     "from": 0.0,
+     "to": 1.4,
+     "what": "The meeting as a call in a window on the Mac screen: a whiteboard ('Favourite animal + why') with a fish and a second doodle pixelated as a bleep; four dotted colleagues at the table, nameplates MARKETING, PROJECT MANAGER, INDUSTRIAL DESIGN, INTERFACE. Our dot bot is the one at the right-hand INTERFACE seat.",
+     "src": [
+      5.2,
+      6.6
+     ]
+    },
+    {
+     "from": 1.4,
+     "to": 2.533,
+     "what": "Small talk, bleeped: the doodle is revealed as a blue dog while the dot bot at INTERFACE steps forward bright, a BLEEP tag over his mouth.",
+     "src": [
+      8.85,
+      9.983
+     ]
+    },
+    {
+     "from": 2.533,
+     "to": 3.567,
+     "what": "Five minutes of it: the stamp '5 MINUTES ON FAVOURITE ANIMALS' slams onto the whiteboard and an eraser wipes the board clean. The dot bot is still at the right-hand seat.",
+     "src": [
+      15.55,
+      16.583
+     ]
+    },
+    {
+     "from": 3.567,
+     "to": 5.267,
+     "what": "Cut to the Tailzu notes page: 'Remote control kick-off: price, budget, roles', the plain summary, and the WHAT MATTERED points ringed. The small talk is gone, the point is kept. Held.",
+     "src": [
+      34.2,
+      35.9
+     ]
+    }
+   ],
+   "onScreen": "[cuts 1-3, the meeting] Favourite animal + why (whiteboard, handwritten) / MARKETING / PROJECT MANAGER / INDUSTRIAL DESIGN / INTERFACE (nameplates) / BLEEP (tags over mouths) / ha ha / 5 MINUTES ON FAVOURITE ANIMALS (stamp) [cut 4] Remote control kick-off: price, budget, roles / MONDAY, 19 OCTOBER - 11:42 AM - 18 MIN / WITH YOU, MARKETING, INDUSTRIAL DESIGNER, INTERFACE DESIGNER / COPY DELETE / You kicked off the new remote control: it sells for 25 euros, internationally, and can cost no more than 12.50 to make. Marketing asked whether that is the wholesale or the shelf price. The team floated one remote for every device, and a way to find it when it's lost. Each role works on its part before the next meeting, in thirty minutes. / WHAT MATTERED / You: We'll sell the remote for 25 euros, internationally, and we're aiming to make 50 million euros. / You: It can't cost more than 12.50 euros to make: half the selling price. / Marketing: Is the 25 euros the wholesale price, or the price on the shelf? [cuts 1-3] the call is a window on the Mac: title bar 'Remote control kick-off' (menu bar app name FaceTime, clock Mon 19 Oct 11:47 AM), the meeting room as the video, call bar 11:47 AM / mic, camera, cc, share, hand, more, end (red) / 4 people. [cut 4] menu bar app name Tailzu, clock Mon 19 Oct 12:02 PM. [all cuts] macOS menu bar (app name and menus at the left, battery, Wi-Fi, search, control centre and the clock at the right, the camera notch in the middle) and the Dock (Finder to Trash) under the Tailzu pill.",
+   "island": true,
+   "islandNote": "The camera notch IS in every cut now: it is part of the Mac's own menu bar (Apple's 16-inch MacBook Pro picture), top centre. The page must not draw a second notch over it, and the top ~37 px of the 800 px frame hold the menu bar, not content.",
+   "bytes": {
+    "webm": 367211,
+    "mp4": 257676,
+    "webp": 61830
+   },
+   "crops": [
+    {
+     "src": [
+      5.2,
+      6.6
+     ],
+     "mode": "screen=1",
+     "x": 0,
+     "y": 0,
+     "w": 2560,
+     "h": 1600,
+     "outW": 1280,
+     "outH": 800
+    },
+    {
+     "src": [
+      8.85,
+      9.983
+     ],
+     "mode": "screen=1",
+     "x": 0,
+     "y": 0,
+     "w": 2560,
+     "h": 1600,
+     "outW": 1280,
+     "outH": 800
+    },
+    {
+     "src": [
+      15.55,
+      16.583
+     ],
+     "mode": "screen=1",
+     "x": 0,
+     "y": 0,
+     "w": 2560,
+     "h": 1600,
+     "outW": 1280,
+     "outH": 800
+    },
+    {
+     "src": [
+      34.2,
+      35.9
+     ],
+     "mode": "screen=1",
+     "x": 0,
+     "y": 0,
+     "w": 2560,
+     "h": 1600,
+     "outW": 1280,
+     "outH": 800
+    }
+   ],
+   "dotBot": "In the clip itself: he is the dotted colleague with the antenna and one big eye at the INTERFACE seat (right), visible in cuts 1-3, inside the call window on the screen. The page draws no bot beside this laptop.",
+   "screen": "Every cut is the Mac's WHOLE screen at its real scale (menu bar to Dock, no camera, no zoom, no pan, no lesson cards, no captions, no presenter, no end card), rendered from the film's own scene with the page flag social.html ?screen=1 at 2560x1600 and scaled to 1280x800. The Mac's screen is 1.54:1 (1728x1122 pt), so the 16:10 frame is filled at the left and right (about 24 px each at 1280 wide) with the wallpaper's own edge columns drawn out; the screen is not stretched. Text is the real size: at 1280 wide the Tailzu window is about 800 px wide.",
+   "screenFlag": "tools/media/social.html ?render=film&id=bleeped&screen=1&w=2560&h=1600; source times in cuts[].src are film times, as before"
+  },
+  {
+   "id": "timeback",
+   "device": "laptop",
+   "w": 1280,
+   "h": 800,
+   "dur": 5.2,
+   "webm": "/media/timeback.webm",
+   "mp4": "/media/timeback.mp4",
+   "poster": "/media/timeback.webp",
+   "cuts": [
+    {
+     "from": 0.0,
+     "to": 1.567,
+     "what": "A morning message by voice: in a Road Runners chat the line 'Count me in for Saturday!' fills the message box, is sent and shows Delivered.",
+     "bot": "wave",
+     "src": [
+      3.3,
+      4.867
+     ]
+    },
+    {
+     "from": 1.567,
+     "to": 2.767,
+     "what": "An afternoon note by voice: in lecture notes (Theory of 9 Types of Intelligence) the line 'Ask Prof. Rao about the critiques of Gardner's theory.' lands at the end of the list.",
+     "bot": "tap",
+     "src": [
+      9.7,
+      10.9
+     ]
+    },
+    {
+     "from": 2.767,
+     "to": 3.633,
+     "what": "The day, counted: the Tailzu Today dashboard, Sunday 18 October. 2,485 words today, TIME BACK 46 min (ringed), +119% against your pace, a 14 day streak.",
+     "bot": "thumbs",
+     "src": [
+      21.8,
+      22.667
+     ]
+    },
+    {
+     "from": 3.633,
+     "to": 5.2,
+     "what": "The payoff: 'Said against typed', SAID 17 MIN against TYPED 1 H 02, and the ringed line '46 min back today.' Held.",
+     "bot": "tada",
+     "src": [
+      24.3,
+      25.867
+     ]
+    }
+   ],
+   "onScreen": "[cut 1] Road Runners chat: What kind of tires are you running now? / Anthony Wu: Still recovering from the last ride when I bent my fork / Lol you handled that one like a champ! / Sophie Sun: Spring training here we come / iMessage / Count me in for Saturday! (cyclist emoji) / Delivered [cut 2] Triarchic Theory ... Theory of 9 Types of Intelligence ... Some debate whether these are distinct intelligences or just talents. / Ask Prof. Rao about the critiques of Gardner's theory. [cut 3] TODAY / Sunday, 18 October / Ctrl Ctrl TAP TWICE, IN ANY APP, AND TALK / WORDS TODAY 2,485 (28 DICTATIONS) / TIME BACK 46 min (AGAINST TYPING AT 40 WPM) / AGAINST YOUR PACE +119% / DAY STREAK 14 (BEST RUN 14 DAYS) / Today, hour by hour / Said against typed [cut 4] Said against typed / The time it took you to say today's words, and the time typing them would have. / SAID 17 MIN / TYPED 1 H 02 / 46 min back today. / TYPED AT 40 WORDS A MINUTE. SAID IS THE TIME YOU SPENT TALKING. / How today's words came / Spoken, typed into the keyboard, or written for you as a draft. / All spoken. [all cuts] macOS menu bar (app name and menus at the left, battery, Wi-Fi, search, control centre and the clock at the right, the camera notch in the middle) and the Dock (Finder to Trash) under the Tailzu pill. Menu bar clock: Sun 18 Oct 9:12 AM (cut 1), 2:02 PM (cut 2), 11:48 PM (cuts 3-4).",
+   "island": true,
+   "islandNote": "The camera notch IS in every cut now: it is part of the Mac's own menu bar (Apple's 16-inch MacBook Pro picture), top centre. The page must not draw a second notch over it, and the top ~37 px of the 800 px frame hold the menu bar, not content.",
+   "bytes": {
+    "webm": 337184,
+    "mp4": 307987,
+    "poster": 75452
+   },
+   "crops": [
+    {
+     "src": [
+      3.3,
+      4.867
+     ],
+     "mode": "screen=1",
+     "x": 0,
+     "y": 0,
+     "w": 2560,
+     "h": 1600,
+     "outW": 1280,
+     "outH": 800
+    },
+    {
+     "src": [
+      9.7,
+      10.9
+     ],
+     "mode": "screen=1",
+     "x": 0,
+     "y": 0,
+     "w": 2560,
+     "h": 1600,
+     "outW": 1280,
+     "outH": 800
+    },
+    {
+     "src": [
+      21.8,
+      22.667
+     ],
+     "mode": "screen=1",
+     "x": 0,
+     "y": 0,
+     "w": 2560,
+     "h": 1600,
+     "outW": 1280,
+     "outH": 800
+    },
+    {
+     "src": [
+      24.3,
+      25.867
+     ],
+     "mode": "screen=1",
+     "x": 0,
+     "y": 0,
+     "w": 2560,
+     "h": 1600,
+     "outW": 1280,
+     "outH": 800
+    }
+   ],
+   "screen": "Every cut is the Mac's WHOLE screen at its real scale (menu bar to Dock, no camera, no zoom, no pan, no lesson cards, no captions, no presenter, no end card), rendered from the film's own scene with the page flag social.html ?screen=1 at 2560x1600 and scaled to 1280x800. The Mac's screen is 1.54:1 (1728x1122 pt), so the 16:10 frame is filled at the left and right (about 24 px each at 1280 wide) with the wallpaper's own edge columns drawn out; the screen is not stretched. Text is the real size: at 1280 wide the Tailzu window is about 800 px wide.",
+   "screenFlag": "tools/media/social.html ?render=film&id=timeBack&screen=1&w=2560&h=1600; source times in cuts[].src are film times, as before"
+  }
+ ]
+}
