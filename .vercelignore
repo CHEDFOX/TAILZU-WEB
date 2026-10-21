@@ -1,4 +1,6 @@
 # Not part of the site: never deployed, never served.
 README.md
 csp.mjs
+scripts
 scratchpad
+src

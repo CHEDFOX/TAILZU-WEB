@@ -1,449 +1,114 @@
 # tailzu.space
 
-No build, no framework, no dependencies. One tracker, Meta's pixel, and
-only for ads: see [Meta's pixel](#metas-pixel).
+No framework, no dependencies, one small build step (the page's own scripts are
+minified). A static page, a few scripts beside it, short films, and the API
+behind it for the words and the downloads.
 
 ```
-index.html            the landing page — the river, the word, the buttons, the live microphone
+index.html            the page: markup, one <style>, three inline <script>s (GTM, the boot line, the copy C)
+src/js/site.js        eager (defer): copy, shape, routing, the buttons, motion, Blip and its bubble, the hero and its film, the spine
+src/js/play.js        lazy: the films below the hero, the sections' copy from /v1/site, Blip's section perches, the toys (crumble, typing, Ctrl twice, dust)
+src/js/sections.js    lazy: the comb, beads, saboteur, race, reel, dial, desk stage, llm/dev, Ask, finale, secret, knot
+src/js/mic.js         lazy: the level-only microphone and the phone's mic-key renderer
+src/js/mic-demo.js    lazy, demo:true only: the recorder under the demo's contract
+js/<the above>.js     what is served: built from src/js/ by scripts/min.mjs (never edit these)
+js/blip.js            Blip, the presenter (a copy of the desktop app's, unchanged)
+js/pill.js            the desktop app's pill, unchanged; with pillSplit.js (its springs) and knobs.js
+demo/pill.html        the real pill in a frame, driven over postMessage by demo/pill-bridge.js
+demo/ask.html         the Ask preview: a stand-in app, the guide, drive.js playing the runs
+media/                the films (H.264 .mp4), posters (.avif/.webp), captions (.vtt), the QR
 api/                  Meta's pixel and its Conversions API copy (see Meta's pixel)
-robots.txt            every search engine and AI assistant welcome; the API is not a page
-favicon.svg           the mark, as the header draws it (the icon source)
-favicon.ico           48/32/16, for crawlers and browsers that want a raster
-apple-touch-icon.png  180 × 180
-icon-512.png          the logo in the page's structured data
-og.png                the card a shared link unfurls into (1200 × 630)
-<key>.txt             the IndexNow key (tulmi/scripts/indexnow.sh)
+vercel.json           rewrites to the API, headers, the two CSPs, caching
+csp.mjs               writes index.html's inline hashes into the home page's CSP
+scripts/min.mjs       builds js/ from src/js/ (esbuild's minify, no bundling); --check fails when js/ is stale
+scripts/stamp.mjs     writes the ?v= stamps on every /js/ and /media/ reference
+robots.txt, favicon.svg, favicon.ico, apple-touch-icon.png, icon-512.png, og.png, <key>.txt (IndexNow)
 ```
 
-The pictures are rendered, not drawn by hand: `tools/media/render-site.mjs`
-in the frontend repo writes og.png and the icons from `og.html` and this
-folder's favicon.svg.
+## After any change
+
+Four steps, in this order, every time, before a push:
+
+```
+cd TAILZU-BACKEND/tulmi && npx tsx scripts/sync-site.mts ../../TAILZU-WEB/index.html   # only when the backend's copy changed
+cd ../../TAILZU-WEB
+node scripts/min.mjs              # src/js/*.js -> js/*.js (esbuild: npm i -g esbuild, or the backend's node_modules beside this repo)
+node scripts/stamp.mjs            # /js and /media are cached for a year: every reference carries ?v=<sha256, 8 hex>
+node csp.mjs                      # the inline <script>s and <style> are allowed by hash
+node scripts/min.mjs --check && node scripts/stamp.mjs --check && node csp.mjs --check
+```
+
+A stale stamp serves yesterday's script for a year. A stale hash stops the
+page's script or styles outright, so the page is built to read without them:
+every download is a real `<a href>` before any script runs, and the copy is in
+the markup.
 
 ## What machines read
 
-The page's words come from `/v1/site` once its script runs; most crawlers
-(the ones behind ChatGPT, Claude and Perplexity, and every link preview) do
-not run it. So the backend also writes them INTO the HTML, between the
-`SEO:` markers: the title, summary, canonical, link card, icons and
-structured data in the head, and the steps, the tones and the questions in
-the body. Never edit between the markers; edit the backend and sync:
-
-```
-cd TAILZU-BACKEND/tulmi && npx tsx scripts/sync-site.mts ../../tailzu-web/index.html
-cd ../../tailzu-web && node csp.mjs
-```
-
-`--check` fails when the page and the backend disagree.
-
-`/languages`, `/languages/<name>`, `/faq`, `/sitemap.xml`, `/llms.txt` and
-`/llms-full.txt` are the backend's too (src/seo), served through the rewrites
-below and canonical here.
-
-`/privacy`, `/terms`, `/pricing` and `/download` are served by the backend,
-which has carried them as HTML since before there was a site.
-
-## Publishing
-
-The site is on Vercel, deployed from this repo: a push to
-`main` (Vercel's production branch) is the deploy, live in under a minute.
-`vercel.json` proxies `/v1/site`, `/v1/site/event`, `/site-events.js`, `/v1/demo/transcribe`, `/v1/pay/report`,
-`/download`, the three installers under `/downloads/`, `/privacy`, `/terms`,
-`/pricing`, `/pay`, `/languages*`, `/faq`, `/sitemap.xml`, `/llms*.txt` and
-`/.well-known/*` to the API — only what the pages call, never the rest of the
-API. Nothing is copied to the VPS for the site; `.vercelignore` keeps this
-file, `csp.mjs` and `scratchpad/` off the site.
-
-**The page's Content-Security-Policy allows its inline script and style by
-hash.** Any edit to either — and every sync that changes the FAQ, which is
-written inside the script — changes the hash, and a stale hash stops the
-script. After editing or syncing, and before pushing:
-
-```
-node csp.mjs            # writes the hashes into vercel.json
-node csp.mjs --check    # fails when vercel.json is stale
-```
-
-## Meta's pixel
-
-`<script src="/site-events.js">` in the head is Meta's pixel. Vercel serves
-it, from `api/site-events.js` through the rewrite in `vercel.json`, with the
-dataset id from the project's environment variables (Vercel → Settings →
-Environment Variables): `META_PIXEL_ID`, and `META_CAPI_TOKEN` for the
-Conversions API. Other names work too, as long as the id's name says PIXEL or
-DATASET and the token's says TOKEN. A change there needs a redeploy. The API's
-own pages (/download, /pricing, /faq…) come through the same site, so they
-load the same file. Until the id is set the file is one comment, and the
-first line of the file says whether the Conversions API is on.
-
-It reports the page view, `ViewContent` on /download and /pricing, and `Lead`
-when a link to an installer or a store is clicked. Each Lead is also posted
-to `/v1/site/event` (`api/site-event.js`), which copies it to Meta's
-Conversions API under the same event id, so a blocked pixel still counts and
-Meta counts it once.
-
-What only the API sees (an account made, its first dictation, a subscription
-paid for, the phone apps' milestones) the API reports itself, from its own
-`.env` (`src/ads/meta.ts`, which keeps the same script; change one, change
-both).
-
-It does not load for a visitor whose browser asks not to be tracked (Global
-Privacy Control, Do Not Track), nor, while there is no consent banner, for one
-whose clock is in Europe (`META_SKIP_EUROPE`). The CSP allows
-`connect.facebook.net` and `www.facebook.com` for it, and nothing else of
-Meta's; `node csp.mjs` keeps those hosts.
-
-## The mic key is the phone's
-
-The hero keyboard's mic key runs the same renderer the phones do: the mark
-drawn from the server's geometry, moved by the server's program. Both come
-with `/v1/site` as `mic` — mark, program, inset — and the page carries a copy
-of them (between `MIC-BEGIN` and `MIC-END`) until the server answers. A new
-mic key is a backend deploy; this file does not change for it. The copy is
-refreshed by the backend's `sync` step when the program changes.
-
-## The colours are the app's
-
-Not a palette for a website. `STATS_UI` in the backend's `catalog.ts` is the
-source of the ground `#0F0D0B`, the ink `#F3E2C6` and the accent `#E8A23C`.
-Change one there and change it here to match. The surfaces between and above
-the ground are the site's own and are set out below; they are the same hue,
-further up.
-
-The ground is a warm near-black biased toward the accent's own hue, so the
-amber sits *in* it rather than on it. There is one reading colour and it is
-the amber's family; everything quieter is that same pale at a lower weight,
-never a second hue. That is why the amber still means something — and it means
-the same thing here as in the app: **what is still in play**. The word while
-the waves are merging into it, the microphone while it is open, the step that
-is running.
-
-### The quiet end is set by contrast, not by taste
-
-Measured against this ground, the pale at .36 alpha is **2.84:1** — under even
-the 3:1 floor for large text. That one number was carrying the labels, the
-platform line, the footer and the unselected tabs, and it is why the page read
-as faded rather than as quiet. A faded page reads as an unfinished one
-whatever its colours are. `--dim` is .52 (4.71:1, AA for small text) and
-`--grey` is .62 (6.26:1). Same hue, same family, nothing new — the page just
-stops whispering. `scratchpad/contrast.js` prints the table; if you lower one
-of these, print it again.
-
-### Three surfaces, not two
-
-The app has a ground and a card, and two values over a whole page is what made
-this hard rather than calm: everything was either the void or the one thing on
-it. A page is also read further away and on a brighter screen than a phone in
-the hand, where the same values sit darker and flatter. So the ground stays
-exactly the app's and the ladder is built upward from it:
-
-```
---ink    #0F0D0B   the app's ground, unchanged
---wash   #141110   whole sections — the sheet's middle, the downloads, the footer
---card   #211C17   the card
---raise  ink at 5.5%  the small things that sit ON a surface: pills, chips
-```
-
-`#211C17` is the ceiling and not a preference: above it `--dim` drops under
-4.5:1 and the labels stop clearing AA. Run `scratchpad/contrast.js` against any
-surface you are thinking of before you use it.
-
-The wash lifts the middle of the sheet and settles back at both ends, so the
-page breathes between the river and the downloads instead of being one
-unbroken slab from the masthead to the footer — and it lands a shade lighter
-than it started, because a dark page that gets darker to the bottom edge feels
-like falling off it.
-
-The download buttons are filled rather than drawn on the void. An outline on a
-near-black ground is a hole with a line round it, and four of them in a row
-read as a broken control.
-
-### Light, not more colour
-
-Two things carry the attraction, and neither is a second hue:
-
-**A pool of light where the threads converge.** The eye goes to the brightest
-place before it reads anything, so the brightest place should be where the
-thing happens. A flat ground gives it nowhere to go and the whole band reads
-as evenly busy. The pool is the page's own ink at four per cent, behind the
-canvas.
-
-**The card is lit from above**, like everything anybody has ever picked up: a
-top edge catching the light, a shadow pooling under it. The two ends of its
-gradient straddle the app's own card value, so it is the same material — it is
-only being lit.
-
-That is also why the mouth and the block beyond it ERASE rather than paint
-ground. They used to fill with the ground colour, which was the same thing
-while the ground was flat, and it is not any more — painting flat ink over the
-right half of the pool cut a hard vertical edge down the middle of it.
-
-There is still no paper half. Lighter is not the same as light: every surface
-here is the same warm near-black further up the ladder, so the ground never
-changes temperature and the amber never stops meaning what it means. A light
-section would have been a second visual world; a third step on one ladder is
-the same world with more air in it.
-
-## The river
-
-A hundred threads of handwritten speech arrive from every side — over the top,
-across the left, up from underneath — and one word swallows them.
-
-**There is no caret and no second stream.** The two sides of the picture were
-only ever two because something stood between them. The threads run into the
-word itself and dissolve as they arrive.
-
-**They arrive across the letter, not onto a point.** A hundred curves ending
-on one pixel pile up into a bright knot there, and a knot being erased is what
-"cheap" looks like. The endpoints are spread over the height of the first
-glyph, so the threads come in along its whole stem and the letter reads as
-drinking them in rather than as a dot being wiped.
-
-**The dissolve is along each thread, not a shape on the screen.** Every piece
-of every word thins with ITS OWN distance to the gate, eased, over the last
-hundred and fifty units, and reaches nothing exactly at the letter. A
-screen-space ellipse could only ever approximate that, and wherever it was
-wrong it was wrong as a visible edge — a thread still bright at the gate met
-a straight cut. Taken at the piece's midpoint, so a long piece straddling the
-gate is not drawn bright because its first letter was. Pieces at zero are not
-drawn at all. There is no ellipse any more; the straight block past the gate
-remains only as a guarantee, drawn over pixels that are already at zero.
-
-**The gate is the word's own left edge, measured and not typed.** A number
-typed by hand put the cut a few units off the glyph at one font size and a
-dozen off at another. The convergence moves with the word for the same reason:
-the curves have to END where it starts, or the gap comes straight back.
-
-**The left is handwritten.** Speech is a person, and a person writes by
-hand — so the mess arrives in handwriting and only the word that swallows it
-is set in type. Hand in, type out: that contrast is the product. Caveat
-carries the Latin, Kalam sits behind it for the Devanagari, and every other
-script falls through, glyph by glyph, to whatever the machine has. One hand at
-several weights rather than a font menu. Every thread is the one ink at a
-lower weight — most near the ground, a few almost at full — so the left has
-depth without a second colour in it.
-
-The hand comes from the font host, and the canvas measures words in whatever
-face it has at the time — so the river is laid out again once the hand has
-arrived, or every word sits in the wrong place.
-
-**The word is `SITE_UI.absorb`, and it is one word or two.** It is set at the
-size of a thing that can swallow a hundred threads, so a third word does not
-fit on a laptop — and it has to be read at a glance or it is not a
-destination, it is just more text. A backend test holds it to two.
-
-It carries a soft wash of the accent while the waves are merging into it, and
-the wash deepens with how fast they are arriving — so a scroll is visible on
-the word before the page has moved at all. With the microphone open it is the
-accent outright and swells with the voice, scaled about its own left edge so
-it grows into the space it is filling rather than sliding away from the
-threads arriving at it.
-
-A visitor's own sentence replaces the word the moment they have spoken, fitted
-to whatever room the sliced viewBox leaves to the right of it. What it
-actually absorbed beats what it claims to.
-
-### One phrase per thread, not a ribbon
-
-Each thread carries a single sentence and there is a beat of nothing before it
-comes round again. Filling every curve end to end is what a river does; a
-bombardment is separate things arriving.
-
-It is also the whole reason there can be a hundred of them. The cost is linear in
-words drawn per frame, and a filled curve at thread weight is forty words
-where a phrase is seven — so the same frame buys six times the threads. Thin
-type alone does the opposite: smaller words mean MORE of them fit along the
-same curve, and the first attempt at thinning cost frame rate rather than
-buying it.
-
-Each thread also starts at its own phase. Without that they all set off
-together and arrive as one clump, which is what sixty threads look like when
-they are really one.
-
-### Why the tangle is on a canvas
-
-It started as SVG `<textPath>` elements. Changing one's `startOffset` re-lays
-its whole string out along its curve, and that is a layout the browser cannot
-skip — freezing the offsets alone took the page from 23fps back to 59.
-
-The canvas version is not free either. Its cost is linear in the words drawn
-per frame, measured on one machine: 112 words 53fps, 343 words 38fps, 735
-words 19fps. `TANGLE` is therefore a number chosen by measurement, not by
-taste — raise it and you are spending frame rate. Fourteen curves crossing
-from every side already reads as a tangle.
-
-Worth knowing if you touch this: an isolated benchmark drawing the same word
-count, at the same canvas size, in the same faces and the same scripts, runs
-at 60fps. The gap between that and the page is not explained. Several
-plausible culprits were ruled out by measurement — the mask, layer promotion,
-the drift transform, complex-script shaping, font switching, the radial
-gradient, page height — so if you change this, measure it rather than reason
-about it.
-
-### A current, not a scatter
-
-Each thread leaves its edge along its own bearing to the word, twisted by up
-to thirty degrees, with a long first handle — so it over-swings and comes
-round in an arc rather than jerking. The second handle points straight back
-out of the word, so everything arrives level. Threads still cross, but the
-way silk does, not the way string does. The middle control point used to be
-thrown anywhere on the page, and that gave kinks as often as crossings.
-
-**They come from off the screen.** Every start is well outside the frame and
-every thread is already at speed by the time it crosses the edge. Half enter
-along the left — the band runs the full width, so its left edge *is* the edge
-of the screen — and the quarter over the top and the quarter from beneath are
-held to the left of the frame, so they come in through the two corners rather
-than dropping in out of the middle of nowhere.
-
-The edge fades are hung on the VISIBLE rectangle rather than on the viewBox,
-and they are short. The drawing is sliced, so a fade at a fixed percentage of
-the viewBox lands somewhere inside the frame at most window sizes — and a
-thread that fades up inside the frame looks like it started there. The one
-There is no right-hand fade at all: everything past the convergence is erased
-outright, so a gradient there would be drawn every frame over empty pixels.
-
-Threads spend longer off-screen now, so fewer words are drawn per frame at the
-same count: the same frame rate buys 104 threads where it bought 64.
-
-**Depth is one number.** Bright, big and fast are the same thing — near. Dim,
-small and slow are the same thing — far. Rolled separately they cancelled
-each other and the eye could not build a space out of it. More threads are far
-than near, which is also how things are.
-
-**The breath.** One slow sine per thread, biggest at the far edge and nothing
-at all by the word, folded into the translate so it costs a multiply per
-piece. The field moves like something alive instead of like a diagram.
-
-### The rules that keep a tangle from becoming a bug
-
-- Each curve's control points step rightward, which makes x monotonic. That is
-  the only thing standing between this and upside-down words.
-- The last control point sits level with the word, so nothing arrives at an
-  angle and gets rotated where it meets the cursor.
-- The middle one is thrown anywhere, and that is where the crossing comes from.
-- Entry points go round-robin across the edges and evenly along each, and the
-  two left-hand residues are offset half a slot from each other or they land
-  in pairs on the same line. Leaving the side to chance clusters them, and
-  clusters them differently at every count — the picture changed whenever the
-  number did.
-- Each run repeats until it is longer than its own curve, then wraps on one
-  period. A lane shorter than its path drags a visible hole along it.
-- A word is a straight run of glyphs and the line under it is not, so the
-  angle is taken at the word's MIDDLE rather than its start — that halves the
-  error for nothing — and a word whose heading turns more than about six
-  degrees across its own length is drawn in pieces. Only on the bends, which
-  is where the whole cost of fixing it lives. Drawn at one angle, a long word
-  on a tight bend leaves the curve and the joint with the next one reads as a
-  break in the line.
-- One `setTransform` per piece, not `save`/`translate`/`rotate`/`restore`.
-  Four calls become one, and it measured about twice as quick — which is what
-  paid for the curve-following and then some.
-- The edges fade inside the canvas rather than through a CSS mask, so a
-  surface that is redrawn every frame is not also re-masked every frame.
-- Nothing exists right of the gate on the canvas layer. A word is anchored at
-  its START, so one arriving at the cursor hangs its own width past it, and
-  every tail longer than the mouth's radius came out the far side and sat
-  there as a ghost of a left-hand thread past the word. The curves all end level at the word, so a straight block
-  from it to the edge costs one fill and cannot cut anything short — its left
-  edge is buried inside the mouth's opaque core, so there is no seam.
-
-## The waves take the scroll first, then the page moves
-
-From the very top, the first 460 pixels of downward scroll are poured into the
-flow instead of into the document: you push, the river answers, and only once
-that budget is spent does the page start to move. After that it is ordinary
-scrolling and never does it again. Past the hold the coupling is permanent and
-free — every pixel of scroll, either way, feeds the flow, and it falls back
-over about half a second once the page is still.
-
-A budget in **pixels**, not a count of flicks: a trackpad sends thirty small
-events where a mouse wheel sends three, and counting events made the hold four
-times longer on one than on the other.
-
-The guards are what keep it from being hostile: only from the very top, only
-downward, never on touch — a phone has no wheel to intercept and stealing a
-swipe is a far worse trade — and never under reduced motion. The whole thing
-is over in well under a second and the way out is to keep doing exactly what
-you were already doing. Verified: four flicks are absorbed, the fifth scrolls.
-
-## The amber is sacred
-
-It means one thing: **alive, right now**. It appears while the microphone is
-open — on the button and on the word — and, softly, on the word whenever the
-waves are merging into it, deepening with how fast they arrive. That last one
-is a wash rather than the colour outright, and it is the accent doing its own
-job: the merging IS the live thing on this page.
-
-Nothing merely hovered, focused, selected or emphasised gets it. Those are the
-pale at full weight, which is the app's rule. A kept word on the card is
-underlined, not amber: a fact that survived is a record, not a thing still in
-play.
-
-The word's fill is set per frame in script, so there is no CSS rule for it. An
-inline fill beats a class selector, and a rule that can never apply is worse
-than no rule at all.
-
-## The mark
-
-The masthead carries the app icon and not the name. It is the icon redrawn as
-seven shapes from its own measured geometry — the three squares' bounding
-boxes, the tick positions of the hatched link, the dot's centre and colour
-were read off `app/assets/icon.png` with a flood fill, not eyeballed — so the
-one-file site stays one file and the mark is crisp at any size. The hatching
-is a thick stroke with a short dash, which is what perpendicular ticks
-collapse to at thirty pixels. It is the only place the amber is not about the
-waves, because it is the only place the amber is the brand's own.
-
-`tailzu-mark.svg` in the app repo is an older waveform mark and is not this.
-
-## The title
-
-One, four words at most, not in the accent: `Free to start.` over the
-buttons. There is nothing over the river — the river is the headline. A
-backend test holds it to four words.
-
-## One screen
-
-There is no second viewport. The masthead, the river, one title and the
-download buttons are the whole page, and the footer under them is small.
-
-The card that used to sit under the river — three claims, each proved on a
-marked-up sentence, pinned through three viewports of scroll — is gone, and
-with it its copy (`proof`, `steps`), its face (Shrikhand), its scroll-picking,
-its timer fallback and its test. The river already shows twenty said→wrote
-pairs going past; a second section proving three more was the page arguing
-twice.
-
-So the band gives up height on a short window rather than pushing the buttons
-below the fold: `clamp(380px, calc(100vh - 330px), 520px)`. Sliced, a shorter
-band is cropped top and bottom and the word stays centred — it does not zoom.
-The floor is where the entries start to be lost.
-
-## Look at it
-
-Open `index.html` in a browser. It fetches its copy and download state from
-`https://api.tailzu.space`; to point somewhere else, set `data-api` on the
-`<html>` tag. Everything it asks for has an inline fallback, so it is a
-complete page before the first byte of that answer arrives.
-
-## The API's own copy
-
-The API also serves a copy of this page at `api.tailzu.space/`, from
-`~/tulmi/site/` on the VPS, for anyone who lands on the API host by mistake.
-It is not the site; refresh it whenever you like:
-
-```
-scp index.html root@91.108.104.168:~/tulmi/site/
-```
-
-Live within a minute — the backend reads the file per request, so there is no
-restart and no cache bump.
-
-## Turn the microphone on
-
-It is off until the server says otherwise, because it is an unauthenticated
-route that spends a recogniser call and a model call per press. In
-`~/tulmi/tulmi/.env`:
+The page's words come from `/v1/site` once its script runs; most crawlers do
+not run it. So the backend also writes them INTO the HTML, between the `SEO:`
+markers: the title, summary, canonical, link card, icons and structured data
+in the head, and the hero lines, the said/wrote pairs, the languages, the copy
+object `C` and the questions in the body. Never edit between the markers; edit
+the backend and sync (above). `--check` on the sync fails when the page and
+the backend disagree.
+
+`/languages`, `/languages/<name>`, `/faq`, `/ai-keyboard*`, `/voice-typing*`,
+`/sitemap.xml`, `/llms.txt` and `/llms-full.txt` are the backend's (src/seo),
+served through the rewrites and canonical here. `/privacy`, `/terms`,
+`/pricing` and `/download` are served by the backend too.
+
+## What the page takes from /v1/site
+
+All optional; without an answer (fetch blocked, API down) the page is complete
+from `C` and its own defaults.
+
+| key | what it does |
+| --- | --- |
+| `copy` | deep-merged into `C`; every string on the page |
+| `theme` | colour tokens by name (`ink`, `cream`, `indigo`, …) |
+| `layout.order`, `layout.hidden`, `layout.bands` | section order, sections left out, each section's band (`cream`, `ink`, `indigo`, `violet`); an unknown id or band is ignored, and a section the order leaves out rides after its predecessor in the source |
+| `meta` | title and description |
+| `downloads` | the installer links and versions, per platform |
+| `demo`, `maxSeconds`, `perMinute`, `freeWords` | the recorder (off unless `demo` is true) |
+| `mic` | the phone's mic key: mark, program, inset |
+| `ask` | `"off"` (default: the Ask section stays hidden), `"soon"`, `"live"` |
+
+## The download is always a link
+
+`js/site.js:route()` decides one primary download per visitor and writes it
+into every primary pill (`#heroPill`, `#mastPill`, `#finaleYes`, `#footPill`)
+before anyone can click: iPhone and iPad (including iPadOS's desktop UA) → the
+App Store; Android → Google Play; Windows → the Microsoft installer; Mac →
+the `.dmg`; Linux → the `.AppImage`; ChromeOS and anything else → `/download`.
+`?os=ios|android|win|mac|linux|chromeos|other` overrides it, for QA. An
+installer click keeps the page where it is and runs the pill's loading → done
+states; a store click just navigates.
+
+## Motion, and Calm
+
+One `requestAnimationFrame` scheduler (`TZ.sched`) runs every moving thing
+and sleeps when nothing moves. The springs are the desktop pill's own
+(`js/pillSplit.js`): pull-out 120/24 for things coming apart, pull-in 240/16
+for things going home. The threads are a wave equation on nodes 6 px apart.
+
+The **Calm** switch in the masthead (and `prefers-reduced-motion`) turns all
+of it into the still version: the boot line in the head sets `html.calm`
+before first paint, from `localStorage["tz.calm"]` or the media query, so
+nothing moves even for a frame. Films never autoplay under Calm.
+
+## Blip
+
+The presenter from the desktop app (`js/blip.js`, unchanged) perches on each
+section's edge, looks at the pointer, peeks over the stand-in field while the
+desk demo writes, and answers a few pokes. Its lines are in `C.blip`.
+
+## The microphone
+
+The page's microphone measures **loudness only** and says so; nothing leaves
+the page. The recorder that sends a clip to `/v1/demo/transcribe` exists
+(`js/mic.js`), under the contract the API has always had, but stays off
+until `/v1/site` says `demo: true`. In `~/tulmi/tulmi/.env`:
 
 ```
 DEMO_ENABLED=true
@@ -451,15 +116,66 @@ DEMO_MAX_SECONDS=15     # a pitch, not a dictation
 DEMO_PER_MINUTE=6       # per address
 ```
 
-then `docker compose up -d --build backend`. With it off the river still runs
-and the button explains itself — nothing breaks, nothing is spent.
+then `docker compose up -d --build backend`. With it off nothing breaks and
+nothing is spent.
+
+## The mic key is the phone's
+
+The keyboard's mic key, wherever the page draws it, runs the same renderer the
+phones do: the mark drawn from the server's geometry, moved by the server's
+program. Both come with `/v1/site` as `mic`; `js/mic.js` carries a copy
+between `MIC-BEGIN` and `MIC-END` for when the server has not answered. A new
+mic key is a backend deploy; refresh the copy when the program changes.
+
+## Publishing
+
+The site is on Vercel, deployed from this repo: a push to `main` is the
+deploy, live in under a minute. `vercel.json` proxies `/v1/site`,
+`/v1/site/event`, `/site-events.js`, `/v1/demo/transcribe`, `/v1/pay/*`,
+`/download`, the three installers, the backend's pages and the SEO files to
+the API, and nothing else of it. `.vercelignore` keeps this file, `csp.mjs`,
+`scripts/` and `scratchpad/` off the site.
+
+Headers: the home page has its own CSP (inline blocks by hash, media and
+frames from this origin, Google Fonts, GTM, Meta's pixel); `/demo/*` has a
+stricter one with no inline script at all, and may be framed by this origin
+only (every other path: `X-Frame-Options: DENY`). `/js/*` and `/media/*` are
+`immutable` for a year, which is why the stamps matter.
+
+## Meta's pixel
+
+`<script src="/site-events.js">` in the head is Meta's pixel. Vercel serves
+it, from `api/site-events.js` through the rewrite in `vercel.json`, with the
+dataset id from the project's environment variables: `META_PIXEL_ID`, and
+`META_CAPI_TOKEN` for the Conversions API. A change there needs a redeploy.
+Until the id is set the file is one comment.
+
+It reports the page view, `ViewContent` on /download and /pricing, and `Lead`
+when a link to an installer or a store is clicked. Each Lead is also posted
+to `/v1/site/event` (`api/site-event.js`), which copies it to the Conversions
+API under the same event id.
+
+It does not load for a visitor whose browser asks not to be tracked (Global
+Privacy Control, Do Not Track), nor, while there is no consent banner, for one
+whose clock is in Europe. The page's own analytics events (`TZ.track`) follow
+the same gate (`js/site.js:consent()` mirrors `api/_meta.js`: change one,
+change both).
+
+## Look at it
+
+Serve the folder (any static server) and open it. It fetches its copy from
+`https://api.tailzu.space`; to point somewhere else, set `data-api` on the
+`<html>` tag.
+
+## The API's own copy
+
+`api.tailzu.space/` answers with a 308 to `https://tailzu.space/` (the backend's
+`src/routes/demo.ts`), so nobody lands on a stale copy of this page. Until that
+backend release is out, the old hand-copied `~/tulmi/site/index.html` is still
+served there; it would need `index.html`, `js/`, `media/` and `demo/` together.
 
 ## Change the words
 
-Not here. `SITE_UI` in the backend's `catalog.ts` is every string on this page,
-every pair in the river and every claim on the card; this file carries the same
-text inline only as a fallback for the second before that answer arrives. Edit
-there, deploy, bump the cache — the same move as every string in the app.
-
-Copy is never markup. The page sets all of it as text, so an `<em>` in a string
-here would print as an `<em>`, not render as one.
+Not here. `SITE_UI` in the backend's `catalog.ts` is every string on this
+page; this file carries the same text inline (`C`) only as a fallback. Edit
+there, deploy, sync. Copy is never markup: the page sets all of it as text.
