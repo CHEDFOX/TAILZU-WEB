@@ -1,0 +1,25 @@
+<!doctype html>
+<!--
+  THE PILL, framed. The desktop app's own pill (js/pill.js, js/pillSplit.js,
+  js/knobs.js, copied unchanged from TAILZU-DESKTOP), as main.js opens it: a
+  transparent window as wide as the screen. Here the "screen" is whatever
+  frames it (the home page's #desk stage, or the foot of the page when Ctrl
+  is tapped twice), and the main process is the framing page, through
+  pill-bridge.js. Same origin only.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Tailzu: the pill</title>
+<link rel="stylesheet" href="/demo/pill.css">
+</head>
+<body>
+<canvas id="c"></canvas>
+<script src="/demo/pill-bridge.js"></script>
+<script src="/js/knobs.js?v=46a45b90"></script>
+<script src="/js/pillSplit.js?v=8db59a87"></script>
+<script src="/js/pill.js?v=4b6febd0"></script>
+</body>
+</html>
