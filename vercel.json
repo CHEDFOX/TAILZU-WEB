@@ -45,7 +45,7 @@
     {
       "source": "/(|index\\.html)",
       "headers": [
-        { "key": "Content-Security-Policy", "value": "default-src 'none'; script-src 'self' 'sha256-uXE/ZpOOXOC7kkIfc0UF4ka+OUgkMqLXsZMP3tTMBv4=' 'sha256-Vjo38i9ZUazyL9dtJRq/ieCykLSo2A/XCOmmxcKzQkY=' https://connect.facebook.net https://www.googletagmanager.com; style-src 'self' 'sha256-Mv8NUa7g+Tp6aPsFj+6BRs9N2qLYYrYugFUVWlUnTMI=' 'sha256-q6Z9a+bTOsyrUVqnZTcnSPASFM55cgTLhi9A5mWi2O8=' https://fonts.googleapis.com 'unsafe-hashes' 'sha256-kELgoK46JmGjLd8UHfzN0qJToDgIB+yMtRHG8PtGL7s='; font-src https://fonts.gstatic.com; img-src 'self' https://x0bot.com data: https://www.facebook.com https://www.googletagmanager.com https://*.google-analytics.com; media-src 'self'; connect-src 'self' https://www.facebook.com https://connect.facebook.net https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com; frame-src https://www.googletagmanager.com; base-uri 'self'; form-action 'none'; frame-ancestors 'none'; object-src 'none'" }
+        { "key": "Content-Security-Policy", "value": "default-src 'none'; script-src 'self' 'sha256-uXE/ZpOOXOC7kkIfc0UF4ka+OUgkMqLXsZMP3tTMBv4=' 'sha256-Vjo38i9ZUazyL9dtJRq/ieCykLSo2A/XCOmmxcKzQkY=' https://connect.facebook.net https://www.googletagmanager.com; style-src 'self' 'sha256-Mv8NUa7g+Tp6aPsFj+6BRs9N2qLYYrYugFUVWlUnTMI=' 'sha256-q6Z9a+bTOsyrUVqnZTcnSPASFM55cgTLhi9A5mWi2O8=' https://fonts.googleapis.com 'unsafe-hashes' 'sha256-kELgoK46JmGjLd8UHfzN0qJToDgIB+yMtRHG8PtGL7s='; font-src https://fonts.gstatic.com; img-src 'self' https://x0bot.com data: https://www.facebook.com https://www.googletagmanager.com https://*.google-analytics.com; media-src 'self'; connect-src 'self' https://www.facebook.com https://connect.facebook.net https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com; frame-src https://www.googletagmanager.com; manifest-src 'self'; base-uri 'self'; form-action 'none'; frame-ancestors 'none'; object-src 'none'" }
       ]
     },
     {
@@ -57,7 +57,7 @@
       "headers": [{ "key": "Cache-Control", "value": "public, max-age=86400" }]
     },
     {
-      "source": "/(favicon.svg|favicon.ico|apple-touch-icon.png|icon-512.png)",
+      "source": "/(favicon.svg|favicon.ico|favicon-32x32.png|apple-touch-icon.png|icon-192.png|icon-512.png|icon-maskable-512.png|site.webmanifest)",
       "headers": [{ "key": "Cache-Control", "value": "public, max-age=604800" }]
     },
     {
