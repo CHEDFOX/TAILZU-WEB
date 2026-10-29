@@ -9,7 +9,9 @@ media/                the deck's clips: <id>.webm (VP9), <id>.mp4 (H.264), <id>.
 api/                  Meta's pixel and its Conversions API copy (see Meta's pixel)
 vercel.json           rewrites to the API, headers, the home page's CSP, caching
 csp.mjs               writes index.html's inline hashes into the home page's CSP
-robots.txt, favicon.svg, favicon.ico, apple-touch-icon.png, icon-512.png, og.png, <key>.txt (IndexNow)
+robots.txt, og.png, <key>.txt (IndexNow)
+favicon.ico, favicon-32x32.png, favicon.svg, apple-touch-icon.png, icon-192.png, icon-512.png, icon-maskable-512.png, site.webmanifest
+                      the app icon, cut from the brand's master picture (favicon.svg carries the same picture, for the backend's head)
 ```
 
 ## The page
