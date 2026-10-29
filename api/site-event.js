@@ -1,4 +1,4 @@
-// tailzu.space/v1/site/event (rewritten here by vercel.json): the server's
+// x0bot.com/v1/site/event (rewritten here by vercel.json): the server's
 // copy of a Lead the pixel just reported, for the visitors whose browser
 // blocks the pixel. A beacon: the page is already on its way to the store or
 // the installer, and nothing waits for this answer. See _meta.js.

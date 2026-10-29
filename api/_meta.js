@@ -68,7 +68,8 @@ function leadPayload(req, body, now = Date.now()) {
   const kind = String(b.kind ?? "");
   if (!SITE_EVENTS.has(name) || !EVENT_ID.test(id) || !SITE_KINDS.has(kind)) return null;
   const page = String(b.url ?? "");
-  const url = /^https:\/\/(www\.)?tailzu\.space(\/[^\s]*)?$/.test(page) ? page.slice(0, 300) : "https://tailzu.space/";
+  // x0bot.com, or tailzu.space from before the move (its pages redirect, but an open tab can still send).
+  const url = /^https:\/\/(www\.)?(x0bot\.com|tailzu\.space)(\/[^\s]*)?$/.test(page) ? page.slice(0, 300) : "https://x0bot.com/";
   const user = {};
   const ip = visitorIp(req);
   if (ip) user.client_ip_address = ip;
@@ -109,7 +110,7 @@ async function postEvent(payload, fetchImpl = fetch) {
 // --- The pixel ------------------------------------------------------------------
 
 /**
- * The pixel, as every page of tailzu.space loads it (/site-events.js), the
+ * The pixel, as every page of x0bot.com loads it (/site-events.js), the
  * pages the API renders through the site's proxy (/download, /pricing, /faq…)
  * included. The same script as the API's siteEventsScript (src/ads/meta.ts):
  * change one, change both.

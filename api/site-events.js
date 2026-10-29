@@ -1,4 +1,4 @@
-// tailzu.space/site-events.js (rewritten here by vercel.json): Meta's pixel,
+// x0bot.com/site-events.js (rewritten here by vercel.json): Meta's pixel,
 // with the dataset id from Vercel's settings. See _meta.js.
 const { siteEventsScript } = require("./_meta");
 

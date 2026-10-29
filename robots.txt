@@ -1,4 +1,4 @@
-# tailzu.space — every page is open to every search engine and every AI
+# x0bot.com — every page is open to every search engine and every AI
 # assistant, by name as well as by default: being read, quoted and cited is
 # the point of the pages. The API is not a page.
 User-agent: *
@@ -29,4 +29,4 @@ Allow: /v1/site
 Disallow: /v1/
 Disallow: /downloads/
 
-Sitemap: https://tailzu.space/sitemap.xml
+Sitemap: https://x0bot.com/sitemap.xml
