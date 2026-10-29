@@ -16,6 +16,9 @@
     { "source": "/pricing", "destination": "https://api.x0bot.com/pricing" },
     { "source": "/pay", "destination": "https://api.x0bot.com/pay" },
     { "source": "/v1/pay/razorpay/:action(subscription|verify)", "destination": "https://api.x0bot.com/v1/pay/razorpay/:action" },
+    { "source": "/delete-account", "destination": "https://api.x0bot.com/delete-account" },
+    { "source": "/v1/account/deletion", "destination": "https://api.x0bot.com/v1/account/deletion" },
+    { "source": "/v1/account/deletion/web/:action(code|verify)", "destination": "https://api.x0bot.com/v1/account/deletion/web/:action" },
     { "source": "/.well-known/:path*", "destination": "https://api.x0bot.com/.well-known/:path*" },
     { "source": "/languages", "destination": "https://api.x0bot.com/languages" },
     { "source": "/languages/:slug", "destination": "https://api.x0bot.com/languages/:slug" },
@@ -42,7 +45,7 @@
     {
       "source": "/(|index\\.html)",
       "headers": [
-        { "key": "Content-Security-Policy", "value": "default-src 'none'; script-src 'self' 'sha256-uXE/ZpOOXOC7kkIfc0UF4ka+OUgkMqLXsZMP3tTMBv4=' 'sha256-wS1ORSkgY8jRKKCWMN49ZbvYDJ8psp4y8XDHIFCctNk=' https://connect.facebook.net https://www.googletagmanager.com; style-src 'self' 'sha256-Mv8NUa7g+Tp6aPsFj+6BRs9N2qLYYrYugFUVWlUnTMI=' 'sha256-q6Z9a+bTOsyrUVqnZTcnSPASFM55cgTLhi9A5mWi2O8=' https://fonts.googleapis.com 'unsafe-hashes' 'sha256-kELgoK46JmGjLd8UHfzN0qJToDgIB+yMtRHG8PtGL7s='; font-src https://fonts.gstatic.com; img-src 'self' https://x0bot.com data: https://www.facebook.com https://www.googletagmanager.com https://*.google-analytics.com; media-src 'self'; connect-src 'self' https://www.facebook.com https://connect.facebook.net https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com; frame-src https://www.googletagmanager.com; base-uri 'self'; form-action 'none'; frame-ancestors 'none'; object-src 'none'" }
+        { "key": "Content-Security-Policy", "value": "default-src 'none'; script-src 'self' 'sha256-uXE/ZpOOXOC7kkIfc0UF4ka+OUgkMqLXsZMP3tTMBv4=' 'sha256-Vjo38i9ZUazyL9dtJRq/ieCykLSo2A/XCOmmxcKzQkY=' https://connect.facebook.net https://www.googletagmanager.com; style-src 'self' 'sha256-Mv8NUa7g+Tp6aPsFj+6BRs9N2qLYYrYugFUVWlUnTMI=' 'sha256-q6Z9a+bTOsyrUVqnZTcnSPASFM55cgTLhi9A5mWi2O8=' https://fonts.googleapis.com 'unsafe-hashes' 'sha256-kELgoK46JmGjLd8UHfzN0qJToDgIB+yMtRHG8PtGL7s='; font-src https://fonts.gstatic.com; img-src 'self' https://x0bot.com data: https://www.facebook.com https://www.googletagmanager.com https://*.google-analytics.com; media-src 'self'; connect-src 'self' https://www.facebook.com https://connect.facebook.net https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com; frame-src https://www.googletagmanager.com; base-uri 'self'; form-action 'none'; frame-ancestors 'none'; object-src 'none'" }
       ]
     },
     {

@@ -65,7 +65,10 @@ runs none reads the head and the `<noscript>` block.
 `/sitemap.xml`, `/llms.txt` and `/llms-full.txt` are the backend's (src/seo),
 served through the rewrites and canonical here. `/privacy`, `/terms`,
 `/pricing` and `/download` are served by the backend too; the page links
-them by these paths.
+them by these paths. So is `/delete-account` (Google Play's account
+deletion link: sign in with an emailed code and ask for the account to be
+deleted, without the app), with the three API calls it makes,
+`/v1/account/deletion` and `/v1/account/deletion/web/{code,verify}`.
 
 ## The old address, tailzu.space
 
@@ -86,7 +89,7 @@ docs/domain-x0bot.md).
 The site is on Vercel, deployed from this repo: a push to `main` is the
 deploy, live in under a minute. `vercel.json` proxies `/v1/site`,
 `/v1/site/event`, `/site-events.js`, `/v1/demo/transcribe`, `/v1/pay/*`,
-`/download`, the three installers, the backend's pages and the SEO files to
+`/v1/account/deletion*`, `/download`, the three installers, the backend's pages and the SEO files to
 the API, and nothing else of it. `.vercelignore` keeps this file, `csp.mjs`
 and `scratchpad/` off the site.
 
