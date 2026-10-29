@@ -1,28 +1,32 @@
 {
+  "redirects": [
+    { "source": "/:path((?!v1/|downloads/|\\.well-known/|api/).*)", "has": [{ "type": "host", "value": "tailzu.space" }], "destination": "https://x0bot.com/:path*", "statusCode": 301 },
+    { "source": "/:path((?!v1/|downloads/|\\.well-known/|api/).*)", "has": [{ "type": "host", "value": "www.tailzu.space" }], "destination": "https://x0bot.com/:path*", "statusCode": 301 }
+  ],
   "rewrites": [
-    { "source": "/v1/site", "destination": "https://api.tailzu.space/v1/site" },
+    { "source": "/v1/site", "destination": "https://api.x0bot.com/v1/site" },
     { "source": "/v1/site/event", "destination": "/api/site-event" },
     { "source": "/site-events.js", "destination": "/api/site-events" },
-    { "source": "/v1/demo/transcribe", "destination": "https://api.tailzu.space/v1/demo/transcribe" },
-    { "source": "/v1/pay/report", "destination": "https://api.tailzu.space/v1/pay/report" },
-    { "source": "/download", "destination": "https://api.tailzu.space/download" },
-    { "source": "/downloads/:file(Tailzu-Setup\\.exe|Tailzu\\.dmg|Tailzu\\.AppImage)", "destination": "https://api.tailzu.space/downloads/:file" },
-    { "source": "/privacy", "destination": "https://api.tailzu.space/privacy" },
-    { "source": "/terms", "destination": "https://api.tailzu.space/terms" },
-    { "source": "/pricing", "destination": "https://api.tailzu.space/pricing" },
-    { "source": "/pay", "destination": "https://api.tailzu.space/pay" },
-    { "source": "/v1/pay/razorpay/:action(subscription|verify)", "destination": "https://api.tailzu.space/v1/pay/razorpay/:action" },
-    { "source": "/.well-known/:path*", "destination": "https://api.tailzu.space/.well-known/:path*" },
-    { "source": "/languages", "destination": "https://api.tailzu.space/languages" },
-    { "source": "/languages/:slug", "destination": "https://api.tailzu.space/languages/:slug" },
-    { "source": "/faq", "destination": "https://api.tailzu.space/faq" },
-    { "source": "/ai-keyboard", "destination": "https://api.tailzu.space/ai-keyboard" },
-    { "source": "/ai-keyboard/:device(android|iphone)", "destination": "https://api.tailzu.space/ai-keyboard/:device" },
-    { "source": "/voice-typing", "destination": "https://api.tailzu.space/voice-typing" },
-    { "source": "/voice-typing/:page(windows|mac|chatgpt)", "destination": "https://api.tailzu.space/voice-typing/:page" },
-    { "source": "/sitemap.xml", "destination": "https://api.tailzu.space/sitemap.xml" },
-    { "source": "/llms.txt", "destination": "https://api.tailzu.space/llms.txt" },
-    { "source": "/llms-full.txt", "destination": "https://api.tailzu.space/llms-full.txt" }
+    { "source": "/v1/demo/transcribe", "destination": "https://api.x0bot.com/v1/demo/transcribe" },
+    { "source": "/v1/pay/report", "destination": "https://api.x0bot.com/v1/pay/report" },
+    { "source": "/download", "destination": "https://api.x0bot.com/download" },
+    { "source": "/downloads/:file(Tailzu-Setup\\.exe|Tailzu\\.dmg|Tailzu\\.AppImage)", "destination": "https://api.x0bot.com/downloads/:file" },
+    { "source": "/privacy", "destination": "https://api.x0bot.com/privacy" },
+    { "source": "/terms", "destination": "https://api.x0bot.com/terms" },
+    { "source": "/pricing", "destination": "https://api.x0bot.com/pricing" },
+    { "source": "/pay", "destination": "https://api.x0bot.com/pay" },
+    { "source": "/v1/pay/razorpay/:action(subscription|verify)", "destination": "https://api.x0bot.com/v1/pay/razorpay/:action" },
+    { "source": "/.well-known/:path*", "destination": "https://api.x0bot.com/.well-known/:path*" },
+    { "source": "/languages", "destination": "https://api.x0bot.com/languages" },
+    { "source": "/languages/:slug", "destination": "https://api.x0bot.com/languages/:slug" },
+    { "source": "/faq", "destination": "https://api.x0bot.com/faq" },
+    { "source": "/ai-keyboard", "destination": "https://api.x0bot.com/ai-keyboard" },
+    { "source": "/ai-keyboard/:device(android|iphone)", "destination": "https://api.x0bot.com/ai-keyboard/:device" },
+    { "source": "/voice-typing", "destination": "https://api.x0bot.com/voice-typing" },
+    { "source": "/voice-typing/:page(windows|mac|chatgpt)", "destination": "https://api.x0bot.com/voice-typing/:page" },
+    { "source": "/sitemap.xml", "destination": "https://api.x0bot.com/sitemap.xml" },
+    { "source": "/llms.txt", "destination": "https://api.x0bot.com/llms.txt" },
+    { "source": "/llms-full.txt", "destination": "https://api.x0bot.com/llms-full.txt" }
   ],
   "headers": [
     {
@@ -38,7 +42,7 @@
     {
       "source": "/(|index\\.html)",
       "headers": [
-        { "key": "Content-Security-Policy", "value": "default-src 'none'; script-src 'self' 'sha256-uXE/ZpOOXOC7kkIfc0UF4ka+OUgkMqLXsZMP3tTMBv4=' 'sha256-VH1xbdIscOcSu5MsiC2UzDb8tPFYo0ubRcYsoxTV5NU=' https://connect.facebook.net https://www.googletagmanager.com; style-src 'self' 'sha256-Mv8NUa7g+Tp6aPsFj+6BRs9N2qLYYrYugFUVWlUnTMI=' 'sha256-q6Z9a+bTOsyrUVqnZTcnSPASFM55cgTLhi9A5mWi2O8=' https://fonts.googleapis.com 'unsafe-hashes' 'sha256-kELgoK46JmGjLd8UHfzN0qJToDgIB+yMtRHG8PtGL7s='; font-src https://fonts.gstatic.com; img-src 'self' https://tailzu.space data: https://www.facebook.com https://www.googletagmanager.com https://*.google-analytics.com; media-src 'self'; connect-src 'self' https://www.facebook.com https://connect.facebook.net https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com; frame-src https://www.googletagmanager.com; base-uri 'self'; form-action 'none'; frame-ancestors 'none'; object-src 'none'" }
+        { "key": "Content-Security-Policy", "value": "default-src 'none'; script-src 'self' 'sha256-uXE/ZpOOXOC7kkIfc0UF4ka+OUgkMqLXsZMP3tTMBv4=' 'sha256-wS1ORSkgY8jRKKCWMN49ZbvYDJ8psp4y8XDHIFCctNk=' https://connect.facebook.net https://www.googletagmanager.com; style-src 'self' 'sha256-Mv8NUa7g+Tp6aPsFj+6BRs9N2qLYYrYugFUVWlUnTMI=' 'sha256-q6Z9a+bTOsyrUVqnZTcnSPASFM55cgTLhi9A5mWi2O8=' https://fonts.googleapis.com 'unsafe-hashes' 'sha256-kELgoK46JmGjLd8UHfzN0qJToDgIB+yMtRHG8PtGL7s='; font-src https://fonts.gstatic.com; img-src 'self' https://x0bot.com data: https://www.facebook.com https://www.googletagmanager.com https://*.google-analytics.com; media-src 'self'; connect-src 'self' https://www.facebook.com https://connect.facebook.net https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com; frame-src https://www.googletagmanager.com; base-uri 'self'; form-action 'none'; frame-ancestors 'none'; object-src 'none'" }
       ]
     },
     {

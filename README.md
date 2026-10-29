@@ -1,4 +1,4 @@
-# tailzu.space
+# x0bot.com
 
 No build, no framework, no dependencies. One static page, its clips, and the
 API behind it for the backend's pages and the downloads.
@@ -31,7 +31,7 @@ clip plays its `.webm`, else its `.mp4`. Every clip on a card is a `<id>` in
 The key (`#home`) is `/download` in the markup; the script points it at what
 this device installs: iPhone and iPad (iPadOS's desktop UA included) → the
 App Store; Android → Google Play; Windows → the Microsoft installer; Mac →
-the `.dmg`; Linux → the `.AppImage` (both straight from `api.tailzu.space`,
+the `.dmg`; Linux → the `.AppImage` (both straight from `api.x0bot.com`,
 so a hundred megabytes never pass through Vercel); ChromeOS and anything
 else → `/download`. Without JavaScript the `<noscript>` block says what
 Tailzu is and links every device. Every download link carries `data-place`
@@ -66,6 +66,20 @@ runs none reads the head and the `<noscript>` block.
 served through the rewrites and canonical here. `/privacy`, `/terms`,
 `/pricing` and `/download` are served by the backend too; the page links
 them by these paths.
+
+## The old address, tailzu.space
+
+The same Vercel project still answers tailzu.space and www.tailzu.space, for
+the apps already installed and links already out there. `vercel.json`'s
+`redirects` send every page there to the same path on x0bot.com (301), and
+leave alone what is not a page: `/v1/*` (a POST does not survive a redirect),
+`/downloads/*` (desktop builds up to 0.4.4 take their update only from
+tailzu.space, and follow no redirect off it), `/.well-known/*` (Apple and
+Google refuse an app-links file behind a redirect) and `/api/*`. Those keep
+being proxied to the API exactly as on x0bot.com. In Vercel's Domains
+settings both tailzu.space names are attached to production with no
+redirect of their own, so this file decides (TAILZU-BACKEND
+docs/domain-x0bot.md).
 
 ## Publishing
 
@@ -116,7 +130,7 @@ and open it.
 
 ## The API's own copy
 
-`api.tailzu.space/` answers with a 308 to `https://tailzu.space/` (the backend's
+`api.x0bot.com/` answers with a 308 to `https://x0bot.com/` (the backend's
 `src/routes/demo.ts`), so nobody lands on a stale copy of this page. Until that
 backend release is out, the old hand-copied `~/tulmi/site/index.html` is still
 served there; it would need `index.html` and `media/` together.
