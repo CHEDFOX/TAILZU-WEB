@@ -13,6 +13,7 @@
     { "source": "/downloads/:file(Tailzu-Setup\\.exe|Tailzu\\.dmg|Tailzu\\.AppImage)", "destination": "https://api.x0bot.com/downloads/:file" },
     { "source": "/privacy", "destination": "https://api.x0bot.com/privacy" },
     { "source": "/terms", "destination": "https://api.x0bot.com/terms" },
+    { "source": "/support", "destination": "https://api.x0bot.com/support" },
     { "source": "/pricing", "destination": "https://api.x0bot.com/pricing" },
     { "source": "/pay", "destination": "https://api.x0bot.com/pay" },
     { "source": "/v1/pay/razorpay/:action(subscription|verify)", "destination": "https://api.x0bot.com/v1/pay/razorpay/:action" },
