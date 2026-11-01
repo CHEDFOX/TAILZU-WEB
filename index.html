@@ -50,9 +50,9 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <link rel="manifest" href="/site.webmanifest">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" id="fonts" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,800&amp;family=Kalam&amp;display=swap" media="print">
+<link rel="stylesheet" id="fonts" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,800&amp;family=Geist:wght@400;500;600;700&amp;family=Kalam&amp;display=swap" media="print">
 <noscript>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,800&amp;family=Kalam&amp;display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,800&amp;family=Geist:wght@400;500;600;700&amp;family=Kalam&amp;display=swap">
 <style>
   /* Without JavaScript nothing can play: the page says what Tailzu is and
      gives every device its download, above the links. */
@@ -219,18 +219,14 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   .dbot { position: absolute; left: 0; top: 0; z-index: 3; pointer-events: none; }
   /* The desktop, at its own resolution, scaled into the screen. Realistic colour lives in here only. */
   .os { position: absolute; left: 0; top: 0; overflow: hidden; transform-origin: 0 0; opacity: 0; color: #1d1d1f; font: 400 13px/1.35 var(--sys); -webkit-font-smoothing: antialiased;
-    background: radial-gradient(55% 60% at 82% 96%, rgba(255, 164, 96, .95), rgba(255, 164, 96, 0) 70%), radial-gradient(50% 60% at 6% 90%, rgba(126, 84, 255, .9), rgba(126, 84, 255, 0) 70%),
-      radial-gradient(60% 50% at 55% 38%, rgba(255, 110, 160, .5), rgba(255, 110, 160, 0) 72%), radial-gradient(70% 60% at 18% 4%, rgba(44, 104, 236, .95), rgba(44, 104, 236, 0) 70%),
-      linear-gradient(162deg, #0d1c4a, #2a2b8c 40%, #873f92 68%, #e37f63); }
-  .os::before { content: ""; position: absolute; left: -15%; top: 46%; width: 130%; height: 38%; border-radius: 50%; transform: rotate(-9deg); filter: blur(26px);
-    background: linear-gradient(90deg, rgba(255, 214, 170, 0), rgba(255, 214, 170, .32) 35%, rgba(190, 160, 255, .26) 70%, rgba(255, 255, 255, 0)); }
+    background: #2a2440 url(/media/desk-wall.jpg) center / cover; }
   .os p, .os h4 { margin: 0; }
   .menu { position: absolute; left: 0; right: 0; top: 0; z-index: 5; display: flex; align-items: center; gap: 16px; padding: 0 14px; box-sizing: border-box; color: #fff; font-size: 12.5px;
     background: rgba(16, 14, 40, .26); -webkit-backdrop-filter: blur(22px) saturate(1.6); backdrop-filter: blur(22px) saturate(1.6); }
   .menu b { font-weight: 700; }
   .menu .sp { flex: 1; }
   .menu svg { display: block; height: 13px; width: auto; fill: currentColor; }
-  .menu .mk { width: 20px; height: 15px; }
+  .menu .mk { width: 15px; height: 15px; }
   .win { position: absolute; display: flex; overflow: hidden; border-radius: 11px; visibility: hidden;
     box-shadow: 0 0 0 .5px rgba(0, 0, 0, .3), 0 24px 56px -10px rgba(0, 0, 0, .55), 0 6px 16px rgba(0, 0, 0, .18); }
   .win.off { box-shadow: 0 0 0 .5px rgba(0, 0, 0, .22), 0 12px 30px -8px rgba(0, 0, 0, .4); }
@@ -248,7 +244,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   .row b { font-weight: 600; }
   .row b, .row span { display: block; grid-column: 2; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
   .row span { color: rgba(0, 0, 0, .48); font-size: 11.5px; }
-  .av.bhai { --c: #5b7cfa; } .av.mummy { --c: #f2844e; } .av.zara { --c: #2fb783; }
+  .av.c1 { --c: #5b7cfa; } .av.c2 { --c: #f2844e; } .av.c3 { --c: #2fb783; }
   .av { grid-row: span 2; display: grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; background: var(--c, #8e8e93); color: #fff; font: normal 600 12px/1 var(--sys); }
   .main { position: relative; flex: 1; min-width: 0; display: flex; flex-direction: column; background: #fff; }
   .hd { flex: none; display: flex; align-items: center; gap: 8px; height: 50px; padding: 0 14px; border-bottom: .5px solid rgba(0, 0, 0, .1); font-size: 13.5px; }
@@ -263,24 +259,79 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   .fld .ph { position: absolute; left: 12px; top: 6px; font-style: normal; color: rgba(0, 0, 0, .32); }
   .fld .go { position: absolute; right: 4px; bottom: 4px; width: 22px; height: 22px; border-radius: 50%; background: #1d1d1f; }
   .fld .go::after { content: ""; position: absolute; left: 50%; top: 50%; width: 6px; height: 6px; margin: -2px 0 0 -4px; border: solid #fff; border-width: 1.6px 0 0 1.6px; transform: rotate(45deg); }
-  .wn .main { padding: 0 22px; background: #fffdf8; }
-  .tb { flex: none; height: 42px; }
-  .wn h4 { margin: 4px 0 2px; font-size: 20px; font-weight: 700; letter-spacing: -.01em; }
-  .nd { margin: 0 0 10px !important; color: rgba(0, 0, 0, .38); font-size: 11px; }
-  .nx { font-size: 14px; line-height: 1.5; }
-  .sel { background: linear-gradient(rgba(0, 110, 255, var(--sa, .26)), rgba(0, 110, 255, var(--sa, .26))) no-repeat 0 0 / var(--s, 0%) 100%; }
-  .ny { margin-top: 12px !important; color: rgba(0, 0, 0, .55); font-size: 13px; }
-  .wa .main { background: #fbfbfd; }
-  .wa .hd { justify-content: center; font-weight: 600; }
-  .msgs .hi { align-self: center; margin: auto 0; padding: 0; font-size: 18px; font-weight: 600; color: rgba(0, 0, 0, .72); }
-  .wa .msgs .out { background: #ececf1; color: #1d1d1f; }
-  .msgs .ans { align-self: flex-start; max-width: 96%; padding: 2px; line-height: 1.45; }
   /* Tailzu: the pill, and what was said, above the dock. */
-  .pill { position: absolute; display: flex; align-items: center; justify-content: center; gap: 7px; box-sizing: border-box; border-radius: 99px; background: #141312; opacity: 0; visibility: hidden;
-    box-shadow: inset 0 0 0 .6px rgba(255, 255, 255, .16), 0 8px 22px rgba(0, 0, 0, .45); }
-  .pill .pm { flex: none; width: 19px; height: 15px; }
-  .wv { display: flex; align-items: center; gap: 2.5px; height: 56%; }
-  .wv i { width: 3px; height: 100%; border-radius: 2px; background: var(--neon); box-shadow: 0 0 4px rgba(57, 255, 20, .55); transform: scaleY(.16); }
+  .pill { position: absolute; display: flex; align-items: center; gap: 9px; box-sizing: border-box; padding: 0 13px 0 5px; border-radius: 99px; background: #fff; opacity: 0; visibility: hidden; white-space: nowrap;
+    box-shadow: 0 0 0 1px #e6e6e6, 0 8px 22px rgba(0, 0, 0, .2); font: 500 13px/1 Geist, var(--sys); color: #0a0a0a; }
+  .pill .disc { flex: none; display: grid; place-items: center; width: 30px; height: 30px; border-radius: 50%; background: #A9573A; }
+  .pill .disc svg { width: 16px; height: 16px; }
+  .pill .dots { display: none; gap: 3px; } .pill .dots i { width: 4px; height: 4px; border-radius: 50%; background: #fff; opacity: .4; }
+  .pill.w .disc svg, .pill.w .wv, .pill.w .tm, .pill.w .px { display: none; } .pill.w .dots { display: flex; } .pill .wr { display: none; font-weight: 500; } .pill.w .wr { display: block; }
+  .pill .tm { color: #b0b0b0; font-size: 12px; font-variant-numeric: tabular-nums; } .pill .px { color: #9a9a9a; font-size: 15px; }
+  .wv { display: flex; align-items: center; gap: 2px; height: 20px; }
+  .wv i { width: 2.5px; height: 100%; border-radius: 2px; background: #A9573A; transform: scaleY(.16); }
+  .prest { position: absolute; display: flex; align-items: center; justify-content: center; gap: 3px; width: 38px; height: 12px; border-radius: 6px; background: #fff; box-shadow: 0 0 0 1px #e6e6e6, 0 3px 8px rgba(0, 0, 0, .14); transform: translateX(-50%); opacity: 0; }
+  .prest i { width: 3px; height: 3px; border-radius: 50%; background: #0a0a0a; }
+  /* X0 Bot's own windows: the app's white look, Geist. */
+  .x0 { font-family: Geist, var(--sys); color: #0a0a0a; }
+  .side.tc { background: #1f1b2e; color: rgba(255, 255, 255, .72); border-right: 0; padding-top: 34px; font-size: 12px; -webkit-backdrop-filter: none; backdrop-filter: none; }
+  .tc p { display: flex; align-items: center; gap: 7px; padding: 3px 8px; border-radius: 6px; }
+  .tc .ws { color: #fff; font-weight: 700; font-size: 13px; margin-bottom: 8px !important; }
+  .tc .ch.on { background: #4b5bd6; color: #fff; font-weight: 600; }
+  .tc .dmh { margin-top: 10px !important; font-size: 10.5px; color: rgba(255, 255, 255, .5); }
+  .pp { display: grid; place-items: center; flex: none; width: 18px; height: 18px; border-radius: 5px; background: #8a5cf6 center / cover; color: #fff; font: normal 600 10px/1 var(--sys); }
+  .pp.c3 { background-color: #2fb783; }
+  .wc .hd { gap: 10px; } .wc .hd .mem { margin-left: auto; font-size: 11px; color: rgba(0, 0, 0, .45); }
+  .tcm { gap: 10px; }
+  .msgs.tcm p { max-width: none; padding: 0; border-radius: 0; }
+  .tm { display: flex; gap: 9px; align-items: flex-start; font-size: 12.5px; line-height: 1.4; transform-origin: 0 100%; }
+  .tm .pp { width: 30px; height: 30px; border-radius: 7px; }
+  .tm b { display: block; font-size: 12.5px; } .tm small { font-weight: 400; font-size: 10.5px; color: rgba(0, 0, 0, .45); margin-left: 4px; }
+  .msgs.tcm .tmt { font-size: 11px; color: rgba(0, 0, 0, .45); padding-left: 39px; }
+  .wc .fld { border-radius: 9px; }
+  .tile.cam { background: #2b2d32 center / cover; }
+  .mnote { position: absolute; right: 10px; top: 32px; z-index: 6; display: flex; gap: 10px; width: 300px; padding: 11px 13px; border-radius: 16px; background: rgba(246, 246, 248, .9);
+    -webkit-backdrop-filter: blur(24px); backdrop-filter: blur(24px); box-shadow: 0 0 0 .5px rgba(0, 0, 0, .14), 0 12px 30px -8px rgba(0, 0, 0, .35); opacity: 0; font-size: 12px; }
+  .mnote img { width: 34px; height: 34px; border-radius: 8px; flex: none; }
+  .mnote .ma { display: flex; justify-content: space-between; font-size: 10.5px; color: #6b6b6b; margin-bottom: 2px !important; }
+  .mnote b { display: block; font-size: 13px; } .mnote div { flex: 1; min-width: 0; }
+  .xt .xode.done .xst { color: #0a0a0a; }
+  .xmk { width: 14px; height: 14px; flex: none; }
+  .call { position: relative; flex: 1; display: flex; flex-direction: column; background: #1b1c1f; color: #fff; }
+  .ctop { height: 36px; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600; color: rgba(255, 255, 255, .78); }
+  .grid { flex: 1; display: grid; grid-template-columns: 1fr 1fr; gap: 6px; padding: 0 8px; }
+  .tile { position: relative; display: grid; place-items: center; border-radius: 8px; background: #2b2d32; }
+  .tile i { display: grid; place-items: center; width: 42px; height: 42px; border-radius: 50%; font: normal 600 16px/1 var(--sys); color: #fff; }
+  .tile i.c1 { background: #5b7cfa; } .tile i.c2 { background: #f2844e; } .tile i.c3 { background: #2fb783; } .tile i.c4 { background: #8a5cf6; }
+  .tile b { position: absolute; left: 8px; bottom: 6px; font-size: 10.5px; font-weight: 500; color: rgba(255, 255, 255, .85); }
+  .tile.sp { box-shadow: inset 0 0 0 2px #2fb783; }
+  .cbar { height: 40px; display: flex; align-items: center; justify-content: center; gap: 10px; }
+  .cbar i { display: block; width: 26px; height: 26px; border-radius: 50%; background: #3a3c42; } .cbar i.hang { width: 40px; border-radius: 13px; background: #e5484d; }
+  .tn { position: absolute; left: 10px; top: 42px; display: flex; align-items: center; gap: 6px; height: 26px; padding: 0 10px 0 8px; border-radius: 13px; background: #fff; font-size: 11.5px; font-weight: 500; box-shadow: 0 4px 12px rgba(0, 0, 0, .3); opacity: 0; }
+  .tn .rec { display: block; width: 7px; height: 7px; border-radius: 50%; background: #6E4A6B; }
+  .note { position: absolute; right: 10px; bottom: 48px; width: 232px; padding: 12px 14px 10px; border-radius: 14px; background: #fff; box-shadow: 0 12px 30px rgba(0, 0, 0, .45); opacity: 0; transform-origin: 100% 100%; }
+  .note .nh { display: flex; align-items: center; gap: 6px; font-size: 10.5px; color: #5c5c5c; margin-bottom: 6px !important; }
+  .note h5 { margin: 0 0 3px; font-size: 15px; font-weight: 700; letter-spacing: -.01em; }
+  .note .nsum { font-size: 12px; line-height: 1.4; color: #3d3d3d; }
+  .note .nl { margin: 8px 0 3px !important; font-size: 9.5px; font-weight: 600; letter-spacing: .07em; text-transform: uppercase; color: #5c5c5c; }
+  .note .td { display: flex; align-items: center; gap: 7px; font-size: 12px; line-height: 1.6; }
+  .note .td i { display: block; flex: none; width: 11px; height: 11px; border-radius: 3px; box-shadow: inset 0 0 0 1.3px #8a8a8a; }
+  .wa.x0 { background: #fff; }
+  .xs { flex: none; width: 30%; box-sizing: border-box; padding: 34px 8px 8px; border-right: 1px solid #ededed; font-size: 11.5px; }
+  .xs p { display: flex; align-items: center; gap: 7px; padding: 4px 6px; border-radius: 7px; }
+  .xs .xl { font-weight: 700; font-size: 12.5px; margin-bottom: 4px !important; } .xs .xi.on { background: #f2f2f2; font-weight: 600; }
+  .xs .xh { font-size: 9px; font-weight: 600; letter-spacing: .07em; text-transform: uppercase; color: #5c5c5c; margin-top: 6px !important; }
+  .xs .xb i { display: block; width: 6px; height: 6px; border-radius: 50%; background: var(--c); }
+  .xm { position: relative; flex: 1; min-width: 0; padding: 30px 14px 12px; display: flex; flex-direction: column; }
+  .xm .xg { font-size: 11px; color: #5c5c5c; } .xm h5 { margin: 3px 0 12px; font-size: 17px; line-height: 1.15; font-weight: 700; letter-spacing: -.02em; }
+  .xt { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+  .xt p { display: flex; flex-direction: column; gap: 1px; padding: 8px; border-radius: 10px; box-shadow: inset 0 0 0 1px #e6e6e6; font-size: 9.5px; color: #5c5c5c; }
+  .xt img { width: 22px; height: 22px; margin-bottom: 4px; } .xt b { font-size: 11.5px; font-weight: 600; color: #0a0a0a; }
+  .xt .xst { color: #4F7A3A; font-weight: 500; }
+  .who { display: flex; align-items: center; gap: 6px; align-self: flex-start; margin-top: auto !important; margin-bottom: 7px !important; height: 30px; padding: 0 3px 0 4px; border-radius: 15px; box-shadow: inset 0 0 0 1.3px #4F7A3A; font-size: 11.5px; color: #5c5c5c; opacity: 0; }
+  .who img { width: 22px; height: 22px; } .who b { font-weight: 600; color: #0a0a0a; } .who u { text-decoration: none; padding: 0 9px; border-left: 1px solid #e6e6e6; font-weight: 600; color: #0a0a0a; }
+  .xask { position: relative; min-height: 34px; box-sizing: border-box; padding: 9px 40px 9px 12px; border-radius: 17px; box-shadow: inset 0 0 0 1px #e6e6e6; font-size: 12px; }
+  .xask .ph { position: absolute; left: 12px; top: 9px; font-style: normal; color: #8a8a8a; white-space: nowrap; }
+  .xask .go { position: absolute; right: 4px; top: 4px; width: 26px; height: 26px; border-radius: 50%; background: #0a0a0a; }
   .cap { position: absolute; left: 50%; width: max-content; max-width: var(--cw); box-sizing: border-box; padding: 6px 11px; border-radius: 11px; transform: translateX(-50%); visibility: hidden;
     background: rgba(20, 19, 18, .62); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); color: rgba(255, 255, 255, .92); text-align: center; }
   .cap span { opacity: 0; }
@@ -289,9 +340,9 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   .ap { position: relative; display: grid; place-items: center; width: var(--dt); height: var(--dt); border-radius: 23%; transform-origin: 50% 100%; box-shadow: inset 0 0 0 .5px rgba(0, 0, 0, .14), 0 1.5px 3px rgba(0, 0, 0, .25); }
   .ap svg { width: 64%; height: 64%; }
   .ap b { position: absolute; left: 50%; bottom: calc(var(--dp) * -.66); width: 4px; height: 4px; margin-left: -2px; border-radius: 50%; background: rgba(255, 255, 255, .85); opacity: 0; }
-  .a0 { background: linear-gradient(180deg, #67e98d, #1fbf5a); } .a1 { background: linear-gradient(180deg, #78c6ff, #2a7df1); } .a2 { background: linear-gradient(180deg, #fff, #e4e7ec); }
-  .a3 { background: linear-gradient(180deg, #fff8ea, #ffe0b4); } .a4 { background: linear-gradient(180deg, #ff7e94, #f2354f); } .a5 { background: linear-gradient(180deg, #ffd64a 0 30%, #fffdf5 30%); }
-  .a6 { background: radial-gradient(80% 80% at 30% 20%, #4b3b9a, #17122e); }
+  .a0 { background: linear-gradient(180deg, #6c5ce7, #3d2fb0); } .a1 { background: linear-gradient(180deg, #78c6ff, #2a7df1); } .a2 { background: linear-gradient(180deg, #fff, #e4e7ec); }
+  .a3 { background: linear-gradient(180deg, #fff8ea, #ffe0b4); } .a4 { background: linear-gradient(180deg, #ff7e94, #f2354f); } .a5 { background: linear-gradient(180deg, #3fd18a, #10985a); }
+  .a6 { background: url(/icon-512.png) center / cover; }
   .dnarrow .os { font-size: 10.5px; }
   .dnarrow .menu { gap: 9px; padding: 0 8px; font-size: 9.5px; }
   .dnarrow .menu svg { height: 9px; } .dnarrow .menu .mk { width: 14px; height: 11px; }
@@ -308,7 +359,12 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   .dnarrow .fld .go { width: 16px; height: 16px; right: 3px; bottom: 3px; }
   .dnarrow .wn .main { padding: 0 12px; } .dnarrow .tb { height: 26px; } .dnarrow .wn h4 { font-size: 14px; } .dnarrow .nd { font-size: 8.5px; margin-bottom: 5px !important; }
   .dnarrow .nx { font-size: 10.5px; line-height: 1.42; } .dnarrow .ny { margin-top: 6px !important; font-size: 10px; } .dnarrow .msgs .hi { font-size: 13px; }
-  .dnarrow .pill { gap: 5px; } .dnarrow .pill .pm { width: 13px; height: 10px; } .dnarrow .wv { gap: 1.6px; } .dnarrow .wv i { width: 2px; }
+  .dnarrow .pill { gap: 5px; padding: 0 8px 0 3px; font-size: 9px; } .dnarrow .pill .disc { width: 20px; height: 20px; } .dnarrow .pill .disc svg { width: 11px; height: 11px; } .dnarrow .wv { gap: 1.4px; height: 13px; } .dnarrow .wv i { width: 1.8px; }
+  .dnarrow .xs { display: none; } .dnarrow .xm { padding: 24px 9px 8px; } .dnarrow .xm h5 { font-size: 12px; margin-bottom: 7px; } .dnarrow .xt p { padding: 5px; font-size: 7px; } .dnarrow .xt b { font-size: 8.5px; } .dnarrow .xt img { width: 15px; height: 15px; }
+  .dnarrow .xask { font-size: 8.5px; min-height: 24px; padding: 6px 28px 6px 8px; } .dnarrow .xask .ph { left: 8px; top: 6px; } .dnarrow .xask .go { width: 18px; height: 18px; top: 3px; } .dnarrow .who { height: 22px; font-size: 8.5px; } .dnarrow .who img { width: 16px; height: 16px; }
+  .dnarrow .mnote { width: 200px; padding: 7px 9px; font-size: 8.5px; top: 22px; } .dnarrow .mnote b { font-size: 9.5px; } .dnarrow .mnote img { width: 22px; height: 22px; }
+  .dnarrow .side.tc { display: none; } .dnarrow .tm { font-size: 9px; } .dnarrow .tm .pp { width: 20px; height: 20px; } .dnarrow .tm b { font-size: 9px; }
+  .dnarrow .note { width: 150px; padding: 8px 9px 7px; right: 6px; bottom: 34px; } .dnarrow .note h5 { font-size: 11px; } .dnarrow .note .nsum, .dnarrow .note .td { font-size: 8.5px; } .dnarrow .tn { font-size: 8px; height: 18px; top: 30px; } .dnarrow .ctop { height: 24px; font-size: 9px; } .dnarrow .tile i { width: 26px; height: 26px; font-size: 11px; } .dnarrow .cbar { height: 28px; } .dnarrow .cbar i { width: 18px; height: 18px; } .dnarrow .cbar i.hang { width: 28px; }
   .dnarrow .cap { padding: 4px 8px; border-radius: 8px; }
   /* Outside the screen: his bubble, a tiny step label, the last line. */
   .say { position: absolute; left: 0; top: 0; z-index: 4; margin: 0; padding: 4px 11px 5px; border-radius: 13px; background: #fff; color: var(--ink); font: 400 17px/1.2 var(--hand); white-space: nowrap;
@@ -427,7 +483,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   </div>
 </section>
 <section id="desk" aria-label="X0 Bot on a Mac: in a chat, a note and an assistant, you just talk">
-  <svg class="sym" width="0" height="0" aria-hidden="true"><symbol id="tzm" viewBox="170 228 680 512"><line x1="346" y1="402" x2="270" y2="598" stroke="#E9CBA2" stroke-width="16" stroke-linecap="round"/><line x1="444" y1="394" x2="554" y2="486" stroke="#E8A23C" stroke-width="34" stroke-dasharray="10 10"/><line x1="668" y1="478" x2="828" y2="243" stroke="#C77A3A" stroke-width="16" stroke-linecap="round"/><circle cx="828" cy="243" r="15" fill="#B06240"/><rect x="308" y="269" width="132" height="132" rx="28" fill="#F4F1EA"/><rect x="558" y="478" width="132" height="132" rx="28" fill="#F4F1EA"/><rect x="178" y="598" width="132" height="132" rx="28" fill="#F4F1EA"/></symbol></svg>
+  <svg class="sym" width="0" height="0" aria-hidden="true"><symbol id="tzm" viewBox="0 0 34 34"><circle cx="17" cy="4" r="2" fill="currentColor"/><circle cx="26" cy="7" r="2" fill="currentColor"/><circle cx="30" cy="16" r="2" fill="currentColor"/><circle cx="27" cy="25" r="2" fill="currentColor"/><circle cx="17" cy="30" r="2" fill="currentColor"/><circle cx="7" cy="25" r="2" fill="currentColor"/><circle cx="4" cy="16" r="2" fill="currentColor"/><circle cx="8" cy="7" r="2" fill="currentColor"/><circle cx="13" cy="15" r="2.6" fill="currentColor"/><circle cx="21" cy="15" r="2.6" fill="currentColor"/></symbol></svg>
   <div class="stage dstage">
     <div class="dev mac dmac" aria-hidden="true">
       <i class="contact"></i>
@@ -438,22 +494,30 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             <svg viewBox="0 0 27 13"><rect x=".75" y=".75" width="22" height="11.5" rx="3.2" fill="none" stroke="currentColor" stroke-opacity=".55" stroke-width="1.5"/><rect x="2.6" y="2.6" width="15.5" height="7.8" rx="1.7"/><path d="M24.4 4.6v3.8a2 2 0 0 0 0-3.8z" opacity=".55"/></svg>
             <span class="clock"></span></div>
           <div class="win wc"><span class="tl"><i></i><i></i><i></i></span>
-            <div class="side"><i class="srch">Search</i>
-              <p class="row on"><i class="av bhai">B</i><b>Bhai</b><span>kahan hai?</span></p>
-              <p class="row"><i class="av mummy">M</i><b>Mummy</b><span>khana rakh diya</span></p>
-              <p class="row"><i class="av zara">Z</i><b>Zara</b><span>see you at 7</span></p></div>
-            <div class="main"><div class="hd"><i class="av bhai">B</i><b>Bhai</b></div>
-              <div class="msgs"><p class="in">sab aa gaye</p><p class="in">kahan hai?</p><p class="out m1"></p><p class="in mt"><i></i><i></i><i></i></p><p class="in m2">Jaldi aa, sab wait kar rahe hain.</p></div>
-              <div class="fld"><span class="ft"></span><i class="ph">Message</i></div></div></div>
+            <div class="side tc"><p class="ws">Northwind</p><p class="ch">General</p><p class="ch on"># launch</p><p class="ch"># design</p><p class="ch"># support</p><p class="dmh">Direct messages</p><p class="ch"><i class="pp" style="background-image:url(/media/cam-plants.jpg)"></i>Morgan</p><p class="ch"><i class="pp c3">L</i>Leo</p></div>
+            <div class="main"><div class="hd"><b># launch</b><span class="mem">12 members</span></div>
+              <div class="msgs tcm"><div class="tm"><i class="pp" style="background-image:url(/media/cam-plants.jpg)"></i><div><b>Morgan <small>5:41 PM</small></b><p>Can someone post the launch update before 6? Board call first thing tomorrow.</p></div></div>
+                <div class="tm m1"><i class="pp" style="background-image:url(/media/cam-coffee.jpg)"></i><div><b>Aanya <small>5:43 PM</small></b><p class="m1t"></p></div></div>
+                <p class="tmt mt">Morgan is typing…</p>
+                <div class="tm m2"><i class="pp" style="background-image:url(/media/cam-plants.jpg)"></i><div><b>Morgan <small>5:43 PM</small></b><p>🔥 perfect, thank you</p></div></div></div>
+              <div class="fld"><span class="ft"></span><i class="ph">Message # launch</i></div></div></div>
           <div class="win wn"><span class="tl"><i></i><i></i><i></i></span>
-            <div class="side"><p class="row t on"><b>Team sync</b><span>Today</span></p><p class="row t"><b>Groceries</b><span>Yesterday</span></p><p class="row t"><b>Trip ideas</b><span>Monday</span></p></div>
-            <div class="main"><i class="tb"></i><h4>Team sync</h4><p class="nd">Today</p><p class="nx"><span class="sel"></span></p><p class="ny">Agenda: budget, roles, launch date.</p></div></div>
-          <div class="win wa"><span class="tl"><i></i><i></i><i></i></span>
-            <div class="side"><p class="row t on"><b>New chat</b></p><p class="row t"><b>Dinner ideas</b></p><p class="row t"><b>Trip to Goa</b></p></div>
-            <div class="main"><div class="hd"><b>Assistant</b></div>
-              <div class="msgs"><p class="hi">What's on your mind?</p><p class="out aq"></p><p class="ans"><span class="aa"></span></p></div>
-              <div class="fld"><span class="ft"></span><i class="ph">Ask anything</i><i class="go"></i></div></div></div>
-          <div class="pill"><svg class="pm"><use href="#tzm"/></svg><span class="wv"></span></div>
+            <div class="call"><p class="ctop">Launch call · 18:04</p>
+              <div class="grid"><p class="tile cam" style="background-image:url(/media/cam-couch.jpg)"><b>Jordan</b></p><p class="tile"><i class="c3">M</i><b>Mia</b></p><p class="tile cam" style="background-image:url(/media/cam-plants.jpg)"><b>Morgan</b></p><p class="tile"><i class="c2">L</i><b>Leo</b></p></div>
+              <p class="cbar"><i></i><i></i><i class="hang"></i></p>
+              <p class="tn x0"><svg class="xmk" viewBox="0 0 34 34"><use href="#tzm"/></svg>Taking notes<i class="rec"></i></p>
+              <div class="note x0"><p class="nh"><svg class="xmk" viewBox="0 0 34 34"><use href="#tzm"/></svg>X0 Bot · Notes</p><h5>Launch call</h5><p class="nsum">Launch stays Friday. Checkout breaks on phones and has to be fixed first.</p>
+                <p class="nl">To-dos</p><p class="td"><i></i>Fix checkout on phones before Friday</p><p class="td"><i></i>Morgan: board update, 9 AM</p></div></div></div>
+          <div class="win wa x0"><span class="tl"><i></i><i></i><i></i></span>
+            <div class="xs"><p class="xl"><svg class="xmk" viewBox="0 0 34 34"><use href="#tzm"/></svg><b>X0 Bot</b></p><p class="xi on">Bots</p><p class="xi">Activity</p><p class="xi">You</p><p class="xh">Your bots</p>
+              <p class="xb"><i style="--c:#4F7A3A"></i>Xode</p><p class="xb"><i style="--c:#A9573A"></i>Keylessbord</p><p class="xb"><i style="--c:#8F6A1F"></i>Plan Ease</p><p class="xb"><i style="--c:#3E6E8E"></i>Travel bot</p></div>
+            <div class="xm"><p class="xg">Good evening</p><h5>Wrap up the day. I'll tidy what's left.</h5>
+              <div class="xt"><p class="xode"><img src="/media/head-code.png" alt=""><b>Xode</b><span class="xst">Ready</span></p><p><img src="/media/head-keybot.png" alt=""><b>Keylessbord</b><span>Hold a key, speak, done</span></p><p><img src="/media/head-plan.png" alt=""><b>Plan Ease</b><span>Plans your day</span></p></div>
+              <p class="who"><img src="/media/head-code.png" alt=""><b>Xode</b> will take this<u>Change</u></p>
+              <div class="xask"><span class="ft"></span><i class="ph">Ask any bot… or hold fn and speak</i><i class="go"></i></div></div></div>
+          <div class="mnote x0"><img src="/icon-512.png" alt=""><div><p class="ma">X0 BOT<span>now</span></p><b>Xode: PR #131 is ready</b><p>Checkout fixed on phones · all 214 tests pass</p></div></div>
+          <div class="pill"><span class="disc"><svg viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="11" rx="3" fill="#fff"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg><span class="dots"><i></i><i></i><i></i></span></span><span class="wv"></span><span class="tm"></span><span class="px">×</span><b class="wr">Writing</b></div>
+          <div class="prest"><i></i><i></i><i></i></div>
           <div class="dock"></div>
         </div>
         <i class="bloom"></i><i class="glass"></i>
@@ -1141,21 +1205,16 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
   // ---- Scene two: cards behind cards ----------------------------------------
   const STACK = [
-    { id: "zara", device: "laptop", bot: true, punch: "Name it. Talk to it.", plain: "On a Mac, tap Ctrl twice. It reads the room.", note: "Zara, make this simpler." },
-    { id: "sweet", device: "phone", bot: true, punch: "Say it. Then say “make it sweet”.", plain: "The instructions stay out. The sweet goes in.", note: "…can't wait to see you" },
-    { id: "notes", device: "laptop", punch: "Talk about dogs. X0 Bot takes the notes.", plain: "Meetings, written up. Small talk, bleeped.", note: "the dog part? gone." },
-    { id: "prompt", device: "phone", bot: true, punch: "Prompt like you talk.", plain: "Ramble at ChatGPT. It gets a clean prompt.", note: "explain black holes to a golden retriever" },
+    { id: "home", device: "laptop", bot: true, punch: "Leave on time.", plain: "One click answers your bots. They finish the rest.", note: "dinner at 8 ✓" },
+    { id: "offer", device: "phone", bot: true, punch: "Ask for more.", plain: "Say it nervous. It lands confident.", note: "$128,000 🎉" },
+    { id: "xode", device: "laptop", bot: true, punch: "Sleep. Xode fixes it.", plain: "Hand it the failing tests at 2 AM. Wake up to a PR.", note: "215 of 215 pass" },
+    { id: "escape", device: "phone", bot: true, punch: "Monday off? Go.", plain: "Ask once. Travel bot plans the weekend.", note: "Lisbon, tonight ☀️" },
     { id: "grok", device: "laptop", bot: true, punch: "Ask Grok out loud.", plain: "Say it messy. Grok gets it clean.", note: "if cats ran the stock market…" },
-    { id: "timeback", device: "laptop", bot: true, punch: "46 minutes back. Today alone.", plain: "Every word you said instead of typed, counted.", note: "what will you do with yours?" },
+    { id: "lock", device: "phone", bot: true, punch: "Answer from your Lock Screen.", plain: "Your bots work while you're out. One tap when they ask.", note: "no unlock needed" },
   ];
-  // Until the laptop clips' json lands: his poses by the films' beats.
+  // The Grok film has no json of its own: his poses by its beats. Every other clip carries its cuts (media/clips-*.json).
   const FALLBACK_CUTS = {
-    zara: [{ from: 0, to: 1.4, bot: "wave" }, { from: 1.4, to: 3, bot: "present" }, { from: 3, to: 4.4, bot: "tap" }, { from: 4.4, to: 99, bot: "tada" }],
-    timeback: [{ from: 0, to: 1.8, bot: "present" }, { from: 1.8, to: 3.4, bot: "tap" }, { from: 3.4, to: 99, bot: "tada" }],
-    // The phone clips' beats (clips-phone.json): opening, listening, the text lands, sent.
-    sweet: [{ from: 0, to: 1.2, bot: "present" }, { from: 1.2, to: 2.2, bot: "tap" }, { from: 2.2, to: 3.4, bot: "present" }, { from: 3.4, to: 99, bot: "tada" }],
     grok: [{ from: 0, to: 1.1, bot: "present" }, { from: 1.1, to: 2.5, bot: "tap" }, { from: 2.5, to: 99, bot: "thumbs" }],
-    prompt: [{ from: 0, to: 1.4, bot: "wave" }, { from: 1.4, to: 2.3, bot: "tap" }, { from: 2.3, to: 3.2, bot: "present" }, { from: 3.2, to: 99, bot: "thumbs" }],
   };
   const TURNS = [-2.2, 1.9, -1.5, 2.4, -1.8, 1.6, -2.3, 1.7];
   const N = STACK.length;
@@ -1554,15 +1613,12 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     [16.6, "rest"], [17.45, "tap"], [21.2, "present"], [22.9, "thumbs"], [23.4, "rest"], [24.7, "wave"], [27, "face"]].map(([t, n]) => ({ t, p: PZ(n) }));
   const FACES = [[0, 1], [4.8, -1], [10.45, 1], [12.2, -1], [16.65, 1], [23.45, -1], [24.55, 1]];
   const T_IN = 4.1; // he lands inside the screen
-  const WIN_AT = [6.15, 12.1, 17.3], PRESS = [6.1, 12.05, 17.25], WIN_ICON = [0, 5, 6], WIN_NAME = ["Chat", "Notes", "Assistant"];
-  const PILL = [[6.7, 9.55, 6.9, 8.7], [13.4, 14.85, 13.6, 14.4], [17.95, 20.55, 18.15, 20.1]]; // in, out, listening from, to
-  const SAID = [["haan bhai 5 min mein aa raha hoon", 7, 8.55, 8.75], ["make it shorter", 13.7, 14.25, 14.45], ["so um if cats ran the stock market what would crash first and why", 18.2, 19.95, 20.15]];
-  const SAYS = [[6.3, 8, "Ctrl twice."], [12.8, 14.4, "Say: shorter."], [17.55, 19.1, "Ramble at it."]];
+  const WIN_AT = [6.15, 12.1, 17.3], PRESS = [6.1, 12.05, 17.25], WIN_ICON = [0, 5, 6], WIN_NAME = ["Team Chat", "Meet", "X0 Bot"];
+  const PILL = [[6.7, 9.3, 6.9, 8.7], [18.0, 20.5, 18.2, 20.05]]; // in, out, listening from, to; between "to" and "out" it is writing
+  const SAID = [["so uh launch is on track, checkout's tested, we ship Friday, deck tonight", 7, 8.55, 8.75], ["one thing, checkout breaks on phones, we have to fix it before Friday", 12.7, 14.2, 14.5], ["Xode, fix checkout on phones before Friday", 18.4, 19.8, 20.1]];
+  const SAYS = [[6.3, 8, "Hold fn."], [12.4, 13.9, "I'll take notes."], [17.55, 19.1, "Ask any bot."]];
   const GLOW = [[2.2, 3.2, .8], [6.9, 8.7, .6], [13.6, 14.4, .6], [18.15, 20.1, .6], [24.7, 27.2, .9]];
-  const SENT = "Haan bhai, 5 min mein aa raha hoon.", SHORT = "Team meeting moves to Friday morning.";
-  const LONG = "So basically what I wanted to say is that the team meeting on Thursday will probably have to move to Friday morning, if that works for everyone.";
-  const PROMPT = "If cats ran the stock market, what would crash first, and why?";
-  const ANSWER = "Laser-pointer stocks. Cats would chase every red dot up, then lose interest all at once.";
+  const SENT = "Launch is on track: checkout is tested and we ship Friday. Deck coming tonight.", ASKED = "Fix checkout on phones before Friday";
   // Seven generic dock tiles: chat, files, mail, photos, music, notes, assistant.
   const ICONS = [
     '<path d="M12 4.2c-4.9 0-8.8 3.1-8.8 7 0 2.2 1.3 4.2 3.3 5.5L5.6 20l4-1.9c.8.2 1.6.3 2.4.3 4.9 0 8.8-3.1 8.8-7S16.9 4.2 12 4.2z" fill="#fff"/>',
@@ -1570,16 +1626,17 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     '<rect x="3.2" y="6" width="17.6" height="12.4" rx="1.6" fill="#2f86f2"/><path d="M3.8 7l8.2 6.2L20.2 7" fill="none" stroke="#fff" stroke-width="1.5"/>',
     '<circle cx="16.4" cy="8.2" r="2.3" fill="#ff9f1c"/><path d="M2.8 18.6l5.7-7.4 4.2 5.2 2.6-3.1 6 5.3z" fill="#2fb26b"/>',
     '<path d="M16.5 4.5v10a2.9 2.9 0 1 1-1.8-2.7V8.3l-6 1.4v6.8a2.9 2.9 0 1 1-1.8-2.7V6.6z" fill="#fff"/>',
-    '<path d="M5.5 12.5h13M5.5 15.6h13M5.5 18.7h8" stroke="#cfc8b6" stroke-width="1.3" stroke-linecap="round"/>',
-    '<path d="M11 3.5c.5 4.3 2.2 6 6.5 6.5-4.3.5-6 2.2-6.5 6.5-.5-4.3-2.2-6-6.5-6.5 4.3-.5 6-2.2 6.5-6.5z" fill="#fff"/><path d="M17.6 13.6c.25 2 1 2.8 3 3-2 .25-2.75 1-3 3-.25-2-1-2.75-3-3 2-.2 2.75-1 3-3z" fill="#b9a8ff"/>',
+    '<rect x="3" y="7" width="12.5" height="10" rx="2.2" fill="#fff"/><path d="M16.5 10.6l4.5-2.6v8l-4.5-2.6z" fill="#fff"/>',
+    '',
   ];
   const deskEl = document.getElementById("desk"), dstage = deskEl.querySelector(".stage"), dq = (s) => dstage.querySelector(s);
   const dmac = dq(".dmac"), osEl = dq(".os"), dbCv = dq(".dbot"), dbx = dbCv.getContext("2d"), deskDots = makeDots();
   const sayEl = dq(".say"), dstep = dq(".dstep"), dline = dq(".dline"), dwords = [...dline.querySelectorAll(".w")], dpath = dline.querySelector("path");
-  const bloomEl = dq(".bloom"), menuApp = dq(".mapp"), clockEl = dq(".clock"), pill = dq(".pill"), waveEl = dq(".wv"), dock = dq(".dock"), sel = dq(".sel");
+  const bloomEl = dq(".bloom"), menuApp = dq(".mapp"), clockEl = dq(".clock"), pill = dq(".pill"), waveEl = dq(".wv"), dock = dq(".dock");
   const WINS = [".wc", ".wn", ".wa"].map((s, i) => ({ el: dq(s), at: WIN_AT[i], icon: WIN_ICON[i], name: WIN_NAME[i] }));
-  const chat = { ft: dq(".wc .ft"), ph: dq(".wc .ph"), m1: dq(".m1"), mt: dq(".mt"), m2: dq(".m2") };
-  const ai = { ft: dq(".wa .ft"), ph: dq(".wa .ph"), hi: dq(".hi"), q: dq(".aq"), ans: dq(".ans"), a: dq(".aa") };
+  const chat = { ft: dq(".wc .ft"), ph: dq(".wc .ph"), m1: dq(".m1"), mt: dq(".mt"), m2: dq(".m2") }, prest = dq(".prest"), ptm = dq(".pill .tm"), pdots = [...dq(".pill .dots").children];
+  const ai = { ft: dq(".wa .ft"), ph: dq(".wa .ph"), who: dq(".wa .who"), st: dq(".wa .xst"), xode: dq(".wa .xode") };
+  const call = { tn: dq(".tn"), note: dq(".note"), tiles: [...dstage.querySelectorAll(".tile")] }, mnote = dq(".mnote");
   let deskTop = 0, deskH = 0, dnarrow = false, dOff = 0, MV = [], caps = [], bars = [], apps = [], clockAt = -1e9;
   const D = { sx: 0, sy: 0, sw: 1, sh: 1, sc: 1, ho: 200, go: 0, hv: 80, hin: 60, gin: 0 };
   const DT = { t: 0, v: 0, ask: -1, drawn: NaN, dom: NaN, vis: false };
@@ -1607,8 +1664,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   function buildDesk() {
     dock.innerHTML = ICONS.map((p, i) => `<i class="ap a${i}"><svg viewBox="0 0 24 24">${p}</svg><b></b></i>`).join("");
     apps = [...dock.children];
-    waveEl.innerHTML = "<i></i>".repeat(9); bars = [...waveEl.children];
-    chat.m1.textContent = SENT; ai.q.textContent = PROMPT;
+    waveEl.innerHTML = "<i></i>".repeat(14); bars = [...waveEl.children];
+    dq(".m1t").textContent = SENT;
     caps = SAID.map(([s]) => {
       const p = document.createElement("p"); p.className = "cap";
       p.innerHTML = s.split(" ").map((w) => `<span>${w}</span>`).join(" ");
@@ -1641,10 +1698,11 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     os.setProperty("--dt", tile + "px"); os.setProperty("--dg", gap + "px"); os.setProperty("--dp", pad + "px");
     dq(".menu").style.height = (dnarrow ? 18 : 24) + "px";
     dock.style.left = dl + "px"; dock.style.top = dt + "px";
-    const pw = dnarrow ? 72 : 112, ph = dnarrow ? 20 : 30, pt = dt - (dnarrow ? 7 : 12) - ph;
-    Object.assign(pill.style, { left: (vw - pw) / 2 + "px", top: pt + "px", width: pw + "px", height: ph + "px" });
+    const ph = dnarrow ? 26 : 40, pt = dt - (dnarrow ? 7 : 12) - ph;
+    Object.assign(pill.style, { left: vw / 2 + "px", top: pt + "px", height: ph + "px" });
+    Object.assign(prest.style, { left: vw / 2 + "px", top: (dt - (dnarrow ? 11 : 18)) + "px" });
     caps.forEach((c) => { c.el.style.bottom = (vh - pt + (dnarrow ? 6 : 8)) + "px"; c.el.style.setProperty("--cw", (dnarrow ? 140 : 250) + "px"); });
-    const R = dnarrow ? [[10, 26, 236, 196], [124, 30, 236, 190], [236, 22, 234, 200]] : [[64, 78, 372, 340], [336, 108, 392, 300], [590, 64, 366, 372]];
+    const R = dnarrow ? [[10, 26, 236, 196], [124, 30, 236, 190], [196, 22, 274, 210]] : [[64, 78, 372, 340], [316, 100, 412, 312], [500, 52, 456, 392]];
     WINS.forEach((w, i) => {
       const [x, y, ww, hh] = R[i];
       Object.assign(w.el.style, { left: x + "px", top: y + "px", width: ww + "px", height: hh + "px", transformOrigin: `${(cx(w.icon) - x).toFixed(1)}px ${(dt - y).toFixed(1)}px` });
@@ -1759,13 +1817,18 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     });
     WINS.forEach((w, i) => tog(w.el, "off", i !== front));
     txt(menuApp, front < 0 ? "Desktop" : WINS[front].name);
-    // The pill: in, listening (a live wave), out; above it, what was said, word by word.
-    let pv = 0, L = 0;
-    for (const [a, b, la, lb] of PILL) { pv = Math.max(pv, span(t, a, b, .22)); L = Math.max(L, span(t, la, lb, .15)); }
+    // The pill (TAILZU-DESKTOP pill.js, the Bots look): at rest a small white pill; held, it listens (the clay disc, clay bars
+    // your voice moves, the time, ✕); let go, it is writing (the disc's dots in turn); then the words are in the field.
+    let pv = 0, L = 0, wr = false, la0 = 0;
+    for (const [a, b, la, lb] of PILL) { const v = span(t, a, b, .22); if (v > pv) { pv = v; la0 = la; wr = t >= lb; } L = Math.max(L, span(t, la, lb, .15)); }
     css(pill, "visibility", pv > 0 ? "visible" : "hidden");
+    css(prest, "opacity", (t > 2.6 && pv <= 0 ? 1 : 0).toFixed(2));
+    tog(pill, "w", wr);
     if (pv > 0) {
       const e = easeOut(pv);
-      css(pill, "opacity", clamp(pv * 2).toFixed(3)); css(pill, "transform", `translateY(${((1 - e) * 8).toFixed(1)}px) scale(${(.7 + .3 * e).toFixed(3)})`);
+      txt(ptm, "0:0" + Math.max(0, Math.floor(t - la0)));
+      pdots.forEach((d, i) => css(d, "opacity", wr && Math.floor(t * 6) % 3 === i ? "1" : ".4"));
+      css(pill, "opacity", clamp(pv * 2).toFixed(3)); css(pill, "transform", `translateX(-50%) translateY(${((1 - e) * 8).toFixed(1)}px) scale(${(.7 + .3 * e).toFixed(3)})`);
       bars.forEach((b, i) => css(b, "transform", `scaleY(${(.16 + .84 * L * (.3 + .7 * Math.abs(Math.sin(t * (8.5 + i * 1.3) + i * 1.7))) * (.55 + .45 * Math.sin(t * 2.3 + i * .8))).toFixed(3)})`));
     }
     SAID.forEach(([, a, b, out], i) => {
@@ -1774,16 +1837,25 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       if (v > 0) { css(c.el, "opacity", v.toFixed(3)); c.ws.forEach((w, j) => css(w, "opacity", clamp((t - (a + j * (b - a) / Math.max(1, c.ws.length - 1))) / .12).toFixed(2))); }
     });
     // The chat: the clean line lands in the field and goes as a bubble; a reply.
-    const sent = t >= 9.5, cf = sent ? "" : typed(t, 8.8, .5, SENT);
+    const cf = t >= 9.05 && t < 9.5 ? SENT : "";
     txt(chat.ft, cf); css(chat.ph, "opacity", cf ? "0" : "1");
     pop(chat.m1, t, 9.5); css(chat.mt, "display", t >= 10.5 && t < 10.95 ? "" : "none"); pop(chat.m2, t, 10.95);
-    // The note: selected, then rewritten in place.
-    txt(sel, t < 14.6 ? LONG : t < 15.1 ? LONG.slice(0, Math.round(LONG.length * (1 - (t - 14.6) / .5))) : typed(t, 15.1, .45, SHORT));
-    css(sel, "--s", (clamp((t - 12.55) / .8) * 100).toFixed(1) + "%"); css(sel, "--sa", (.26 * (1 - clamp((t - 15.7) / .3))).toFixed(3));
-    // The assistant: the clean prompt lands, goes, and an answer types itself.
-    const asent = t >= 21, af = asent ? "" : typed(t, 20.25, .6, PROMPT);
-    txt(ai.ft, af); css(ai.ph, "opacity", af ? "0" : "1"); css(ai.hi, "display", asent ? "none" : "");
-    pop(ai.q, t, 21); css(ai.ans, "display", t >= 21.25 ? "" : "none"); txt(ai.a, typed(t, 21.25, 1.75, ANSWER));
+    // The call: X0 Bot is taking notes (its chip, the recording dot), whoever speaks lit; then its note, written up.
+    css(call.tn, "opacity", span(t, 12.35, 16.6, .2).toFixed(3));
+    const who = t < 12.7 ? -1 : t < 14.4 ? 3 : -1;
+    call.tiles.forEach((el, i) => tog(el, "sp", i === who));
+    const nk = (t - 14.75) / .45;
+    css(call.note, "opacity", clamp(nk * 3).toFixed(3));
+    css(call.note, "transform", nk <= 0 ? "translateY(14px) scale(.92)" : nk >= 1 ? "none" : `translateY(${((1 - easeOut(nk)) * 14).toFixed(1)}px) scale(${lerp(.92, 1, back(nk)).toFixed(3)})`);
+    // X0 Bot: what was said lands in Ask, Xode will take it, and sent, Xode is working.
+    const af = t >= 20.45 && t < 21.05 ? ASKED : "";
+    txt(ai.ft, af); css(ai.ph, "opacity", af ? "0" : "1");
+    css(ai.who, "opacity", span(t, 20.55, 21.15, .12).toFixed(3));
+    txt(ai.st, t < 21.1 ? "Ready" : t < 21.8 ? "Working · step 1 of 5" : t < 22.5 ? "Working · step 3 of 5" : "Done · PR #131");
+    tog(ai.xode, "on", t >= 21.1); tog(ai.xode, "done", t >= 22.5);
+    const mk = (t - 22.45) / .45;
+    css(mnote, "opacity", clamp(mk * 3).toFixed(3));
+    css(mnote, "transform", mk <= 0 ? "translateX(110%)" : mk >= 1 ? "none" : `translateX(${((1 - easeOut(mk)) * 110).toFixed(1)}%)`);
     // His line, in a bubble over his head, kept inside the screen.
     let say = null;
     for (const s of SAYS) if (t >= s[0] && t < s[1] + .25) say = s;
