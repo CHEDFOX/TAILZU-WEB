@@ -26,7 +26,7 @@ The page is held still until the key has landed. Under
 The copy is the page's own (`STACK` and the Mac scene's lines in the script).
 The cards read their clips' sizes and beats from `/media/clips-*.json`; each
 clip plays its `.webm`, else its `.mp4`. Every clip on a card is a `<id>` in
-`STACK`; `boss`, `marta` and `mummy` are cut but not on a card.
+`STACK`.
 
 ## The download is always a link
 
@@ -92,8 +92,8 @@ The site is on Vercel, deployed from this repo: a push to `main` is the
 deploy, live in under a minute. `vercel.json` proxies `/v1/site`,
 `/v1/site/event`, `/site-events.js`, `/v1/demo/transcribe`, `/v1/pay/*`,
 `/v1/account/deletion*`, `/download`, the three installers, the backend's pages and the SEO files to
-the API, and nothing else of it. `.vercelignore` keeps this file, `csp.mjs`
-and `scratchpad/` off the site.
+the API, and nothing else of it. `.vercelignore` keeps this file, `archi.md`
+and `csp.mjs` off the site.
 
 Headers: `X-Frame-Options: DENY` everywhere. The home page's CSP allows its
 inline blocks by hash, the tag manager's `<noscript>` frame's one style
