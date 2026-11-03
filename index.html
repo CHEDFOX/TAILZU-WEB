@@ -440,6 +440,8 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   .about p, .about ul { margin: 0 0 12px; opacity: .86; }
   .about ul { padding-left: 20px; }
   .about a { color: inherit; text-decoration: underline; text-decoration-color: var(--neon); text-decoration-thickness: 2px; text-underline-offset: 4px; }
+  /* While Google verifies the app: the Mac desk scene is hidden and "What X0 Bot is" sits right after the first screen. Revert this to go back. */
+  #desk { display: none !important; }
   /* The end of the page. */
   .end { position: relative; z-index: 2; box-sizing: border-box; padding: 72px 16px 120px;
     display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 18px; text-align: center; }
@@ -484,6 +486,33 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <svg class="scribble" viewBox="0 0 24 34"><path class="u" d="M13.6 2.6 C 8.6 8.6, 16.6 14.6, 12.6 22.6 C 11.6 25.6, 12.6 28.6, 12.6 31.6"/><path d="M13 2 C 8 8, 16 14, 12 22 C 11 25, 12 28, 12 31"/><path d="M7.6 23.6 L12 31 L16.4 22.8"/></svg>
   </div>
 </header>
+<section class="about" id="about" aria-labelledby="about-h">
+  <h2 id="about-h">What X0 Bot is</h2>
+  <p>X0 Bot is an app of helpful bots for iPhone, Android, Windows, Mac and Linux. You talk or type, and a bot does the everyday work:</p>
+  <ul>
+    <li><b>Keylessbord</b>: a voice keyboard. Speak in Hindi, Hinglish, English or 70+ languages, and clean text lands in any app.</li>
+    <li><b>Plan Ease</b>: your day, from your own calendar and to-dos, with travel times between them.</li>
+    <li><b>Travel</b>: trips, places and stays.</li>
+    <li><b>Notes</b>: meeting notes from what was said.</li>
+    <li><b>Xode</b>: works on your code projects on GitHub and opens pull requests for your review.</li>
+    <li><b>Spaces</b>: share lists, plans and tasks with family and friends.</li>
+  </ul>
+
+  <h3>How X0 Bot uses Google data</h3>
+  <p>Only what you choose to connect, and only to do what you ask:</p>
+  <ul>
+    <li><b>Sign in with Google</b>: your name and email, to make your account.</li>
+    <li><b>Google Calendar</b>: to show your events, and to add or move one when you say yes.</li>
+    <li><b>Google Tasks</b>: to show your to-dos, and to add one when you say yes.</li>
+    <li><b>Google Classroom</b> (read only): to show your courses, coursework due and announcements.</li>
+    <li><b>Google Drive</b>: only the files X0 Bot makes for you or that you open with it, never the rest of your Drive.</li>
+  </ul>
+  <p>Your Google data is never sold, never used for ads, and never used to train AI models. You can disconnect Google at any time (You &rsaquo; Connected apps), and download your data or delete your account (You &rsaquo; Your data).</p>
+
+  <h3>What X0 Bot never does</h3>
+  <p>X0 Bot does not create sexual, nude or intimate images of anyone, and never uses Google data, or any other data, to make images of real people. Requests like that are refused.</p>
+  <p>Read the <a href="/privacy">Privacy Policy</a> and the <a href="/terms">Terms</a>.</p>
+</section>
 <section id="stack" aria-label="What X0 Bot does, in six short clips">
   <div class="stage">
     <div class="copies"></div>
@@ -538,33 +567,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <canvas class="dbot" aria-hidden="true"></canvas>
     <p class="say" aria-hidden="true"></p>
   </div>
-</section>
-<section class="about" id="about" aria-labelledby="about-h">
-  <h2 id="about-h">What X0 Bot is</h2>
-  <p>X0 Bot is an app of helpful bots for iPhone, Android, Windows, Mac and Linux. You talk or type, and a bot does the everyday work:</p>
-  <ul>
-    <li><b>Keylessbord</b>: a voice keyboard. Speak in Hindi, Hinglish, English or 70+ languages, and clean text lands in any app.</li>
-    <li><b>Plan Ease</b>: your day, from your own calendar and to-dos, with travel times between them.</li>
-    <li><b>Travel</b>: trips, places and stays.</li>
-    <li><b>Notes</b>: meeting notes from what was said.</li>
-    <li><b>Xode</b>: works on your code projects on GitHub and opens pull requests for your review.</li>
-    <li><b>Spaces</b>: share lists, plans and tasks with family and friends.</li>
-  </ul>
-
-  <h3>How X0 Bot uses Google data</h3>
-  <p>Only what you choose to connect, and only to do what you ask:</p>
-  <ul>
-    <li><b>Sign in with Google</b>: your name and email, to make your account.</li>
-    <li><b>Google Calendar</b>: to show your events, and to add or move one when you say yes.</li>
-    <li><b>Google Tasks</b>: to show your to-dos, and to add one when you say yes.</li>
-    <li><b>Google Classroom</b> (read only): to show your courses, coursework due and announcements.</li>
-    <li><b>Google Drive</b>: only the files X0 Bot makes for you or that you open with it, never the rest of your Drive.</li>
-  </ul>
-  <p>Your Google data is never sold, never used for ads, and never used to train AI models. You can disconnect Google at any time (You &rsaquo; Connected apps), and download your data or delete your account (You &rsaquo; Your data).</p>
-
-  <h3>What X0 Bot never does</h3>
-  <p>X0 Bot does not create sexual, nude or intimate images of anyone, and never uses Google data, or any other data, to make images of real people. Requests like that are refused.</p>
-  <p>Read the <a href="/privacy">Privacy Policy</a> and the <a href="/terms">Terms</a>.</p>
 </section>
 <footer class="end">
   <nav class="links" aria-label="X0 Bot">
