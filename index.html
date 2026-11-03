@@ -432,6 +432,17 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   @media (prefers-reduced-motion: reduce) { .mast .name, .mast.named .name { transition: none; transform: none; } .key-led { animation: none; } .home, .key-face { transition: none; } }
 
   /* The end of the page. */
+  /* What X0 Bot is, and what it does with Google: plain text in the page, read without its script. */
+  .about { position: relative; z-index: 2; box-sizing: border-box; max-width: 860px; margin: 96px auto 0; padding: 48px clamp(20px, 5vw, 56px) 36px; border-radius: 24px; background: rgba(239, 237, 232, .95); box-shadow: 0 0 0 1px rgba(28, 26, 23, .06); color: var(--ink); font: 400 17px/1.6 var(--sys); }
+  .about, .about h3 { scroll-margin-top: 104px; }
+  @media (max-width: 900px) { .about { margin: 64px 12px 0; } }
+  .about h2 { margin: 0 0 14px; font: 800 clamp(30px, 4.4vw, 52px)/1 var(--grot); letter-spacing: -.035em; }
+  .about h3 { margin: 40px 0 10px; font: 700 21px/1.25 var(--grot); letter-spacing: -.015em; }
+  .about p { margin: 0 0 12px; }
+  .about ul { margin: 0 0 12px; padding-left: 20px; }
+  .about li { margin: 0 0 8px; }
+  .about a { color: var(--ink); text-decoration-thickness: 1.5px; text-underline-offset: 3px; }
+  .about .small { font-size: 15px; color: rgba(28, 26, 23, .7); }
   .end { position: relative; z-index: 2; box-sizing: border-box; padding: 72px 16px 120px;
     display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 18px; text-align: center; }
   .end .links { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px 26px; font: 500 14px/1.2 var(--sys); }
@@ -530,13 +541,36 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <p class="say" aria-hidden="true"></p>
   </div>
 </section>
+<section class="about" id="about" aria-labelledby="about-h">
+  <h2 id="about-h">What X0 Bot is</h2>
+  <p>X0 Bot is a voice keyboard and AI assistant for iPhone, Android, Windows, Mac and Linux. Speak in any of 74 languages, including Hindi and Hinglish, and X0 Bot writes clean text into whatever app you are in. With <b>Ask</b>, you can ask it a question, or ask it to do something for you: explain what is on your screen, add an event to your calendar, add a task to your to-do list, write a document. X0 Bot's bots help with writing code, planning your day and trips.</p>
+
+  <h3 id="google">Google apps you connect</h3>
+  <p>You can connect Google Calendar, Google Tasks, Google Docs, Google Sheets, Google Forms and Google Classroom in <b>Connected apps</b> in X0 Bot. Google asks for each app's permission only when you tap Connect on it. X0 Bot uses each app only to do what you ask, when you ask:</p>
+  <ul>
+    <li><b>Google Calendar:</b> reads your events to answer you (“what’s on tomorrow?”) and to find free time; adds, moves or cancels an event you asked for.</li>
+    <li><b>Google Tasks:</b> reads your to-do list when you ask; adds, ticks off or deletes a task you asked for.</li>
+    <li><b>Google Docs, Sheets and Forms:</b> makes a document, sheet or form you asked for, and reaches only the files X0 Bot made. <b>Google Classroom:</b> only reads your classes, classwork and announcements.</li>
+    <li>Before X0 Bot changes anything, it shows you the exact change, and nothing happens until you tap Approve. Deleting always asks. You can disconnect any app at any time.</li>
+  </ul>
+
+  <h3>What X0 Bot never does</h3>
+  <ul>
+    <li>X0 Bot does not generate images or videos. It never uses Google APIs or Google user data to create, edit or share sexual, intimate or non-consensual images of anyone, including AI-generated ones.</li>
+    <li>It never sells your data, never uses it for advertising, and never uses Google user data to train AI models.</li>
+  </ul>
+  <p>X0 Bot's use and transfer of information received from Google APIs to any other app will adhere to the <a href="https://developers.google.com/terms/api-services-user-data-policy">Google API Services User Data Policy</a>, including the Limited Use requirements.</p>
+  <p class="small">The details are in our <a href="/privacy#google-user-data">Privacy Policy (section 11, Google apps you connect)</a> and <a href="/terms">Terms</a>. Questions: <a href="mailto:support@x0bot.com">support@x0bot.com</a> · privacy: <a href="mailto:privacy@x0bot.com">privacy@x0bot.com</a>.</p>
+</section>
 <footer class="end">
   <nav class="links" aria-label="X0 Bot">
     <a href="/pricing">Pricing</a>
     <a href="/faq">FAQ</a>
     <a href="/download" data-place="foot">Download</a>
+    <a href="#about">About</a>
     <a href="/privacy">Privacy</a>
     <a href="/terms">Terms</a>
+    <a href="/support">Support</a>
   </nav>
   <p class="fine">© 2026 X0 Bot</p>
 </footer>
