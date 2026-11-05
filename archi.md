@@ -36,7 +36,7 @@ README.md               how the page behaves, what to run after a change, how pu
 | Which clip plays on which card, and when | `media/clips-phone.json`, `media/clips-laptop.json` |
 | The download button's per-device target | `index.html` (the `#home` key's script) |
 | The `<head>` (title, canonical, structured data) | between `SEO:HEAD` markers in `index.html`, written by the backend's `tulmi/scripts/sync-site.mts`; never edit by hand |
-| Pricing, privacy, terms, support, delete-account, FAQ, language and SEO pages | served by the backend (`api.x0bot.com`), mapped here in `vercel.json` `rewrites` |
+| Pricing, privacy, terms, support, delete-account, FAQ, language and SEO pages, and `/device` (signing in to Xode in the terminal) | served by the backend (`api.x0bot.com`), mapped here in `vercel.json` `rewrites` |
 | Desktop installers (`Tailzu-Setup.exe`, `Tailzu.dmg`, `Tailzu.AppImage`) | proxied from `api.x0bot.com/downloads/` by `vercel.json` |
 | Meta pixel and Conversions API | `api/` (site side); the backend keeps its own copy for account events |
 | Security headers and the CSP | `vercel.json` `headers`; hashes kept current by `csp.mjs` |
