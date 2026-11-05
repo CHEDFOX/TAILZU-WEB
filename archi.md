@@ -38,6 +38,7 @@ README.md               how the page behaves, what to run after a change, how pu
 | The `<head>` (title, canonical, structured data) | between `SEO:HEAD` markers in `index.html`, written by the backend's `tulmi/scripts/sync-site.mts`; never edit by hand |
 | Pricing, privacy, terms, support, delete-account, FAQ, language and SEO pages, and `/device` (signing in to Xode in the terminal) | served by the backend (`api.x0bot.com`), mapped here in `vercel.json` `rewrites` |
 | Desktop installers (`Tailzu-Setup.exe`, `Tailzu.dmg`, `Tailzu.AppImage`) | proxied from `api.x0bot.com/downloads/` by `vercel.json` |
+| Installing `xode` (Xode in the terminal) in one line | `install.sh` (`curl -fsSL https://x0bot.com/install.sh \| bash`) and `install.ps1` (`irm https://x0bot.com/install.ps1 \| iex`), served as text by `vercel.json` `headers`; both run `npm install -g @xooteqlab/xode` |
 | Meta pixel and Conversions API | `api/` (site side); the backend keeps its own copy for account events |
 | Security headers and the CSP | `vercel.json` `headers`; hashes kept current by `csp.mjs` |
 | The old domain's behaviour | `vercel.json` `redirects` (pages 301 to x0bot.com; `/v1`, `/downloads`, `/.well-known`, `/api` still proxied) |

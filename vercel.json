@@ -34,6 +34,7 @@
     { "source": "/llms-full.txt", "destination": "https://api.x0bot.com/llms-full.txt" }
   ],
   "headers": [
+    { "source": "/install.(sh|ps1)", "headers": [{ "key": "Content-Type", "value": "text/plain; charset=utf-8" }, { "key": "Cache-Control", "value": "public, max-age=300" }] },
     {
       "source": "/(.*)",
       "headers": [
