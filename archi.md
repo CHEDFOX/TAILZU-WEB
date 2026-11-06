@@ -8,11 +8,11 @@ step, no framework, no dependencies. Deployed by Vercel on every push to `main`.
 
 ```
 index.html              the page: markup, one <style>, the tag manager and the page script inline, a <noscript> fallback
-media/                  the clips on the cards
+media/                  the clips in scene two's card
   <id>.webm / .mp4      each clip in VP9 (preferred) and H.264
   <id>.webp             its poster frame
-  clips-phone.json      the phone cards: clip ids, sizes, beats
-  clips-laptop.json     the laptop cards: clip ids, sizes, beats
+  clips-phone.json      the phone uses: clip ids, sizes, beats
+  clips-laptop.json     the laptop uses: clip ids, sizes, beats
 api/                    Vercel serverless functions (Node)
   _meta.js              shared Meta pixel / Conversions API helpers (reads the dataset id and token from Vercel env)
   site-event.js         POST /v1/site/event: a page event (e.g. a download press) sent to Meta's Conversions API
@@ -32,7 +32,7 @@ README.md               how the page behaves, what to run after a change, how pu
 
 | Looking for | Where |
 |---|---|
-| The page's copy and the card stack | `index.html`, the page script (`STACK`, the Mac scene's lines) |
+| The page's copy and the card's six uses | `index.html`, the page script (`USES`, the Mac scene's lines and the words around the Mac) |
 | Which clip plays on which card, and when | `media/clips-phone.json`, `media/clips-laptop.json` |
 | The download button's per-device target | `index.html` (the `#home` key's script) |
 | The `<head>` (title, canonical, structured data) | between `SEO:HEAD` markers in `index.html`, written by the backend's `tulmi/scripts/sync-site.mts`; never edit by hand |
@@ -45,7 +45,7 @@ README.md               how the page behaves, what to run after a change, how pu
 
 ## How it fits together
 
-- The browser loads `index.html`; the page script draws the opening, then the cards, reading clip sizes from
+- The browser loads `index.html`; the page script draws the opening, then the one card with its six uses, reading clip sizes from
   `media/clips-*.json` and playing `.webm` (else `.mp4`).
 - Everything dynamic belongs to the backend: Vercel rewrites `/v1/...`, `/download`, the installers and the
   backend's pages to `api.x0bot.com`, so the site never handles accounts, payments or large files itself.

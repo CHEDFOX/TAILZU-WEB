@@ -121,45 +121,61 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   .scribble { fill: none; stroke: var(--neon); stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; filter: drop-shadow(0 0 2.5px rgba(57, 255, 20, .55)); }
   .scribble .u { stroke: var(--ink); stroke-opacity: .16; stroke-width: 1; filter: none; }
 
-  /* ---- Scene two: the stack ---- */
-  #stack { position: relative; z-index: 2; height: 800vh; }
+  /* ---- Scene two: one card. He stands inside it; only what he points at changes. ---- */
+  #stack { position: relative; z-index: 2; height: 600vh; }
   .stage { position: sticky; top: 0; height: 100vh; overflow: hidden; }
-  .deck { position: absolute; inset: 0; z-index: 2; pointer-events: none; }
-  .card {
-    position: absolute; left: 0; top: 0; box-sizing: border-box;
-    transform-origin: 50% 0; will-change: transform, opacity;
-    border-radius: 30px; background-color: var(--card); background-size: 220px 220px;
-    box-shadow: 0 0 0 1px var(--hair), inset 0 1px 0 rgba(255, 255, 255, .75), 0 1px 2px rgba(28, 26, 23, .06), 0 8px 18px -10px rgba(28, 26, 23, .22);
-    pointer-events: auto; visibility: hidden;
-  }
-  .card.mac-card { border-radius: 26px; }
-  .card.phone-card { overflow: hidden; }
-  .narrow .card { border-radius: 22px; }
-  .card .shade { position: absolute; inset: 0; z-index: -1; border-radius: inherit; pointer-events: none;
-    box-shadow: 0 30px 46px -26px rgba(28, 26, 23, .36), 0 80px 120px -56px rgba(28, 26, 23, .34); }
-  .card .veil { position: absolute; inset: 0; border-radius: inherit; pointer-events: none; opacity: 0;
-    background-color: var(--card); background-size: 220px 220px; }
-  .dev { position: absolute; }
-  .screen video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; background: var(--black); }
-  .glass { position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
-    background: linear-gradient(118deg, rgba(255, 255, 255, .15) 0%, rgba(255, 255, 255, .05) 22%, rgba(255, 255, 255, 0) 36%);
-    box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .35); }
-
-  /* iPhone: titanium band, black bezel, screen, island, buttons. */
-  .phone { box-sizing: border-box; padding: var(--f); border-radius: calc(var(--r) + var(--b) + var(--f));
-    background:
+  .uc { position: absolute; left: 0; top: 0; box-sizing: border-box; border-radius: 30px; background-color: var(--card); background-size: 220px 220px;
+    box-shadow: 0 0 0 1px var(--hair), inset 0 1px 0 rgba(255, 255, 255, .75), 0 1px 2px rgba(28, 26, 23, .06), 0 30px 46px -26px rgba(28, 26, 23, .3), 0 80px 120px -56px rgba(28, 26, 23, .28); }
+  .unarrow .uc { border-radius: 24px; }
+  /* The device: one body that is a phone or a MacBook, and every shape between. */
+  .udev { position: absolute; left: 0; top: 0; z-index: 1; }
+  .udev > i, .udev > div { position: absolute; display: block; }
+  .uband { background:
       linear-gradient(150deg, rgba(255, 255, 255, .38), rgba(255, 255, 255, 0) 34%, rgba(0, 0, 0, 0) 66%, rgba(0, 0, 0, .2)),
       linear-gradient(90deg, var(--ti-0) 0%, var(--ti-2) 2.5%, var(--ti-1) 8%, var(--ti-3) 50%, var(--ti-1) 92%, var(--ti-2) 97.5%, var(--ti-0) 100%);
     box-shadow: inset 0 0 0 .6px rgba(255, 255, 255, .55), inset 0 -1px 2px rgba(28, 26, 23, .35), 0 1px 1px rgba(28, 26, 23, .28), 0 26px 34px -22px rgba(28, 26, 23, .6), 0 6px 10px -6px rgba(28, 26, 23, .3); }
-  .phone .bezel { box-sizing: border-box; width: 100%; height: 100%; padding: var(--b); border-radius: calc(var(--r) + var(--b));
-    background: var(--black); box-shadow: 0 0 0 .5px rgba(0, 0, 0, .7), inset 0 0 0 1px rgba(255, 255, 255, .06); }
-  .phone .screen { position: relative; width: var(--sw); height: var(--sh); border-radius: var(--r); overflow: hidden; background: var(--black); transform: translateZ(0); }
-  .phone .island { position: absolute; left: 50%; top: calc(var(--sw) * .028); width: calc(var(--sw) * .31); height: calc(var(--sw) * .09); transform: translateX(-50%); border-radius: 99px; background: var(--black); }
-  .phone .homebar { position: absolute; left: 50%; bottom: calc(var(--sw) * .02); width: calc(var(--sw) * .35); height: calc(var(--sw) * .013); transform: translateX(-50%); border-radius: 9px; background: rgba(28, 26, 23, .8); }
-  .phone .btn { position: absolute; width: 2.4px; background: linear-gradient(90deg, var(--ti-0), var(--ti-2) 50%, var(--ti-1)); }
-  .phone .l { right: 100%; margin-right: -.6px; border-radius: 2px 0 0 2px; }
-  .phone .r { left: 100%; margin-left: -.6px; border-radius: 0 2px 2px 0; }
-  .phone .b-act { top: 18%; height: 4.4%; } .phone .b-vup { top: 26%; height: 7.2%; } .phone .b-vdn { top: 35%; height: 7.2%; } .phone .b-pwr { top: 27.5%; height: 11.5%; }
+  .ulid { box-sizing: border-box; background: var(--black); }
+  .uscr { position: absolute; overflow: hidden; background: var(--black); transform: translateZ(0); }
+  .uscr video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; opacity: 0; background: var(--black); }
+  .uisl { position: absolute; left: 50%; transform: translateX(-50%); border-radius: 99px; background: var(--black); }
+  .unotch { position: absolute; top: 0; left: 50%; transform: translateX(-50%); background: var(--black); }
+  .uhinge { background: linear-gradient(180deg, var(--ink), var(--ti-0)); border-radius: 0 0 3px 3px; }
+  .ubase { background: linear-gradient(180deg, var(--alu-2) 0%, var(--alu-1) 38%, var(--alu-0) 100%); transform-origin: 50% 0;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, .85), inset 0 -1px 1px rgba(28, 26, 23, .28), 0 1px 0 rgba(28, 26, 23, .18), 0 14px 18px -12px rgba(28, 26, 23, .5); }
+  .ubase::after { content: ""; position: absolute; top: 0; left: 50%; width: 14%; height: 44%; transform: translateX(-50%);
+    background: linear-gradient(180deg, var(--alu-0), var(--alu-1)); border-radius: 0 0 9px 9px / 0 0 6px 6px; box-shadow: inset 0 1px 1.5px rgba(28, 26, 23, .3); }
+  .ubot { position: absolute; z-index: 3; pointer-events: none; }
+  /* The words: a stamp, the odd situation, what happened, an honest aside, a note in the margin. */
+  .utext { position: absolute; z-index: 2; }
+  .ukick { display: flex; align-items: center; gap: 8px; margin: 0; font: 600 11px/1.3 Geist, var(--sys); letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+  .ukick i { flex: none; width: 6px; height: 6px; border-radius: 50%; background: var(--neon); box-shadow: 0 0 5px 1px rgba(57, 255, 20, .6); }
+  .upunch { margin: 14px 0 0; font: 800 42px/.98 var(--grot); font-optical-sizing: auto; letter-spacing: -.04em; color: var(--ink); text-wrap: balance; }
+  .upunch .wd { display: inline-block; }
+  .uplain { margin: 16px 0 0; font: 400 15.5px/1.5 Geist, var(--sys); color: var(--ink-2); text-wrap: pretty; }
+  .uaside { position: relative; margin: 14px 0 0; padding-left: 20px; font: 500 13px/1.45 Geist, var(--sys); color: var(--ink); text-wrap: pretty; }
+  .uaside::before { content: "↳"; position: absolute; left: 0; top: 0; color: var(--muted); }
+  .unote { position: absolute; z-index: 2; display: flex; align-items: flex-start; gap: 6px; }
+  .uhand { display: inline-block; font: 400 25px/1.16 var(--hand); color: var(--ink); transform: rotate(-2.5deg); transform-origin: 0 50%; white-space: nowrap; }
+  .uarrow { flex: none; width: 60px; height: 44px; margin-top: -10px; overflow: visible; }
+  .uarrow path { stroke-dasharray: 1; stroke-dashoffset: 0; }
+  .urec { position: absolute; z-index: 2; margin: 0; font: 500 10.5px/1.2 Geist, var(--sys); letter-spacing: .04em; color: var(--muted); white-space: nowrap; }
+  .uprog { position: absolute; z-index: 2; display: flex; align-items: center; gap: 12px; margin: 0; font: 500 12px/1 var(--sys); letter-spacing: .1em; color: var(--muted); font-variant-numeric: tabular-nums; }
+  .uprog b { color: var(--ink); font-weight: 600; }
+  .useg { display: flex; gap: 5px; }
+  .useg i { position: relative; width: 22px; height: 3px; border-radius: 2px; background: rgba(28, 26, 23, .12); overflow: hidden; }
+  .useg i::after { content: ""; position: absolute; inset: 0; background: var(--ink); transform-origin: 0 50%; transform: scaleX(var(--f, 0)); }
+  .unarrow .ukick { font-size: 10px; letter-spacing: .1em; }
+  .unarrow .upunch { margin-top: 9px; font-size: clamp(23px, 7vw, 30px); line-height: 1; }
+  .unarrow .uplain { margin-top: 9px; font-size: 13.5px; line-height: 1.42; }
+  .unarrow .uaside { margin-top: 8px; font-size: 12px; }
+  .unarrow .uhand { font-size: 20px; transform: rotate(-1.5deg); }
+  .unarrow .uarrow { width: 26px; height: 30px; margin-top: -14px; }
+  .unarrow .useg i { width: 14px; }
+  .unarrow .uprog { gap: 9px; font-size: 11px; }
+  .dev { position: absolute; }
+  .glass { position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
+    background: linear-gradient(118deg, rgba(255, 255, 255, .15) 0%, rgba(255, 255, 255, .05) 22%, rgba(255, 255, 255, 0) 36%);
+    box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .35); }
 
   /* MacBook: aluminium lid with black bezel and notch, hinge, base with the thumb notch. */
   .mac .lid { position: absolute; top: 0; box-sizing: border-box; width: var(--lw); height: var(--lh); padding: var(--bz);
@@ -183,31 +199,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     background: rgba(246, 245, 241, .92); color: var(--ink); cursor: pointer; align-items: center; justify-content: center; box-shadow: 0 4px 14px rgba(0, 0, 0, .25); }
   .play svg { width: 18px; height: 18px; margin-left: 3px; }
   .play:focus-visible { outline: 2px solid var(--neon); outline-offset: 2px; }
-  .reduced .card.front:not(.playing) .play { display: flex; }
-  .cardbot { position: absolute; pointer-events: none; }
-
-  /* The words beside the card. */
-  .copy { position: absolute; inset: 0; z-index: 1; pointer-events: none; visibility: hidden; }
-  /* The words themselves answer the pointer, for the glitch (a hidden copy never does). */
-  .copy .lefty, .copy .note, .counter { pointer-events: auto; }
-  .lefty { position: absolute; transform: translateY(-50%); }
-  .punch { margin: 0; font: 800 40px/.98 var(--grot); font-optical-sizing: auto; letter-spacing: -.038em; color: var(--ink); text-wrap: balance; will-change: transform, opacity; }
-  .plain { margin: 16px 0 0; max-width: 30ch; font: 400 15px/1.45 var(--sys); color: var(--ink-2); text-wrap: pretty; will-change: transform, opacity; }
-  .note { position: absolute; transform: translateY(-50%); }
-  .nw { position: relative; display: inline-flex; align-items: flex-start; gap: 4px; will-change: transform, opacity; }
-  .hand { display: inline-block; font: 400 25px/1.16 var(--hand); color: var(--ink); transform: rotate(-2.5deg); transform-origin: 0 50%; }
-  .arrow { position: absolute; right: 100%; top: -6px; width: 60px; height: 44px; overflow: visible; }
-  .arrow path { stroke-dasharray: 1; stroke-dashoffset: 0; }
-  .counter { position: absolute; top: 80px; right: 30px; z-index: 3; font: 500 12px/1 var(--sys); letter-spacing: .1em; color: var(--muted); font-variant-numeric: tabular-nums; }
-  .counter b { color: var(--ink); font-weight: 600; }
-
-  .narrow .lefty { transform: translateY(-100%); text-align: center; }
-  .narrow .punch { font-size: clamp(23px, 6.9vw, 28px); line-height: 1; }
-  .narrow .plain { margin: 8px auto 0; font-size: 13px; line-height: 1.4; }
-  .narrow .note { transform: none; text-align: center; }
-  .narrow .hand { font-size: 20px; transform: rotate(-1.5deg); }
-  .narrow .arrow { position: static; flex: none; width: 26px; height: 30px; margin-top: -16px; }
-  .narrow .counter { top: auto; bottom: 58px; right: 16px; }
+  .reduced .uc:not(.playing) .play { display: flex; }
 
   /* ---- Scene three: the desk. He walks in, a Mac comes up, he jumps into its screen. ---- */
   #desk { position: relative; z-index: 2; height: 530vh; }
@@ -378,6 +370,34 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   .dline .jt { position: relative; }
   .dline svg { position: absolute; left: -3%; bottom: -.16em; width: 106%; height: .3em; overflow: visible; }
   .dline path { stroke-dasharray: 1; stroke-dashoffset: 1; }
+  /* Around the Mac, outside the screen: what he has saved you so far, one note in the margin per window, the receipt, the last word. */
+  .dcount { position: absolute; z-index: 3; display: grid; grid-template-columns: auto 1fr; column-gap: 14px; row-gap: 4px; align-items: end; opacity: 0; pointer-events: auto; }
+  .dcn { grid-row: 1 / 3; font: 800 84px/.8 var(--grot); letter-spacing: -.05em; color: var(--ink); font-variant-numeric: tabular-nums; }
+  .dcl { font: 400 23px/1.05 var(--hand); color: var(--ink); white-space: nowrap; }
+  .dck { font: 500 12px/1.3 Geist, var(--sys); letter-spacing: .06em; color: var(--muted); }
+  .dck b { color: var(--ink); font-weight: 600; }
+  .dcplus { position: absolute; left: 0; top: -24px; padding: 3px 7px; border-radius: 7px; background: var(--neon); color: var(--ink); font: 700 12px/1 Geist, var(--sys); font-style: normal; opacity: 0; box-shadow: 0 0 12px rgba(57, 255, 20, .5); }
+  .dmarg { position: absolute; z-index: 3; margin: 0; display: flex; align-items: center; gap: 6px; font: 400 25px/1.15 var(--hand); color: var(--ink); opacity: 0; pointer-events: auto; }
+  .dmarg span { max-width: calc(100% - 66px); transform: rotate(-2deg); text-wrap: balance; }
+  .darr { flex: none; width: 60px; height: 44px; overflow: visible; transform: scaleX(-1); }
+  .darr path { stroke-dasharray: 1; stroke-dashoffset: 1; }
+  .drcpt { position: absolute; z-index: 3; box-sizing: border-box; width: 300px; padding: 16px 18px 14px; background: #FFFDF7; color: var(--ink); visibility: hidden;
+    font: 500 11.5px/1.7 ui-monospace, "SF Mono", Menlo, Consolas, monospace; transform: rotate(-2deg); transform-origin: 50% 0; pointer-events: auto;
+    box-shadow: 0 0 0 .5px rgba(28, 26, 23, .1), 0 18px 30px -18px rgba(28, 26, 23, .45); }
+  .drcpt::after { content: ""; position: absolute; left: 0; right: 0; bottom: -8px; height: 8px;
+    background: linear-gradient(135deg, #FFFDF7 33.33%, transparent 33.33%) 0 0 / 12px 12px, linear-gradient(225deg, #FFFDF7 33.33%, transparent 33.33%) 0 0 / 12px 12px; }
+  .drcpt h6 { margin: 0 0 8px; padding-bottom: 8px; border-bottom: 1px dashed rgba(28, 26, 23, .35); font: 700 10.5px/1.3 ui-monospace, "SF Mono", Menlo, Consolas, monospace; letter-spacing: .14em; text-transform: uppercase; text-align: center; }
+  .drows p { margin: 0; display: flex; gap: 6px; white-space: nowrap; }
+  .drows p i { flex: 1; min-width: 8px; border-bottom: 1.5px dotted rgba(28, 26, 23, .3); margin-bottom: .5em; }
+  .drows p b { font-weight: 700; }
+  .drows p.tot { margin-top: 8px; padding-top: 8px; border-top: 1px dashed rgba(28, 26, 23, .35); font-weight: 700; }
+  .dsig { margin: 10px 0 0; font: 400 19px/1.1 var(--hand); text-align: center; transform: rotate(-2deg); }
+  .dbye { position: absolute; z-index: 3; margin: 0; font: 400 22px/1.2 var(--hand); color: var(--ink); text-align: center; white-space: nowrap; opacity: 0; pointer-events: auto; }
+  .dnarrow .dcn { font-size: 46px; } .dnarrow .dcl { font-size: 17px; }
+  .dnarrow .dmarg { flex-direction: column-reverse; align-items: center; gap: 2px; font-size: 19px; text-align: center; }
+  .dnarrow .darr { width: 26px; height: 30px; transform: none; }
+  .dnarrow .drcpt { padding: 13px 14px 11px; font-size: 10.5px; }
+  .dnarrow .dbye { font-size: 17px; }
   .dnarrow .menu .mx { display: none; }
   /* THE MAST, after the wave: the download on the left ("Take me home", to
      whatever this visitor's device installs), the name on the right. */
@@ -496,9 +516,17 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 </header>
 <section id="stack" aria-label="What X0 Bot does, in six short clips">
   <div class="stage">
-    <div class="copies"></div>
-    <div class="deck"></div>
-    <div class="counter" aria-hidden="true"><b>01</b> / 06</div>
+    <article class="uc">
+      <div class="udev">
+        <i class="uband"></i><i class="uhinge"></i><i class="ubase"></i>
+        <div class="ulid"><div class="uscr"><i class="uisl"></i><i class="glass"></i><button class="play" type="button" aria-label="Play the clip"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 2.5v11l9.5-5.5z" fill="currentColor"/></svg></button></div><i class="unotch"></i></div>
+      </div>
+      <p class="urec" aria-hidden="true"></p>
+      <canvas class="ubot" aria-hidden="true"></canvas>
+      <div class="utext" aria-live="polite"><p class="ukick"></p><h2 class="upunch"></h2><p class="uplain"></p><p class="uaside"></p></div>
+      <p class="unote"><svg class="uarrow scribble" aria-hidden="true"><path class="shaft" pathLength="1"/><path class="head" pathLength="1"/></svg><span class="uhand"></span></p>
+      <p class="uprog" aria-hidden="true"><span class="unum"><b>01</b> / 06</span><span class="useg"><i></i><i></i><i></i><i></i><i></i><i></i></span></p>
+    </article>
   </div>
 </section>
 <section id="desk" aria-label="X0 Bot on a Mac: in a chat, a note and an assistant, you just talk">
@@ -547,6 +575,12 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <h2 class="dline"><span class="w">Let</span> <span class="w">X0 Bot</span> <span class="w jt">handle it.<svg class="scribble" viewBox="0 0 180 12" preserveAspectRatio="none" aria-hidden="true"><path pathLength="1" d="M2 8 C 30 3, 70 10, 118 5 S 160 8, 177 4"/></svg></span></h2>
     <canvas class="dbot" aria-hidden="true"></canvas>
     <p class="say" aria-hidden="true"></p>
+    <div class="dcount" aria-hidden="true"><b class="dcn">0</b><span class="dcl">words you didn't type</span><span class="dck">keys pressed: <b>0</b></span><i class="dcplus"></i></div>
+    <p class="dmarg" aria-hidden="true"><span>said “so uh”. sent without it.</span><svg class="darr scribble"><path class="shaft" pathLength="1"/><path class="head" pathLength="1"/></svg></p>
+    <p class="dmarg" aria-hidden="true"><span>4 people talking. 0 typing. 2 to-dos anyway.</span><svg class="darr scribble"><path class="shaft" pathLength="1"/><path class="head" pathLength="1"/></svg></p>
+    <p class="dmarg" aria-hidden="true"><span>7 words out loud. 1 pull request back.</span><svg class="darr scribble"><path class="shaft" pathLength="1"/><path class="head" pathLength="1"/></svg></p>
+    <div class="drcpt" role="img"><h6>X0 Bot · today's receipt</h6><div class="drows"></div><p class="dsig">the rest of the evening: yours</p></div>
+    <p class="dbye">Your keyboard still works. It just gets the evening off.</p>
   </div>
 </section>
 <footer class="end">
@@ -851,7 +885,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     for (let i = 0; i < 7; i++) { g.fillStyle = grey(i % 2 ? .66 : .38); g.fillRect(cx - .22 * H, top + i * .035 * H, .44 * H, .035 * H); }
     g.restore();
     const hand = arm(g, H, cx + .1 * H, top + .035 * H, 1, st.ra[0], st.ra[1]);
-    // In the cards he can point, or give a thumb up, with that hand.
+    // In the card he can point, or give a thumb up, with that hand.
     if (st.point > .02 || st.thumb > .02) {
       const a = st.ra[0] + st.ra[1];
       g.strokeStyle = grey(.84); g.lineCap = "round";
@@ -1090,7 +1124,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
      pointer drives it by hovering, a finger by touching and dragging.
      Never under reduced motion.
      ================================================================== */
-  const GLITCH_AT = "h1,h2,h3,p,li,a,button,span,b,i,em,strong,label,.hand,.counter,.punch,.plain,.note";
+  const GLITCH_AT = "h1,h2,h3,p,li,a,button,span,b,i,em,strong,label,.uhand,.uprog,.ukick,.upunch,.uplain,.uaside";
   const glitchOn = new WeakMap();
   // The word under a point: the text node and the run of non-space
   // characters around the caret the browser puts there.
@@ -1222,32 +1256,58 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     if (hintOn && sy > 24 && !hint.classList.contains("gone")) hint.classList.add("gone");
   }
 
-  // ---- Scene two: cards behind cards ----------------------------------------
-  const STACK = [
-    { id: "home", device: "laptop", bot: true, punch: "Leave on time.", plain: "One click answers your bots. They finish the rest.", note: "dinner at 8 ✓" },
-    { id: "offer", device: "phone", bot: true, punch: "Ask for more.", plain: "Say it nervous. It lands confident.", note: "$128,000 🎉" },
-    { id: "xode", device: "laptop", bot: true, punch: "Sleep. Xode fixes it.", plain: "Hand it the failing tests at 2 AM. Wake up to a PR.", note: "215 of 215 pass" },
-    { id: "escape", device: "phone", bot: true, punch: "Monday off? Go.", plain: "Ask once. Travel bot plans the weekend.", note: "Lisbon, tonight ☀️" },
-    { id: "grok", device: "laptop", bot: true, punch: "Ask Grok out loud.", plain: "Say it messy. Grok gets it clean.", note: "if cats ran the stock market…" },
-    { id: "lock", device: "phone", bot: true, punch: "Answer from your Lock Screen.", plain: "Your bots work while you're out. One tap when they ask.", note: "no unlock needed" },
+  // ---- Scene two: one card, six uses -------------------------------------------
+  // One paper card with him inside it. Each use is one screen of scroll; at the
+  // half-way point only the card's content changes (never the card, never him):
+  // the old words lift away soft, the screen dips to black while the device
+  // morphs between phone and MacBook, the new words set in line by line and the
+  // note is written in. He hops, glances at the new words, then follows the
+  // clip's beats with his hands (media/clips-*.json), pointing at the screen.
+  // The copy: a stamp (who, when), an odd situation, what happened, an honest
+  // aside, a note in the margin; the clip under it is the proof.
+  const USES = [
+    { id: "offer", device: "phone", kick: "Keylessbord · 4:52 PM · a job offer", punch: "Ask for more money in a shaky voice.",
+      plain: "You mumble “ok wow… um, closer to one thirty?” What lands in Messages is calm and clear. You press send.",
+      aside: "It drops the “um” and keeps what you meant. Same in Hindi or Hinglish.", note: "$118k → $128k", rec: "the clip · 7 seconds" },
+    { id: "xode", device: "laptop", kick: "Xode · 1:58 AM · 3 failing tests", punch: "Fix the bug in your sleep. Literally.",
+      plain: "Hand Xode the 3 failing tests and go to bed. At 7:31 AM, 215 of 215 pass and PR #129 is waiting.",
+      aside: "It opens a pull request. Merging stays your call.", note: "zzz… 215 / 215 ✓", rec: "the clip · 1:58 AM to 7:31 AM, in 6 seconds" },
+    { id: "escape", device: "phone", kick: "Travel bot · Friday · 4:58 PM", punch: "Get Monday off at 4:56. Have a Lisbon plan by 4:58.",
+      plain: "Say “somewhere warm with a beach, leaving tonight, back Monday”. Back comes a 7:40 PM flight, a place 6 minutes from the sea, and 24° all weekend.",
+      aside: "Nothing is booked until you say so.", note: "pack light ☀️", rec: "the clip · 7 seconds" },
+    { id: "grok", device: "laptop", kick: "Ask any bot · Grok · out loud", punch: "Ask Grok what crashes first if cats run the stock market.",
+      plain: "Say it the way it falls out: “so um, if cats ran the stock market…”. It lands in Grok as one clean question.",
+      aside: "It writes the question. You still press send.", note: "question mark included ✓", rec: "the clip · 4 seconds" },
+    { id: "home", device: "laptop", kick: "Home · 7:42 PM · dinner at 8", punch: "Answer one question. Leave for dinner.",
+      plain: "Xode asks: round the cart total per item, or once at the end? You click “Per item”. It finishes, and Home says “All set. Go enjoy dinner.”",
+      aside: "“Done” came after every test passed, not before.", note: "dinner at 8 ✓", rec: "the clip · 6 seconds" },
+    { id: "lock", device: "phone", kick: "Xode · 8:14 PM · at dinner", punch: "Make a coding decision with one thumb, mid-pasta.",
+      plain: "Xode asks which sign-in style to use. You tap “Simple” right on the Lock Screen. At 8:15, PR #130 is ready.",
+      aside: "When it isn't sure, it asks you instead of guessing.", note: "phone down. the food's here 🍝", rec: "the clip · 8:14 to 8:15 PM, in 6 seconds" },
   ];
   // The Grok film has no json of its own: his poses by its beats. Every other clip carries its cuts (media/clips-*.json).
   const FALLBACK_CUTS = {
     grok: [{ from: 0, to: 1.1, bot: "present" }, { from: 1.1, to: 2.5, bot: "tap" }, { from: 2.5, to: 99, bot: "thumbs" }],
   };
-  const TURNS = [-2.2, 1.9, -1.5, 2.4, -1.8, 1.6, -2.3, 1.7];
-  const N = STACK.length;
-  const stack = document.getElementById("stack"), stage = stack.querySelector(".stage");
-  const deckEl = stage.querySelector(".deck"), copiesEl = stage.querySelector(".copies"), counter = stage.querySelector(".counter");
+  const N = USES.length;
+  const stack = document.getElementById("stack"), stage = stack.querySelector(".stage"), uc = stage.querySelector(".uc"), uq = (s) => uc.querySelector(s);
+  const uband = uq(".uband"), ulid = uq(".ulid"), uscr = uq(".uscr"), uisl = uq(".uisl"), unotch = uq(".unotch"), uhinge = uq(".uhinge"), ubase = uq(".ubase"), uplay = uq(".play");
+  const utext = uq(".utext"), ukick = uq(".ukick"), upunch = uq(".upunch"), uplain = uq(".uplain"), uaside = uq(".uaside");
+  const unote = uq(".unote"), uhand = uq(".uhand"), uarrow = uq(".uarrow"), ushaft = uq(".uarrow .shaft"), uhead = uq(".uarrow .head");
+  const urec = uq(".urec"), uprog = uq(".uprog"), unum = uq(".unum"), usegs = [...uq(".useg").children];
+  const ubCv = uq(".ubot"), ubx = ubCv.getContext("2d"), uDots = makeDots();
   const endEl = document.querySelector(".end"), endLine = endEl.querySelector("path");
   if (reduced) stage.classList.add("reduced");
-  let cards = [], narrow = false, PEEK = 20, lastP = NaN, stackDirty = true, activeI = -2, stackTop = 0, endTop = 0;
+  let uses = [], narrow = false, stackTop = 0, endTop = 0, lastP = NaN;
+  // The card's layout for this viewport: its size, the two device shapes, where he stands, where the words go.
+  const UL = { cw: 0, ch: 0, pad: 0, tx: 0, TW: 0, P: null, L: null, bot: null, textAt: [0, 0], dev: { cx: 0, cy: 0 } };
+  // The use on show, the one asked for, and the swap between them (k: the device's shape, 0 phone … 1 MacBook).
+  const U = { shown: -1, from: -1, busy: false, t0: 0, sp: 1, k: 0, k0: 0, k1: 0, isl: 0, isl0: 0, isl1: 0, set: false, paused: false, started: false, react: -1e9, vis: false };
 
   const ARROW = {
     wide: { box: "0 0 60 44", shaft: "M57 9 C 44 2, 30 4, 22 14 S 10 30, 5 31", head: "M12.7 24.6 L5 31 L14.6 33.8" },
     narrow: { box: "0 0 26 30", shaft: "M23 28 C 14 27, 7 21, 8 13 S 10 5, 11 2", head: "M5.6 8 L11 2 L13.6 9.4" },
   };
-  const PLAY_SVG = '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 2.5v11l9.5-5.5z" fill="currentColor"/></svg>';
 
   async function loadClips() {
     const get = (u) => fetch(u, { cache: "no-cache" }).then((r) => (r.ok ? r.json() : null)).catch(() => null);
@@ -1262,48 +1322,34 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   }
 
   function build(by) {
-    STACK.forEach((s, i) => {
+    uses = USES.map((s, i) => {
       const phone = s.device === "phone";
       const clip = Object.assign({ w: phone ? 540 : 1280, h: phone ? 1170 : 800, webm: `/media/${s.id}.webm`, mp4: `/media/${s.id}.mp4`, poster: `/media/${s.id}.webp`, island: null }, by[s.id] || {});
       clip.cuts = Array.isArray(clip.cuts) && clip.cuts.length ? clip.cuts : (FALLBACK_CUTS[s.id] || []);
       if (FALLBACK_CUTS[s.id] && !clip.cuts.some((k) => k.bot)) clip.cuts = FALLBACK_CUTS[s.id];
-      const vid = `<video muted loop playsinline disablepictureinpicture preload="none" aria-hidden="true"><source src="${clip.webm}" type="video/webm"><source src="${clip.mp4}" type="video/mp4"></video>`;
-      const play = `<button class="play" type="button" aria-label="Play the clip">${PLAY_SVG}</button>`;
-      const dev = phone
-        ? `<div class="dev phone"><i class="btn l b-act"></i><i class="btn l b-vup"></i><i class="btn l b-vdn"></i><i class="btn r b-pwr"></i><div class="bezel"><div class="screen">${vid}${clip.island ? "" : '<i class="island"></i>'}${clip.homeIndicator === false ? '<i class="homebar"></i>' : ""}<i class="glass"></i>${play}</div></div></div>`
-        : `<div class="dev mac"><i class="contact"></i><div class="lid"><div class="screen">${vid}<i class="glass"></i>${play}</div>${clip.island ? "" : '<i class="notch"><i></i></i>'}</div><i class="hinge"></i><div class="base"><i class="thumb"></i></div></div>`;
-      const el = document.createElement("article");
-      el.className = `card ${phone ? "phone-card" : "mac-card"}`;
-      el.setAttribute("aria-label", `${i + 1} of ${N}: ${s.punch}`);
-      el.innerHTML = `<i class="shade"></i>${dev}<i class="veil"></i>`;
-      el.style.zIndex = String(N - i);
-      el.style.backgroundImage = `url(${GRAIN})`;
-      const veil = el.querySelector(".veil"); veil.style.backgroundImage = `url(${GRAIN})`;
-      deckEl.appendChild(el);
-      const cp = document.createElement("div");
-      cp.className = "copy";
-      cp.innerHTML = `<div class="lefty"><h2 class="punch">${s.punch}</h2><p class="plain">${s.plain}</p></div>` +
-        `<div class="note"><span class="nw"><svg class="arrow scribble" aria-hidden="true"><path class="shaft" pathLength="1"/><path class="head" pathLength="1"/></svg><span class="hand">${s.note}</span></span></div>`;
-      copiesEl.appendChild(cp);
-      const v = el.querySelector("video"), btn = el.querySelector(".play");
-      btn.addEventListener("click", () => { if (v.paused) v.play().catch(() => {}); else v.pause(); });
-      v.addEventListener("play", () => el.classList.add("playing"));
-      v.addEventListener("pause", () => el.classList.remove("playing"));
-      cards.push({
-        i, s, clip, el, veil, v, phone, bot: !!s.bot,
-        dev: el.querySelector(".dev"), shade: el.querySelector(".shade"),
-        copy: cp, lefty: cp.querySelector(".lefty"), punch: cp.querySelector(".punch"), plain: cp.querySelector(".plain"),
-        note: cp.querySelector(".note"), nw: cp.querySelector(".nw"), hand: cp.querySelector(".hand"),
-        svg: cp.querySelector(".arrow"), shaft: cp.querySelector(".shaft"), head: cp.querySelector(".head"),
-        turn: TURNS[i % TURNS.length], side: i % 2 ? 1 : -1, posterSet: false, reset: false,
-      });
+      const v = document.createElement("video");
+      v.muted = true; v.loop = true; v.playsInline = true; v.preload = "none";
+      ["muted", "playsinline", "disablepictureinpicture"].forEach((a) => v.setAttribute(a, ""));
+      v.setAttribute("aria-hidden", "true");
+      v.innerHTML = `<source src="${clip.webm}" type="video/webm"><source src="${clip.mp4}" type="video/mp4">`;
+      uscr.insertBefore(v, uisl);
+      v.addEventListener("play", () => { if (U.shown === i) uc.classList.add("playing"); });
+      v.addEventListener("pause", () => { if (U.shown === i) uc.classList.remove("playing"); });
+      // A phone clip that carries no island of its own gets the device's.
+      return { i, s, clip, v, phone, isl: phone && !clip.island ? 1 : 0, primed: false };
     });
-    cards[0].v.preload = "auto"; if (cards[1]) cards[1].v.preload = "auto";
-    layoutStack();
-    if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { layoutStack(); });
+    uplay.addEventListener("click", () => { const u = uses[U.shown]; if (!u) return; if (u.v.paused) u.v.play().catch(() => {}); else u.v.pause(); });
+    layoutUses();
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { layoutUses(); });
+  }
+  /** Its poster now and its clip on the way: the use on show and the ones either side of it. */
+  function prime(i) {
+    const u = uses[i];
+    if (!u || u.primed) return;
+    u.primed = true; u.v.poster = u.clip.poster; u.v.preload = "auto";
   }
 
-  /** The MacBook's parts for a lid LW wide and a screen k tall per wide (the deck's laptops and the desk's). */
+  /** The MacBook's parts for a lid LW wide and a screen k tall per wide (the desk's Mac). */
   function sizeMac(dev, LW, k) {
     const bz = LW * .019, scw = LW - 2 * bz, sch = scw * k, lh = sch + bz * 2.25, hh = Math.max(2, LW * .006), bh = LW * .03;
     const dw = LW * 1.1, dh = lh + hh + bh, d = dev.style;
@@ -1315,201 +1361,197 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     dev.querySelector(".base").style.top = (lh + hh).toFixed(1) + "px"; dev.querySelector(".contact").style.top = (lh + hh + bh - 2).toFixed(1) + "px";
     return { dw, dh, bz, scw, sch };
   }
+  // The device's two shapes, as one set of numbers each, so every shape between is a lerp.
+  // A phone: a titanium band f, a black bezel b, a screen with round corners r.
+  function phoneShape(dh, w, cx, cy) {
+    const SW = Math.min(dh / 2.261, w / 1.094), f = Math.max(2.2, SW * .017), b = SW * .03, r = SW * .125, sh = SW * 1170 / 540;
+    return { cx, cy, f, lidW: SW + 2 * b, lidH: sh + 2 * b, pT: b, pS: b, pB: b, rT: r + b, rB: r + b, sr: r, hh: 0, bh: 0, h: sh + 2 * b + 2 * f };
+  }
+  // A MacBook: the lid (black bezel, notch), the hinge, the base.
+  function macShape(LW, cx, cy) {
+    const bz = LW * .019, sch = (LW - 2 * bz) * .625, lh = sch + bz * 2.25;
+    return { cx, cy, f: 0, lidW: LW, lidH: lh, pT: bz, pS: bz, pB: bz * 1.25, rT: LW * .03, rB: LW * .006, sr: 3, hh: Math.max(2, LW * .006), bh: LW * .03, h: lh + Math.max(2, LW * .006) + LW * .03 };
+  }
 
-  /** Sizes and places everything in the stack for this viewport. */
-  function layoutStack() {
-    if (!cards.length) return;
-    narrow = VW < 900;
-    stage.classList.toggle("narrow", narrow);
+  /** Sizes and places the card and everything in it for this viewport. */
+  function layoutUses() {
+    if (!uses.length) return;
+    narrow = VW < 860;
+    stage.classList.toggle("unarrow", narrow);
     stage.style.height = VH + "px"; stack.style.height = N * VH + "px";
-    const pad = narrow ? 13 : 26, padL = narrow ? 13 : 30, gap = narrow ? 14 : 56;
-    PEEK = narrow ? 12 : 20;
-    const peekTot = PEEK * 3, TOP0 = narrow ? 74 : 46, BAR = 54;
     const arrow = narrow ? ARROW.narrow : ARROW.wide;
-    let maxL = 0, maxN = 0;
-    cards.forEach((c) => {
-      c.svg.setAttribute("viewBox", arrow.box); c.shaft.setAttribute("d", arrow.shaft); c.head.setAttribute("d", arrow.head);
-      if (narrow) {
-        c.punch.style.fontSize = ""; c.lefty.style.width = c.note.style.width = (VW - 32) + "px";
-        maxL = Math.max(maxL, c.lefty.offsetHeight);
-        maxN = Math.max(maxN, c.note.offsetHeight);
-      }
-    });
-    // Every card is landscape and the same size. A laptop fills it; a phone
-    // stands in it with the bot beside it, as on the laptop cards.
-    const CW = Math.round(narrow ? VW - 32 : Math.min(VW * .58, Math.min(VH * .6, 560) * 1.5));
-    const CH = Math.round(narrow ? CW / 1.25 : Math.min(VH * .6, 560, CW / 1.5));
-    // The MacBook's lid: as wide as the card allows beside the bot, as tall as it allows.
-    const LW = Math.round(Math.min((CW - 2 * padL) / (1.1 + .374 * (narrow ? .3 : .52)), (CH - 2 * padL) / .692));
-    // The phone: the card's height on a laptop; on a phone a little taller than
-    // the card, so its foot (the home bar) runs off the card's lower edge.
-    const SW = Math.round(narrow ? Math.min(132, (CW - 2 * pad) * .4) : (CH - 2 * pad) / 2.261);
-    cards.forEach((c) => {
-      const d = c.dev.style, k = c.clip.h / c.clip.w;
-      c.cw = CW; c.ch = CH;
-      if (c.phone) {
-        const f = Math.max(2.2, SW * .017), b = SW * .03, r = SW * .125, sh = SW * k;
-        const dw = SW + 2 * (f + b), dh = sh + 2 * (f + b);
-        c.botH = c.bot ? Math.round(narrow ? CH * .74 : dh * .58) : 0;
-        const room = c.bot ? c.botH * .62 : 0, x = (CW - dw - room) / 2 + room;
-        d.setProperty("--sw", SW + "px"); d.setProperty("--sh", sh.toFixed(1) + "px"); d.setProperty("--f", f.toFixed(2) + "px"); d.setProperty("--b", b.toFixed(2) + "px"); d.setProperty("--r", r.toFixed(1) + "px");
-        d.width = dw.toFixed(1) + "px"; d.height = dh.toFixed(1) + "px"; d.left = x.toFixed(1) + "px"; d.top = pad + "px";
-        c.feetX = x - room - pad * .45 + c.botH * .27;
-        c.ground = Math.min(CH - pad * .6, pad + dh);
-      } else {
-        const { dw, dh } = sizeMac(c.dev, LW, k);
-        c.botH = c.bot ? Math.round(.55 * dh) : 0;
-        const room = c.bot ? c.botH * (narrow ? .3 : .52) : 0;
-        const x = (CW - dw - room) / 2 + room, y = (CH - dh) / 2;
-        d.left = x.toFixed(1) + "px"; d.top = y.toFixed(1) + "px";
-        // Where he stands: on the card, at the laptop's side, feet at the base's line.
-        c.feetX = narrow ? x - room - padL * .55 + c.botH * .2 : x - room - padL * .45 + c.botH * .27;
-        c.ground = y + dh + 1;
-      }
-      c.el.style.width = c.cw + "px"; c.el.style.height = c.ch + "px";
-    });
-    const cx = VW / 2;
-    const cy = narrow ? TOP0 + maxL + 12 + peekTot + CH / 2 : VH / 2 + peekTot / 2 - 4;
-    cards.forEach((c) => {
-      c.x0 = cx - c.cw / 2; c.y0 = cy - c.ch / 2;
-      const L = c.lefty.style, R = c.note.style;
-      if (narrow) {
-        L.left = R.left = "16px"; L.width = R.width = (VW - 32) + "px";
-        L.top = (c.y0 - peekTot - 12) + "px"; R.top = (c.y0 + c.ch + 16) + "px";
-      } else {
-        const side = clamp((VW - c.cw) / 2 - gap - 36, 170, 360);
-        c.punch.style.fontSize = clamp(side * .132, 30, 44).toFixed(1) + "px";
-        L.width = side + "px"; L.left = (c.x0 - gap - side) + "px"; L.top = cy + "px";
-        R.width = Math.min(290, side) + "px"; R.left = (c.x0 + c.cw + gap) + "px"; R.top = (cy - 8) + "px";
-      }
-    });
-    if (CB.card) sizeBot();
-    layoutDesk();
+    uarrow.setAttribute("viewBox", arrow.box); ushaft.setAttribute("d", arrow.shaft); uhead.setAttribute("d", arrow.head);
+    let cw, ch, x, y;
+    if (narrow) { x = 12; y = Math.round(clamp(VH * .142, 96, 124)); cw = VW - 24; ch = VH - y - 12; }
+    else { cw = Math.round(Math.min(1180, VW - 96)); ch = Math.round(Math.min(700, VH - 146)); x = Math.round((VW - cw) / 2); y = Math.round(Math.max(116, (VH - ch) / 2 + 22)); }
+    const pad = narrow ? 16 : 40;
+    Object.assign(UL, { cw, ch, pad });
+    Object.assign(uc.style, { width: cw + "px", height: ch + "px", transform: `translate3d(${x}px,${y}px,0)`, backgroundImage: `url(${GRAIN})` });
+    if (!narrow) {
+      // Him on the left, the device in the middle, the words on the right.
+      const TW = Math.round(clamp(cw * .29, 260, 345)), tx = cw - pad - TW, BW = cw * .17;
+      const zx0 = BW, zx1 = tx - 36, zy0 = pad, zy1 = ch - pad - 26, zw = zx1 - zx0, zh = zy1 - zy0, zcx = (zx0 + zx1) / 2, zcy = (zy0 + zy1) / 2;
+      Object.assign(UL, { tx, TW });
+      utext.style.width = TW + "px"; utext.style.left = tx + "px";
+      unote.style.left = (tx - 66) + "px"; unote.style.right = "";
+      Object.assign(uprog.style, { left: tx + "px", top: (ch - pad - 6) + "px" });
+      UL.P = phoneShape(zh, zw, zcx + zw * .03, zcy);
+      UL.L = macShape(Math.min(zw / 1.1, zh / .6865), zcx, zcy);
+      const H = Math.round(clamp(Math.min(ch * .43, BW * 1.55), 140, 310));
+      UL.bot = { H, fx: BW * .52, gy: zcy + H * .47 };
+      urec.style.right = "";
+    } else {
+      // The words on top; the device under them, him at its foot on the left; the note and the count at the bottom.
+      const iw = cw - 2 * pad;
+      utext.style.width = iw + "px"; utext.style.left = pad + "px"; utext.style.top = pad + "px";
+      let th = 0;
+      const keep = U.shown;
+      for (let i = 0; i < N; i++) { setWords(i, true); th = Math.max(th, utext.offsetHeight); }
+      if (keep >= 0) setWords(keep, true);
+      const NR = 58, zy0 = pad + th + 14, zy1 = ch - pad - NR, zh = zy1 - zy0;
+      const H = Math.round(clamp(zh * .42, 92, 160));
+      UL.bot = { H, fx: pad + H * .32, gy: zy1 };
+      const ph = zh - 22;
+      UL.P = phoneShape(ph, iw * .62, pad + iw * .64, zy0 + ph / 2);
+      const LW = Math.min(iw / 1.1, Math.max(iw * .62, zh - H * .8) / .6865), lh = LW * .6865;
+      UL.L = macShape(LW, cw / 2, zy0 + Math.max(lh / 2, (zh - H * .8) / 2));
+      Object.assign(unote.style, { left: "", right: pad + "px", top: (zy1 + 8) + "px" });
+      Object.assign(uprog.style, { left: pad + "px", top: (ch - pad - 6) + "px" });
+      Object.assign(urec.style, { left: "", right: pad + "px", top: (zy1 - 13) + "px", transform: "none" });
+    }
+    sizeUBot();
+    if (U.shown >= 0) placeWords();
+    U.devDirty = true;
     stackTop = stack.offsetTop; endTop = endEl.offsetTop;
-    stackDirty = true;
+    lastP = NaN;
   }
 
-  /** Where every card sits for a scroll position p (0 = first card in front). */
-  function applyCards(n, q) {
-    const P = reduced ? n + (q >= .5 ? 1 : 0) : n + back((q - .14) / .72);
-    // The frame of whatever is in front at P: cards behind it are tucked
-    // inside it (never wider, never lower), so a laptop card waiting behind
-    // a phone card peeks out at the top like the rest of the deck, then
-    // grows to its own size as it comes up front.
-    const fl = Math.floor(P), fA = cards[clamp(fl, 0, N - 1)], fB = cards[clamp(fl + 1, 0, N - 1)], fk = clamp(P - fl);
-    const refW = lerp(fA.cw, fB.cw, fk), refH = lerp(fA.ch, fB.ch, fk), refTop = lerp(fA.y0, fB.y0, fk);
-    for (const c of cards) {
-      const i = c.i;
-      let tx = 0, ty = 0, rot = 0, sc = 1, op = 1, veil = 0, sh = 1, hide = false, pivot = false;
-      if (i < n) hide = true;
-      else if (i === n && q > 0 && !reduced) {
-        // Picked up, then thrown: up, away to one side, turning.
-        const lift = easeOut(q / .2), f = clamp((q - .08) / .8), fe = Math.pow(f, 1.75);
-        ty = -9 * lift - fe * (c.y0 + c.ch + 90);
-        tx = c.side * fe * (VW * .07 + 40);
-        rot = c.side * (1.2 * lift + 9 * fe);
-        sc = 1 + .022 * lift - .06 * fe;
-        op = 1 - clamp((f - .72) / .28);
-        pivot = true;
-      } else if (reduced && i === n && q > 0) {
-        if (q < .5) op = 1 - easeIO((q - .12) / .38); else hide = true;
-      } else if (reduced && i === n + 1 && q >= .5) {
-        op = easeIO((q - .5) / .35);
-      } else {
-        const k = i - P;
-        if (k > 3.7) hide = true;
-        const s = clamp(k), fit = lerp(1, Math.min(1, refW / c.cw, refH / c.ch), s);
-        sc = fit * (1 - .052 * k); ty = lerp(0, refTop - c.y0, s) - PEEK * k;
-        rot = c.turn * (clamp(k) + .35 * clamp(k - 1, 0, 2));
-        veil = .36 * clamp(k) + .12 * clamp(k - 1, 0, 2);
-        op = 1 - clamp((k - 3) / .6);
-        sh = 1 - .62 * clamp(k);
-      }
-      if (hide || op < .005) {
-        if (c.el.style.visibility !== "hidden") c.el.style.visibility = "hidden";
-        if (i < n && c.reset) { c.reset = false; try { c.v.currentTime = 0; } catch (e) { /* not loaded */ } }
-        continue;
-      }
-      if (!c.posterSet) { c.v.poster = c.clip.poster; c.posterSet = true; }
-      const mid = (c.ch / 2).toFixed(1);
-      c.el.style.transform = `translate3d(${(c.x0 + tx).toFixed(2)}px, ${(c.y0 + ty).toFixed(2)}px, 0)` +
-        (pivot ? ` translateY(${mid}px) rotate(${rot.toFixed(3)}deg) scale(${sc.toFixed(4)}) translateY(-${mid}px)` : ` rotate(${rot.toFixed(3)}deg) scale(${sc.toFixed(4)})`);
-      c.el.style.opacity = op.toFixed(3);
-      c.el.style.visibility = "visible";
-      c.veil.style.opacity = veil.toFixed(3);
-      c.shade.style.opacity = sh.toFixed(3);
+  /** The words of use i into the card (raw: only to measure, no announcement). */
+  function setWords(i, raw) {
+    const s = USES[i];
+    ukick.innerHTML = `<i></i><span>${s.kick}</span>`;
+    upunch.innerHTML = s.punch.split(" ").map((w) => `<span class="wd">${w}</span>`).join(" ");
+    uplain.textContent = s.plain; uaside.textContent = s.aside;
+    if (raw) return;
+    uhand.textContent = s.note; urec.textContent = s.rec;
+    uc.setAttribute("aria-label", `${i + 1} of ${N}: ${s.punch}`);
+    unum.innerHTML = `<b>${String(i + 1).padStart(2, "0")}</b> / ${String(N).padStart(2, "0")}`;
+    placeWords();
+  }
+  /** On a laptop the words and the note sit as one block, centred in the card's height. */
+  function placeWords() {
+    const pad = UL.pad;
+    if (narrow) { UL.textAt = [UL.cw * .5, pad + 50]; return; }
+    const th = utext.offsetHeight, nh = unote.offsetHeight, top = Math.round(clamp((UL.ch - th - 26 - nh) / 2 - 10, pad, UL.ch - pad - 30 - th - nh - 26));
+    utext.style.top = top + "px"; unote.style.top = (top + th + 26) + "px";
+    UL.textAt = [UL.tx + 60, top + 60];
+  }
+
+  /** The device at shape k (0 phone … 1 MacBook): every part placed from the two shapes. */
+  function drawDev() {
+    const A = UL.P, B = UL.L, k = U.k, m = (key) => lerp(A[key], B[key], k);
+    const f = m("f"), lw = m("lidW"), lh = m("lidH"), pT = m("pT"), pS = m("pS"), pB = m("pB"), rT = m("rT"), rB = m("rB"), cx = m("cx"), cy = m("cy");
+    const hh = B.hh * k, bh = B.bh, total = lh + 2 * f + hh + bh * k, top = cy - total / 2 + f, left = cx - lw / 2;
+    const px = (v) => v.toFixed(1) + "px";
+    Object.assign(ulid.style, { left: px(left), top: px(top), width: px(lw), height: px(lh), borderRadius: `${px(rT)} ${px(rT)} ${px(rB)} ${px(rB)}`,
+      boxShadow: `0 0 0 1px rgba(93,90,85,${k.toFixed(3)}), 0 0 0 1.8px rgba(207,205,200,${k.toFixed(3)}), 0 0 0 .5px rgba(0,0,0,${(.7 * (1 - k)).toFixed(3)}), inset 0 0 0 1px rgba(255,255,255,.06), 0 22px 34px -24px rgba(28,26,23,${(.55 * k).toFixed(3)})` });
+    const sw = lw - 2 * pS, sh = lh - pT - pB;
+    Object.assign(uscr.style, { left: px(pS), top: px(pT), width: px(sw), height: px(sh), borderRadius: px(m("sr")) });
+    Object.assign(uband.style, { left: px(left - f), top: px(top - f), width: px(lw + 2 * f), height: px(lh + 2 * f), borderRadius: px(rT + f), opacity: (1 - k).toFixed(3), display: k > .995 ? "none" : "" });
+    Object.assign(uhinge.style, { left: px(cx - lw * .42), top: px(top + lh), width: px(lw * .84), height: px(hh), opacity: k.toFixed(3), display: k < .005 ? "none" : "" });
+    Object.assign(ubase.style, { left: px(cx - lw * .55), top: px(top + lh + hh), width: px(lw * 1.1), height: px(bh), opacity: clamp(k * 2).toFixed(3), transform: `scaleY(${k.toFixed(3)})`,
+      borderRadius: `2px 2px ${px(bh * 2.2)} ${px(bh * 2.2)} / 2px 2px ${px(bh)} ${px(bh)}`, display: k < .005 ? "none" : "" });
+    const isl = Math.pow(1 - k, 2) * U.isl;
+    Object.assign(uisl.style, { width: px(sw * .31), height: px(sw * .09), top: px(sw * .028), opacity: isl.toFixed(3), display: isl < .005 ? "none" : "" });
+    Object.assign(unotch.style, { width: px(lw * .095), height: px(pT + lw * .011), borderRadius: `0 0 ${px(lw * .011)} ${px(lw * .011)}`, opacity: k.toFixed(3), display: k < .005 ? "none" : "" });
+    if (!narrow) Object.assign(urec.style, { left: px(cx), top: px(top + lh + hh + bh * k + f + 14), transform: "translateX(-50%)" });
+    UL.dev = { cx, cy: top + sh * .45 };
+    U.devDirty = false;
+  }
+
+  /** Swaps the card to use i: at once (the first time, or under reduced motion), else through the swap. */
+  function swap(i, now) {
+    const from = U.shown, u = uses[i];
+    U.from = from; U.shown = i;
+    prime(i); prime(i + 1); prime(i - 1);
+    uc.classList.remove("playing");
+    if (from < 0 || reduced) {
+      uses.forEach((w) => { w.v.style.opacity = w.i === i ? "1" : "0"; if (w.i !== i && !w.v.paused) w.v.pause(); });
+      [ukick, uplain, uaside, unote, urec, uhand, ushaft, uhead].forEach((el) => el.getAnimations().forEach((a) => a.cancel()));
+      setWords(i);
+      U.k = U.k0 = U.k1 = u.phone ? 0 : 1; U.isl = u.isl; U.busy = false; U.devDirty = true;
+      if (!reduced && U.vis) { try { u.v.currentTime = 0; } catch (e) { /* not loaded */ } u.v.play().catch(() => {}); }
+      return;
     }
+    // Far, or fast: the same swap, quicker.
+    U.sp = Math.abs(i - from) > 1 ? .55 : 1;
+    U.busy = true; U.t0 = now; U.set = false; U.paused = false; U.started = false;
+    U.k0 = U.k; U.k1 = u.phone ? 0 : 1; U.isl0 = U.isl; U.isl1 = u.isl;
+    U.react = now;
+    const sp = U.sp, outs = [ukick, ...upunch.children, uplain, uaside, unote, urec];
+    outs.forEach((el, j) => el.animate([{ opacity: 1, transform: "none", filter: "blur(0px)" }, { opacity: 0, transform: "translate3d(0,-10px,0)", filter: "blur(5px)" }],
+      { duration: 240 * sp, delay: Math.min(j, 8) * 16 * sp, easing: "cubic-bezier(.4,0,1,1)", fill: "forwards" }));
+  }
+  /** The new words, set in: the stamp, the headline word by word, the rest line by line, the note written. */
+  function wordsIn(i) {
+    const sp = U.sp;
+    [ukick, uplain, uaside, unote, urec, uhand, ushaft, uhead].forEach((el) => el.getAnimations().forEach((a) => a.cancel()));
+    setWords(i);
+    const IN = [{ opacity: 0, transform: "translate3d(0,14px,0)", filter: "blur(6px)" }, { opacity: 1, transform: "none", filter: "blur(0px)" }];
+    const o = (d) => ({ duration: 560 * sp, delay: d * sp, easing: "cubic-bezier(.2,.8,.2,1)", fill: "backwards" });
+    ukick.animate(IN, o(0));
+    const ws = [...upunch.children];
+    ws.forEach((w, j) => w.animate(IN, o(70 + j * 30)));
+    const after = 70 + ws.length * 30;
+    uplain.animate(IN, o(after + 40)); uaside.animate(IN, o(after + 130)); urec.animate(IN, o(420));
+    unote.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 120 * sp, delay: (after + 220) * sp, fill: "backwards" });
+    uhand.animate([{ clipPath: "inset(-30% 100% -30% 0)" }, { clipPath: "inset(-30% -6% -30% 0)" }], { duration: 560 * sp, delay: (after + 380) * sp, easing: "cubic-bezier(.45,.05,.55,.95)", fill: "backwards" });
+    ushaft.animate([{ strokeDashoffset: 1 }, { strokeDashoffset: 0 }], { duration: 300 * sp, delay: (after + 230) * sp, easing: "ease-out", fill: "backwards" });
+    uhead.animate([{ strokeDashoffset: 1 }, { strokeDashoffset: 0 }], { duration: 140 * sp, delay: (after + 520) * sp, easing: "ease-out", fill: "backwards" });
+  }
+  /** One frame of the swap: the screen dips to black, the shape morphs, the new clip comes up. */
+  function swapStep(now) {
+    const e = (now - U.t0) / U.sp, a = uses[U.from], b = uses[U.shown];
+    if (!U.set && e >= 280) { U.set = true; wordsIn(U.shown); }
+    a.v.style.opacity = (1 - clamp(e / 260)).toFixed(3);
+    b.v.style.opacity = clamp((e - 560) / 300).toFixed(3);
+    if (!U.paused && e >= 260) { U.paused = true; a.v.pause(); }
+    if (!U.started && e >= 520) { U.started = true; try { b.v.currentTime = 0; } catch (x) { /* not loaded */ } if (U.vis) b.v.play().catch(() => {}); }
+    const km = easeIO((e - 160) / 560);
+    U.k = lerp(U.k0, U.k1, km); U.isl = lerp(U.isl0, U.isl1, km);
+    U.devDirty = true;
+    if (e >= 1300) { U.busy = false; uses.forEach((w) => { if (w !== b) w.v.style.opacity = "0"; }); }
   }
 
-  /** The words beside each card: out to the sides, in from the sides, the note written in. */
-  function applyCopy(p, n, q) {
-    const SL = narrow ? 24 : 44, SO = narrow ? 32 : 60;
-    for (const c of cards) {
-      const i = c.i;
-      let inQ = 0, outQ = 0;
-      if (p < 0) { if (i === 0) inQ = clamp(p + 1); }
-      else if (i < n) { inQ = 1; outQ = 1; }
-      else if (i === n) { inQ = 1; outQ = q; }
-      else if (i === n + 1) inQ = q;
-      let vis;
-      if (reduced) {
-        vis = easeIO((inQ - .5) / .3) * (1 - easeIO((outQ - .1) / .35));
-        c.punch.style.opacity = c.plain.style.opacity = c.nw.style.opacity = vis.toFixed(3);
-      } else {
-        const out = easeIO(outQ / .32);
-        const a = easeOut((inQ - .5) / .3), b = easeOut((inQ - .58) / .3), cc = easeOut((inQ - .6) / .26);
-        const w = easeIO((inQ - .63) / .3), d = easeIO((inQ - .8) / .2);
-        vis = Math.max(a, cc) * (1 - out);
-        if (vis < .001 && c.copy.style.visibility === "hidden") continue;
-        c.punch.style.transform = `translate3d(${(-(1 - a) * SL - out * SO).toFixed(2)}px,0,0)`; c.punch.style.opacity = (a * (1 - out)).toFixed(3);
-        c.plain.style.transform = `translate3d(${(-(1 - b) * SL - out * SO).toFixed(2)}px,0,0)`; c.plain.style.opacity = (b * (1 - out)).toFixed(3);
-        c.nw.style.transform = `translate3d(${((1 - cc) * SL + out * SO).toFixed(2)}px,0,0)`; c.nw.style.opacity = (clamp(cc * 1.6) * (1 - out)).toFixed(3);
-        // Written in, left to right, with a soft pen edge.
-        const m = w >= 1 ? "none" : `linear-gradient(90deg, #000 ${(w * 115 - 15).toFixed(1)}%, transparent ${(w * 115).toFixed(1)}%)`;
-        c.hand.style.webkitMaskImage = m; c.hand.style.maskImage = m;
-        c.shaft.style.strokeDashoffset = (1 - clamp(d / .72)).toFixed(3);
-        c.head.style.strokeDashoffset = (1 - clamp((d - .68) / .32)).toFixed(3);
-      }
-      c.copy.style.visibility = vis > .001 ? "visible" : "hidden";
+  function updateUses(dt, sy, now) {
+    if (!uses.length) return;
+    const p = (sy - stackTop) / VH, vis = p > -1 && p < N;
+    const want = clamp(Math.round(p), 0, N - 1);
+    if (U.shown < 0 || (!U.busy && want !== U.shown)) swap(want, now);
+    if (U.busy) swapStep(now);
+    // Only the clip in view plays; it waits while the card is off screen.
+    if (vis !== U.vis) {
+      U.vis = vis;
+      const u = uses[U.shown];
+      if (!vis) u.v.pause(); else if (!reduced && !U.busy) u.v.play().catch(() => {});
     }
-  }
-
-  function setActive(a) {
-    const prev = activeI; activeI = a;
-    cards.forEach((c, i) => {
-      const want = a >= 0 ? i === a || i === a + 1 : i <= 1;
-      if (want && c.v.preload !== "auto") c.v.preload = "auto";
-      c.el.classList.toggle("front", i === a);
-    });
-    const pc = cards[prev];
-    if (pc) { pc.v.pause(); if (prev > a) { try { pc.v.currentTime = 0; } catch (e) { /* not loaded */ } } else pc.reset = true; }
-    if (a >= 0) {
-      const c = cards[a];
-      if (!reduced) c.v.play().catch(() => {});
-      counter.innerHTML = `<b>${String(a + 1).padStart(2, "0")}</b> / ${String(N).padStart(2, "0")}`;
+    if (U.devDirty) drawDev();
+    if (p !== lastP) {
+      lastP = p;
+      // The count: every use so far full, the next one filling as it comes.
+      usegs.forEach((s, i) => { const f = reduced ? (i <= want ? 1 : 0) : clamp(p - i + 1); if (s._f !== f) { s._f = f; s.style.setProperty("--f", f.toFixed(3)); } });
     }
-    mountBot(a >= 0 && cards[a].bot ? cards[a] : null);
-  }
-
-  function updateStack(dt, sy) {
-    if (!cards.length) return;
-    const p = (sy - stackTop) / VH;
-    const pc = clamp(p, 0, N - 1), n = Math.min(N - 1, Math.floor(pc)), q = n >= N - 1 ? 0 : pc - n;
-    if (p !== lastP || stackDirty) { applyCards(n, q); applyCopy(p, n, q); lastP = p; stackDirty = false; }
-    const visible = p > -1 && p < N;
-    const act = visible && p > -.55 ? Math.round(pc) : -1;
-    if (act !== activeI) setActive(act);
-    if (CB.card && visible) drawCardBot(dt);
+    if (vis) drawUBot(dt, now);
     // The end line's underline draws in as it arrives.
     const e = reduced ? 1 : easeIO((sy + VH - endTop - 120) / (VH * .45));
     if (endLine && e !== endLine.__e) { endLine.__e = e; endLine.style.strokeDasharray = "1"; endLine.style.strokeDashoffset = (1 - e).toFixed(3); }
   }
 
-  // ---- Coming to rest on a card ----------------------------------------------
+  // ---- Coming to rest on a use ------------------------------------------------
   // No CSS snap: it pulled small wheel, arrow and trackpad steps back to where
   // they began, so a slow scroll never left the opening. Instead, once the
-  // visitor stops, the deck settles on the next card in the direction they
-  // went (3% of a card is enough). Any input takes over again at once.
+  // visitor stops, the page settles on the next use (or desk step) in the
+  // direction they went (3% of a screen is enough). Any input takes over again at once.
   const ST = { dir: 1, lastY: 0, idle: 0, pending: false, anim: null, held: false, touching: false, off: false };
   const takeOver = () => { ST.anim = null; };
   addEventListener("wheel", takeOver, { passive: true });
@@ -1533,10 +1575,10 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       if (k >= 1) ST.anim = null;
       return;
     }
-    if (!ST.pending || ST.off || reduced || locked || ST.held || ST.touching || ms - ST.idle < 150 || !cards.length) return;
+    if (!ST.pending || ST.off || reduced || locked || ST.held || ST.touching || ms - ST.idle < 150 || !uses.length) return;
     ST.pending = false;
     const p = (scrollY - stackTop) / VH;
-    // The deck's cards, then (one screen on) the desk's steps, then free.
+    // The card's six uses, then (one screen on) the desk's steps, then free.
     const last = deskTop > stackTop ? (deskTop - stackTop) / VH + DSTEPS : N - 1;
     if (p <= -1 || p >= last) return; // the opening at rest, or past the desk's last step: free
     const lo = Math.floor(p), f = p - lo;
@@ -1546,9 +1588,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     ST.anim = { from, to, t0: ms, dur: 380 + 560 * Math.min(1, Math.abs(to - from) / VH) };
   }
 
-  // ---- He, beside the laptop: following the clip's beats ---------------------
-  const cbCv = document.createElement("canvas"); cbCv.className = "cardbot"; cbCv.setAttribute("aria-hidden", "true");
-  const cbx = cbCv.getContext("2d"), cardDots = makeDots();
+  // ---- He, inside the card: the same him for all six, following each clip's beats --
   // Targets for each pose (his right arm reaches for the screen).
   const POSES = {
     present: { ra0: 1.22, ra1: .4, la0: .2, la1: .16, tilt: -.03, brows: .45, lx: .9, ly: -.35, thumb: 0, point: 0, hop: 0, grin: 0 },
@@ -1557,52 +1597,64 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     thumbs: { ra0: .62, ra1: 1.92, la0: .18, la1: .14, tilt: -.06, brows: .7, lx: .4, ly: -.1, thumb: 1, point: 0, hop: 0, grin: 1 },
     wave: { ra0: 2.5, ra1: -.55, la0: .16, la1: .12, tilt: -.06, brows: .75, lx: .1, ly: 0, thumb: 0, point: 0, hop: 0, grin: 1 },
   };
-  const CB = { card: null, S: null, V: {}, glow: 0, t: 0, osc: 0, tapK: 0, Wc: 0, Hc: 0, cell: 2, still: false };
-  function mountBot(c) {
-    if (CB.card === c) return;
-    CB.card = c;
-    if (!c) { cbCv.remove(); return; }
-    c.el.insertBefore(cbCv, c.veil);
-    CB.S = Object.assign({}, POSES.present); CB.V = {}; CB.glow = 0; CB.osc = 0; CB.tapK = 0; CB.still = false;
-    sizeBot();
+  const UB = { S: Object.assign({}, POSES.present), V: {}, t: 0, glow: 0, osc: 0, tapK: 0, Wc: 0, Hc: 0, cell: 2, still: -1 };
+  function sizeUBot() {
+    const b = UL.bot, H = b.H;
+    UB.Wc = Math.ceil(H * 1.5); UB.Hc = Math.ceil(H * 1.32);
+    ubCv.width = Math.round(UB.Wc * DPR); ubCv.height = Math.round(UB.Hc * DPR);
+    ubCv.style.width = UB.Wc + "px"; ubCv.style.height = UB.Hc + "px";
+    ubCv.style.left = (b.fx - UB.Wc / 2).toFixed(1) + "px"; ubCv.style.top = (b.gy - UB.Hc + 2).toFixed(1) + "px";
+    UB.cell = Math.max(2, Math.round(H / 92 * DPR)) / DPR;
+    UB.still = -1;
   }
-  function sizeBot() {
-    const c = CB.card, H = c.botH;
-    CB.Wc = Math.ceil(H * 1.4); CB.Hc = Math.ceil(H * 1.16 + 4);
-    cbCv.width = Math.round(CB.Wc * DPR); cbCv.height = Math.round(CB.Hc * DPR);
-    cbCv.style.width = CB.Wc + "px"; cbCv.style.height = CB.Hc + "px";
-    cbCv.style.left = (c.feetX - CB.Wc / 2).toFixed(1) + "px"; cbCv.style.top = (c.ground - CB.Hc + 2).toFixed(1) + "px";
-    CB.cell = Math.max(2, Math.round(H / 92 * DPR)) / DPR;
-    CB.still = false;
-  }
-  function drawCardBot(dt) {
-    const c = CB.card;
-    if (reduced && CB.still) return;
-    CB.t += dt;
-    const cuts = c.clip.cuts, vt = c.v.currentTime || 0;
+  /**
+   * One frame of him. At a swap: a small hop and a look at the new words; then
+   * the clip's beat decides the pose, and while he presents or taps, his arm
+   * and his eyes find the screen wherever the device's shape has put it.
+   */
+  function drawUBot(dt, now) {
+    const u = uses[U.shown];
+    if (!u || !UL.bot) return;
+    if (reduced && UB.still === U.shown) return;
+    UB.t += dt;
+    const since = (now - U.react) / 1000, glance = !reduced && since < .8;
+    const cuts = u.clip.cuts, vt = u.v.currentTime || 0;
     let cut = cuts[0] || null;
     for (const k of cuts) if (vt >= k.from) cut = k;
-    const name = reduced ? "present" : (cut && POSES[cut.bot] ? cut.bot : "present");
-    const payoff = !reduced && !!cut && (cut === cuts[cuts.length - 1] || /payoff/i.test(cut.what || ""));
-    const tg = POSES[name], S = CB.S, V = CB.V;
+    const name = reduced || glance || U.busy ? "present" : (cut && POSES[cut.bot] ? cut.bot : "present");
+    const payoff = !reduced && !U.busy && !!cut && cut === cuts[cuts.length - 1];
+    const tg = Object.assign({}, POSES[name]), b = UL.bot, H = b.H;
+    const sx = b.fx + .1 * H, sy = b.gy - .445 * H, dx = UL.dev.cx - sx, dy = UL.dev.cy - sy;
+    if (name === "present" || name === "tap") {
+      tg.ra0 += clamp(Math.atan2(dx, dy) - 1.5, -.6, 1.25);
+      tg.lx = clamp(dx / (H * .8), -1, 1); tg.ly = clamp(dy / (H * .8), -1, 1);
+    }
+    if (glance) {
+      const [ax, ay] = UL.textAt;
+      tg.lx = clamp((ax - sx) / (H * .8), -1, 1); tg.ly = clamp((ay - sy) / (H * .8), -1, 1); tg.brows = .85; tg.grin = 1;
+    }
+    const S = UB.S, V = UB.V;
     if (reduced) Object.assign(S, tg);
     else {
       spring(S, V, tg, dt);
-      CB.osc = lerp(CB.osc, name === "wave" ? 1 : 0, 1 - Math.exp(-dt * 6));
-      CB.tapK = lerp(CB.tapK, name === "tap" ? 1 : 0, 1 - Math.exp(-dt * 6));
-      CB.glow = lerp(CB.glow, payoff ? .9 : 0, 1 - Math.exp(-dt * 4));
+      UB.osc = lerp(UB.osc, name === "wave" ? 1 : 0, 1 - Math.exp(-dt * 6));
+      UB.tapK = lerp(UB.tapK, name === "tap" ? 1 : 0, 1 - Math.exp(-dt * 6));
+      UB.glow = lerp(UB.glow, payoff ? .9 : glance ? .6 : 0, 1 - Math.exp(-dt * 4));
     }
-    const H = c.botH, t = CB.t;
+    // The hop: up and down in .42 s, a squash as he lands.
+    const hk = reduced ? 9 : since / .42, hopY = hk > 0 && hk < 1 ? Math.sin(Math.PI * hk) * .075 * H : 0;
+    const air = hk > 0 && hk < 1 ? Math.sin(Math.PI * hk) : 0, land = hk >= 1 && hk < 2 ? 1.8 * Math.exp(-(hk - 1) * 7) : 0;
+    const t = UB.t;
     const st = {
-      ra: [S.ra0, S.ra1 + .34 * CB.osc * Math.sin(t * TAU * 1.45) + .1 * CB.tapK * Math.sin(t * TAU * 2.2)], la: [S.la0, S.la1],
+      ra: [S.ra0, S.ra1 + .34 * UB.osc * Math.sin(t * TAU * 1.45) + .1 * UB.tapK * Math.sin(t * TAU * 2.2)], la: [S.la0 + .35 * air, S.la1],
       brows: S.brows, tilt: S.tilt, mouth: S.grin > .5 ? "grin" : "smile",
-      legs: [{ th: 0, lift: 0 }, { th: 0, lift: 0 }], drop: 0,
+      legs: [{ th: 0, lift: .03 * H * air }, { th: 0, lift: .03 * H * air }], drop: .04 * H * land / 1.8,
       bob: (reduced ? 0 : Math.sin(t * TAU * .9) * .008 * H) - S.hop * Math.abs(Math.sin(t * TAU * 1.1)) * .03 * H,
-      swayK: reduced ? 0 : 1, antWob: 0, walkK: 0, look: [S.lx, S.ly], thumb: S.thumb, point: S.point,
+      swayK: reduced ? 0 : 1, antWob: .03 * H * air, walkK: 0, look: [S.lx, S.ly], thumb: S.thumb, point: S.point,
     };
-    cbx.setTransform(DPR, 0, 0, DPR, 0, 0); cbx.clearRect(0, 0, CB.Wc, CB.Hc);
-    cardDots(cbx, { H, cell: CB.cell, x: CB.Wc / 2, y: CB.Hc - 2, mirror: false, st, t: reduced ? .5 : t, glow: CB.glow, padX: H * .27 });
-    CB.still = true;
+    ubx.setTransform(DPR, 0, 0, DPR, 0, 0); ubx.clearRect(0, 0, UB.Wc, UB.Hc);
+    uDots(ubx, { H, cell: UB.cell, x: UB.Wc / 2, y: UB.Hc - 2 - hopY, mirror: false, land, air: air * .6, st, t: reduced ? .5 : t, glow: reduced ? 0 : UB.glow, padX: H * .27 });
+    UB.still = U.shown;
   }
 
   /** A spring into a pose: quick, a touch of overshoot, then still. */
@@ -1656,6 +1708,15 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   const chat = { ft: dq(".wc .ft"), ph: dq(".wc .ph"), m1: dq(".m1"), mt: dq(".mt"), m2: dq(".m2") }, prest = dq(".prest"), ptm = dq(".pill .tm"), pdots = [...dq(".pill .dots").children];
   const ai = { ft: dq(".wa .ft"), ph: dq(".wa .ph"), who: dq(".wa .who"), st: dq(".wa .xst"), xode: dq(".wa .xode") };
   const call = { tn: dq(".tn"), note: dq(".note"), tiles: [...dstage.querySelectorAll(".tile")] }, mnote = dq(".mnote");
+  // Around the Mac: how many words he has written for you so far, a note in the margin by each window
+  // (each one a plain fact of what is on the screen), at the end the receipt, and the last word.
+  const dcount = dq(".dcount"), dcn = dq(".dcn"), dck = dq(".dck b"), dcplus = dq(".dcplus"), rcpt = dq(".drcpt"), rrows = dq(".drows"), rsig = dq(".dsig"), dbye = dq(".dbye");
+  const MARG = [...dstage.querySelectorAll(".dmarg")].map((el, i) => ({ el, shaft: el.querySelector(".shaft"), head: el.querySelector(".head"), svg: el.querySelector("svg"), at: [9.6, 15, 22.6][i], to: [11.6, 17.2, 23.8][i] }));
+  const KEYS = [6.7, 18]; // the key he holds to talk (fn): for the chat, and for Ask
+  let GOT = [], RROWS = []; // [time, words] as each clean text lands; the receipt's rows
+  // Where the visitor's pointer is: standing idle, he watches it.
+  const DP = { x: 0, y: 0, at: -1e9 }, DL = [1, .15];
+  addEventListener("pointermove", (e) => { if (e.pointerType === "mouse") { DP.x = e.clientX; DP.y = e.clientY; DP.at = performance.now(); } }, { passive: true });
   let deskTop = 0, deskH = 0, dnarrow = false, dOff = 0, MV = [], caps = [], bars = [], apps = [], clockAt = -1e9;
   const D = { sx: 0, sy: 0, sw: 1, sh: 1, sc: 1, ho: 200, go: 0, hv: 80, hin: 60, gin: 0 };
   const DT = { t: 0, v: 0, ask: -1, drawn: NaN, dom: NaN, vis: false };
@@ -1691,6 +1752,15 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       osEl.insertBefore(p, pill);
       return { el: p, ws: [...p.children] };
     });
+    // What he wrote for you, counted from the words on the screen; the receipt's rows from the same.
+    const wc = (s) => (s.match(/\S+/g) || []).length;
+    const noteW = [...dstage.querySelectorAll(".note h5, .note .nsum, .note .td")].reduce((n, e) => n + wc(e.textContent), 0), todos = dstage.querySelectorAll(".note .td").length;
+    GOT = [[9.05, wc(SENT)], [14.75, noteW], [20.45, wc(ASKED)]];
+    const rows = [["update in #launch, posted", `${GOT[0][1]} words`], ["call notes, written", `${todos} to-dos`], ["checkout bug → Xode", "PR #131"], ["“so uh”, removed", "1"], ["keys pressed", "fn, fn"],
+      ["words you didn't type", String(GOT.reduce((n, g) => n + g[1], 0))]];
+    rrows.innerHTML = rows.map(([a, b], i) => `<p${i === rows.length - 1 ? ' class="tot"' : ""}><span>${a}</span><i></i><b>${b}</b></p>`).join("");
+    RROWS = [...rrows.children];
+    rcpt.setAttribute("aria-label", "Today's receipt: " + rows.map(([a, b]) => `${a}, ${b}`).join("; ") + ". The rest of the evening: yours.");
     if (document.fonts) { if (document.fonts.ready) document.fonts.ready.then(layoutDesk); if (document.fonts.addEventListener) document.fonts.addEventListener("loadingdone", () => layoutDesk()); }
   }
 
@@ -1702,7 +1772,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     dstage.style.height = VH + "px";
     deskH = Math.round((DSTEPS + 1.3) * VH); deskEl.style.height = deskH + "px";
     dbCv.width = Math.round(VW * DPR); dbCv.height = Math.round(VH * DPR); dbCv.style.width = VW + "px"; dbCv.style.height = VH + "px";
-    // The deck's MacBook, big: centre-right on a laptop, the full width (him below it) on a phone.
+    // The MacBook, big: centre-right on a laptop, the full width (him below it) on a phone.
     const LWm = Math.round(dnarrow ? (VW - 32) / 1.1 : Math.min(VW * .64 / 1.1, (VH - 250) / .68));
     const m = sizeMac(dmac, LWm, .625);
     const mx = dnarrow ? Math.round((VW - m.dw) / 2) : Math.round(VW - Math.max(40, VW * .05) - m.dw);
@@ -1743,6 +1813,22 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     dline.style.fontSize = fs + "px";
     if (dline.offsetWidth > lw) { fs *= lw / dline.offsetWidth * .98; dline.style.fontSize = fs.toFixed(1) + "px"; }
     dline.style.left = Math.round(mx + m.dw / 2 - dline.offsetWidth / 2) + "px"; dline.style.top = Math.round(my + m.dh + (dnarrow ? 30 : 24)) + "px";
+    // Around the Mac: on a laptop the column to its left, on a phone the space under it.
+    const lineB = Math.round(my + m.dh + (dnarrow ? 30 : 24) + dline.offsetHeight), ar = dnarrow ? ARROW.narrow : ARROW.wide;
+    MARG.forEach((g) => { g.svg.setAttribute("viewBox", ar.box); g.shaft.setAttribute("d", ar.shaft); g.head.setAttribute("d", ar.head); });
+    if (!dnarrow) {
+      const cl = Math.max(24, Math.round(VW * .035)), cwid = Math.max(170, mx - cl - 44), rw = Math.min(300, cwid);
+      Object.assign(dcount.style, { left: cl + "px", top: (my + 26) + "px", width: cwid + "px" });
+      MARG.forEach((g) => Object.assign(g.el.style, { left: cl + "px", top: Math.round(my + m.dh * .42) + "px", width: (mx - 4 - cl) + "px", justifyContent: "flex-end" }));
+      Object.assign(rcpt.style, { width: rw + "px", left: Math.round(cl + (cwid - rw) / 2) + "px", top: (my + 18) + "px" });
+      Object.assign(dbye.style, { whiteSpace: "nowrap", width: "", left: Math.round(mx + m.dw / 2) + "px", top: (lineB + 6) + "px", transform: "translateX(-50%)" });
+    } else {
+      const y0 = my + m.dh + 30, rw = Math.min(300, VW - 48);
+      Object.assign(dcount.style, { left: "18px", top: y0 + "px", width: (VW - 36) + "px" });
+      MARG.forEach((g) => Object.assign(g.el.style, { left: "16px", top: (y0 + 84) + "px", width: (VW - 32) + "px", justifyContent: "center" }));
+      Object.assign(dbye.style, { whiteSpace: "normal", width: (VW - 32) + "px", left: "16px", top: (lineB + 6) + "px", transform: "none" });
+      Object.assign(rcpt.style, { width: rw + "px", left: Math.round((VW - rw) / 2) + "px", top: (lineB + 6 + dbye.offsetHeight + 22) + "px" });
+    }
     sayEl._t = null; DT.drawn = DT.dom = NaN;
     deskTop = deskEl.offsetTop; endTop = endEl.offsetTop;
   }
@@ -1898,6 +1984,38 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       css(e, "transform", k >= 1 ? "none" : `translateY(${(-(1 - o) * .45).toFixed(3)}em) scale(${lerp(1.7, 1, back(k)).toFixed(3)}) rotate(${((1 - o) * 4).toFixed(2)}deg)`);
     });
     css(dpath, "strokeDashoffset", (1 - easeIO((t - 25.85) / .6)).toFixed(3));
+    // Around the Mac. The count: each clean text adds its words as it lands, with a small "+n".
+    let words = 0, plus = null;
+    for (const [at, n] of GOT) { words += n * easeOut((t - at) / .7); if (t >= at && t < at + 1.3) plus = [at, n]; }
+    css(dcount, "opacity", span(t, 4.95, 23.75, .3).toFixed(3));
+    txt(dcn, String(Math.round(words)));
+    const keys = KEYS.filter((k) => t >= k).length;
+    txt(dck, keys + (keys === 2 ? " · both fn" : keys ? " · fn" : ""));
+    if (plus) { const q = (t - plus[0]) / 1.3; txt(dcplus, "+" + plus[1]); css(dcplus, "opacity", Math.min(clamp(q * 8), clamp((1 - q) * 3)).toFixed(3)); css(dcplus, "transform", `translate3d(0,${(-q * 14).toFixed(1)}px,0)`); }
+    else css(dcplus, "opacity", "0");
+    // A note in the margin by each window, its arrow drawn towards it.
+    MARG.forEach((g) => {
+      const v = span(t, g.at, g.to, .3), w = clamp((t - g.at - .15) / .5), o = (1 - easeOut(clamp((t - g.at) / .45))) * 12;
+      css(g.el, "visibility", v > 0 ? "visible" : "hidden");
+      if (v <= 0) return;
+      css(g.el, "opacity", v.toFixed(3)); css(g.el, "transform", dnarrow ? `translate3d(0,${o.toFixed(1)}px,0)` : `translate3d(${(-o).toFixed(1)}px,0,0)`);
+      css(g.shaft, "strokeDashoffset", (1 - clamp(w / .7)).toFixed(3)); css(g.head, "strokeDashoffset", (1 - clamp((w - .7) / .3)).toFixed(3));
+    });
+    // The receipt prints: the paper comes out, a row at a time, then the line in pen.
+    const pk = (t - 23.7) / 1.4;
+    css(rcpt, "visibility", pk > 0 ? "visible" : "hidden");
+    if (pk > 0) {
+      const e = easeOut(clamp(pk));
+      css(rcpt, "clipPath", e >= 1 ? "none" : `inset(-12px -30px calc(${((1 - e) * 100).toFixed(2)}% - ${(e * 14).toFixed(1)}px) -30px)`);
+      css(rcpt, "transform", `translate3d(0,${((1 - e) * -14).toFixed(1)}px,0) rotate(-2deg)`);
+      RROWS.forEach((el, j) => css(el, "opacity", clamp((t - 23.85 - j * .17) / .15).toFixed(2)));
+      const sk = clamp((t - 25.05) / .6);
+      css(rsig, "clipPath", sk >= 1 ? "none" : `inset(-30% ${((1 - sk) * 100).toFixed(1)}% -30% 0)`);
+    }
+    // The last word, written in under the line.
+    const bk = clamp((t - 26.15) / .9);
+    css(dbye, "opacity", clamp(bk * 4).toFixed(3));
+    css(dbye, "clipPath", bk >= 1 ? "none" : `inset(-30% ${((1 - bk) * 100).toFixed(1)}% -30% 0)`);
   }
   function updateDesk(dt, sy) {
     if (!apps.length) return;
@@ -1931,6 +2049,16 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     const t = DT.t;
     if (reduced && t === DT.drawn) return;
     const r = place(t);
+    // Standing still with his hands free, he watches the pointer; busy, he watches his work.
+    if (!reduced) {
+      const st = DW.st, busy = clamp(st.point + st.thumb + r.vk * 8 + (r.mv.k !== "walk" && t < r.mv.t1 ? 1 : 0));
+      const live = performance.now() - DP.at < 6000 ? 1 - busy : 0, hx = r.gx, hy = r.gy - r.H * .72 + dOff;
+      let tx = clamp((DP.x - hx) / (VW * .3), -1, 1), ty = clamp((DP.y - hy) / (VH * .3), -1, 1);
+      if (DW.mirror) tx = -tx;
+      const a = 1 - Math.exp(-dt * 7);
+      DL[0] = lerp(DL[0], lerp(st.look[0], tx, live), a); DL[1] = lerp(DL[1], lerp(st.look[1], ty, live), a);
+      st.look = [DL[0], DL[1]];
+    }
     if (!reduced && t > DB.pt && !r.inside) ripples(r, t);
     DB.pt = t; DB.ph = DW.phase; DB.pm = r.mv;
     drawDesk(r, t); DT.drawn = t;
@@ -1947,7 +2075,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     makeSprites(); makeField(); layout();
     wordsDirty = true;
   }
-  function fitAll() { fit(); hero.style.height = VH + "px"; placeHint(); layoutStack(); layoutDesk(); }
+  function fitAll() { fit(); hero.style.height = VH + "px"; placeHint(); layoutUses(); layoutDesk(); }
   let raf = 0, lastMs = 0, heroClear = false;
   function wake() { if (!raf) raf = requestAnimationFrame(frame); }
   function frame(ms) {
@@ -1961,12 +2089,12 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     // The bot belongs to the first screen: drawn while it is in view.
     if (sy < VH) { drawBot(T); heroClear = false; } else if (!heroClear) { bctx.setTransform(1, 0, 0, 1, 0, 0); bctx.clearRect(0, 0, botCv.width, botCv.height); heroClear = true; }
     scrollState(sy);
-    // The cards and the desk follow the scroll through a short ease, so a
+    // The card and the desk follow the scroll through a short ease, so a
     // wheel's notch glides instead of jumping (their stage itself is sticky,
     // so only what is drawn inside it lags, never the page).
     if (SSY === null || reduced || Math.abs(sy - SSY) > VH * 2) SSY = sy;
     else { SSY += (sy - SSY) * (1 - Math.exp(-dt * 8.5)); if (Math.abs(sy - SSY) < .25) SSY = sy; }
-    updateStack(dt, SSY);
+    updateUses(dt, SSY, ms);
     updateDesk(dt, SSY);
     settle(ms);
     wake();
@@ -1985,7 +2113,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   addEventListener("resize", () => { clearTimeout(rz); rz = setTimeout(() => { const x = B.mode === "wait" || B.mode === "walk"; fitAll(); if (x) replay(); else { B.x = VW / 2; wordsDirty = true; } }, 120); });
   scrollTo(0, 0); setLock(!reduced);
   buildDesk(); fitAll(); resetBot(); wake();
-  loadClips().then(build).catch((e) => { console.warn("stack:", e); build({}); });
+  loadClips().then(build).catch((e) => { console.warn("uses:", e); build({}); });
 })();
 </script>
 </body>

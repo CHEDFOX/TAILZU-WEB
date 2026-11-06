@@ -5,7 +5,7 @@ API behind it for the backend's pages and the downloads.
 
 ```
 index.html            the page: markup, one <style>, two inline <script>s (GTM, the page), and a <noscript> head style
-media/                the deck's clips: <id>.webm (VP9), <id>.mp4 (H.264), <id>.webp (poster), clips-phone.json and clips-laptop.json (sizes and beats)
+media/                the card's clips: <id>.webm (VP9), <id>.mp4 (H.264), <id>.webp (poster), clips-phone.json and clips-laptop.json (sizes and beats)
 api/                  Meta's pixel and its Conversions API copy (see Meta's pixel)
 vercel.json           rewrites to the API, headers, the home page's CSP, caching
 csp.mjs               writes index.html's inline hashes into the home page's CSP
@@ -19,14 +19,32 @@ favicon.ico, favicon-32x32.png, favicon.svg, apple-touch-icon.png, icon-192.png,
 One sheet of paper, drawn in one script: the opening (a plane of tiny words
 in the world's scripts that moves like water, the dotted bot walking in and
 waving), then the blur moment where the "Take me home" key arrives in the
-header, then six cards of device clips, then the Mac scene, then the links.
+header, then one card with six uses in it, then the Mac scene, then the links.
 The page is held still until the key has landed. Under
-`prefers-reduced-motion` nothing is held and the clips wait for a press.
+`prefers-reduced-motion` nothing is held, every change is instant and the
+clips wait for a press.
 
-The copy is the page's own (`STACK` and the Mac scene's lines in the script).
-The cards read their clips' sizes and beats from `/media/clips-*.json`; each
-clip plays its `.webm`, else its `.mp4`. Every clip on a card is a `<id>` in
-`STACK`.
+The card (scene two) is pinned while six screens of scroll go by, one per use.
+Only what is inside it changes: the old words lift away, the screen dips to
+black while the device morphs between phone and MacBook, the new words set in
+and a note is written in the margin. The bot stands inside the card the whole
+time, hops and glances at the new words at each change, then points at the
+screen and follows the clip's beats. Each use is a stamp (bot, time), an odd
+true situation, what happened, an honest aside, a handwritten note, and the
+clip as proof; a quiet count fills as you scroll. Only the clip on show
+plays; its neighbours preload.
+
+The Mac scene (scene three) is one timeline driven by the scroll: the bot
+walks in, jumps into the Mac's screen and shows a chat, a call with notes and
+an Ask to Xode. Around the Mac, outside its screen: a running count of the
+words he wrote for you (counted from the screen's own text), one handwritten
+note in the margin per window, a receipt that prints at the end, and a last
+line under the headline. Standing idle, he watches the pointer.
+
+The copy is the page's own (`USES` and the Mac scene's lines in the script).
+The uses read their clips' sizes and beats from `/media/clips-*.json`; each
+clip plays its `.webm`, else its `.mp4`. Every clip in the card is an `id` in
+`USES`.
 
 ## The download is always a link
 
