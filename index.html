@@ -248,21 +248,10 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   .msgs .mt { display: flex; gap: 4px; padding: 9px 12px; }
   .mt i { width: 6px; height: 6px; border-radius: 50%; background: #8e8e93; }
   .fld { position: relative; flex: none; margin: 8px 12px 12px; min-height: 30px; box-sizing: border-box; padding: 6px 34px 6px 12px; border-radius: 15px; box-shadow: inset 0 0 0 .6px rgba(0, 0, 0, .22); }
+  .fld .ft.live, .xask .ft.live { color: rgba(0, 0, 0, .5); }
   .fld .ph { position: absolute; left: 12px; top: 6px; font-style: normal; color: rgba(0, 0, 0, .32); }
   .fld .go { position: absolute; right: 4px; bottom: 4px; width: 22px; height: 22px; border-radius: 50%; background: #1d1d1f; }
   .fld .go::after { content: ""; position: absolute; left: 50%; top: 50%; width: 6px; height: 6px; margin: -2px 0 0 -4px; border: solid #fff; border-width: 1.6px 0 0 1.6px; transform: rotate(45deg); }
-  /* Tailzu: the pill, and what was said, above the dock. */
-  .pill { position: absolute; display: flex; align-items: center; gap: 9px; box-sizing: border-box; padding: 0 13px 0 5px; border-radius: 99px; background: #fff; opacity: 0; visibility: hidden; white-space: nowrap;
-    box-shadow: 0 0 0 1px #e6e6e6, 0 8px 22px rgba(0, 0, 0, .2); font: 500 13px/1 Geist, var(--sys); color: #0a0a0a; }
-  .pill .disc { flex: none; display: grid; place-items: center; width: 30px; height: 30px; border-radius: 50%; background: #A9573A; }
-  .pill .disc svg { width: 16px; height: 16px; }
-  .pill .dots { display: none; gap: 3px; } .pill .dots i { width: 4px; height: 4px; border-radius: 50%; background: #fff; opacity: .4; }
-  .pill.w .disc svg, .pill.w .wv, .pill.w .tm, .pill.w .px { display: none; } .pill.w .dots { display: flex; } .pill .wr { display: none; font-weight: 500; } .pill.w .wr { display: block; }
-  .pill .tm { color: #b0b0b0; font-size: 12px; font-variant-numeric: tabular-nums; } .pill .px { color: #9a9a9a; font-size: 15px; }
-  .wv { display: flex; align-items: center; gap: 2px; height: 20px; }
-  .wv i { width: 2.5px; height: 100%; border-radius: 2px; background: #A9573A; transform: scaleY(.16); }
-  .prest { position: absolute; display: flex; align-items: center; justify-content: center; gap: 3px; width: 38px; height: 12px; border-radius: 6px; background: #fff; box-shadow: 0 0 0 1px #e6e6e6, 0 3px 8px rgba(0, 0, 0, .14); transform: translateX(-50%); opacity: 0; }
-  .prest i { width: 3px; height: 3px; border-radius: 50%; background: #0a0a0a; }
   /* X0 Bot's own windows: the app's white look, Geist. */
   .x0 { font-family: Geist, var(--sys); color: #0a0a0a; }
   .side.tc { background: #1f1b2e; color: rgba(255, 255, 255, .72); border-right: 0; padding-top: 34px; font-size: 12px; -webkit-backdrop-filter: none; backdrop-filter: none; }
@@ -324,9 +313,6 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   .xask { position: relative; min-height: 34px; box-sizing: border-box; padding: 9px 40px 9px 12px; border-radius: 17px; box-shadow: inset 0 0 0 1px #e6e6e6; font-size: 12px; }
   .xask .ph { position: absolute; left: 12px; top: 9px; font-style: normal; color: #8a8a8a; white-space: nowrap; }
   .xask .go { position: absolute; right: 4px; top: 4px; width: 26px; height: 26px; border-radius: 50%; background: #0a0a0a; }
-  .cap { position: absolute; left: 50%; width: max-content; max-width: var(--cw); box-sizing: border-box; padding: 6px 11px; border-radius: 11px; transform: translateX(-50%); visibility: hidden;
-    background: rgba(20, 19, 18, .62); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); color: rgba(255, 255, 255, .92); text-align: center; }
-  .cap span { opacity: 0; }
   .dock { position: absolute; display: flex; gap: var(--dg); padding: var(--dp); border-radius: calc(var(--dt) * .36); background: rgba(255, 255, 255, .2);
     -webkit-backdrop-filter: blur(22px) saturate(1.7); backdrop-filter: blur(22px) saturate(1.7); box-shadow: inset 0 0 0 .6px rgba(255, 255, 255, .4), 0 0 0 .5px rgba(0, 0, 0, .18), 0 10px 30px rgba(0, 0, 0, .25); }
   .ap { position: relative; display: grid; place-items: center; width: var(--dt); height: var(--dt); border-radius: 23%; transform-origin: 50% 100%; box-shadow: inset 0 0 0 .5px rgba(0, 0, 0, .14), 0 1.5px 3px rgba(0, 0, 0, .25); }
@@ -351,13 +337,11 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   .dnarrow .fld .go { width: 16px; height: 16px; right: 3px; bottom: 3px; }
   .dnarrow .wn .main { padding: 0 12px; } .dnarrow .tb { height: 26px; } .dnarrow .wn h4 { font-size: 14px; } .dnarrow .nd { font-size: 8.5px; margin-bottom: 5px !important; }
   .dnarrow .nx { font-size: 10.5px; line-height: 1.42; } .dnarrow .ny { margin-top: 6px !important; font-size: 10px; } .dnarrow .msgs .hi { font-size: 13px; }
-  .dnarrow .pill { gap: 5px; padding: 0 8px 0 3px; font-size: 9px; } .dnarrow .pill .disc { width: 20px; height: 20px; } .dnarrow .pill .disc svg { width: 11px; height: 11px; } .dnarrow .wv { gap: 1.4px; height: 13px; } .dnarrow .wv i { width: 1.8px; }
   .dnarrow .xs { display: none; } .dnarrow .xm { padding: 24px 9px 8px; } .dnarrow .xm h5 { font-size: 12px; margin-bottom: 7px; } .dnarrow .xt p { padding: 5px; font-size: 7px; } .dnarrow .xt b { font-size: 8.5px; } .dnarrow .xt img { width: 15px; height: 15px; }
   .dnarrow .xask { font-size: 8.5px; min-height: 24px; padding: 6px 28px 6px 8px; } .dnarrow .xask .ph { left: 8px; top: 6px; } .dnarrow .xask .go { width: 18px; height: 18px; top: 3px; } .dnarrow .who { height: 22px; font-size: 8.5px; } .dnarrow .who img { width: 16px; height: 16px; }
   .dnarrow .mnote { width: 200px; padding: 7px 9px; font-size: 8.5px; top: 22px; } .dnarrow .mnote b { font-size: 9.5px; } .dnarrow .mnote img { width: 22px; height: 22px; }
   .dnarrow .side.tc { display: none; } .dnarrow .tm { font-size: 9px; } .dnarrow .tm .pp { width: 20px; height: 20px; } .dnarrow .tm b { font-size: 9px; }
   .dnarrow .note { width: 150px; padding: 8px 9px 7px; right: 6px; bottom: 34px; } .dnarrow .note h5 { font-size: 11px; } .dnarrow .note .nsum, .dnarrow .note .td { font-size: 8.5px; } .dnarrow .tn { font-size: 8px; height: 18px; top: 30px; } .dnarrow .ctop { height: 24px; font-size: 9px; } .dnarrow .tile i { width: 26px; height: 26px; font-size: 11px; } .dnarrow .cbar { height: 28px; } .dnarrow .cbar i { width: 18px; height: 18px; } .dnarrow .cbar i.hang { width: 28px; }
-  .dnarrow .cap { padding: 4px 8px; border-radius: 8px; }
   /* Outside the screen: his bubble, a tiny step label, the last line. */
   .say { position: absolute; left: 0; top: 0; z-index: 4; margin: 0; padding: 4px 11px 5px; border-radius: 13px; background: #fff; color: var(--ink); font: 400 17px/1.2 var(--hand); white-space: nowrap;
     box-shadow: 0 0 0 1.5px var(--ink), 0 6px 16px -6px rgba(0, 0, 0, .5); opacity: 0; visibility: hidden; will-change: transform, opacity; }
@@ -563,8 +547,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
               <p class="who"><img src="/media/head-code.png" alt=""><b>Xode</b> will take this<u>Change</u></p>
               <div class="xask"><span class="ft"></span><i class="ph">Ask any bot… or hold fn and speak</i><i class="go"></i></div></div></div>
           <div class="mnote x0"><img src="/icon-512.png" alt=""><div><p class="ma">X0 BOT<span>now</span></p><b>Xode: PR #131 is ready</b><p>Checkout fixed on phones · all 214 tests pass</p></div></div>
-          <div class="pill"><span class="disc"><svg viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="11" rx="3" fill="#fff"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg><span class="dots"><i></i><i></i><i></i></span></span><span class="wv"></span><span class="tm"></span><span class="px">×</span><b class="wr">Writing</b></div>
-          <div class="prest"><i></i><i></i><i></i></div>
           <div class="dock"></div>
         </div>
         <i class="bloom"></i><i class="glass"></i>
@@ -1259,8 +1241,9 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   // ---- Scene two: one card, six uses -------------------------------------------
   // One paper card with him inside it. Each use is one screen of scroll; at the
   // half-way point only the card's content changes (never the card, never him):
-  // the old words lift away soft, the screen dips to black while the device
-  // morphs between phone and MacBook, the new words set in line by line and the
+  // the old words lift away soft, the old clip holds while the device morphs
+  // between phone and MacBook and the new one comes up over it (every use's
+  // picture is there from the start), the new words set in line by line and the
   // note is written in. He hops, glances at the new words, then follows the
   // clip's beats with his hands (media/clips-*.json), pointing at the screen.
   // The copy: a stamp (who, when), an odd situation, what happened, an honest
@@ -1335,6 +1318,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       uscr.insertBefore(v, uisl);
       v.addEventListener("play", () => { if (U.shown === i) uc.classList.add("playing"); });
       v.addEventListener("pause", () => { if (U.shown === i) uc.classList.remove("playing"); });
+      v.poster = clip.poster;
       // A phone clip that carries no island of its own gets the device's.
       return { i, s, clip, v, phone, isl: phone && !clip.island ? 1 : 0, primed: false };
     });
@@ -1509,14 +1493,14 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     ushaft.animate([{ strokeDashoffset: 1 }, { strokeDashoffset: 0 }], { duration: 300 * sp, delay: (after + 230) * sp, easing: "ease-out", fill: "backwards" });
     uhead.animate([{ strokeDashoffset: 1 }, { strokeDashoffset: 0 }], { duration: 140 * sp, delay: (after + 520) * sp, easing: "ease-out", fill: "backwards" });
   }
-  /** One frame of the swap: the screen dips to black, the shape morphs, the new clip comes up. */
+  /** One frame of the swap: the old clip holds while the shape morphs, the new one comes up over it (never a black screen). */
   function swapStep(now) {
     const e = (now - U.t0) / U.sp, a = uses[U.from], b = uses[U.shown];
     if (!U.set && e >= 280) { U.set = true; wordsIn(U.shown); }
-    a.v.style.opacity = (1 - clamp(e / 260)).toFixed(3);
-    b.v.style.opacity = clamp((e - 560) / 300).toFixed(3);
-    if (!U.paused && e >= 260) { U.paused = true; a.v.pause(); }
-    if (!U.started && e >= 520) { U.started = true; try { b.v.currentTime = 0; } catch (x) { /* not loaded */ } if (U.vis) b.v.play().catch(() => {}); }
+    b.v.style.opacity = clamp((e - 420) / 260).toFixed(3);
+    a.v.style.opacity = (1 - clamp((e - 640) / 220)).toFixed(3);
+    if (!U.paused && e >= 860) { U.paused = true; a.v.pause(); }
+    if (!U.started && e >= 380) { U.started = true; try { b.v.currentTime = 0; } catch (x) { /* not loaded */ } if (U.vis) b.v.play().catch(() => {}); }
     const km = easeIO((e - 160) / 560);
     U.k = lerp(U.k0, U.k1, km); U.isl = lerp(U.isl0, U.isl1, km);
     U.devDirty = true;
@@ -1596,6 +1580,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     tada: { ra0: 2.62, ra1: .24, la0: 2.62, la1: .24, tilt: 0, brows: .9, lx: .3, ly: -.2, thumb: 0, point: 0, hop: 1, grin: 1 },
     thumbs: { ra0: .62, ra1: 1.92, la0: .18, la1: .14, tilt: -.06, brows: .7, lx: .4, ly: -.1, thumb: 1, point: 0, hop: 0, grin: 1 },
     wave: { ra0: 2.5, ra1: -.55, la0: .16, la1: .12, tilt: -.06, brows: .75, lx: .1, ly: 0, thumb: 0, point: 0, hop: 0, grin: 1 },
+    // A hand to his ear, head over: he is listening (the desktop pill's Blip, while you talk).
+    listen: { ra0: 2.7, ra1: 1.75, la0: .18, la1: .14, tilt: .12, brows: .6, lx: -.4, ly: .3, thumb: 0, point: 0, hop: 0, grin: 0 },
   };
   const UB = { S: Object.assign({}, POSES.present), V: {}, t: 0, glow: 0, osc: 0, tapK: 0, Wc: 0, Hc: 0, cell: 2, still: -1 };
   function sizeUBot() {
@@ -1668,7 +1654,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   // on and he jumps into it. Inside, on one desktop, he shows Tailzu in three
   // apps one after another (a chat, a note, an assistant), then waves.
   // THE PLAYHEAD: the scene is one timeline, and everything on it (him, the
-  // Mac, every window, every letter, the pill) is a pure function of one time
+  // Mac, every window, every letter) is a pure function of one time
   // t, so it plays at any speed. Each step of scroll asks for one activity; the
   // playhead runs to that activity's end: at 1x inside it, eased up to ~4x
   // through whatever comes before it (nothing is skipped), back at ~3x when
@@ -1680,14 +1666,14 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   const PZ = (n) => Object.assign({}, REST, XPOSE[n] || POSES[n], { osc: n === "wave" ? 1 : 0, tk: n === "tap" ? 1 : 0 });
   // The shared pose spring (stiffness 150, damping 17), solved: its step response.
   const sprK = (u) => (u <= 0 ? 0 : 1 - Math.exp(-8.5 * u) * (Math.cos(8.818 * u) + .964 * Math.sin(8.818 * u)));
-  const PKEYS = [[0, "rest"], [2.05, "present"], [3, "crouch"], [3.38, "tada"], [4.55, "rest"], [6.2, "tap"], [9.6, "thumbs"], [10.4, "rest"], [12.35, "tap"], [15.75, "thumbs"],
-    [16.6, "rest"], [17.45, "tap"], [21.2, "present"], [22.9, "thumbs"], [23.4, "rest"], [24.7, "wave"], [27, "face"]].map(([t, n]) => ({ t, p: PZ(n) }));
+  const PKEYS = [[0, "rest"], [2.05, "present"], [3, "crouch"], [3.38, "tada"], [4.55, "rest"], [6.2, "tap"], [6.9, "listen"], [8.75, "tap"], [9.6, "thumbs"], [10.4, "rest"], [12.35, "tap"], [15.75, "thumbs"],
+    [16.6, "rest"], [17.45, "tap"], [18.2, "listen"], [20.05, "tap"], [21.2, "present"], [22.9, "thumbs"], [23.4, "rest"], [24.7, "wave"], [27, "face"]].map(([t, n]) => ({ t, p: PZ(n) }));
   const FACES = [[0, 1], [4.8, -1], [10.45, 1], [12.2, -1], [16.65, 1], [23.45, -1], [24.55, 1]];
   const T_IN = 4.1; // he lands inside the screen
   const WIN_AT = [6.15, 12.1, 17.3], PRESS = [6.1, 12.05, 17.25], WIN_ICON = [0, 5, 6], WIN_NAME = ["Team Chat", "Meet", "X0 Bot"];
-  const PILL = [[6.7, 9.3, 6.9, 8.7], [18.0, 20.5, 18.2, 20.05]]; // in, out, listening from, to; between "to" and "out" it is writing
-  const SAID = [["so uh launch is on track, checkout's tested, we ship Friday, deck tonight", 7, 8.55, 8.75], ["one thing, checkout breaks on phones, we have to fix it before Friday", 12.7, 14.2, 14.5], ["Xode, fix checkout on phones before Friday", 18.4, 19.8, 20.1]];
-  const SAYS = [[6.3, 8, "Hold fn."], [12.4, 13.9, "I'll take notes."], [17.55, 19.1, "Ask any bot."]];
+  // What you say, word by word, into the box he stands on: [said, from, to, done talking]. Then he types, and the clean words replace it.
+  const SAID = [["so uh launch is on track, checkout's tested, we ship Friday, deck tonight", 7, 8.55, 8.75], ["Xode, fix checkout on phones before Friday", 18.4, 19.8, 20.1]];
+  const SAYS = [[6.3, 6.85, "Hold fn."], [12.4, 13.9, "I'll take notes."], [17.55, 18.05, "Ask any bot."]];
   const GLOW = [[2.2, 3.2, .8], [6.9, 8.7, .6], [13.6, 14.4, .6], [18.15, 20.1, .6], [24.7, 27.2, .9]];
   const SENT = "Launch is on track: checkout is tested and we ship Friday. Deck coming tonight.", ASKED = "Fix checkout on phones before Friday";
   // Seven generic dock tiles: chat, files, mail, photos, music, notes, assistant.
@@ -1703,9 +1689,10 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   const deskEl = document.getElementById("desk"), dstage = deskEl.querySelector(".stage"), dq = (s) => dstage.querySelector(s);
   const dmac = dq(".dmac"), osEl = dq(".os"), dbCv = dq(".dbot"), dbx = dbCv.getContext("2d"), deskDots = makeDots();
   const sayEl = dq(".say"), dstep = dq(".dstep"), dline = dq(".dline"), dwords = [...dline.querySelectorAll(".w")], dpath = dline.querySelector("path");
-  const bloomEl = dq(".bloom"), menuApp = dq(".mapp"), clockEl = dq(".clock"), pill = dq(".pill"), waveEl = dq(".wv"), dock = dq(".dock");
+  const bloomEl = dq(".bloom"), menuApp = dq(".mapp"), clockEl = dq(".clock"), dock = dq(".dock");
   const WINS = [".wc", ".wn", ".wa"].map((s, i) => ({ el: dq(s), at: WIN_AT[i], icon: WIN_ICON[i], name: WIN_NAME[i] }));
-  const chat = { ft: dq(".wc .ft"), ph: dq(".wc .ph"), m1: dq(".m1"), mt: dq(".mt"), m2: dq(".m2") }, prest = dq(".prest"), ptm = dq(".pill .tm"), pdots = [...dq(".pill .dots").children];
+  const chat = { ft: dq(".wc .ft"), ph: dq(".wc .ph"), m1: dq(".m1"), mt: dq(".mt"), m2: dq(".m2") };
+  const askBox = { ft: dq(".wa .ft") };
   const ai = { ft: dq(".wa .ft"), ph: dq(".wa .ph"), who: dq(".wa .who"), st: dq(".wa .xst"), xode: dq(".wa .xode") };
   const call = { tn: dq(".tn"), note: dq(".note"), tiles: [...dstage.querySelectorAll(".tile")] }, mnote = dq(".mnote");
   // Around the Mac: how many words he has written for you so far, a note in the margin by each window
@@ -1717,7 +1704,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   // Where the visitor's pointer is: standing idle, he watches it.
   const DP = { x: 0, y: 0, at: -1e9 }, DL = [1, .15];
   addEventListener("pointermove", (e) => { if (e.pointerType === "mouse") { DP.x = e.clientX; DP.y = e.clientY; DP.at = performance.now(); } }, { passive: true });
-  let deskTop = 0, deskH = 0, dnarrow = false, dOff = 0, MV = [], caps = [], bars = [], apps = [], clockAt = -1e9;
+  let deskTop = 0, deskH = 0, dnarrow = false, dOff = 0, MV = [], FLD = [], apps = [], clockAt = -1e9;
   const D = { sx: 0, sy: 0, sw: 1, sh: 1, sc: 1, ho: 200, go: 0, hv: 80, hin: 60, gin: 0 };
   const DT = { t: 0, v: 0, ask: -1, drawn: NaN, dom: NaN, vis: false };
   const DB = { H: 100, gy: 0, pt: 0, ph: 0, pm: null };
@@ -1735,6 +1722,23 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     css(el, "display", k > 0 ? "" : "none");
     if (k > 0) { css(el, "opacity", clamp(k * 3).toFixed(2)); css(el, "transform", k >= 1 ? "none" : `scale(${lerp(.55, 1, back(k)).toFixed(3)})`); }
   }
+  /**
+   * The box he stands on while you talk (the desktop pill's Blip: no pill, the words go where they go): what you say,
+   * word by word as you say it, in grey (only its end, if it is longer than the box); while he types it, a breath;
+   * then the clean words, until they are sent. Returns what is in the box.
+   */
+  function said(el, t, [s, a, b, out], at, gone, clean) {
+    let v = "", live = 0;
+    if (t >= at && t < gone) v = clean;
+    else if (t >= a && t < at) {
+      const ws = s.split(" "), n = Math.min(ws.length, Math.floor((t - a) / (b - a) * ws.length) + 1), max = dnarrow ? 24 : 34;
+      v = ws.slice(0, n).join(" "); live = t >= out ? 2 : 1;
+      if (v.length > max) v = "…" + v.slice(v.length - max + 1).replace(/^\S*\s/, "");
+    }
+    txt(el, v); tog(el, "live", live > 0);
+    css(el, "opacity", live === 2 ? (.55 + .3 * Math.sin(t * 16)).toFixed(2) : "1");
+    return v;
+  }
   function poseAt(t) {
     const o = Object.assign({}, PKEYS[0].p);
     for (let i = 1; i < PKEYS.length && PKEYS[i].t < t; i++) { const s = sprK(t - PKEYS[i].t), a = PKEYS[i - 1].p, b = PKEYS[i].p; for (const f in o) o[f] += (b[f] - a[f]) * s; }
@@ -1744,14 +1748,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   function buildDesk() {
     dock.innerHTML = ICONS.map((p, i) => `<i class="ap a${i}"><svg viewBox="0 0 24 24">${p}</svg><b></b></i>`).join("");
     apps = [...dock.children];
-    waveEl.innerHTML = "<i></i>".repeat(14); bars = [...waveEl.children];
     dq(".m1t").textContent = SENT;
-    caps = SAID.map(([s]) => {
-      const p = document.createElement("p"); p.className = "cap";
-      p.innerHTML = s.split(" ").map((w) => `<span>${w}</span>`).join(" ");
-      osEl.insertBefore(p, pill);
-      return { el: p, ws: [...p.children] };
-    });
     // What he wrote for you, counted from the words on the screen; the receipt's rows from the same.
     const wc = (s) => (s.match(/\S+/g) || []).length;
     const noteW = [...dstage.querySelectorAll(".note h5, .note .nsum, .note .td")].reduce((n, e) => n + wc(e.textContent), 0), todos = dstage.querySelectorAll(".note .td").length;
@@ -1787,15 +1784,15 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     os.setProperty("--dt", tile + "px"); os.setProperty("--dg", gap + "px"); os.setProperty("--dp", pad + "px");
     dq(".menu").style.height = (dnarrow ? 18 : 24) + "px";
     dock.style.left = dl + "px"; dock.style.top = dt + "px";
-    const ph = dnarrow ? 26 : 40, pt = dt - (dnarrow ? 7 : 12) - ph;
-    Object.assign(pill.style, { left: vw / 2 + "px", top: pt + "px", height: ph + "px" });
-    Object.assign(prest.style, { left: vw / 2 + "px", top: (dt - (dnarrow ? 11 : 18)) + "px" });
-    caps.forEach((c) => { c.el.style.bottom = (vh - pt + (dnarrow ? 6 : 8)) + "px"; c.el.style.setProperty("--cw", (dnarrow ? 140 : 250) + "px"); });
+    D.dt = dt;
     const R = dnarrow ? [[10, 26, 236, 196], [124, 30, 236, 190], [196, 22, 274, 210]] : [[64, 78, 372, 340], [316, 100, 412, 312], [500, 52, 456, 392]];
     WINS.forEach((w, i) => {
       const [x, y, ww, hh] = R[i];
       Object.assign(w.el.style, { left: x + "px", top: y + "px", width: ww + "px", height: hh + "px", transformOrigin: `${(cx(w.icon) - x).toFixed(1)}px ${(dt - y).toFixed(1)}px` });
     });
+    // The boxes he stands on while you talk: the chat's message box and Ask's, their right end (the words show to his left).
+    const at = (el) => { let x = 0, y = 0; for (let e = el; e && e !== osEl; e = e.offsetParent) { x += e.offsetLeft; y += e.offsetTop; } return [x, y]; };
+    FLD = [dq(".wc .fld"), dq(".wa .xask")].map((el) => { const [x, y] = at(el); return { x: x + el.offsetWidth - (dnarrow ? 20 : 30), y }; });
     // Him: outside, on the Mac's table (on a phone, below it); inside, on the dock.
     D.hv = dnarrow ? 54 : 82; D.hin = D.hv * sc; D.gin = D.sy + dt * sc;
     if (dnarrow) { D.ho = Math.round(clamp(VH * .22, 110, 190)); D.go = Math.round(Math.min(VH - 80, my + m.dh + 46 + D.ho)); }
@@ -1804,8 +1801,12 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     const X = { land: (cx(2) + cx(3)) / 2, chat: cx(0), notes: cx(5), ai: cx(6), mid: cx(3) };
     MV = [{ t0: 0, t1: 2, k: "walk", out: 1, x0: xo0, x1: xo1 }, { t0: 3.35, t1: T_IN, k: "jump", x0: xo1, x1: X.land },
       { t0: 4.9, t1: 5.7, k: "walk", x0: X.land, x1: X.chat }, { t0: 5.75, t1: 6.1, k: "hop", x0: X.chat, x1: X.chat, h: .3 },
+      // Held fn: up onto the box you are writing in, to listen there; written, back down to the dock.
+      { t0: 6.45, t1: 6.85, k: "hop", x0: X.chat, x1: FLD[0].x, y0: dt, y1: FLD[0].y, h: .45 }, { t0: 8.95, t1: 9.35, k: "hop", x0: FLD[0].x, x1: X.chat, y0: FLD[0].y, y1: dt, h: .3 },
       { t0: 10.55, t1: 11.65, k: "walk", x0: X.chat, x1: X.notes }, { t0: 11.7, t1: 12.05, k: "hop", x0: X.notes, x1: X.notes, h: .3 },
-      { t0: 16.8, t1: 17.25, k: "hop", x0: X.notes, x1: X.ai, h: .6 }, { t0: 23.6, t1: 24.5, k: "walk", x0: X.ai, x1: X.mid }];
+      { t0: 16.8, t1: 17.25, k: "hop", x0: X.notes, x1: X.ai, h: .6 },
+      { t0: 17.6, t1: 18, k: "hop", x0: X.ai, x1: FLD[1].x, y0: dt, y1: FLD[1].y, h: .45 }, { t0: 23, t1: 23.4, k: "hop", x0: FLD[1].x, x1: X.ai, y0: FLD[1].y, y1: dt, h: .3 },
+      { t0: 23.6, t1: 24.5, k: "walk", x0: X.ai, x1: X.mid }];
     // The step label over the Mac's corner; the last line under the Mac, as big as it fits.
     Object.assign(dstep.style, { right: Math.round(VW - mx - m.dw) + "px", top: (my - 26) + "px" });
     const lw = dnarrow ? VW - 32 : m.dw;
@@ -1839,7 +1840,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     let mv = MV[0], nx = null;
     for (const m of MV) { if (t >= m.t0) mv = m; else { nx = m; break; } }
     const k = clamp((t - mv.t0) / (mv.t1 - mv.t0)), inside = t >= T_IN;
-    let H = inside ? D.hin : D.ho, gx, gy = inside ? D.gin : D.go, vk = 0, dist = 0, air = 0, land = 0, rot = 0, tuck = 0, drop = 0;
+    const onY = mv.y1 === undefined ? null : lerp(mv.y0, mv.y1, mv.k === "hop" ? k : 1);
+    let H = inside ? D.hin : D.ho, gx, gy = inside ? (onY === null ? D.gin : D.sy + onY * D.sc) : D.go, vk = 0, dist = 0, air = 0, land = 0, rot = 0, tuck = 0, drop = 0;
     if (mv.k === "walk") {
       // Full speed in from the edge (or up from rest), braking over the last stretch.
       const a = mv.out ? 0 : .2, b = .4, vm = 1 / (1 - a / 2 - b / 2);
@@ -1922,28 +1924,9 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     });
     WINS.forEach((w, i) => tog(w.el, "off", i !== front));
     txt(menuApp, front < 0 ? "Desktop" : WINS[front].name);
-    // The pill (TAILZU-DESKTOP pill.js, the Bots look): at rest a small white pill; held, it listens (the clay disc, clay bars
-    // your voice moves, the time, ✕); let go, it is writing (the disc's dots in turn); then the words are in the field.
-    let pv = 0, L = 0, wr = false, la0 = 0;
-    for (const [a, b, la, lb] of PILL) { const v = span(t, a, b, .22); if (v > pv) { pv = v; la0 = la; wr = t >= lb; } L = Math.max(L, span(t, la, lb, .15)); }
-    css(pill, "visibility", pv > 0 ? "visible" : "hidden");
-    css(prest, "opacity", (t > 2.6 && pv <= 0 ? 1 : 0).toFixed(2));
-    tog(pill, "w", wr);
-    if (pv > 0) {
-      const e = easeOut(pv);
-      txt(ptm, "0:0" + Math.max(0, Math.floor(t - la0)));
-      pdots.forEach((d, i) => css(d, "opacity", wr && Math.floor(t * 6) % 3 === i ? "1" : ".4"));
-      css(pill, "opacity", clamp(pv * 2).toFixed(3)); css(pill, "transform", `translateX(-50%) translateY(${((1 - e) * 8).toFixed(1)}px) scale(${(.7 + .3 * e).toFixed(3)})`);
-      bars.forEach((b, i) => css(b, "transform", `scaleY(${(.16 + .84 * L * (.3 + .7 * Math.abs(Math.sin(t * (8.5 + i * 1.3) + i * 1.7))) * (.55 + .45 * Math.sin(t * 2.3 + i * .8))).toFixed(3)})`));
-    }
-    SAID.forEach(([, a, b, out], i) => {
-      const c = caps[i], v = span(t, a - .1, out + .25, .15);
-      css(c.el, "visibility", v > 0 ? "visible" : "hidden");
-      if (v > 0) { css(c.el, "opacity", v.toFixed(3)); c.ws.forEach((w, j) => css(w, "opacity", clamp((t - (a + j * (b - a) / Math.max(1, c.ws.length - 1))) / .12).toFixed(2))); }
-    });
     // The chat: the clean line lands in the field and goes as a bubble; a reply.
-    const cf = t >= 9.05 && t < 9.5 ? SENT : "";
-    txt(chat.ft, cf); css(chat.ph, "opacity", cf ? "0" : "1");
+    const cf = said(chat.ft, t, SAID[0], 9.05, 9.5, SENT);
+    css(chat.ph, "opacity", cf ? "0" : "1");
     pop(chat.m1, t, 9.5); css(chat.mt, "display", t >= 10.5 && t < 10.95 ? "" : "none"); pop(chat.m2, t, 10.95);
     // The call: X0 Bot is taking notes (its chip, the recording dot), whoever speaks lit; then its note, written up.
     css(call.tn, "opacity", span(t, 12.35, 16.6, .2).toFixed(3));
@@ -1953,8 +1936,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     css(call.note, "opacity", clamp(nk * 3).toFixed(3));
     css(call.note, "transform", nk <= 0 ? "translateY(14px) scale(.92)" : nk >= 1 ? "none" : `translateY(${((1 - easeOut(nk)) * 14).toFixed(1)}px) scale(${lerp(.92, 1, back(nk)).toFixed(3)})`);
     // X0 Bot: what was said lands in Ask, Xode will take it, and sent, Xode is working.
-    const af = t >= 20.45 && t < 21.05 ? ASKED : "";
-    txt(ai.ft, af); css(ai.ph, "opacity", af ? "0" : "1");
+    const af = said(ai.ft, t, SAID[1], 20.45, 21.05, ASKED);
+    css(ai.ph, "opacity", af ? "0" : "1");
     css(ai.who, "opacity", span(t, 20.55, 21.15, .12).toFixed(3));
     txt(ai.st, t < 21.1 ? "Ready" : t < 21.8 ? "Working · step 1 of 5" : t < 22.5 ? "Working · step 3 of 5" : "Done · PR #131");
     tog(ai.xode, "on", t >= 21.1); tog(ai.xode, "done", t >= 22.5);
