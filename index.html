@@ -385,22 +385,8 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   .dnarrow .menu .mx { display: none; }
   /* THE MAST, after the wave: the download on the left ("Take me home", to
      whatever this visitor's device installs), the name on the right. */
-  /* The brand, from the first moment: the logo, the name, what it is for (what Google's app verification looks for at the top). */
-  .brand { position: fixed; z-index: 12; top: 0; left: 0; right: 0; box-sizing: border-box; height: calc(44px + env(safe-area-inset-top, 0px));
-    padding: env(safe-area-inset-top, 0px) max(16px, env(safe-area-inset-right, 0px)) 0 max(16px, env(safe-area-inset-left, 0px));
-    display: flex; align-items: center; gap: 12px; background: var(--paper); border-bottom: 1px solid rgba(28, 26, 23, .08); font: 500 13px/1.2 var(--sys); color: var(--ink); }
-  .brand .id { display: flex; align-items: center; gap: 8px; color: inherit; text-decoration: none; flex-shrink: 0; }
-  .brand .id img { width: 26px; height: 26px; border-radius: 7px; }
-  .brand .id b { font: 800 17px/1 var(--grot); letter-spacing: -.03em; }
-  .brand .tag { opacity: .72; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
-  .brand .tag .short { display: none; }
-  .brand nav { margin-left: auto; display: flex; gap: 16px; flex-shrink: 0; }
-  .brand nav a { color: inherit; opacity: .72; text-decoration: none; }
-  .brand nav a:hover { opacity: 1; text-decoration: underline; text-decoration-color: var(--neon); text-decoration-thickness: 2px; text-underline-offset: 4px; }
-  @media (max-width: 720px) { .brand .tag .long { display: none; } .brand .tag .short { display: inline; } }
-  @media (max-width: 460px) { .brand .tag { display: none; } }
   .mast {
-    position: fixed; z-index: 11; left: 0; right: 0; top: calc(44px + env(safe-area-inset-top, 0px));
+    position: fixed; z-index: 11; left: 0; right: 0; top: env(safe-area-inset-top, 0px);
     display: flex; justify-content: space-between; align-items: center; gap: 12px;
     padding-top: 18px; padding-left: max(20px, env(safe-area-inset-left, 0px)); padding-right: max(22px, env(safe-area-inset-right, 0px));
     pointer-events: none;
@@ -471,11 +457,6 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-KH975V6M"
 height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <!-- End Google Tag Manager (noscript) -->
-<header class="brand" aria-label="X0 Bot">
-  <a class="id" href="/"><img src="/icon-192.png" alt="X0 Bot logo" width="26" height="26"><b>X0 Bot</b></a>
-  <span class="tag"><span class="long">Helpful bots for everyday work: voice typing, plans, notes, travel and code</span><span class="short">Helpful bots for everyday work</span></span>
-  <nav aria-label="Policies"><a href="/privacy">Privacy</a><a href="/terms">Terms</a></nav>
-</header>
 <noscript>
 <main class="nojs">
   <h1>Talk. X0 Bot writes.</h1>
@@ -490,6 +471,11 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 </main>
 </noscript>
 
+<!-- First in the page, though it is pinned to the window: the key is the first thing a Tab reaches. -->
+<header class="mast" id="mast">
+  <a class="home" id="home" href="/download" data-place="mast" rel="noopener"><span class="key-face"><span class="key-led" aria-hidden="true"></span><b class="home-label">Take me home</b><small class="home-os" id="homeOs">Get X0 Bot</small></span></a>
+  <span class="name">X0 Bot</span>
+</header>
 <div id="plane" aria-hidden="true"></div>
 <canvas id="words" aria-hidden="true"></canvas>
 <header id="hero">
@@ -576,10 +562,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   <p class="fine">© 2026 X0 Bot</p>
 </footer>
 <div class="spot" id="spot" aria-hidden="true"></div>
-<header class="mast" id="mast">
-  <a class="home" id="home" href="/download" data-place="mast" rel="noopener"><span class="key-face"><span class="key-led" aria-hidden="true"></span><b class="home-label">Take me home</b><small class="home-os" id="homeOs">Get X0 Bot</small></span></a>
-  <span class="name">X0 Bot</span>
-</header>
 
 <script>
 (function () {
@@ -1230,6 +1212,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   addEventListener("touchmove", hold, { passive: false });
   const SCROLL_KEYS = new Set(["ArrowDown", "ArrowUp", "PageDown", "PageUp", "Home", "End", " ", "Spacebar"]);
   addEventListener("keydown", (e) => { if (locked && SCROLL_KEYS.has(e.key) && !(e.target.closest && e.target.closest("button, a, input, textarea, select"))) e.preventDefault(); });
+  // While the opening holds the page, Tab waits too: the key is not there yet, and the next stop is the footer, twelve screens down.
+  addEventListener("keydown", (e) => { if (locked && e.key === "Tab") e.preventDefault(); });
   function placeHint() { hint.style.top = (ground() + Math.round(BH * .1)) + "px"; }
   function scrollState(sy) {
     if (introDone && !mastOn) { mastOn = true; revealMast(); }
@@ -1366,8 +1350,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     const arrow = narrow ? ARROW.narrow : ARROW.wide;
     uarrow.setAttribute("viewBox", arrow.box); ushaft.setAttribute("d", arrow.shaft); uhead.setAttribute("d", arrow.head);
     let cw, ch, x, y;
-    if (narrow) { x = 12; y = Math.round(clamp(VH * .142, 96, 124)); cw = VW - 24; ch = VH - y - 12; }
-    else { cw = Math.round(Math.min(1180, VW - 96)); ch = Math.round(Math.min(700, VH - 146)); x = Math.round((VW - cw) / 2); y = Math.round(Math.max(116, (VH - ch) / 2 + 22)); }
+    if (narrow) { x = 12; y = Math.round(clamp(VH * .1, 80, 96)); cw = VW - 24; ch = VH - y - 12; }
+    else { cw = Math.round(Math.min(1180, VW - 96)); ch = Math.round(Math.min(700, VH - 112)); x = Math.round((VW - cw) / 2); y = Math.round(Math.max(84, (VH - ch) / 2 + 10)); }
     const pad = narrow ? 16 : 40;
     Object.assign(UL, { cw, ch, pad });
     Object.assign(uc.style, { width: cw + "px", height: ch + "px", transform: `translate3d(${x}px,${y}px,0)`, backgroundImage: `url(${GRAIN})` });
