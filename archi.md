@@ -9,8 +9,9 @@ step, no framework, no dependencies. Deployed by Vercel on every push to `main`.
 ```
 index.html              the page: markup, one <style>, the tag manager and the page script inline, a <noscript> fallback
 media/                  scene two's evidence and the Mac scene's pictures
-  case<n>.webm / .mp4   each case's evidence clip (the app's own screen, drawn by its own renderer) in VP9 (preferred) and H.264
+  case<n>.webm / .mp4   each case's evidence clip on the phone (the app's own screen, drawn by its own renderer, 540x1170) in VP9 (preferred) and H.264
   case<n>.webp          its poster frame
+  case<n>-desk.*        the same for the computer (1280x800, the MacBook's screen), for the cases on both screens (1, 2, 3, 5)
 api/                    Vercel serverless functions (Node)
   _meta.js              shared Meta pixel / Conversions API helpers (reads the dataset id and token from Vercel env)
   site-event.js         POST /v1/site/event: a page event (e.g. a download press) sent to Meta's Conversions API
@@ -30,8 +31,8 @@ README.md               how the page behaves, what to run after a change, how pu
 
 | Looking for | Where |
 |---|---|
-| The page's copy and the card's six uses | `index.html`, the page script (`USES`, the Mac scene's lines and the words around the Mac) |
-| The seven cases, their evidence clips and Blip's beats | `index.html` `USES`; clips in `media/case<n>.*` |
+| The page's copy and the card's seven cases | `index.html`, the page script (`USES`, the Mac scene's lines and the words around the Mac) |
+| The seven cases, which screens each shows, when the phone wakes (and its notification) and Blip's beats | `index.html` `USES` (`screens`, `wake`, `cuts`); clips in `media/case<n>.*` (phone) and `media/case<n>-desk.*` (MacBook) |
 | The download button's per-device target | `index.html` (the `#home` key's script) |
 | The `<head>` (title, canonical, structured data) | between `SEO:HEAD` markers in `index.html`, written by the backend's `tulmi/scripts/sync-site.mts`; never edit by hand |
 | Pricing, privacy, terms, support, delete-account, FAQ, language and SEO pages, and `/device` (signing in to Xode in the terminal) | served by the backend (`api.x0bot.com`), mapped here in `vercel.json` `rewrites` |
@@ -43,8 +44,8 @@ README.md               how the page behaves, what to run after a change, how pu
 
 ## How it fits together
 
-- The browser loads `index.html`; the page script draws the opening, then the one card with its six uses, reading clip sizes from
-  `USES` and playing each case's `.webm` (else `.mp4`).
+- The browser loads `index.html`; the page script draws the opening, then the one card with its seven cases (a MacBook and a phone,
+  the bot between them), playing each case's `.webm` (else `.mp4`) clips on one clock per case.
 - Everything dynamic belongs to the backend: Vercel rewrites `/v1/...`, `/download`, the installers and the
   backend's pages to `api.x0bot.com`, so the site never handles accounts, payments or large files itself.
 - Only the page's own analytics run here (`api/`), with credentials from Vercel's environment variables.

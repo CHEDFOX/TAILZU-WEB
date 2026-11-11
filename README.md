@@ -5,7 +5,7 @@ API behind it for the backend's pages and the downloads.
 
 ```
 index.html            the page: markup, one <style>, two inline <script>s (GTM, the page), and a <noscript> head style
-media/                the card's evidence: case<n>.webm (VP9), case<n>.mp4 (H.264), case<n>.webp (poster), each the app's own screen drawn by its own renderer; the Mac scene's pictures
+media/                the card's evidence: case<n>.webm (VP9), case<n>.mp4 (H.264), case<n>.webp (poster), the phone's screen, and case<n>-desk.* the computer's for the cases on both screens, each the app's own screen drawn by its own renderer; the Mac scene's pictures
 api/                  Meta's pixel and its Conversions API copy (see Meta's pixel)
 vercel.json           rewrites to the API, headers, the home page's CSP, caching
 csp.mjs               writes index.html's inline hashes into the home page's CSP
@@ -19,20 +19,45 @@ favicon.ico, favicon-32x32.png, favicon.svg, apple-touch-icon.png, icon-192.png,
 One sheet of paper, drawn in one script: the opening (a plane of tiny words
 in the world's scripts that moves like water, the dotted bot walking in and
 waving), then the blur moment where the "Take me home" key arrives in the
-header, then one card with six uses in it, then the Mac scene, then the links.
+header, then one card with seven cases in it, then the Mac scene, then the links.
 The page is held still until the key has landed. Under
 `prefers-reduced-motion` nothing is held, every change is instant and the
 clips wait for a press.
 
-The card (scene two) is pinned while six screens of scroll go by, one per use.
-Only what is inside it changes: the old words lift away, the screen dips to
-black while the device morphs between phone and MacBook, the new words set in
-and a note is written in the margin. The bot stands inside the card the whole
-time, hops and glances at the new words at each change, then points at the
-screen and follows the clip's beats. Each use is a stamp (bot, time), an odd
-true situation, what happened, an honest aside, a handwritten note, and the
-clip as proof; a quiet count fills as you scroll. Only the clip on show
-plays; its neighbours preload.
+The card (scene two) is pinned while seven screens of scroll go by, one per
+case. In it stand a MacBook and a phone with the bot between them, in one
+place and at one size the whole time. Only what is inside changes: the old
+words lift away, each screen's old clip holds until the new one is up over it
+(never a black screen), the new words set in and the verdict is stamped.
+Cases 1, 2, 3 and 5 show both screens; for 4, 6 and 7 the MacBook steps back,
+small and dim, holding its last picture, and only the phone plays. A case's
+two clips run on one clock: the clip that starts first leads (its own time is
+the clock while it plays, so the other never drifts), each holds its last
+frame when done, and both start again together when the later one has ended.
+The phone can come in later (cases 2 and 3): until then it sleeps on its lock
+screen (wallpaper, clock, the island), and on the beat it opens on its clip
+half a second later. Only where the app really sends a push does a
+notification drop in first: in case 2 it is Xode's "X0 Bot needs you" push
+with the question, just as the computer asks it (the server's
+`push.code_needs_you` text); Notes sends none, so in case 3 the phone just wakes. The lock
+screen comes up over the old clip in a swap, and over the last frame when the
+case loops. At each change the bot hops and glances at the new words, then
+follows the case's beats, turning to the screen each beat is about (the
+MacBook up on his left, the phone on his right) to present it, tap it or give
+a thumb up; the MacBook, above him, gets an arm raised up and out at it.
+On a laptop the words sit on the right; across the rest the phone stands on
+the floor at the right, the MacBook up on its own plane at the left, its top
+about level with the phone's, and the bot on the floor between them, under
+the MacBook's front corner (his antenna just below its screen, so he covers
+neither screen). The MacBook gets about 1.6 times the phone's screen area, as
+its clip has about 1.6 times the pixels (at 1440x900 its screen is 431 px
+wide, the phone 411 px tall). On a phone the words are on top, the MacBook
+under them, the phone below it on the right and the bot on the phone's floor
+beside it, as big as the room beside the phone allows. Where the browser refuses to play (autoplay off, low
+power mode) the card stops asking and shows the play button. Each case is a kick (which bot), a doubt, a
+witness and its statement, an aside, a verdict stamp, and the evidence; a
+quiet count fills as you scroll. Only the clips on show play; the next and
+previous cases' preload.
 
 The Mac scene (scene three) is one timeline driven by the scroll: the bot
 walks in, jumps into the Mac's screen and shows a chat, a call with notes and
@@ -43,10 +68,16 @@ line under the headline. Standing idle, he watches the pointer.
 
 The copy is the page's own (`USES` and the Mac scene's lines in the script).
 Screen 2 is a court: seven cases, one per bot, each a doubt, a witness and a
-verdict, with the app's own screen as the evidence. Each case in `USES` names its
-clip (`/media/<id>.webm`, else `.mp4`) and Blip's beats (`cuts`). The evidence is
+verdict, with the app's own screens as the evidence. Each case in `USES` says
+which screens it shows (`screens`: `"both"` or `"phone"`), whether the phone
+comes in later (`wake`: `at`, the second on the case's clock its clip starts and
+the phone wakes, and, only for a push the app really sends, `title` and `says`,
+the notification's title and text; left out, both clips start at 0) and Blip's beats (`cuts`: from, to, a
+pose, and `on`, `"desk"` or `"phone"`, the screen the beat is about). Its clips are `/media/<id>.webm` (else `.mp4`, `.webp` the
+poster) on the phone and `/media/<id>-desk.*` on the MacBook. The evidence is
 drawn by the server's real renderer (TAILZU-BACKEND `tulmi/scripts/bots-render`)
-with neutral sample content, then cut to 540x1170.
+with neutral sample content, then cut to 540x1170 (the phone) and 1280x800 (the
+computer, the MacBook screen's 16:10).
 
 ## The download is always a link
 

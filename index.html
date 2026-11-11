@@ -127,23 +127,35 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   .uc { position: absolute; left: 0; top: 0; box-sizing: border-box; border-radius: 30px; background-color: var(--card); background-size: 220px 220px;
     box-shadow: 0 0 0 1px var(--hair), inset 0 1px 0 rgba(255, 255, 255, .75), 0 1px 2px rgba(28, 26, 23, .06), 0 30px 46px -26px rgba(28, 26, 23, .3), 0 80px 120px -56px rgba(28, 26, 23, .28); }
   .unarrow .uc { border-radius: 24px; }
-  /* The device: one body that is a phone or a MacBook, and every shape between. */
-  .udev { position: absolute; left: 0; top: 0; z-index: 1; }
-  .udev > i, .udev > div { position: absolute; display: block; }
+  /* The evidence: a MacBook (the desk's, .mac) up on its own plane and a phone on the floor, him between them. The MacBook steps back, small and dim, when only the phone matters. */
+  .uphone { position: absolute; left: 0; top: 0; z-index: 1; }
+  .uphone > i, .uphone > div { position: absolute; display: block; }
+  /* Stepping back, the MacBook goes further off up and to the left (from its top left corner), away from him. */
+  .umac { z-index: 1; transform-origin: 0 0; will-change: transform, opacity; }
+  .umac .screen { transform: translateZ(0); }
   .uband { background:
       linear-gradient(150deg, rgba(255, 255, 255, .38), rgba(255, 255, 255, 0) 34%, rgba(0, 0, 0, 0) 66%, rgba(0, 0, 0, .2)),
       linear-gradient(90deg, var(--ti-0) 0%, var(--ti-2) 2.5%, var(--ti-1) 8%, var(--ti-3) 50%, var(--ti-1) 92%, var(--ti-2) 97.5%, var(--ti-0) 100%);
     box-shadow: inset 0 0 0 .6px rgba(255, 255, 255, .55), inset 0 -1px 2px rgba(28, 26, 23, .35), 0 1px 1px rgba(28, 26, 23, .28), 0 26px 34px -22px rgba(28, 26, 23, .6), 0 6px 10px -6px rgba(28, 26, 23, .3); }
-  .ulid { box-sizing: border-box; background: var(--black); }
+  .ulid { box-sizing: border-box; background: var(--black); box-shadow: 0 0 0 .5px rgba(0, 0, 0, .7), inset 0 0 0 1px rgba(255, 255, 255, .06); }
   .uscr { position: absolute; overflow: hidden; background: var(--black); transform: translateZ(0); }
-  .uscr video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; opacity: 0; background: var(--black); }
+  .uc video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; opacity: 0; background: var(--black); }
+  /* A phone whose clip waits for its beat is asleep on its lock screen (wallpaper, clock, the island on it); on the beat
+     the app's notification drops in, and the phone opens on the clip. Sized in em: the screen sets the font size. */
+  .ulock { position: absolute; inset: 0; opacity: 0; pointer-events: none; color: #FAF8F3; text-align: center;
+    background: radial-gradient(95% 50% at 12% 104%, rgba(57, 255, 20, .34), rgba(57, 255, 20, 0) 72%),
+      radial-gradient(85% 45% at 100% 0%, rgba(150, 168, 190, .4), rgba(150, 168, 190, 0) 70%),
+      linear-gradient(168deg, #2B3431 0%, #151917 55%, #0B0D0C 100%); }
+  .uclock { position: absolute; left: 0; right: 0; top: 13%; margin: 0; font: 600 6em/1 var(--grot); letter-spacing: -.03em; font-variant-numeric: tabular-nums; }
+  .uclock small { display: block; margin-bottom: .1em; font: 500 .19em/1.2 Geist, var(--sys); letter-spacing: .01em; opacity: .82; }
+  .uping { position: absolute; left: 4.5%; right: 4.5%; top: 41%; display: flex; gap: .75em; align-items: flex-start; box-sizing: border-box; padding: .85em .9em;
+    border-radius: 1.7em; background: rgba(246, 245, 241, .8); color: var(--ink); text-align: left; opacity: 0; transform-origin: 50% 0;
+    box-shadow: 0 .4em 1.4em rgba(0, 0, 0, .28); }
+  .uping svg { flex: none; box-sizing: border-box; width: 2.7em; height: 2.7em; padding: .5em; border-radius: .7em; background: var(--ink); color: var(--card); }
+  .uping p { flex: 1; min-width: 0; margin: 0; font: 400 1.08em/1.28 Geist, var(--sys); }
+  .uping small { display: flex; justify-content: space-between; font-size: .82em; letter-spacing: .02em; opacity: .55; }
+  .uping b { display: block; font-weight: 600; }
   .uisl { position: absolute; left: 50%; transform: translateX(-50%); border-radius: 99px; background: var(--black); }
-  .unotch { position: absolute; top: 0; left: 50%; transform: translateX(-50%); background: var(--black); }
-  .uhinge { background: linear-gradient(180deg, var(--ink), var(--ti-0)); border-radius: 0 0 3px 3px; }
-  .ubase { background: linear-gradient(180deg, var(--alu-2) 0%, var(--alu-1) 38%, var(--alu-0) 100%); transform-origin: 50% 0;
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, .85), inset 0 -1px 1px rgba(28, 26, 23, .28), 0 1px 0 rgba(28, 26, 23, .18), 0 14px 18px -12px rgba(28, 26, 23, .5); }
-  .ubase::after { content: ""; position: absolute; top: 0; left: 50%; width: 14%; height: 44%; transform: translateX(-50%);
-    background: linear-gradient(180deg, var(--alu-0), var(--alu-1)); border-radius: 0 0 9px 9px / 0 0 6px 6px; box-shadow: inset 0 1px 1.5px rgba(28, 26, 23, .3); }
   .ubot { position: absolute; z-index: 3; pointer-events: none; }
   /* The words: a stamp, the odd situation, what happened, an honest aside, a note in the margin. */
   .utext { position: absolute; z-index: 2; }
@@ -200,7 +212,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     background: rgba(246, 245, 241, .92); color: var(--ink); cursor: pointer; align-items: center; justify-content: center; box-shadow: 0 4px 14px rgba(0, 0, 0, .25); }
   .play svg { width: 18px; height: 18px; margin-left: 3px; }
   .play:focus-visible { outline: 2px solid var(--neon); outline-offset: 2px; }
-  .reduced .uc:not(.playing) .play { display: flex; }
+  .reduced .uc:not(.playing) .play, .uc.blocked .play { display: flex; }
 
   /* ---- Scene three: the desk. He walks in, a Mac comes up, he jumps into its screen. ---- */
   #desk { position: relative; z-index: 2; height: 530vh; }
@@ -488,9 +500,14 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <section id="stack" aria-label="Seven doubts about X0 Bot, each answered by a witness and the app’s own screen">
   <div class="stage">
     <article class="uc">
-      <div class="udev">
-        <i class="uband"></i><i class="uhinge"></i><i class="ubase"></i>
-        <div class="ulid"><div class="uscr"><i class="uisl"></i><i class="glass"></i><button class="play" type="button" aria-label="Play the clip"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 2.5v11l9.5-5.5z" fill="currentColor"/></svg></button></div><i class="unotch"></i></div>
+      <div class="dev mac umac" aria-hidden="true">
+        <i class="contact"></i>
+        <div class="lid"><div class="screen"><i class="glass"></i></div><i class="notch"><i></i></i></div>
+        <i class="hinge"></i><div class="base"><i class="thumb"></i></div>
+      </div>
+      <div class="uphone">
+        <i class="uband"></i>
+        <div class="ulid"><div class="uscr"><div class="ulock" aria-hidden="true"><p class="uclock"><small>Tuesday 12 May</small>9:41</p></div><i class="uisl"></i><i class="glass"></i><button class="play" type="button" aria-label="Play the evidence"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 2.5v11l9.5-5.5z" fill="currentColor"/></svg></button></div></div>
       </div>
       <p class="urec" aria-hidden="true"></p>
       <canvas class="ubot" aria-hidden="true"></canvas>
@@ -1226,33 +1243,47 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   // ---- Scene two: one card, seven cases ----------------------------------------
   // One paper card with him inside it: a court, one case per bot. Each case is one
   // screen of scroll; at the half-way point only the card's content changes (never
-  // the card, never him): the old words lift away soft, the old clip holds until
-  // the new one is up over it, the new words set in line by line and the verdict is
-  // stamped. The copy: the case (which bot), a doubt people have, a witness that was
-  // in the room and its statement, and the verdict. The evidence under it is the
-  // app's own screen, drawn by the app's own renderer (media/case*.mp4). He hops,
-  // glances at the new words, then follows each clip's beats (cuts), pointing at it.
+  // the card, never him): the old words lift away soft, the old clips hold until
+  // the new ones are up over them, the new words set in line by line and the verdict
+  // is stamped. The copy: the case (which bot), a doubt people have, a witness that
+  // was in the room and its statement, and the verdict. The evidence is the app's own
+  // screens, drawn by the app's own renderer: a MacBook and a phone stand in the card,
+  // him between them. A case on both (screens: "both") plays the computer's clip
+  // (media/case<n>-desk.*) and the phone's (media/case<n>.*) on one clock. Where the
+  // phone comes in later (wake), it sleeps on its lock screen until then: at `at`
+  // seconds its clip starts and the app's notification (if it sends one) drops in, and a moment later
+  // (OPEN) the phone opens on the clip. A phone-only case (screens: "phone") sends the
+  // MacBook back, small and dim. He hops, glances at the new words, then follows the
+  // case's beats (cuts: a pose, and the screen it is about), turning to that screen:
+  // the MacBook up on his left, the phone on his right.
   // Six doubts are thrown out; the seventh sticks: it needs internet.
   const USES = [
-    { id: "case1", kick: "Case 1 · Keylessbord", punch: "“It’ll put words in my mouth.”", plain: "Witness: the parrot. “Word for word, like me. Minus Maya’s eleven ‘ums’.”", aside: "Only the ‘ums’ were harmed.", verdict: "NOT GUILTY", guilty: false,
-      cuts: [{ from: 0, to: 1.4, bot: "present" }, { from: 1.4, to: 3.8, bot: "tap" }, { from: 3.8, to: 99, bot: "thumbs" }] },
-    { id: "case2", kick: "Case 2 · Xode", punch: "“It’ll rewrite my code while I sleep.”", plain: "Witness: the snooze button. “Pressed five times. Meanwhile it asked Kai one question. Merged nothing.”", aside: "Opens a pull request. You merge.", verdict: "NOT GUILTY", guilty: false,
-      cuts: [{ from: 0, to: 1.4, bot: "present" }, { from: 1.4, to: 3.8, bot: "tap" }, { from: 3.8, to: 99, bot: "thumbs" }] },
-    { id: "case3", kick: "Case 3 · Notes", punch: "“Someone still has to take notes.”", plain: "Witness: the mute button. “Nina hid behind me all call. Still got a to-do: Thursday.”", aside: "Notes taken. Nobody took them.", verdict: "NOT GUILTY", guilty: false,
-      cuts: [{ from: 0, to: 1.4, bot: "present" }, { from: 1.4, to: 3.8, bot: "tap" }, { from: 3.8, to: 99, bot: "thumbs" }] },
-    { id: "case4", kick: "Case 4 · Travel bot", punch: "“It’ll book the wrong flight.”", plain: "Witness: the suitcase. “Packed since Monday. Mia hasn’t pressed pay.”", aside: "Only you press pay.", verdict: "NOT GUILTY", guilty: false,
-      cuts: [{ from: 0, to: 1.4, bot: "present" }, { from: 1.4, to: 3.8, bot: "tap" }, { from: 3.8, to: 99, bot: "thumbs" }] },
-    { id: "case5", kick: "Case 5 · Spaces", punch: "“Shared lists never stay shared.”", plain: "Witness: the fridge door. “Omar added eggs from the bus. I’m just a door now.”", aside: "One list. Everyone edits.", verdict: "NOT GUILTY", guilty: false,
-      cuts: [{ from: 0, to: 1.4, bot: "present" }, { from: 1.4, to: 3.8, bot: "tap" }, { from: 3.8, to: 99, bot: "thumbs" }] },
-    { id: "case6", kick: "Case 6 · Plan Ease", punch: "“It doesn’t know my day.”", plain: "Witness: the alarm clock. “I only know 7:00. It knows Lena’s dentist is 25 minutes away.”", aside: "Travel time included.", verdict: "NOT GUILTY", guilty: false,
-      cuts: [{ from: 0, to: 1.4, bot: "present" }, { from: 1.4, to: 3.8, bot: "tap" }, { from: 3.8, to: 99, bot: "thumbs" }] },
-    { id: "case7", kick: "Case 7 · Every bot", punch: "“It won’t work offline.”", plain: "Witness: the elevator. “Floor 7, zero bars. Leo asked every bot. Silence.”", aside: "Needs internet. More bots awaiting trial.", verdict: "GUILTY", guilty: true,
-      cuts: [{ from: 0, to: 1.6, bot: "present" }, { from: 1.6, to: 99, bot: "listen" }] },
+    // The same words on both: picked on the computer, there on the phone.
+    { id: "case1", screens: "both", kick: "Case 1 · Keylessbord", punch: "“It’ll put words in my mouth.”", plain: "Witness: the parrot. “Word for word, like me. Minus Maya’s eleven ‘ums’.”", aside: "Only the ‘ums’ were harmed.", verdict: "NOT GUILTY", guilty: false,
+      cuts: [{ from: 0, to: 1.8, bot: "present", on: "desk" }, { from: 1.8, to: 2.8, bot: "tap", on: "desk" }, { from: 2.8, to: 4, bot: "present", on: "phone" }, { from: 4, to: 99, bot: "thumbs", on: "phone" }] },
+    // Xode works on the computer and stops at 2 s with a question; the phone gets the app’s real "needs you" push (push.code_needs_you), answers it, ends on the pull request.
+    { id: "case2", screens: "both", wake: { at: 2, title: "X0 Bot needs you", says: "“Fix cart total rounding”: Round each item’s price, or round once at the end?" }, kick: "Case 2 · Xode", punch: "“It’ll rewrite my code while I sleep.”", plain: "Witness: the snooze button. “Pressed five times. Meanwhile it asked Kai one question. Merged nothing.”", aside: "Opens a pull request. You merge.", verdict: "NOT GUILTY", guilty: false,
+      cuts: [{ from: 0, to: 2, bot: "present", on: "desk" }, { from: 2, to: 2.6, bot: "tap", on: "desk" }, { from: 2.6, to: 4.6, bot: "present", on: "phone" }, { from: 4.6, to: 5.4, bot: "tap", on: "phone" }, { from: 5.4, to: 99, bot: "thumbs", on: "phone" }] },
+    // The computer writes the call up; a beat later the phone has it too, and then the to-dos. Notes sends no push, so the phone just wakes.
+    { id: "case3", screens: "both", wake: { at: 1 }, kick: "Case 3 · Notes", punch: "“Someone still has to take notes.”", plain: "Witness: the mute button. “Nina hid behind me all call. Still got a to-do: Thursday.”", aside: "Notes taken. Nobody took them.", verdict: "NOT GUILTY", guilty: false,
+      cuts: [{ from: 0, to: 1.5, bot: "present", on: "desk" }, { from: 1.5, to: 2.6, bot: "tap", on: "desk" }, { from: 2.6, to: 3.4, bot: "present", on: "phone" }, { from: 3.4, to: 4.6, bot: "tap", on: "phone" }, { from: 4.6, to: 99, bot: "thumbs", on: "phone" }] },
+    { id: "case4", screens: "phone", kick: "Case 4 · Travel bot", punch: "“It’ll book the wrong flight.”", plain: "Witness: the suitcase. “Packed since Monday. Mia hasn’t pressed pay.”", aside: "Only you press pay.", verdict: "NOT GUILTY", guilty: false,
+      cuts: [{ from: 0, to: 1.4, bot: "present", on: "phone" }, { from: 1.4, to: 3.8, bot: "tap", on: "phone" }, { from: 3.8, to: 99, bot: "thumbs", on: "phone" }] },
+    // Ticked on the phone first; the same ticks land on the computer.
+    { id: "case5", screens: "both", kick: "Case 5 · Spaces", punch: "“Shared lists never stay shared.”", plain: "Witness: the fridge door. “Omar added eggs from the bus. I’m just a door now.”", aside: "One list. Everyone edits.", verdict: "NOT GUILTY", guilty: false,
+      cuts: [{ from: 0, to: 1.2, bot: "present", on: "phone" }, { from: 1.2, to: 2.4, bot: "tap", on: "phone" }, { from: 2.4, to: 4.4, bot: "present", on: "desk" }, { from: 4.4, to: 99, bot: "thumbs", on: "desk" }] },
+    { id: "case6", screens: "phone", kick: "Case 6 · Plan Ease", punch: "“It doesn’t know my day.”", plain: "Witness: the alarm clock. “I only know 7:00. It knows Lena’s dentist is 25 minutes away.”", aside: "Travel time included.", verdict: "NOT GUILTY", guilty: false,
+      cuts: [{ from: 0, to: 1.4, bot: "present", on: "phone" }, { from: 1.4, to: 3.8, bot: "tap", on: "phone" }, { from: 3.8, to: 99, bot: "thumbs", on: "phone" }] },
+    { id: "case7", screens: "phone", kick: "Case 7 · Every bot", punch: "“It won’t work offline.”", plain: "Witness: the elevator. “Floor 7, zero bars. Leo asked every bot. Silence.”", aside: "Needs internet. More bots awaiting trial.", verdict: "GUILTY", guilty: true,
+      cuts: [{ from: 0, to: 1.6, bot: "present", on: "phone" }, { from: 1.6, to: 99, bot: "listen", on: "phone" }] },
   ];
-  const REC = "Evidence: the app’s own screen";
+  const REC = ["Evidence: the app’s own screen", "Evidence: the app’s own screens"];
+  // From the notification to the phone opening on the clip (s); the clip runs under the lock screen meanwhile.
+  const OPEN = .55;
   const N = USES.length;
   const stack = document.getElementById("stack"), stage = stack.querySelector(".stage"), uc = stage.querySelector(".uc"), uq = (s) => uc.querySelector(s);
-  const uband = uq(".uband"), ulid = uq(".ulid"), uscr = uq(".uscr"), uisl = uq(".uisl"), unotch = uq(".unotch"), uhinge = uq(".uhinge"), ubase = uq(".ubase"), uplay = uq(".play");
+  const uphone = uq(".uphone"), uband = uq(".uband"), ulid = uq(".ulid"), uscr = uq(".uscr"), uisl = uq(".uisl"), uplay = uq(".play");
+  const umac = uq(".umac"), mscr = umac.querySelector(".screen"), ulock = uq(".ulock");
   const utext = uq(".utext"), ukick = uq(".ukick"), upunch = uq(".upunch"), uplain = uq(".uplain"), uaside = uq(".uaside");
   const unote = uq(".unote"), uhand = uq(".uhand"), uarrow = uq(".uarrow"), ushaft = uq(".uarrow .shaft"), uhead = uq(".uarrow .head");
   const urec = uq(".urec"), uprog = uq(".uprog"), unum = uq(".unum"), usegs = [...uq(".useg").children];
@@ -1260,41 +1291,76 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   const endEl = document.querySelector(".end"), endLine = endEl.querySelector("path");
   if (reduced) stage.classList.add("reduced");
   let uses = [], narrow = false, stackTop = 0, endTop = 0, lastP = NaN;
-  // The card's layout for this viewport: its size, the two device shapes, where he stands, where the words go.
-  const UL = { cw: 0, ch: 0, pad: 0, tx: 0, TW: 0, P: null, L: null, bot: null, textAt: [0, 0], dev: { cx: 0, cy: 0 } };
-  // The use on show, the one asked for, and the swap between them (k: the device's shape, 0 phone … 1 MacBook).
-  const U = { shown: -1, from: -1, busy: false, t0: 0, sp: 1, k: 0, k0: 0, k1: 0, isl: 0, isl0: 0, isl1: 0, set: false, paused: false, started: false, react: -1e9, vis: false };
+  // The card's layout for this viewport: its size, where the MacBook, the phone and he stand, the two screens he aims at, where the words go.
+  const UL = { cw: 0, ch: 0, pad: 0, tx: 0, TW: 0, bot: null, textAt: [0, 0], aim: { desk: [0, 0], phone: [0, 0] }, back: .74 };
+  // The case on show, the one asked for, and the swap between them. ct: the case's clock (seconds); play: pressed (reduced motion);
+  // m: the MacBook, 1 up front … 0 stepped back; held: the clip on the MacBook's screen; lock: the phone's lock screen (1: up;
+  // lock0: as the swap began); e: how far into the swap (ms); blocked: the browser refused to play a clip (autoplay off, low power)
+  // until the visitor presses play.
+  const U = { shown: -1, from: -1, busy: false, t0: 0, sp: 1, set: false, paused: false, started: false, react: -1e9, vis: false,
+    ct: 0, play: false, m: 0, m0: 0, m1: 0, md: NaN, held: null, was: null, lock: 0, lock0: 0, e: 0, blocked: false };
 
   const ARROW = {
     wide: { box: "0 0 60 44", shaft: "M57 9 C 44 2, 30 4, 22 14 S 10 30, 5 31", head: "M12.7 24.6 L5 31 L14.6 33.8" },
     narrow: { box: "0 0 26 30", shaft: "M23 28 C 14 27, 7 21, 8 13 S 10 5, 11 2", head: "M5.6 8 L11 2 L13.6 9.4" },
   };
 
+  /** One evidence clip (media/<name>.webm, else .mp4, its .webp as the poster) into a screen, under its lock screen and glass. */
+  function clipEl(name, scr) {
+    const v = document.createElement("video");
+    v.muted = true; v.playsInline = true; v.preload = "none";
+    ["muted", "playsinline", "disablepictureinpicture"].forEach((a) => v.setAttribute(a, ""));
+    v.setAttribute("aria-hidden", "true");
+    v.innerHTML = `<source src="/media/${name}.webm" type="video/webm"><source src="/media/${name}.mp4" type="video/mp4">`;
+    v.poster = `/media/${name}.webp`;
+    scr.insertBefore(v, scr.querySelector(".ulock, .glass"));
+    return v;
+  }
   function build() {
     uses = USES.map((s, i) => {
-      const phone = true;
-      const clip = { w: 540, h: 1170, webm: `/media/${s.id}.webm`, mp4: `/media/${s.id}.mp4`, poster: `/media/${s.id}.webp`, island: null, cuts: s.cuts };
-      const v = document.createElement("video");
-      v.muted = true; v.loop = true; v.playsInline = true; v.preload = "none";
-      ["muted", "playsinline", "disablepictureinpicture"].forEach((a) => v.setAttribute(a, ""));
-      v.setAttribute("aria-hidden", "true");
-      v.innerHTML = `<source src="${clip.webm}" type="video/webm"><source src="${clip.mp4}" type="video/mp4">`;
-      uscr.insertBefore(v, uisl);
-      v.addEventListener("play", () => { if (U.shown === i) uc.classList.add("playing"); });
-      v.addEventListener("pause", () => { if (U.shown === i) uc.classList.remove("playing"); });
-      v.poster = clip.poster;
-      // A phone clip that carries no island of its own gets the device's.
-      return { i, s, clip, v, phone, isl: phone && !clip.island ? 1 : 0, primed: false };
+      const pv = clipEl(s.id, uscr), dv = s.screens === "both" ? clipEl(s.id + "-desk", mscr) : null;
+      // The case's clips, the one that starts first (it leads the clock) first.
+      const clips = [{ v: pv, at: s.wake ? s.wake.at : 0, on: "phone" }];
+      if (dv) clips.unshift({ v: dv, at: 0, on: "desk" });
+      // The notification the phone wakes with, only where the app really sends one: from the app (X0 Bot), its title, what it says.
+      let ping = null;
+      if (s.wake && s.wake.says) {
+        ping = document.createElement("div"); ping.className = "uping";
+        ping.innerHTML = `<svg aria-hidden="true"><use href="#tzm"/></svg><p><small>X0 Bot<span>now</span></small><b>${s.wake.title}</b>${s.wake.says}</p>`;
+        ulock.appendChild(ping);
+      }
+      return { i, s, pv, dv, clips, ping, pk: 0, primed: false };
     });
-    uplay.addEventListener("click", () => { const u = uses[U.shown]; if (!u) return; if (u.v.paused) u.v.play().catch(() => {}); else u.v.pause(); });
+    uplay.addEventListener("click", press);
     layoutUses();
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { layoutUses(); });
   }
-  /** Its poster now and its clip on the way: the use on show and the ones either side of it. */
+  /**
+   * The play button: under reduced motion it starts (or stops) the case; where the browser refused to play,
+   * it asks again. Each clip of the case is played inside the press itself, the visitor's own gesture, so the
+   * browser lets it (one that waits for its beat stops again at once).
+   */
+  function press() {
+    if (U.shown < 0) return;
+    if (reduced && !U.blocked) { U.play = !U.play; uc.classList.toggle("playing", U.play); if (!U.play) return; }
+    U.blocked = false; uc.classList.remove("blocked");
+    uses[U.shown].clips.forEach((c) => { const v = c.v; v.play().then(() => { if (U.ct < c.at) v.pause(); }, () => {}); });
+  }
+  /** The browser said no to play(): no more asking (every frame) until the visitor presses play. */
+  function refused(e) {
+    if (!e || e.name !== "NotAllowedError") return;
+    U.blocked = true; uc.classList.add("blocked");
+  }
+  /** Its clips on the way: the case on show and the ones either side of it. */
   function prime(i) {
     const u = uses[i];
     if (!u || u.primed) return;
-    u.primed = true; u.v.poster = u.clip.poster; u.v.preload = "auto";
+    u.primed = true; u.clips.forEach((c) => { c.v.preload = "auto"; });
+  }
+  /** What the MacBook shows while only the phone matters, when nothing was on it yet: the nearest case's computer clip. */
+  function deskNear(i) {
+    for (let d = 1; d < N; d++) for (const j of [i - d, i + d]) if (uses[j] && uses[j].dv) return uses[j].dv;
+    return null;
   }
 
   /** The MacBook's parts for a lid LW wide and a screen k tall per wide (the desk's Mac). */
@@ -1309,16 +1375,76 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     dev.querySelector(".base").style.top = (lh + hh).toFixed(1) + "px"; dev.querySelector(".contact").style.top = (lh + hh + bh - 2).toFixed(1) + "px";
     return { dw, dh, bz, scw, sch };
   }
-  // The device's two shapes, as one set of numbers each, so every shape between is a lerp.
-  // A phone: a titanium band f, a black bezel b, a screen with round corners r.
-  function phoneShape(dh, w, cx, cy) {
-    const SW = Math.min(dh / 2.261, w / 1.094), f = Math.max(2.2, SW * .017), b = SW * .03, r = SW * .125, sh = SW * 1170 / 540;
-    return { cx, cy, f, lidW: SW + 2 * b, lidH: sh + 2 * b, pT: b, pS: b, pB: b, rT: r + b, rB: r + b, sr: r, hh: 0, bh: 0, h: sh + 2 * b + 2 * f };
+  /** The phone, its screen SW wide, its band's corner at x, y: a titanium band, a black bezel, a screen with round corners, the island. */
+  function sizePhone(SW, x, y) {
+    const f = Math.max(2.2, SW * .017), b = SW * .03, r = SW * .125, sh = SW * 1170 / 540, px = (v) => v.toFixed(1) + "px";
+    const w = SW + 2 * b + 2 * f, h = sh + 2 * b + 2 * f;
+    Object.assign(uphone.style, { left: px(x), top: px(y), width: px(w), height: px(h) });
+    Object.assign(uband.style, { left: "0px", top: "0px", width: px(w), height: px(h), borderRadius: px(r + b + f) });
+    Object.assign(ulid.style, { left: px(f), top: px(f), width: px(SW + 2 * b), height: px(sh + 2 * b), borderRadius: px(r + b) });
+    Object.assign(uscr.style, { left: px(b), top: px(b), width: px(SW), height: px(sh), borderRadius: px(r) });
+    Object.assign(uisl.style, { width: px(SW * .31), height: px(SW * .09), top: px(SW * .028) });
+    ulock.style.fontSize = px(SW * .042);
+    return { w, h, sx: x + f + b, sy: y + f + b, sh };
   }
-  // A MacBook: the lid (black bezel, notch), the hinge, the base.
-  function macShape(LW, cx, cy) {
-    const bz = LW * .019, sch = (LW - 2 * bz) * .625, lh = sch + bz * 2.25;
-    return { cx, cy, f: 0, lidW: LW, lidH: lh, pT: bz, pS: bz, pB: bz * 1.25, rT: LW * .03, rB: LW * .006, sr: 3, hh: Math.max(2, LW * .006), bh: LW * .03, h: lh + Math.max(2, LW * .006) + LW * .03 };
+  // Screen areas per unit, for sharing the room: the MacBook's screen for a lid LW wide, the phone's for a body W wide; their
+  // heights per width; and MAC_K, how much more screen the MacBook gets side by side (its clip has about 1.6x the phone clip's
+  // pixels; stacked, on a phone, the two share evenly).
+  const MAC_A = .578, PHONE_A = 1.81, PHONE_HW = 2.067, MAC_HW = .68, MAC_K = 1.62;
+  /**
+   * The MacBook, the phone and him in the box W×Hz at x0, y0. Side by side: the phone on the floor at the
+   * right, the MacBook up on its own plane at the left (set back, its top about level with the phone's), him on
+   * the floor between them, under the MacBook's front corner, his antenna just under its screen. Or, where
+   * the box is tall for its width (a phone): the MacBook on top, the phone under it at the right, him on the
+   * phone's floor beside it. Whichever gives the smaller of the two screens more room.
+   */
+  function placeDevices(x0, y0, W, Hz) {
+    const fair = (LW, Wp, k = 1) => Math.min(MAC_A * LW * LW, k * PHONE_A * Wp * Wp);
+    // His reach above the floor, hopping, antenna and all (the MacBook's screen starts above it).
+    const Hr = Math.round(clamp(Hz * .28, 96, 168)), reach = (H) => 1.05 * H + 4;
+    // Side by side: the MacBook's screen MAC_K times the phone's (its lid R times the phone's body wide); between
+    // the MacBook's base and the phone only room for his right side (the rest of him stands under the base's corner).
+    const R = Math.sqrt(MAC_K * PHONE_A / MAC_A), G = Hr * .22 + 8;
+    const Wr = Math.min((W - G) / (1.1 * R + 1), Hz / PHONE_HW, (Hz - reach(Hr)) / (.62 * R));
+    const row = { LW: Wr * R, Wp: Wr, s: fair(Wr * R, Wr) };
+    // Stacked: the MacBook takes a share of the height, the phone the rest.
+    let st = null;
+    for (let t = .26; t <= .56; t += .01) {
+      const L = Math.min(Hz * t / MAC_HW, W / 1.1), P = Math.min((Hz - L * MAC_HW - 12) / PHONE_HW, W * .5), s = fair(L, P);
+      if (L > 0 && P > 0 && (!st || s > st.s)) st = { LW: L, Wp: P, s };
+    }
+    const stacked = st && st.s > row.s, d = stacked ? st : row, px = (v) => Math.round(v) + "px";
+    const m = sizeMac(umac, d.LW, .625), SW = d.Wp / 1.094, ph = SW * (1170 / 540 + .06) + 2 * Math.max(2.2, SW * .017);
+    let mx, my, fx, fy, H, P;
+    if (!stacked) {
+      // The MacBook's screen starts just above his reach; the taller of it and the phone centred in the box.
+      H = Hr;
+      const up = reach(H) + m.bz + m.sch, total = m.dw + G + d.Wp, ox = x0 + (W - total) / 2;
+      fy = Math.round(y0 + (Hz + Math.max(ph, up)) / 2);
+      mx = ox; my = fy - up;
+      P = sizePhone(SW, ox + total - d.Wp, fy - ph);
+      // Him on the floor under the MacBook's right corner: his hand, held out at the phone, just reaches its screen's edge.
+      fx = ox + m.dw - H * .16;
+      Object.assign(urec.style, { left: px(mx + d.LW * .05), right: "", top: px(fy - 11), transform: "none" });
+      UL.back = .74;
+    } else {
+      // The two as one group at the foot of the box (any room left over goes above the MacBook, under the words).
+      fy = y0 + Hz;
+      const plx = x0 + W - d.Wp, under = fy - ph - 12;
+      mx = x0; my = under - m.dh;
+      P = sizePhone(SW, plx, fy - ph);
+      // Him on the phone's floor, as big as the room left of the phone lets him (on his left, room for an arm
+      // raised to the MacBook; on his right, his hand just short of the phone's screen), never taller than his reach under the MacBook.
+      H = Math.round(clamp(Math.min((plx - x0) / 1.05, (fy - under - 4) / 1.05, ph * .56, narrow ? 180 : Hr), 70, 180));
+      fx = plx - H * .55;
+      Object.assign(urec.style, { left: "", right: px(UL.cw - x0 - W), top: px(fy + 4), transform: "none" });
+      UL.back = .76;
+    }
+    umac.style.left = px(mx); umac.style.top = px(my);
+    // What he aims at: the MacBook's screen (stacked: its lower left, up and away to his left), the phone's.
+    UL.aim = { desk: stacked ? [mx + d.LW * .3, my + m.bz + m.sch * .75] : [mx + d.LW * .55, my + m.bz + m.sch * .5], phone: [P.sx + SW / 2, P.sy + P.sh * .45] };
+    UL.bot = { H, fx, gy: fy };
+    U.md = NaN;
   }
 
   /** Sizes and places the card and everything in it for this viewport. */
@@ -1336,52 +1462,40 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     Object.assign(UL, { cw, ch, pad });
     Object.assign(uc.style, { width: cw + "px", height: ch + "px", transform: `translate3d(${x}px,${y}px,0)`, backgroundImage: `url(${GRAIN})` });
     if (!narrow) {
-      // Him on the left, the device in the middle, the words on the right.
-      const TW = Math.round(clamp(cw * .29, 260, 345)), tx = cw - pad - TW, BW = cw * .17;
-      const zx0 = BW, zx1 = tx - 36, zy0 = pad, zy1 = ch - pad - 26, zw = zx1 - zx0, zh = zy1 - zy0, zcx = (zx0 + zx1) / 2, zcy = (zy0 + zy1) / 2;
+      // The words on the right (the verdict's arrow in the gap, pointing at the phone); the MacBook, him and the phone across the rest.
+      const TW = Math.round(clamp(cw * .255, 260, 300)), tx = cw - pad - TW;
       Object.assign(UL, { tx, TW });
       utext.style.width = TW + "px"; utext.style.left = tx + "px";
       unote.style.left = (tx - 66) + "px"; unote.style.right = "";
       Object.assign(uprog.style, { left: tx + "px", top: (ch - pad - 6) + "px" });
-      UL.P = phoneShape(zh, zw, zcx + zw * .03, zcy);
-      UL.L = macShape(Math.min(zw / 1.1, zh / .6865), zcx, zcy);
-      const H = Math.round(clamp(Math.min(ch * .43, BW * 1.55), 140, 310));
-      UL.bot = { H, fx: BW * .52, gy: zcy + H * .47 };
-      urec.style.right = "";
+      placeDevices(pad, pad, tx - 64 - pad, ch - 2 * pad - 30);
     } else {
-      // The words on top; the device under them, him at its foot on the left; the note and the count at the bottom.
+      // The words on top; under them the two devices with him between; the note and the count at the bottom.
       const iw = cw - 2 * pad;
       utext.style.width = iw + "px"; utext.style.left = pad + "px"; utext.style.top = pad + "px";
       let th = 0;
       const keep = U.shown;
       for (let i = 0; i < N; i++) { setWords(i, true); th = Math.max(th, utext.offsetHeight); }
       if (keep >= 0) setWords(keep, true);
-      const NR = 58, zy0 = pad + th + 14, zy1 = ch - pad - NR, zh = zy1 - zy0;
-      const H = Math.round(clamp(zh * .42, 92, 160));
-      UL.bot = { H, fx: pad + H * .32, gy: zy1 };
-      const ph = zh - 22;
-      UL.P = phoneShape(ph, iw * .62, pad + iw * .64, zy0 + ph / 2);
-      const LW = Math.min(iw / 1.1, Math.max(iw * .62, zh - H * .8) / .6865), lh = LW * .6865;
-      UL.L = macShape(LW, cw / 2, zy0 + Math.max(lh / 2, (zh - H * .8) / 2));
+      const NR = 58, zy0 = pad + th + 14, zy1 = ch - pad - NR;
       Object.assign(unote.style, { left: "", right: pad + "px", top: (zy1 + 8) + "px" });
       Object.assign(uprog.style, { left: pad + "px", top: (ch - pad - 6) + "px" });
-      Object.assign(urec.style, { left: "", right: pad + "px", top: (zy1 - 13) + "px", transform: "none" });
+      placeDevices(pad, zy0, iw, zy1 - 20 - zy0);
     }
     sizeUBot();
     if (U.shown >= 0) placeWords();
-    U.devDirty = true;
     stackTop = stack.offsetTop; endTop = endEl.offsetTop;
     lastP = NaN;
   }
 
-  /** The words of use i into the card (raw: only to measure, no announcement). */
+  /** The words of case i into the card (raw: only to measure, no announcement). */
   function setWords(i, raw) {
     const s = USES[i];
     ukick.innerHTML = `<i></i><span>${s.kick}</span>`;
     upunch.innerHTML = s.punch.split(" ").map((w) => `<span class="wd">${w}</span>`).join(" ");
     uplain.textContent = s.plain; uaside.textContent = s.aside;
     if (raw) return;
-    uhand.textContent = s.verdict; uhand.classList.toggle("guilty", !!s.guilty); urec.textContent = REC;
+    uhand.textContent = s.verdict; uhand.classList.toggle("guilty", !!s.guilty); urec.textContent = REC[s.screens === "both" ? 1 : 0];
     uc.setAttribute("aria-label", `${i + 1} of ${N}: ${s.punch}`);
     unum.innerHTML = `<b>${String(i + 1).padStart(2, "0")}</b> / ${String(N).padStart(2, "0")}`;
     placeWords();
@@ -1395,46 +1509,44 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     UL.textAt = [UL.tx + 60, top + 60];
   }
 
-  /** The device at shape k (0 phone … 1 MacBook): every part placed from the two shapes. */
-  function drawDev() {
-    const A = UL.P, B = UL.L, k = U.k, m = (key) => lerp(A[key], B[key], k);
-    const f = m("f"), lw = m("lidW"), lh = m("lidH"), pT = m("pT"), pS = m("pS"), pB = m("pB"), rT = m("rT"), rB = m("rB"), cx = m("cx"), cy = m("cy");
-    const hh = B.hh * k, bh = B.bh, total = lh + 2 * f + hh + bh * k, top = cy - total / 2 + f, left = cx - lw / 2;
-    const px = (v) => v.toFixed(1) + "px";
-    Object.assign(ulid.style, { left: px(left), top: px(top), width: px(lw), height: px(lh), borderRadius: `${px(rT)} ${px(rT)} ${px(rB)} ${px(rB)}`,
-      boxShadow: `0 0 0 1px rgba(93,90,85,${k.toFixed(3)}), 0 0 0 1.8px rgba(207,205,200,${k.toFixed(3)}), 0 0 0 .5px rgba(0,0,0,${(.7 * (1 - k)).toFixed(3)}), inset 0 0 0 1px rgba(255,255,255,.06), 0 22px 34px -24px rgba(28,26,23,${(.55 * k).toFixed(3)})` });
-    const sw = lw - 2 * pS, sh = lh - pT - pB;
-    Object.assign(uscr.style, { left: px(pS), top: px(pT), width: px(sw), height: px(sh), borderRadius: px(m("sr")) });
-    Object.assign(uband.style, { left: px(left - f), top: px(top - f), width: px(lw + 2 * f), height: px(lh + 2 * f), borderRadius: px(rT + f), opacity: (1 - k).toFixed(3), display: k > .995 ? "none" : "" });
-    Object.assign(uhinge.style, { left: px(cx - lw * .42), top: px(top + lh), width: px(lw * .84), height: px(hh), opacity: k.toFixed(3), display: k < .005 ? "none" : "" });
-    Object.assign(ubase.style, { left: px(cx - lw * .55), top: px(top + lh + hh), width: px(lw * 1.1), height: px(bh), opacity: clamp(k * 2).toFixed(3), transform: `scaleY(${k.toFixed(3)})`,
-      borderRadius: `2px 2px ${px(bh * 2.2)} ${px(bh * 2.2)} / 2px 2px ${px(bh)} ${px(bh)}`, display: k < .005 ? "none" : "" });
-    const isl = Math.pow(1 - k, 2) * U.isl;
-    Object.assign(uisl.style, { width: px(sw * .31), height: px(sw * .09), top: px(sw * .028), opacity: isl.toFixed(3), display: isl < .005 ? "none" : "" });
-    Object.assign(unotch.style, { width: px(lw * .095), height: px(pT + lw * .011), borderRadius: `0 0 ${px(lw * .011)} ${px(lw * .011)}`, opacity: k.toFixed(3), display: k < .005 ? "none" : "" });
-    if (!narrow) Object.assign(urec.style, { left: px(cx), top: px(top + lh + hh + bh * k + f + 14), transform: "translateX(-50%)" });
-    UL.dev = { cx, cy: top + sh * .45 };
-    U.devDirty = false;
+  /** The MacBook at m (1 up front … 0 stepped back: smaller, further off, dim). */
+  function drawMac() {
+    const m = U.m;
+    if (m === U.md) return;
+    U.md = m;
+    umac.style.opacity = lerp(.3, 1, m).toFixed(3);
+    umac.style.transform = m > .999 ? "none" : `scale(${lerp(UL.back, 1, m).toFixed(4)})`;
   }
 
-  /** Swaps the card to use i: at once (the first time, or under reduced motion), else through the swap. */
+  /** Swaps the card to case i: at once (the first time, or under reduced motion), else through the swap. */
   function swap(i, now) {
     const from = U.shown, u = uses[i];
     U.from = from; U.shown = i;
     prime(i); prime(i + 1); prime(i - 1);
-    uc.classList.remove("playing");
+    U.play = false; uc.classList.remove("playing");
     if (from < 0 || reduced) {
-      uses.forEach((w) => { w.v.style.opacity = w.i === i ? "1" : "0"; if (w.i !== i && !w.v.paused) w.v.pause(); });
+      // A phone-only case keeps what the MacBook showed (or the nearest case's computer clip), stepped back.
+      const held = u.dv || U.held || deskNear(i);
+      uses.forEach((w) => {
+        w.pv.style.opacity = w === u ? "1" : "0";
+        if (w.dv) w.dv.style.opacity = w.dv === held ? "1" : "0";
+        w.clips.forEach((c) => { if (!c.v.paused) c.v.pause(); });
+      });
+      U.held = held;
       [ukick, uplain, uaside, unote, urec, uhand, ushaft, uhead].forEach((el) => el.getAnimations().forEach((a) => a.cancel()));
       setWords(i);
-      U.k = U.k0 = U.k1 = u.phone ? 0 : 1; U.isl = u.isl; U.busy = false; U.devDirty = true;
-      if (!reduced && U.vis) { try { u.v.currentTime = 0; } catch (e) { /* not loaded */ } u.v.play().catch(() => {}); }
+      U.m = U.m0 = U.m1 = u.dv ? 1 : 0; U.busy = false;
+      // A phone whose clip waits starts asleep (under reduced motion, only once play is pressed).
+      U.lock = !reduced && u.s.wake ? 1 : 0;
+      restartCase(u);
       return;
     }
     // Far, or fast: the same swap, quicker.
     U.sp = Math.abs(i - from) > 1 ? .55 : 1;
-    U.busy = true; U.t0 = now; U.set = false; U.paused = false; U.started = false;
-    U.k0 = U.k; U.k1 = u.phone ? 0 : 1; U.isl0 = U.isl; U.isl1 = u.isl;
+    U.busy = true; U.t0 = now; U.e = 0; U.set = false; U.paused = false; U.started = false;
+    U.ct = 0; // the new case's clock, at its start (it runs once the new clips are on their way)
+    U.m0 = U.m; U.m1 = u.dv ? 1 : 0; U.lock0 = U.lock;
+    U.was = U.held; U.held = u.dv || U.held;
     U.react = now;
     const sp = U.sp, outs = [ukick, ...upunch.children, uplain, uaside, unote, urec];
     outs.forEach((el, j) => el.animate([{ opacity: 1, transform: "none", filter: "blur(0px)" }, { opacity: 0, transform: "translate3d(0,-10px,0)", filter: "blur(5px)" }],
@@ -1457,18 +1569,104 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     ushaft.animate([{ strokeDashoffset: 1 }, { strokeDashoffset: 0 }], { duration: 300 * sp, delay: (after + 230) * sp, easing: "ease-out", fill: "backwards" });
     uhead.animate([{ strokeDashoffset: 1 }, { strokeDashoffset: 0 }], { duration: 140 * sp, delay: (after + 520) * sp, easing: "ease-out", fill: "backwards" });
   }
-  /** One frame of the swap: the old clip holds while the shape morphs, the new one comes up over it (never a black screen). */
+  /**
+   * One frame of the swap. On each screen the old clip holds while the new one comes up over it
+   * (never a black screen); a phone-only case leaves the MacBook its clip and sends it back, a case
+   * on both brings it up front with its own clip over whatever it held. Where the new case's phone
+   * waits, its lock screen comes up over the old clip the way a new clip would, and the new clip goes
+   * up only under it (never seen before its beat); where the phone was asleep and the new case's does
+   * not wait, the lock screen holds until the new clip is up under it.
+   */
   function swapStep(now) {
-    const e = (now - U.t0) / U.sp, a = uses[U.from], b = uses[U.shown];
+    const e = (U.e = (now - U.t0) / U.sp), a = uses[U.from], b = uses[U.shown];
     if (!U.set && e >= 280) { U.set = true; wordsIn(U.shown); }
-    b.v.style.opacity = clamp((e - 420) / 260).toFixed(3);
-    a.v.style.opacity = (1 - clamp((e - 640) / 220)).toFixed(3);
-    if (!U.paused && e >= 860) { U.paused = true; a.v.pause(); }
-    if (!U.started && e >= 380) { U.started = true; try { b.v.currentTime = 0; } catch (x) { /* not loaded */ } if (U.vis) b.v.play().catch(() => {}); }
-    const km = easeIO((e - 160) / 560);
-    U.k = lerp(U.k0, U.k1, km); U.isl = lerp(U.isl0, U.isl1, km);
-    U.devDirty = true;
-    if (e >= 1300) { U.busy = false; uses.forEach((w) => { if (w !== b) w.v.style.opacity = "0"; }); }
+    const up = clamp((e - 420) / 260), down = 1 - clamp((e - 640) / 220);
+    U.lock = b.s.wake ? Math.max(U.lock0, up) : U.lock0 * down;
+    b.pv.style.opacity = b.s.wake && U.lock < .98 ? "0" : up.toFixed(3); a.pv.style.opacity = down.toFixed(3);
+    if (b.dv && b.dv !== U.was) { b.dv.style.opacity = up.toFixed(3); if (U.was) U.was.style.opacity = down.toFixed(3); }
+    if (!U.paused && e >= 860) { U.paused = true; a.clips.forEach((c) => { if (!b.clips.some((d) => d.v === c.v)) c.v.pause(); }); }
+    if (!U.started && e >= 380) { U.started = true; restartCase(b); }
+    U.m = lerp(U.m0, U.m1, easeIO((e - 160) / 560));
+    if (e >= 1300) {
+      U.busy = false;
+      uses.forEach((w) => { if (w !== b) w.pv.style.opacity = "0"; if (w.dv && w.dv !== U.held) w.dv.style.opacity = "0"; });
+      // The new clips all up (a slow frame can skip past the lock screen coming up: it is up at once then).
+      b.clips.forEach((c) => { c.v.style.opacity = "1"; });
+      if (b.s.wake && U.ct < b.s.wake.at) U.lock = 1;
+    }
+  }
+
+  /**
+   * The case's clock back to 0. The clips that open the case go back to their first frame now (the seek also
+   * takes down the poster, the clip's last frame; under reduced motion that poster is the still, so only a clip
+   * that has played goes back). Looping, the phone's clip that waits for its beat goes back once the lock screen
+   * is up over it (runCase).
+   */
+  function restartCase(u, loop) {
+    U.ct = 0;
+    u.clips.forEach((c) => {
+      c.z = false;
+      if (loop && c.at) return;
+      const v = c.v;
+      try { if (reduced ? v.currentTime : v.readyState) { v.currentTime = 0; c.z = true; } } catch (e) { /* not loaded */ }
+    });
+  }
+  /**
+   * One frame of the case's clock, for both of its screens. The clock follows the first clip that is
+   * in its stretch of the case (while the computer plays, its own time is the clock; once it has ended,
+   * the phone's), so the two can never drift apart, and it waits while that clip loads. A clip waits on
+   * its first frame, under the lock screen, until its beat (at), plays in step, holds its last frame when done;
+   * when the later one has ended, both start again together. Where the browser refuses to play, nothing
+   * is asked again until the visitor presses play.
+   */
+  function runCase(u, dt) {
+    const C = u.clips, dur = (v) => (v.duration > 0 && isFinite(v.duration) ? v.duration : Infinity);
+    let len = 0, src = null;
+    for (const c of C) {
+      len = Math.max(len, c.at + dur(c.v));
+      if (!src && !c.v.ended && U.ct >= c.at && U.ct < c.at + dur(c.v)) src = c;
+    }
+    U.ct = src ? src.at + src.v.currentTime : U.ct + dt;
+    if (U.ct >= len) restartCase(u, true);
+    for (const c of C) {
+      const v = c.v, t = U.ct - c.at;
+      if (t < 0) {
+        if (!v.paused) v.pause();
+        // Behind the lock screen, back to the first frame, once its data is in (the seek takes down the poster too).
+        if (v.readyState && U.lock > .98 && (!c.z || v.currentTime > .05)) try { v.currentTime = 0; c.z = true; } catch (e) { /* not loaded */ }
+      }
+      else if (v.ended || t >= dur(v)) { /* done: it holds its last frame */ }
+      else if (v.paused) {
+        if (c !== src && isFinite(dur(v)) && Math.abs(v.currentTime - t) > .05) v.currentTime = t;
+        if (!U.blocked) v.play().catch(refused);
+      }
+      else if (c !== src && isFinite(dur(v)) && Math.abs(v.currentTime - t) > .25) v.currentTime = t;
+    }
+  }
+  /**
+   * The phone's lock screen: up while the case's phone clip waits for its beat and a moment after (OPEN; the
+   * notification drops in on the beat), then the phone opens on the clip. It comes up quick (looping, over the
+   * clip's last frame) and opens a touch slower. In a swap it follows the swap (swapStep). Under reduced
+   * motion: at once, once play is pressed.
+   */
+  function locks(dt, run) {
+    const u = uses[U.shown], w = u.s.wake;
+    if (!U.busy) {
+      const on = w && U.ct < w.at + OPEN && (run || !reduced) ? 1 : 0, k = reduced ? on : lerp(U.lock, on, 1 - Math.exp(-dt * (on ? 14 : 9)));
+      U.lock = Math.abs(k - on) < .004 ? on : k;
+    }
+    const o = U.lock.toFixed(3);
+    if (ulock._o !== o) { ulock._o = o; ulock.style.opacity = o; }
+    // The notifications: the case's drops in on its beat; any other goes. Once the phone is open, none is left on its lock screen.
+    for (const x of uses) {
+      if (!x.ping) continue;
+      const on = x === u && !U.busy && U.ct >= x.s.wake.at ? 1 : 0;
+      x.pk = !U.lock || reduced ? on * Math.sign(U.lock) : lerp(x.pk, on, 1 - Math.exp(-dt * (on ? 13 : 16)));
+      const p = x.pk < .004 ? 0 : x.pk, f = p.toFixed(3);
+      if (x.ping._f === f) continue;
+      x.ping._f = f; x.ping.style.opacity = f;
+      x.ping.style.transform = p > .999 ? "none" : `translate3d(0,${((p - 1) * 1.6).toFixed(2)}em,0) scale(${(.94 + .06 * p).toFixed(3)})`;
+    }
   }
 
   function updateUses(dt, sy, now) {
@@ -1477,16 +1675,15 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     const want = clamp(Math.round(p), 0, N - 1);
     if (U.shown < 0 || (!U.busy && want !== U.shown)) swap(want, now);
     if (U.busy) swapStep(now);
-    // Only the clip in view plays; it waits while the card is off screen.
-    if (vis !== U.vis) {
-      U.vis = vis;
-      const u = uses[U.shown];
-      if (!vis) u.v.pause(); else if (!reduced && !U.busy) u.v.play().catch(() => {});
-    }
-    if (U.devDirty) drawDev();
+    U.vis = vis;
+    // Only the case on show plays, while the card is in view (under reduced motion, once pressed).
+    const u = uses[U.shown], run = vis && (reduced ? U.play : !U.busy || U.started);
+    if (run) runCase(u, dt); else u.clips.forEach((c) => { if (!c.v.paused) c.v.pause(); });
+    locks(dt, run);
+    drawMac();
     if (p !== lastP) {
       lastP = p;
-      // The count: every use so far full, the next one filling as it comes.
+      // The count: every case so far full, the next one filling as it comes.
       usegs.forEach((s, i) => { const f = reduced ? (i <= want ? 1 : 0) : clamp(p - i + 1); if (s._f !== f) { s._f = f; s.style.setProperty("--f", f.toFixed(3)); } });
     }
     if (vis) drawUBot(dt, now);
@@ -1498,7 +1695,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   // ---- Coming to rest on a use ------------------------------------------------
   // No CSS snap: it pulled small wheel, arrow and trackpad steps back to where
   // they began, so a slow scroll never left the opening. Instead, once the
-  // visitor stops, the page settles on the next use (or desk step) in the
+  // visitor stops, the page settles on the next case (or desk step) in the
   // direction they went (3% of a screen is enough). Any input takes over again at once.
   const ST = { dir: 1, lastY: 0, idle: 0, pending: false, anim: null, held: false, touching: false, off: false };
   const takeOver = () => { ST.anim = null; };
@@ -1526,7 +1723,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     if (!ST.pending || ST.off || reduced || locked || ST.held || ST.touching || ms - ST.idle < 150 || !uses.length) return;
     ST.pending = false;
     const p = (scrollY - stackTop) / VH;
-    // The card's six uses, then (one screen on) the desk's steps, then free.
+    // The card's seven cases, then (one screen on) the desk's steps, then free.
     const last = deskTop > stackTop ? (deskTop - stackTop) / VH + DSTEPS : N - 1;
     if (p <= -1 || p >= last) return; // the opening at rest, or past the desk's last step: free
     const lo = Math.floor(p), f = p - lo;
@@ -1536,8 +1733,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     ST.anim = { from, to, t0: ms, dur: 380 + 560 * Math.min(1, Math.abs(to - from) / VH) };
   }
 
-  // ---- He, inside the card: the same him for all six, following each clip's beats --
-  // Targets for each pose (his right arm reaches for the screen).
+  // ---- He, inside the card: the same him for all seven, between the two screens --
+  // Targets for each pose (his right arm reaches for the screen he faces).
   const POSES = {
     present: { ra0: 1.22, ra1: .4, la0: .2, la1: .16, tilt: -.03, brows: .45, lx: .9, ly: -.35, thumb: 0, point: 0, hop: 0, grin: 0 },
     tap: { ra0: 1.8, ra1: .06, la0: .18, la1: .14, tilt: -.05, brows: .55, lx: 1, ly: -.45, thumb: 0, point: 1, hop: 0, grin: 0 },
@@ -1547,7 +1744,10 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     // A hand to his ear, head over: he is listening (the desktop pill's Blip, while you talk).
     listen: { ra0: 2.7, ra1: 1.75, la0: .18, la1: .14, tilt: .12, brows: .6, lx: -.4, ly: .3, thumb: 0, point: 0, hop: 0, grin: 0 },
   };
-  const UB = { S: Object.assign({}, POSES.present), V: {}, t: 0, glow: 0, osc: 0, tapK: 0, Wc: 0, Hc: 0, cell: 2, still: -1 };
+  // His hand's highest reach at a screen (radians from straight down): up and out, never straight up over his head.
+  const ARM_UP = 2.5;
+  // face: the way he faces (1 right, -1 left), from: the way he faced before a turn, turn: the turn's progress (≥ 1: done).
+  const UB = { S: Object.assign({}, POSES.present), V: {}, t: 0, glow: 0, osc: 0, tapK: 0, Wc: 0, Hc: 0, cell: 2, still: -1, face: 1, from: 1, turn: 9 };
   function sizeUBot() {
     const b = UL.bot, H = b.H;
     UB.Wc = Math.ceil(H * 1.5); UB.Hc = Math.ceil(H * 1.32);
@@ -1558,9 +1758,11 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     UB.still = -1;
   }
   /**
-   * One frame of him. At a swap: a small hop and a look at the new words; then
-   * the clip's beat decides the pose, and while he presents or taps, his arm
-   * and his eyes find the screen wherever the device's shape has put it.
+   * One frame of him. At a swap: a small hop and a look at the new words, already turned to
+   * the screen the new case opens on; then the case's beat (on its clock) decides the pose and
+   * the screen: he turns to it (the MacBook is on his left, or above him to the left; the phone
+   * on his right; a little squash, flipping halfway) and, while he presents or taps, his arm and
+   * his eyes find it.
    */
   function drawUBot(dt, now) {
     const u = uses[U.shown];
@@ -1568,20 +1770,27 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     if (reduced && UB.still === U.shown) return;
     UB.t += dt;
     const since = (now - U.react) / 1000, glance = !reduced && since < .8;
-    const cuts = u.clip.cuts, vt = u.v.currentTime || 0;
+    const cuts = u.s.cuts;
     let cut = cuts[0] || null;
-    for (const k of cuts) if (vt >= k.from) cut = k;
-    const name = reduced || glance || U.busy ? "present" : (cut && POSES[cut.bot] ? cut.bot : "present");
+    for (const k of cuts) if (U.ct >= k.from) cut = k;
+    const follow = !reduced && !glance && !U.busy && !!cut;
+    const name = follow && POSES[cut.bot] ? cut.bot : "present";
     const payoff = !reduced && !U.busy && !!cut && cut === cuts[cuts.length - 1];
-    const tg = Object.assign({}, POSES[name]), b = UL.bot, H = b.H;
-    const sx = b.fx + .1 * H, sy = b.gy - .445 * H, dx = UL.dev.cx - sx, dy = UL.dev.cy - sy;
+    const on = (follow ? cut.on : cuts[0] && cuts[0].on) || "phone", [ax, ay] = UL.aim[on], b = UL.bot, H = b.H;
+    const face = on === "desk" ? -1 : 1;
+    if (face !== UB.face) { UB.from = UB.face; UB.face = face; UB.turn = reduced ? 9 : 0; }
+    UB.turn += dt / .22;
+    const f = (UB.turn < .5 ? UB.from : UB.face), squash = UB.turn < 1 ? Math.sin(Math.PI * UB.turn) * .18 : 0;
+    // Where the screen is, from his shoulder, in his own (unturned) frame, the way he is turning to.
+    const tg = Object.assign({}, POSES[name]);
+    const sx = b.fx + f * .1 * H, sy = b.gy - .445 * H, dx = Math.max(0, (ax - b.fx - face * .1 * H) * face), dy = ay - sy;
     if (name === "present" || name === "tap") {
-      tg.ra0 += clamp(Math.atan2(dx, dy) - 1.5, -.6, 1.25);
+      tg.ra0 = Math.min(tg.ra0 + clamp(Math.atan2(dx, dy) - 1.5, -.6, 1.25), ARM_UP - tg.ra1);
       tg.lx = clamp(dx / (H * .8), -1, 1); tg.ly = clamp(dy / (H * .8), -1, 1);
     }
     if (glance) {
-      const [ax, ay] = UL.textAt;
-      tg.lx = clamp((ax - sx) / (H * .8), -1, 1); tg.ly = clamp((ay - sy) / (H * .8), -1, 1); tg.brows = .85; tg.grin = 1;
+      const [tx, ty] = UL.textAt;
+      tg.lx = clamp((tx - sx) * f / (H * .8), -1, 1); tg.ly = clamp((ty - sy) / (H * .8), -1, 1); tg.brows = .85; tg.grin = 1;
     }
     const S = UB.S, V = UB.V;
     if (reduced) Object.assign(S, tg);
@@ -1603,7 +1812,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       swayK: reduced ? 0 : 1, antWob: .03 * H * air, walkK: 0, look: [S.lx, S.ly], thumb: S.thumb, point: S.point,
     };
     ubx.setTransform(DPR, 0, 0, DPR, 0, 0); ubx.clearRect(0, 0, UB.Wc, UB.Hc);
-    uDots(ubx, { H, cell: UB.cell, x: UB.Wc / 2, y: UB.Hc - 2 - hopY, mirror: false, land, air: air * .6, st, t: reduced ? .5 : t, glow: reduced ? 0 : UB.glow, padX: H * .27 });
+    uDots(ubx, { H, cell: UB.cell, x: UB.Wc / 2, y: UB.Hc - 2 - hopY, mirror: f < 0, squash, land, air: air * .6, st, t: reduced ? .5 : t, glow: reduced ? 0 : UB.glow, padX: H * .27 });
     UB.still = U.shown;
   }
 
