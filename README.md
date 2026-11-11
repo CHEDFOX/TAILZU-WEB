@@ -5,7 +5,7 @@ API behind it for the backend's pages and the downloads.
 
 ```
 index.html            the page: markup, one <style>, two inline <script>s (GTM, the page), and a <noscript> head style
-media/                the card's clips: <id>.webm (VP9), <id>.mp4 (H.264), <id>.webp (poster), clips-phone.json and clips-laptop.json (sizes and beats)
+media/                the card's evidence: case<n>.webm (VP9), case<n>.mp4 (H.264), case<n>.webp (poster), each the app's own screen drawn by its own renderer; the Mac scene's pictures
 api/                  Meta's pixel and its Conversions API copy (see Meta's pixel)
 vercel.json           rewrites to the API, headers, the home page's CSP, caching
 csp.mjs               writes index.html's inline hashes into the home page's CSP
@@ -42,9 +42,11 @@ note in the margin per window, a receipt that prints at the end, and a last
 line under the headline. Standing idle, he watches the pointer.
 
 The copy is the page's own (`USES` and the Mac scene's lines in the script).
-The uses read their clips' sizes and beats from `/media/clips-*.json`; each
-clip plays its `.webm`, else its `.mp4`. Every clip in the card is an `id` in
-`USES`.
+Screen 2 is a court: seven cases, one per bot, each a doubt, a witness and a
+verdict, with the app's own screen as the evidence. Each case in `USES` names its
+clip (`/media/<id>.webm`, else `.mp4`) and Blip's beats (`cuts`). The evidence is
+drawn by the server's real renderer (TAILZU-BACKEND `tulmi/scripts/bots-render`)
+with neutral sample content, then cut to 540x1170.
 
 ## The download is always a link
 

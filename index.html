@@ -155,7 +155,8 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   .uaside { position: relative; margin: 14px 0 0; padding-left: 20px; font: 500 13px/1.45 Geist, var(--sys); color: var(--ink); text-wrap: pretty; }
   .uaside::before { content: "↳"; position: absolute; left: 0; top: 0; color: var(--muted); }
   .unote { position: absolute; z-index: 2; display: flex; align-items: flex-start; gap: 6px; }
-  .uhand { display: inline-block; font: 400 25px/1.16 var(--hand); color: var(--ink); transform: rotate(-2.5deg); transform-origin: 0 50%; white-space: nowrap; }
+  .uhand { display: inline-block; padding: 3px 10px 2px; border: 3px solid currentColor; border-radius: 7px; font: 800 24px/1.1 var(--grot); letter-spacing: .08em; color: #2C7A1B; transform: rotate(-5deg); transform-origin: 0 50%; white-space: nowrap; }
+  .uhand.guilty { color: #B3261E; }
   .uarrow { flex: none; width: 60px; height: 44px; margin-top: -10px; overflow: visible; }
   .uarrow path { stroke-dasharray: 1; stroke-dashoffset: 0; }
   .urec { position: absolute; z-index: 2; margin: 0; font: 500 10.5px/1.2 Geist, var(--sys); letter-spacing: .04em; color: var(--muted); white-space: nowrap; }
@@ -168,7 +169,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   .unarrow .upunch { margin-top: 9px; font-size: clamp(23px, 7vw, 30px); line-height: 1; }
   .unarrow .uplain { margin-top: 9px; font-size: 13.5px; line-height: 1.42; }
   .unarrow .uaside { margin-top: 8px; font-size: 12px; }
-  .unarrow .uhand { font-size: 20px; transform: rotate(-1.5deg); }
+  .unarrow .uhand { font-size: 17px; border-width: 2.5px; transform: rotate(-4deg); }
   .unarrow .uarrow { width: 26px; height: 30px; margin-top: -14px; }
   .unarrow .useg i { width: 14px; }
   .unarrow .uprog { gap: 9px; font-size: 11px; }
@@ -484,7 +485,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <svg class="scribble" viewBox="0 0 24 34"><path class="u" d="M13.6 2.6 C 8.6 8.6, 16.6 14.6, 12.6 22.6 C 11.6 25.6, 12.6 28.6, 12.6 31.6"/><path d="M13 2 C 8 8, 16 14, 12 22 C 11 25, 12 28, 12 31"/><path d="M7.6 23.6 L12 31 L16.4 22.8"/></svg>
   </div>
 </header>
-<section id="stack" aria-label="What X0 Bot does, in six short clips">
+<section id="stack" aria-label="Seven doubts about X0 Bot, each answered by a witness and the app’s own screen">
   <div class="stage">
     <article class="uc">
       <div class="udev">
@@ -495,7 +496,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       <canvas class="ubot" aria-hidden="true"></canvas>
       <div class="utext" aria-live="polite"><p class="ukick"></p><h2 class="upunch"></h2><p class="uplain"></p><p class="uaside"></p></div>
       <p class="unote"><svg class="uarrow scribble" aria-hidden="true"><path class="shaft" pathLength="1"/><path class="head" pathLength="1"/></svg><span class="uhand"></span></p>
-      <p class="uprog" aria-hidden="true"><span class="unum"><b>01</b> / 06</span><span class="useg"><i></i><i></i><i></i><i></i><i></i><i></i></span></p>
+      <p class="uprog" aria-hidden="true"><span class="unum"><b>01</b> / 07</span><span class="useg"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span></p>
     </article>
   </div>
 </section>
@@ -1222,40 +1223,33 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     if (hintOn && sy > 24 && !hint.classList.contains("gone")) hint.classList.add("gone");
   }
 
-  // ---- Scene two: one card, six uses -------------------------------------------
-  // One paper card with him inside it. Each use is one screen of scroll; at the
-  // half-way point only the card's content changes (never the card, never him):
-  // the old words lift away soft, the old clip holds while the device morphs
-  // between phone and MacBook and the new one comes up over it (every use's
-  // picture is there from the start), the new words set in line by line and the
-  // note is written in. He hops, glances at the new words, then follows the
-  // clip's beats with his hands (media/clips-*.json), pointing at the screen.
-  // The copy: a stamp (who, when), an odd situation, what happened, an honest
-  // aside, a note in the margin; the clip under it is the proof.
+  // ---- Scene two: one card, seven cases ----------------------------------------
+  // One paper card with him inside it: a court, one case per bot. Each case is one
+  // screen of scroll; at the half-way point only the card's content changes (never
+  // the card, never him): the old words lift away soft, the old clip holds until
+  // the new one is up over it, the new words set in line by line and the verdict is
+  // stamped. The copy: the case (which bot), a doubt people have, a witness that was
+  // in the room and its statement, and the verdict. The evidence under it is the
+  // app's own screen, drawn by the app's own renderer (media/case*.mp4). He hops,
+  // glances at the new words, then follows each clip's beats (cuts), pointing at it.
+  // Six doubts are thrown out; the seventh sticks: it needs internet.
   const USES = [
-    { id: "offer", device: "phone", kick: "Keylessbord · 4:52 PM · a job offer", punch: "Ask for more money in a shaky voice.",
-      plain: "You mumble “ok wow… um, closer to one thirty?” What lands in Messages is calm and clear. You press send.",
-      aside: "It drops the “um” and keeps what you meant. Same in Hindi or Hinglish.", note: "$118k → $128k", rec: "the clip · 7 seconds" },
-    { id: "xode", device: "laptop", kick: "Xode · 1:58 AM · 3 failing tests", punch: "Fix the bug in your sleep. Literally.",
-      plain: "Hand Xode the 3 failing tests and go to bed. At 7:31 AM, 215 of 215 pass and PR #129 is waiting.",
-      aside: "It opens a pull request. Merging stays your call.", note: "zzz… 215 / 215 ✓", rec: "the clip · 1:58 AM to 7:31 AM, in 6 seconds" },
-    { id: "escape", device: "phone", kick: "Travel bot · Friday · 4:58 PM", punch: "Get Monday off at 4:56. Have a Lisbon plan by 4:58.",
-      plain: "Say “somewhere warm with a beach, leaving tonight, back Monday”. Back comes a 7:40 PM flight, a place 6 minutes from the sea, and 24° all weekend.",
-      aside: "Nothing is booked until you say so.", note: "pack light ☀️", rec: "the clip · 7 seconds" },
-    { id: "grok", device: "laptop", kick: "Ask any bot · Grok · out loud", punch: "Ask Grok what crashes first if cats run the stock market.",
-      plain: "Say it the way it falls out: “so um, if cats ran the stock market…”. It lands in Grok as one clean question.",
-      aside: "It writes the question. You still press send.", note: "question mark included ✓", rec: "the clip · 4 seconds" },
-    { id: "home", device: "laptop", kick: "Home · 7:42 PM · dinner at 8", punch: "Answer one question. Leave for dinner.",
-      plain: "Xode asks: round the cart total per item, or once at the end? You click “Per item”. It finishes, and Home says “All set. Go enjoy dinner.”",
-      aside: "“Done” came after every test passed, not before.", note: "dinner at 8 ✓", rec: "the clip · 6 seconds" },
-    { id: "lock", device: "phone", kick: "Xode · 8:14 PM · at dinner", punch: "Make a coding decision with one thumb, mid-pasta.",
-      plain: "Xode asks which sign-in style to use. You tap “Simple” right on the Lock Screen. At 8:15, PR #130 is ready.",
-      aside: "When it isn't sure, it asks you instead of guessing.", note: "phone down. the food's here 🍝", rec: "the clip · 8:14 to 8:15 PM, in 6 seconds" },
+    { id: "case1", kick: "Case 1 · Keylessbord", punch: "“It’ll put words in my mouth.”", plain: "Witness: the parrot. “Word for word, like me. Minus Maya’s eleven ‘ums’.”", aside: "Only the ‘ums’ were harmed.", verdict: "NOT GUILTY", guilty: false,
+      cuts: [{ from: 0, to: 1.4, bot: "present" }, { from: 1.4, to: 3.8, bot: "tap" }, { from: 3.8, to: 99, bot: "thumbs" }] },
+    { id: "case2", kick: "Case 2 · Xode", punch: "“It’ll rewrite my code while I sleep.”", plain: "Witness: the snooze button. “Pressed five times. Meanwhile it asked Kai one question. Merged nothing.”", aside: "Opens a pull request. You merge.", verdict: "NOT GUILTY", guilty: false,
+      cuts: [{ from: 0, to: 1.4, bot: "present" }, { from: 1.4, to: 3.8, bot: "tap" }, { from: 3.8, to: 99, bot: "thumbs" }] },
+    { id: "case3", kick: "Case 3 · Notes", punch: "“Someone still has to take notes.”", plain: "Witness: the mute button. “Nina hid behind me all call. Still got a to-do: Thursday.”", aside: "Notes taken. Nobody took them.", verdict: "NOT GUILTY", guilty: false,
+      cuts: [{ from: 0, to: 1.4, bot: "present" }, { from: 1.4, to: 3.8, bot: "tap" }, { from: 3.8, to: 99, bot: "thumbs" }] },
+    { id: "case4", kick: "Case 4 · Travel bot", punch: "“It’ll book the wrong flight.”", plain: "Witness: the suitcase. “Packed since Monday. Mia hasn’t pressed pay.”", aside: "Only you press pay.", verdict: "NOT GUILTY", guilty: false,
+      cuts: [{ from: 0, to: 1.4, bot: "present" }, { from: 1.4, to: 3.8, bot: "tap" }, { from: 3.8, to: 99, bot: "thumbs" }] },
+    { id: "case5", kick: "Case 5 · Spaces", punch: "“Shared lists never stay shared.”", plain: "Witness: the fridge door. “Omar added eggs from the bus. I’m just a door now.”", aside: "One list. Everyone edits.", verdict: "NOT GUILTY", guilty: false,
+      cuts: [{ from: 0, to: 1.4, bot: "present" }, { from: 1.4, to: 3.8, bot: "tap" }, { from: 3.8, to: 99, bot: "thumbs" }] },
+    { id: "case6", kick: "Case 6 · Plan Ease", punch: "“It doesn’t know my day.”", plain: "Witness: the alarm clock. “I only know 7:00. It knows Lena’s dentist is 25 minutes away.”", aside: "Travel time included.", verdict: "NOT GUILTY", guilty: false,
+      cuts: [{ from: 0, to: 1.4, bot: "present" }, { from: 1.4, to: 3.8, bot: "tap" }, { from: 3.8, to: 99, bot: "thumbs" }] },
+    { id: "case7", kick: "Case 7 · Every bot", punch: "“It won’t work offline.”", plain: "Witness: the elevator. “Floor 7, zero bars. Leo asked every bot. Silence.”", aside: "Needs internet. More bots awaiting trial.", verdict: "GUILTY", guilty: true,
+      cuts: [{ from: 0, to: 1.6, bot: "present" }, { from: 1.6, to: 99, bot: "listen" }] },
   ];
-  // The Grok film has no json of its own: his poses by its beats. Every other clip carries its cuts (media/clips-*.json).
-  const FALLBACK_CUTS = {
-    grok: [{ from: 0, to: 1.1, bot: "present" }, { from: 1.1, to: 2.5, bot: "tap" }, { from: 2.5, to: 99, bot: "thumbs" }],
-  };
+  const REC = "Evidence: the app’s own screen";
   const N = USES.length;
   const stack = document.getElementById("stack"), stage = stack.querySelector(".stage"), uc = stage.querySelector(".uc"), uq = (s) => uc.querySelector(s);
   const uband = uq(".uband"), ulid = uq(".ulid"), uscr = uq(".uscr"), uisl = uq(".uisl"), unotch = uq(".unotch"), uhinge = uq(".uhinge"), ubase = uq(".ubase"), uplay = uq(".play");
@@ -1276,24 +1270,10 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     narrow: { box: "0 0 26 30", shaft: "M23 28 C 14 27, 7 21, 8 13 S 10 5, 11 2", head: "M5.6 8 L11 2 L13.6 9.4" },
   };
 
-  async function loadClips() {
-    const get = (u) => fetch(u, { cache: "no-cache" }).then((r) => (r.ok ? r.json() : null)).catch(() => null);
-    let list = [];
-    const [a, b] = await Promise.all([get("/media/clips-phone.json"), get("/media/clips-laptop.json")]);
-    if (a && Array.isArray(a.clips)) list.push(...a.clips);
-    if (b && Array.isArray(b.clips)) list.push(...b.clips);
-    if (!a || !b) { const m = await get("/media/clips.json"); if (m && Array.isArray(m.clips)) list = m.clips.concat(list); }
-    const by = {};
-    for (const c of list) if (c && c.id) by[c.id] = Object.assign(by[c.id] || {}, c);
-    return by;
-  }
-
-  function build(by) {
+  function build() {
     uses = USES.map((s, i) => {
-      const phone = s.device === "phone";
-      const clip = Object.assign({ w: phone ? 540 : 1280, h: phone ? 1170 : 800, webm: `/media/${s.id}.webm`, mp4: `/media/${s.id}.mp4`, poster: `/media/${s.id}.webp`, island: null }, by[s.id] || {});
-      clip.cuts = Array.isArray(clip.cuts) && clip.cuts.length ? clip.cuts : (FALLBACK_CUTS[s.id] || []);
-      if (FALLBACK_CUTS[s.id] && !clip.cuts.some((k) => k.bot)) clip.cuts = FALLBACK_CUTS[s.id];
+      const phone = true;
+      const clip = { w: 540, h: 1170, webm: `/media/${s.id}.webm`, mp4: `/media/${s.id}.mp4`, poster: `/media/${s.id}.webp`, island: null, cuts: s.cuts };
       const v = document.createElement("video");
       v.muted = true; v.loop = true; v.playsInline = true; v.preload = "none";
       ["muted", "playsinline", "disablepictureinpicture"].forEach((a) => v.setAttribute(a, ""));
@@ -1401,7 +1381,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     upunch.innerHTML = s.punch.split(" ").map((w) => `<span class="wd">${w}</span>`).join(" ");
     uplain.textContent = s.plain; uaside.textContent = s.aside;
     if (raw) return;
-    uhand.textContent = s.note; urec.textContent = s.rec;
+    uhand.textContent = s.verdict; uhand.classList.toggle("guilty", !!s.guilty); urec.textContent = REC;
     uc.setAttribute("aria-label", `${i + 1} of ${N}: ${s.punch}`);
     unum.innerHTML = `<b>${String(i + 1).padStart(2, "0")}</b> / ${String(N).padStart(2, "0")}`;
     placeWords();
@@ -2080,7 +2060,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   addEventListener("resize", () => { clearTimeout(rz); rz = setTimeout(() => { const x = B.mode === "wait" || B.mode === "walk"; fitAll(); if (x) replay(); else { B.x = VW / 2; wordsDirty = true; } }, 120); });
   scrollTo(0, 0); setLock(!reduced);
   buildDesk(); fitAll(); resetBot(); wake();
-  loadClips().then(build).catch((e) => { console.warn("uses:", e); build({}); });
+  build();
 })();
 </script>
 </body>
