@@ -4,7 +4,8 @@ No build, no framework, no dependencies. One static page, and the API behind
 it for the backend's pages and the downloads.
 
 ```
-index.html            the page: markup, one <style>, two inline <script>s (GTM, the page), and a <noscript> head style
+index.html            the page: markup, one <style>, one inline <script> (GTM), a <noscript> head style; loads js/main.js
+js/                   the page's script, one module per part: paper/ (grain, water, words, glitch), blip/ (figure, dots, walker), page/ (opening, key), main.js
 api/                  Meta's pixel and its Conversions API copy (see Meta's pixel)
 vercel.json           rewrites to the API, headers, the home page's CSP, caching
 csp.mjs               writes index.html's inline hashes into the home page's CSP
@@ -15,8 +16,8 @@ favicon.ico, favicon-32x32.png, favicon.svg, apple-touch-icon.png, icon-192.png,
 
 ## The page
 
-For now the page is its first screen only, one sheet of paper drawn in one
-script: a plane of tiny words in the world's scripts that moves like water,
+For now the page is its first screen only, one sheet of paper drawn by the
+modules in `js/` (`main.js` runs one frame loop for all of them): a plane of tiny words in the world's scripts that moves like water,
 the dotted bot walking in from the right to the middle and waving (his steps
 and each wave of his hand send rings through the words), then the blur moment
 where the "Take me home" key arrives at the top left and the name follows at
@@ -41,7 +42,7 @@ Tailzu is and links every device. Every download link carries `data-place`
 
 ```
 cd TAILZU-BACKEND/tulmi && npx tsx scripts/sync-site.mts ../../TAILZU-WEB/index.html   # when the backend's head changed (runs csp.mjs too)
-cd ../../TAILZU-WEB && node csp.mjs                                                    # after any edit to an inline <script> or <style>
+cd ../../TAILZU-WEB && node csp.mjs                                                    # after any edit to an inline <script> or <style> (js/ needs none)
 ```
 
 Before a push both checks pass (the sync's `--check` runs `csp.mjs --check`):

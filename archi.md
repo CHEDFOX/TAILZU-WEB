@@ -7,7 +7,19 @@ step, no framework, no dependencies. Deployed by Vercel on every push to `main`.
 ## Layout
 
 ```
-index.html              the page: markup, one <style>, the tag manager and the page script inline, a <noscript> fallback
+index.html              the page: markup, one <style>, the tag manager inline, a <noscript> fallback; loads js/main.js
+js/                     the page's script, one ES module per part (no build step; the CSP allows scripts from this origin)
+  main.js               wires the parts together: sizes, the one frame loop, resize
+  util.js               small helpers, and the window's size and pixel ratio (`view`)
+  paper/grain.js        the paper's grain and light
+  paper/water.js        the plane as water: a 2-D wave equation, splash() and sample()
+  paper/words.js        the plane of tiny words in the world's scripts, moved by the water; their 0/1 flicker
+  paper/glitch.js       the page's own words flicker into 0/1 under the pointer
+  blip/figure.js        Blip's figure, drawn in greys (pose in, hand and antenna ball out)
+  blip/dots.js          the one renderer that turns the figure into his ink sticker and dots
+  blip/walker.js        his bouncy walk (any scene: its height, ground, speed and water)
+  page/opening.js       the opening: he walks in from the right and waves, then watches the pointer
+  page/key.js           the "Take me home" key and the name, arriving after the wave
 api/                    Vercel serverless functions (Node)
   _meta.js              shared Meta pixel / Conversions API helpers (reads the dataset id and token from Vercel env)
   site-event.js         POST /v1/site/event: a page event (e.g. a download press) sent to Meta's Conversions API
@@ -27,8 +39,8 @@ README.md               how the page behaves, what to run after a change, how pu
 
 | Looking for | Where |
 |---|---|
-| The first screen: the plane of words, the bot's walk and wave, the key's arrival | `index.html`, the page script (`drawWords`, `figure`, `updateBot`, `revealMast`) |
-| The download button's per-device target | `index.html` (the `#home` key's script) |
+| The first screen: the plane of words, the bot's walk and wave, the key's arrival | `js/paper/words.js`, `js/blip/figure.js`, `js/page/opening.js`, `js/page/key.js` |
+| The download button's per-device target | `js/page/key.js` (`homeLink`) |
 | The `<head>` (title, canonical, structured data) | between `SEO:HEAD` markers in `index.html`, written by the backend's `tulmi/scripts/sync-site.mts`; never edit by hand |
 | Pricing, privacy, terms, support, delete-account, FAQ, language and SEO pages, and `/device` (signing in to Xode in the terminal) | served by the backend (`api.x0bot.com`), mapped here in `vercel.json` `rewrites` |
 | Desktop installers (`Tailzu-Setup.exe`, `Tailzu.dmg`, `Tailzu.AppImage`) | proxied from `api.x0bot.com/downloads/` by `vercel.json` |
@@ -47,7 +59,8 @@ README.md               how the page behaves, what to run after a change, how pu
 
 ## Working on it
 
-- After editing an inline `<script>` or `<style>`: `node csp.mjs` (a stale hash blanks the page).
+- After editing an inline `<script>` or `<style>` in `index.html`: `node csp.mjs` (a stale hash blanks the page). The files in
+  `js/` need no hash.
 - After the backend's head changed: from `TAILZU-BACKEND/tulmi`, `npx tsx scripts/sync-site.mts ../../TAILZU-WEB/index.html`
   (add `--check` before pushing).
 - Publishing: push to `main`; Vercel deploys in under a minute.
