@@ -50,13 +50,14 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <link rel="manifest" href="/site.webmanifest">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="/css/screens.css">
 <link rel="stylesheet" id="fonts" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,800&amp;display=swap" media="print">
 <noscript>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,800&amp;display=swap">
 <style>
   /* Without JavaScript nothing can play: the page says what Tailzu is and
      gives every device its download, above the links. */
-  #words, #hero, #spot, #mast { display: none; }
+  #words, #hero, #spot, #mast, #screens { display: none; }
   .nojs { position: relative; z-index: 2; box-sizing: border-box; min-height: 72vh; padding: 96px 16px 8px;
     display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 18px; text-align: center; }
   .nojs h1 { margin: 0; font: 800 clamp(40px, 7vw, 92px)/.95 var(--grot); letter-spacing: -.045em; color: var(--ink); text-wrap: balance; }
@@ -82,6 +83,8 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     color-scheme: light;
   }
   html { background: var(--paper); }
+  /* The page never scrolls (a scroll moves it a step), so nothing should bounce. */
+  html, body { overscroll-behavior: none; }
   .glb { display: inline-block; white-space: nowrap; vertical-align: baseline; text-align: left; }
   .glb.held { clip-path: inset(0 -0.05em 0 0); }
   body {
@@ -182,6 +185,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <header id="hero">
   <canvas id="bot" role="img" aria-label="X0 Bot's dotted character walks in from the right, stops in the middle and waves. Its steps send faint green ripples through a field of tiny words in many languages."></canvas>
 </header>
+<div id="screens" aria-hidden="true"></div>
+<p class="sr" id="say" aria-live="polite"></p>
 <div class="spot" id="spot" aria-hidden="true"></div>
 
 <script type="module" src="/js/main.js"></script>

@@ -5,8 +5,11 @@ import { BAYER, figure } from "./figure.js";
  * The one renderer for the dotted figure, wherever he stands: the figure in
  * greys into a small buffer (one cell per dot), then an ink sticker grown
  * around it, then the dots the dither lets through, then the antenna's glow.
- * o: { H, cell, x, y (feet, ground), mirror, squash, land, air, st, t, glow, padX }.
- * Returns the hand and the antenna's ball in g's coordinates.
+ * o: { H, cell, x, y (feet, ground), mirror, squash, land, air, st, t, glow, padX, capture }.
+ * Returns the hand and the antenna's ball in g's coordinates. With o.capture
+ * it draws nothing and also returns every dot it would have drawn, where it
+ * would have drawn it: `ink` and `lit`, flat [x, y, x, y, ...] lists (the
+ * sticker's dots and the pale ones), for whatever takes him apart.
  */
 export function makeDots() {
   let buf = null, on = null;
@@ -24,6 +27,7 @@ export function makeDots() {
     const map = (fx, fy) => { const lx = o.mirror ? W - fx : fx; return [o.x + (lx - W / 2) * sq, o.y - H + fy]; };
     const src = fg.getImageData(0, 0, bw, bh).data;
     const ox = o.x - W / 2 - PX, oy = o.y - H - TOP;
+    if (o.capture) return capture(o, W, H, cell, ox, oy, bw, bh, src, map(f.hand[0], f.hand[1]), map(f.ball[0], f.ball[1]), sq * (1 + .05 * land - .02 * air), 1 - .06 * land + .03 * air);
     // The shadow it stands in.
     const lifted = Math.max(st.legs[0].lift, st.legs[1].lift) / H;
     g.fillStyle = `rgba(28,24,18,${.1 - air * .04})`; g.beginPath(); g.ellipse(o.x, o.y - .004 * H, H * (.2 - lifted * .5 - air * .03) * sq, H * .022, 0, 0, TAU); g.fill();
@@ -56,4 +60,22 @@ export function makeDots() {
     }
     return { hand, ball };
   };
+
+  /** The same dots as a draw, as two lists, through the same squash about the feet. */
+  function capture(o, W, H, cell, ox, oy, bw, bh, src, hand, ball, kx, ky) {
+    for (let i = 0; i < bw * bh; i++) on[i] = src[i * 4 + 3] > 60 ? 1 : 0;
+    const ink = [], lit = [], X = (px) => o.x + (px - o.x) * kx, Y = (py) => o.y + (py - o.y) * ky;
+    for (let y = 0; y < bh; y++) for (let x = 0; x < bw; x++) {
+      let hit = on[y * bw + x];
+      if (!hit) for (let j = -1; j <= 1 && !hit; j++) for (let i = -1; i <= 1 && !hit; i++) { const xx = x + i, yy = y + j; if (xx >= 0 && yy >= 0 && xx < bw && yy < bh && on[yy * bw + xx]) hit = 1; }
+      const px = ox + x * cell + cell / 2, py = oy + y * cell + cell / 2;
+      if (hit) ink.push(X(px), Y(py));
+      const i4 = (y * bw + x) * 4, a = src[i4 + 3];
+      if (a >= 90) {
+        const lum = (src[i4] * .3 + src[i4 + 1] * .59 + src[i4 + 2] * .11) / 255 * (a / 255);
+        if (lum > (BAYER[(y & 7) * 8 + (x & 7)] + .5) / 64) lit.push(X(px), Y(py));
+      }
+    }
+    return { hand, ball, ink, lit, cell, H, x: o.x, y: o.y };
+  }
 }

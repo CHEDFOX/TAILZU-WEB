@@ -1,8 +1,11 @@
 // The opening: he walks in from the right to the middle and waves; then he
-// watches the pointer, and the pointer moves the water.
+// watches the pointer, and the pointer moves the water. After that the page
+// can hand him to his antenna (intoAntenna) and have him come back out of it,
+// at the opening's spot or at another one, smaller (outOfAntenna).
 import { TAU, clamp, lerp, easeOut, easeIO, reduced, view } from "../util.js";
 import { makeWalker } from "../blip/walker.js";
 import { makeDots } from "../blip/dots.js";
+import { makeAntenna } from "../blip/antenna.js";
 import { splash } from "../paper/water.js";
 
 const botCv = document.getElementById("bot"), bctx = botCv.getContext("2d");
@@ -12,11 +15,19 @@ const hero = document.getElementById("hero");
 export const opening = { introDone: false };
 
 // ---- The opening's walker: in from the right, to the middle, a wave --------
-let BH = 240, cellPx = 3;
+let BH = 240;
 const ground = () => Math.round(view.h * (view.w < 640 ? .6 : .56) + BH * .44);
+// Where he stands when the page has put him somewhere else (beside the screens): null for the opening's spot.
+let spot = null;
+const curH = () => (spot ? spot.H : BH), curGround = () => (spot ? spot.gy : ground());
+const cellFor = (H) => Math.max(2, Math.round(H / 92 * view.dpr)) / view.dpr;
 let T = 0;
 const SPEED = () => Math.max(170, Math.min(290, view.w * .19));
-const B = makeWalker({ H: () => BH, ground, speed: SPEED, slow: () => Math.min(190, view.w * .17), splash });
+const B = makeWalker({ H: curH, ground: curGround, speed: SPEED, slow: () => Math.min(190, view.w * .17), splash });
+// Whole and walking about ("figure"), or poured into his antenna, going in or coming out ("antenna").
+let form = "figure";
+const antenna = makeAntenna(splash);
+const capDots = makeDots();
 function resetBot() {
   Object.assign(B, {
     x: view.w + BH * .5, phase: 0, A: 0, v: 0, mirror: true, flipK: 1, squash: 0,
@@ -28,7 +39,7 @@ function resetBot() {
 
 function updateBot(dt) {
   const st = B.st, t = T;
-  st.bob = Math.sin(t * TAU * .9) * .008 * BH * (1 - st.walkK);
+  st.bob = reduced ? 0 : Math.sin(t * TAU * .9) * .008 * curH() * (1 - st.walkK);
   if (B.mode === "wait") { if (t > .5) B.mode = "walk"; return; }
   if (B.mode === "walk" && B.stride(dt, view.w / 2)) { B.mode = "settle"; B.t0 = t; }
   if (B.mode === "settle") {
@@ -51,7 +62,7 @@ function updateBot(dt) {
     st.ra = [lerp(.16, 2.5, up), lerp(.12, -.55, up) + .34 * osc * up];
     st.la = [.16, .12];
     st.mouth = up > .3 ? "grin" : "smile"; st.brows = lerp(.3, .75, up); st.tilt = -.06 * up;
-    B.glow = Math.max(0, up);
+    if (B.mode === "wave") B.glow = Math.max(0, up);
     // Each wave of the hand sends a small ring out of it.
     const n = Math.floor(Math.max(0, k - .35) * 1.45 + .25);
     if (B.mode === "wave" && k > .45 && k < 3.4 && n > B.waveN && last.hand) { B.waveN = n; splash(last.hand[0], last.hand[1], .8, 3.2); }
@@ -69,8 +80,12 @@ function drawBot(t) {
   const g = bctx;
   g.setTransform(view.dpr, 0, 0, view.dpr, 0, 0); g.clearRect(0, 0, view.w, view.h);
   if (B.mode === "wait") return;
-  const f = B.draw(g, heroDots, t, cellPx, B.glow);
-  last.hand = f.hand; last.ball = f.ball;
+  if (form === "figure") {
+    // Under reduced motion he holds still: one moment of his clock, no sway, no blink.
+    const f = B.draw(g, heroDots, reduced ? 0 : t, cellFor(curH()), B.glow);
+    last.hand = f.hand; last.ball = f.ball;
+  }
+  if (form === "antenna") antenna.draw(g);
 }
 
 // ---- The visitor's hand on the water, once the bot has said hello --------
@@ -79,7 +94,7 @@ let lastPt = null;
 addEventListener("pointermove", (e) => {
   const now = performance.now();
   if (opening.introDone) {
-    const H = BH, cx = B.x, cy = ground() - H * .7;
+    const H = curH(), cx = B.x, cy = curGround() - H * .7;
     lookAim[0] = clamp((e.clientX - cx) / (view.w * .35), -1, 1); lookAim[1] = clamp((e.clientY - cy) / (view.h * .35), -1, 1);
   }
   if (!opening.introDone || reduced) { lastPt = null; return; }
@@ -95,15 +110,54 @@ addEventListener("pointerdown", (e) => { if (opening.introDone && !reduced) spla
 /** Sizes him and his canvas to the window. */
 export function fitOpening() {
   BH = Math.round(clamp(Math.min(view.h * .24, view.w * .38), 120, 225));
-  cellPx = Math.max(2, Math.round(BH / 92 * view.dpr)) / view.dpr;
   botCv.width = Math.round(view.w * view.dpr); botCv.height = Math.round(view.h * view.dpr);
   hero.style.height = view.h + "px";
 }
 /** From the top: off to the right, about to walk in. */
-export function resetOpening() { T = 0; opening.introDone = false; lastPt = null; lookAim[0] = lookAim[1] = 0; resetBot(); }
+export function resetOpening() { T = 0; opening.introDone = false; lastPt = null; lookAim[0] = lookAim[1] = 0; spot = null; form = "figure"; resetBot(); }
 /** Still on his way in (a resize then starts the opening again). */
 export const walkingIn = () => B.mode === "wait" || B.mode === "walk";
 /** Back to the middle of a window that changed size. */
-export function recenter() { B.x = view.w / 2; }
-export function stepOpening(dt) { T += dt; updateBot(dt); }
+export function recenter() { if (!spot) B.x = view.w / 2; }
+export function stepOpening(dt) {
+  if (form === "antenna") {
+    // His own clock stands still while he is in the antenna, so the dots he comes back out as are exactly him.
+    antenna.step(dt);
+    if (antenna.state === "off") form = "figure";
+    return;
+  }
+  T += dt;
+  updateBot(dt);
+}
 export function drawOpening() { drawBot(T); }
+
+// ---- Into his antenna and out again -------------------------------------------
+/** He can be taken: in the middle (waving or standing), whole. */
+export const canTake = () => form === "figure" && (B.mode === "wave" || B.mode === "idle");
+/** "figure", or the antenna's own state: "in", "orb" (inside it, the antenna standing), "out". */
+export const blipForm = () => (form === "figure" ? "figure" : antenna.state);
+/** How much of him has poured into the antenna (0 to 1). */
+export const blipPoured = () => (form === "figure" ? 0 : antenna.poured);
+/** Into his antenna, which then stands with its foot at `at` ([x, y]), sized for a Blip `size` tall. */
+export function intoAntenna(at, size) {
+  if (!opening.introDone) opening.introDone = true;
+  const c = capDots(null, { H: curH(), cell: cellFor(curH()), x: B.x, y: curGround(), mirror: B.mirror, squash: B.squash, land: B.land, air: B.air, st: B.st, t: reduced ? 0 : T, capture: true });
+  antenna.suck(c, at, size);
+  form = "antenna";
+}
+/** Where the antenna stands (a resize moves it). */
+export function moveAntenna(at, size) { antenna.place(at, size); }
+/**
+ * Out of his antenna, standing at `to` ({ x, gy, H }: his feet and his height),
+ * or at the opening's spot when `to` is null: standing easy, facing us.
+ */
+export function outOfAntenna(to) {
+  spot = to ? { x: to.x, gy: to.gy, H: to.H } : null;
+  B.x = to ? to.x : view.w / 2; B.mirror = false; B.squash = 0; B.land = 0; B.air = 0; B.A = 0; B.v = 0; B.mode = "idle";
+  Object.assign(B.st, { ra: [.16, .12], la: [.16, .12], brows: .3, tilt: 0, mouth: "smile", legs: [{ th: 0, lift: 0 }, { th: 0, lift: 0 }], drop: 0, bob: 0, swayK: 1, antWob: 0, walkK: 0, look: [0, 0] });
+  B.glow = .4;
+  const c = capDots(null, { H: curH(), cell: cellFor(curH()), x: B.x, y: curGround(), mirror: false, st: B.st, t: reduced ? 0 : T, capture: true });
+  antenna.blow(c);
+}
+/** Where he stands beside the screens, when the window changes size while he is there. */
+export function moveSpot(to) { if (spot) { spot = { x: to.x, gy: to.gy, H: to.H }; B.x = to.x; } }
