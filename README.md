@@ -46,12 +46,12 @@ antenna between them, the three centred together); on a tall one the phone
 above and the laptop below, and there they wait until all of him is in, so
 they never cover him. Both show the app's real first screen, the Bots app's
 Welcome (Blip waving, "Hi, I'm X0.", "Everything here is a bot. Tell them
-what you need; they do the work.", and on the window the list of first
-bots), drawn by the app's own renderers, with the Start button and the link
-under it painted out: the page moves on without a press. To make them again:
-`cd TAILZU-BACKEND/tulmi && npx tsx scripts/bots-render/render.ts bots.welcome --out <dir>`,
-paint white over the button and the link, and save the phone at 780 x 1688
-and the window at 1600 x 1000 as WebP in `media/`.
+what you need; they do the work."), drawn by the app's own renderers, with
+the Start button and the link under it painted out (the page moves on
+without a press) and, on the window, the list of first bots too. To make
+them again: `cd TAILZU-BACKEND/tulmi && npx tsx scripts/bots-render/render.ts bots.welcome --out <dir>`,
+paint white over the button and the link (and the window's bots list), and
+save the phone at 780 x 1688 and the window at 1600 x 1000 as WebP in `media/`.
 
 **2, out again.** On the next move (or by itself four seconds after step 1
 first settles; never again after the visitor has come back to it) he comes

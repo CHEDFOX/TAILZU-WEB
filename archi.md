@@ -25,7 +25,7 @@ js/                     the page's script, one ES module per part (no build step
   page/screens.js       the phone and the laptop either side of him (above and below on a tall window), on springs
   page/welcome.js       the app's first screen in them: the app's own render, and the phone's status bar
 css/screens.css         the devices' frames and the screen in them
-media/                  welcome-phone.webp, welcome-desk.webp: the Bots app's Welcome, from its renderers (button and link painted out)
+media/                  welcome-phone.webp, welcome-desk.webp: the Bots app's Welcome, from its renderers (button, link and the window's bots list painted out)
 api/                    Vercel serverless functions (Node)
   _meta.js              shared Meta pixel / Conversions API helpers (reads the dataset id and token from Vercel env)
   site-event.js         POST /v1/site/event: a page event (e.g. a download press) sent to Meta's Conversions API

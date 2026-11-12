@@ -1,9 +1,10 @@
 // The app's first screen, the Bots app's Welcome, as the app's own renderers
 // draw it: Blip waving, "Hi, I'm X0.", "Everything here is a bot…" (the phone
-// at 390 x 844; the window at 1280 x 800, with its list of first bots). The
+// at 390 x 844; the window at 1280 x 800). The
 // pictures are the render check's (TAILZU-BACKEND scripts/bots-render,
 // screen bots.welcome) with the Start button and the "I already have an
-// account" link under it painted out: the page moves on without a press.
+// account" link under it painted out (the page moves on without a press),
+// and on the window its list of first bots too.
 // On the phone the system's status bar sits over it, and the screen sits
 // below the island as a phone's safe area puts it.
 const SHOT = {
