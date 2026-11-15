@@ -47,7 +47,8 @@ js/                     the page's script, one ES module per part (no build step
   page/steps.js         the page never scrolls: a scroll, swipe or key moves it one step (0 opening, 1 into the antenna + screens, 2 out again)
   page/screens.js       the phone and the laptop either side of him (above and below on a tall window), on springs
   page/screen.js        what is in them: an empty white screen, and the phone's status bar
-  page/crowd.js         the bots that come onto that screen and wander it, one colour each, drawn like Blip
+  page/arrivals.js      the bots' walk in off the page to a device, on a canvas under it (so the last of it is behind the frame)
+  page/crowd.js         the milling about once on the glass: random spots, random paces, a dozen things they do, one colour each
 css/screens.css         the devices' frames and the screen in them
 api/                    Vercel serverless functions (Node)
   _meta.js              shared Meta pixel / Conversions API helpers (reads the dataset id and token from Vercel env)
@@ -72,7 +73,9 @@ README.md               how the page behaves, what to run after a change, how pu
 | The steps (what a scroll does, the step 2 that comes by itself after 4 s the first time) | `js/page/steps.js` |
 | Into the antenna and out (the springs, the order, the stalk) | `js/blip/antenna.js` (its constants at the top) |
 | The phone and laptop: sizes, places, their springs | `js/page/screens.js` (`layoutScreens`), `css/screens.css` |
-| The bots on those screens: how many, how big, how they come on, what they do | `js/page/crowd.js` (`BOTS`, `WALKS`, `GEST` and `place` at the top) |
+| The bots: who they are, how they walk, the dozen things they do | `js/page/crowd.js` (`BOTS`, `WALKS`, `GEST`) |
+| How many fit a screen, how big they are, how they roam it | `js/page/crowd.js` (`capacity`, `sizeAt`, `roam`) |
+| Their walk across the page, and where the door into each screen is | `js/page/arrivals.js`; the glass's place on the page is `js/page/screens.js` (`layoutScreens`, `arrivals.setRect`) |
 | The download button's per-device target | `js/page/key.js` (`homeLink`) |
 | The `<head>` (title, canonical, structured data) | between `SEO:HEAD` markers in `index.html`, written by the backend's `tulmi/scripts/sync-site.mts`; never edit by hand |
 | Pricing, privacy, terms, support, delete-account, FAQ, language and SEO pages, and `/device` (signing in to Xode in the terminal) | served by the backend (`api.x0bot.com`), mapped here in `vercel.json` `rewrites` |
@@ -86,7 +89,7 @@ README.md               how the page behaves, what to run after a change, how pu
 
 - The browser loads `index.html`; `js/main.js` runs one frame loop for every part: the plane of words, the bot walking in
   and waving, the "Take me home" key and the name; then, step by step as the visitor scrolls, Blip into his antenna and the
-  phone and the laptop with the bots walking onto their screens, then Blip back out.
+  phone and the laptop, the bots walking in off the page onto their screens, then Blip back out.
 - Everything dynamic belongs to the backend: Vercel rewrites `/v1/...`, `/download`, the installers and the
   backend's pages to `api.x0bot.com`, so the site never handles accounts, payments or large files itself.
 - Only the page's own analytics run here (`api/`), with credentials from Vercel's environment variables.

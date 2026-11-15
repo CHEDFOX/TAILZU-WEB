@@ -5,7 +5,7 @@ it for the backend's pages and the downloads.
 
 ```
 index.html            the page: markup, one <style>, one inline <script> (GTM), a <noscript> head style; loads js/main.js
-js/                   the page's script, one module per part: paper/ (grain, water, words, glitch), blip/ (figure, dots, walker, antenna), page/ (opening, key, steps, screens, screen, crowd), main.js
+js/                   the page's script, one module per part: paper/ (grain, water, words, glitch), blip/ (figure, dots, walker, antenna), page/ (opening, key, steps, screens, screen, arrivals, crowd), main.js
 css/screens.css       the phone and laptop frames, the app screen in them, the phone's status bar
 api/                  Meta's pixel and its Conversions API copy (see Meta's pixel)
 vercel.json           rewrites to the API, headers, the home page's CSP, caching
@@ -45,20 +45,40 @@ antenna between them, the three centred together); on a tall one the phone
 above and the laptop below, and there they wait until all of him is in, so
 they never cover him.
 
-Both screens are empty white when they arrive. Then the bots come on, one at
-a time, each from the other side of the screen to the last: Xode, Keylessbord,
-Plan Ease, Travel bot, Oracle, Mail, Lingo and Meetings, as many of them as
-the screen is wide enough for. One runs on and brakes, one strolls, one skids
-to a stop, one comes on hopping. Each keeps to a band of its own and wanders
-it, stopping to wave, to look about, to stretch or to nod, and then moving
-on. They stand in lanes: the further up the screen, the smaller and the
-further back, and the nearer ones pass in front. Each wears the colour the
-app gives it (TAILZU-BACKEND `src/bots/builtin.ts`, with
-`experience/bots/palette.ts` for the hex) — the dots a pale wash of it, the
-sticker under them a dark one — and each is drawn by the same renderer as
-Blip himself. The Blip standing between the two devices is the page's own and
-is not one of them. `js/page/crowd.js` holds all of it; the screen around
-them (empty white, and the phone's status bar) is `js/page/screen.js`.
+Both screens are empty white when they arrive, and they fill the way a room
+fills: **the bots walk in off the page**. One at a time a bot comes on at the
+edge of the WINDOW, out on the sheet of words where Blip himself walks — its
+steps sending the same rings through the water — and makes its way across to
+the device it is heading for. It is already the size it will be on the glass,
+walking along the line its floor will be on, so nothing about it changes when
+it gets there: the devices are painted over that canvas, so the last of the
+walk happens behind the frame, and it slips behind the bezel on the page and
+comes out on the screen. Xode, Keylessbord, Plan Ease, Travel bot, Oracle,
+Mail, Lingo and Meetings, and past the end of the roster it starts again — as
+many as the screen is wide enough for, which is about fourteen on a laptop
+and four on a phone.
+
+Once on, nothing about them is laid out. A bot walks to a spot it picked at
+random, at a speed it picked at random (it runs, strolls, ambles, skids,
+hops or bounds), changing its mind on the way as often as not; wherever it
+stops it does one of a dozen things — waves, looks about, stretches, nods,
+jumps, spins on the spot, dances, points, shrugs, peers, bounces, scratches —
+waits as long as it likes, and goes somewhere else. It roams in two
+directions, not one: every walk also carries it nearer or further, which
+makes it bigger or smaller and moves its floor up or down the screen, and the
+ones in front pass over the ones behind. Now and then one walks clean off an
+edge and comes back on from the other.
+
+Each wears the colour the app gives it (TAILZU-BACKEND `src/bots/builtin.ts`,
+with `experience/bots/palette.ts` for the hex) — the dots a pale wash of it,
+the sticker under them a dark one — and each is drawn by the same renderer as
+Blip himself, which takes an ink and a lit colour and falls back to his own.
+Every bot has its own seed, so the second Xode is not the first one. The Blip
+standing between the two devices is the page's own and is not one of them.
+
+`js/page/arrivals.js` is the walk over, `js/page/crowd.js` the milling about
+once on, and `js/page/screen.js` the screen around them (empty white, and the
+phone's status bar).
 
 **2, out again.** On the next move (or by itself four seconds after step 1
 first settles; never again after the visitor has come back to it) he comes

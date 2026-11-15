@@ -1,7 +1,8 @@
 // What is inside the phone's and the laptop's glass on step 1: an empty white
-// screen, the phone's own status bar over it, and the bots that come in and
-// wander about on it (page/crowd.js). Nothing else — no app screen, no copy.
-// The screen starts empty every time the device goes and comes back.
+// screen, the phone's own status bar over it, and the bots that walk on off
+// the page (page/arrivals.js) and wander about on it (page/crowd.js). Nothing
+// else — no app screen, no copy. The screen starts empty every time the
+// device goes and comes back.
 import { makeCrowd } from "./crowd.js";
 
 const PH = 844 / 390;                       // the phone's screen, tall per wide
@@ -29,13 +30,14 @@ export function makeScreen(kind) {
   if (kind === "phone") { bar = statusBar(); root.appendChild(bar); }
   return {
     el: root,
+    crowd,
+    /** The glass is `w` CSS pixels wide; how tall follows from which device it is. */
+    size: (w) => ({ w, h: kind === "phone" ? w * PH : Math.round(w * DESK) }),
     /** The device's screen is `w` CSS pixels wide: the bots' floor, and the status bar, scaled to it. */
     fit(w) {
-      const h = kind === "phone" ? w * PH : w * DESK;
-      crowd.fit(w, h);
+      crowd.fit(w, this.size(w).h);
       if (bar) bar.style.transform = `scale(${(w / 390).toFixed(4)})`;
     },
-    enter: () => crowd.enter(),
     leave: () => crowd.leave(),
     step(dt) { crowd.step(dt); if (crowd.due()) crowd.draw(); },
   };

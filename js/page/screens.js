@@ -6,6 +6,7 @@
 // its own side.
 import { TAU, clamp, reduced, view } from "../util.js";
 import { makeScreen } from "./screen.js";
+import * as arrivals from "./arrivals.js";
 
 const box = document.getElementById("screens");
 const PH = 844 / 390;                       // the phone's screen, tall per wide
@@ -28,7 +29,8 @@ function device(kind) {
     glass.appendChild(scr); lid.appendChild(glass); d.append(lid, base);
   }
   box.appendChild(d);
-  return { el: d, scn, e: 0, v: 0, to: 0, delay: 0, w: 0, h: 0 };
+  arrivals.register(kind, scn.crowd);
+  return { el: d, kind, scn, e: 0, v: 0, to: 0, delay: 0, w: 0, h: 0 };
 }
 const phone = device("phone"), lap = device("desk");
 
@@ -49,7 +51,8 @@ function sizePhone(ps) {
   s.width = w + "px"; s.height = h + "px";
   s.setProperty("--pb", pb + "px"); s.setProperty("--pr", r + "px"); s.setProperty("--pw", ps + "px");
   phone.w = w; phone.h = h;
-  return { w, h, sw: ps };
+  // Where the glass sits inside the device box: the band, then the bezel.
+  return { w, h, sw: ps, ox: pBez(ps), oy: pBez(ps) };
 }
 /** A laptop whose screen is `sw` wide: the lid, a thin bezel with the camera, and a base 6% wider. */
 function sizeLaptop(sw) {
@@ -58,7 +61,7 @@ function sizeLaptop(sw) {
   s.width = p.w + "px"; s.height = p.h + "px";
   for (const [k, v] of [["--lw", p.lw], ["--lh", p.lh], ["--lx", p.lx], ["--lb", p.lb], ["--lbb", p.lbb], ["--lr", p.lr], ["--bw", p.bw], ["--bh", p.bh], ["--sw", sw], ["--sh", p.sh]]) s.setProperty(k, v + "px");
   lap.w = p.w; lap.h = p.h;
-  return { w: p.w, h: p.h, sw };
+  return { w: p.w, h: p.h, sw, ox: p.lx + 1.25 + p.lb, oy: 1.25 + p.lb };
 }
 
 let side = true;
@@ -103,6 +106,10 @@ export function layoutScreens() {
   phone.el.style.left = px + "px"; phone.el.style.top = py + "px";
   lap.el.style.left = qx + "px"; lap.el.style.top = qy + "px";
   phone.scn.fit(P.sw); lap.scn.fit(Q.sw);
+  // Where each glass is on the page, for the bots walking over to it.
+  arrivals.fitPage();
+  arrivals.setRect("phone", { x: px + P.ox, y: py + P.oy, ...phone.scn.size(P.sw) });
+  arrivals.setRect("desk", { x: qx + Q.ox, y: qy + Q.oy, ...lap.scn.size(Q.sw) });
   paint(phone); paint(lap);
   return { blip, foot: [blip.x, blip.gy] };
 }
@@ -138,10 +145,13 @@ export function stepScreens(dt) {
     else { d.v += (W_IN * W_IN * (d.to - d.e) - 2 * Z_IN * W_IN * d.v) * dt; d.e += d.v * dt; }
     if (d.to === 0 && d.e < .002) { d.e = 0; d.v = 0; }
     paint(d);
-    // The first bot steps on once the device itself is nearly in; the screen
-    // is empty again once it has gone.
-    if (d.to === 1 && d.e > .55) d.scn.enter();
-    if (d.to === 0 && d.e === 0) d.scn.leave();
+    // The bots set off across the page once the device has all but landed;
+    // the screen is empty again, and whoever is still walking over turns back,
+    // once it has gone.
+    if (d.to === 1 && d.e > .9) arrivals.start(d.kind);
+    if (d.to === 0 && d.e === 0) { arrivals.stop(d.kind); d.scn.leave(); }
     if (d.e > .02) d.scn.step(dt);
   }
+  arrivals.step(dt);
+  arrivals.draw();
 }
