@@ -16,6 +16,13 @@
 // roster the troupe starts it again, and the second Xode is not the first one:
 // every bot draws its size, its pace and its habits from its own seed.
 //
+// It ends twice over. `settle` calls them in: each finishes what it is in the
+// middle of, walks the short way to a spot that leaves room for the one beside
+// it, turns to us and stands — and only then (`settled`) will the page move
+// on. `vanish` takes them away the way Blip goes into his antenna: every dot a
+// particle pulled into that bot's own ball, in that bot's own colours
+// (blip/pour.js), until the screen is blank white again (`gone`).
+//
 // They are drawn with the same renderer as Blip himself (blip/figure.js
 // through blip/dots.js, walking on blip/walker.js), one buffer each. The Blip
 // standing BETWEEN the two devices is not one of them: he is the page's own,
@@ -23,6 +30,7 @@
 import { TAU, clamp, lerp, easeOut, easeIO, reduced, view } from "../util.js";
 import { makeWalker } from "../blip/walker.js";
 import { makeDots } from "../blip/dots.js";
+import { makePour } from "../blip/pour.js";
 
 /** The bots, in the order they first come on. The troupe cycles it. */
 export const BOTS = [
@@ -202,7 +210,7 @@ export function makeCrowd(kind) {
   const cv = document.createElement("canvas");
   cv.className = "crowd";
   const g = cv.getContext("2d");
-  let W = 0, H = 0, T = 0, bots = [], tick = 0;
+  let W = 0, H = 0, T = 0, bots = [], tick = 0, calm = false;
 
   /** How tall a bot of this build standing `d` deep is, and where its feet are. */
   const sizeAt = (r3, d) => Math.max(14, Math.min(W * .24, H * .28) * (1 + r3 * .22) * lerp(1, .55, d));
@@ -218,6 +226,7 @@ export function makeCrowd(kind) {
       mode: "walk", hold: 0, to: 0, whim: 0, cross: false,
       gest: "", gt: 0, gdur: 1, spun: false, glow: 0, turn: 0, run: 0,
       roll: 0, rollAt: .5, flair: .4, flairT: 9, flairK: 0,
+      calm: false, home: null, pour: null,
       st: freshState(),
     };
     b.w = makeWalker({
@@ -267,6 +276,42 @@ export function makeCrowd(kind) {
     if (b.run === undefined || b.run <= 0) b.run = 2 + ((Math.random() * 4) | 0);  // how many before it moves on
   }
 
+  /**
+   * Enough: it is called in to the spot `x`. Mid-walk it heads straight there;
+   * mid-move it plays the rest of that move out, no more, and goes after. Then
+   * it turns to us and stands.
+   */
+  function callIn(b, x) {
+    if (b.calm) return;
+    b.calm = true; b.home = x;
+    if (b.mode === "walk") toHome(b);
+    else if (b.mode === "breath") b.hold = Math.min(b.hold, b.gt + .05);
+  }
+
+  /** Over to the spot it was called to — a short, level walk — and stand there. */
+  function toHome(b) {
+    const m = b.H * .45, x = clamp(b.home === null ? b.w.x : b.home, m, Math.max(m, W - m));
+    if (Math.abs(b.w.x - x) < b.H * .22) { rest(b); return; }
+    b.d0 = b.d1 = b.d; b.cross = false; b.whim = 1e9;
+    b.to = x; b.xa = b.w.x; b.span = Math.max(1, Math.abs(b.to - b.xa));
+    b.sp = b.H * 1.6; b.slowK = 1.2; b.hopK = 0;
+    b.w.mirror = b.to < b.w.x; b.w.squash = 0; b.roll = 0; b.mode = "walk";
+  }
+
+  /** Standing easy, facing us, waiting: the pose it settles into. */
+  function rest(b) { b.mode = "rest"; b.turn = 0; b.run = 0; b.roll = 0; b.w.squash = 0; }
+
+  /** Its dots pour away into its own antenna's ball, which then pops (blip/pour.js). */
+  function startPour(b, delay) {
+    const c = b.dots(null, {
+      H: b.H, cell: cellFor(b.H), x: b.w.x, y: b.gy, mirror: b.w.mirror, squash: b.w.squash,
+      land: b.w.land || 0, air: b.w.air || 0, st: b.st, t: reduced ? 0 : T, capture: true,
+    });
+    b.pour = makePour();
+    b.pour.start(c, { ink: b.ink, lit: b.lit, delay });
+    b.mode = "gone";
+  }
+
   /** Under reduced motion nothing moves: they are simply there, standing, facing us. */
   function standStill(b, i, n) {
     b.mode = "still";
@@ -277,7 +322,22 @@ export function makeCrowd(kind) {
 
   function stepBot(b, dt) {
     const st = b.st;
+    if (b.mode === "gone") { b.pour.step(dt); return; }
     if (b.mode === "still") return;
+
+    if (b.mode === "rest") {
+      // Standing: turned to us, arms down, breathing, its eye wandering.
+      b.turn = Math.min(1, b.turn + dt * 3.4);
+      st.walkK = 1 - easeOut(b.turn);
+      b.w.A *= Math.pow(.02, dt); b.w.squash *= Math.pow(.02, dt);
+      for (const L of st.legs) { L.th *= Math.pow(.01, dt); L.lift = 0; }
+      st.drop = 0; st.bob = Math.sin(T * TAU * .8 + b.r * 6) * .011 * b.H;
+      st.ra = [.16, .12]; st.la = [.16, .12]; st.tilt = .02 * Math.sin(T * .9 + b.r2 * 6);
+      st.brows = .35; st.mouth = "smile"; st.antWob *= Math.pow(.05, dt);
+      st.look = [Math.sin(T * .7 + b.r * 9) * .45, .08 + .1 * Math.sin(T * .5 + b.r2 * 4)];
+      b.glow *= Math.pow(.35, dt);
+      return;
+    }
 
     if (b.mode === "walk") {
       depthNow(b);
@@ -301,6 +361,7 @@ export function makeCrowd(kind) {
       if (there) {
         // Off the edge: on again from the other side, still going.
         if (b.cross) { b.w.x = b.to < 0 ? W + b.H : -b.H; b.cross = false; roam(b, false); }
+        else if (b.calm) toHome(b);
         else { b.run = 0; startGesture(b); }
       }
       b.glow *= Math.pow(.25, dt);
@@ -331,7 +392,8 @@ export function makeCrowd(kind) {
         b.run--;
         // A breath between two of them, never a stand about: the catch-breath
         // is itself a move, and short.
-        if (b.run > 0) { b.mode = "breath"; b.hold = .12 + Math.random() * .4; b.gt = 0; }
+        if (b.calm) toHome(b);
+        else if (b.run > 0) { b.mode = "breath"; b.hold = .12 + Math.random() * .4; b.gt = 0; }
         else roam(b);
       }
     } else if (b.mode === "breath") {
@@ -341,7 +403,7 @@ export function makeCrowd(kind) {
       st.look = [Math.sin(T * 2.2 + b.r * 6) * .35, .1];
       st.brows = .4;
       b.gt += dt;
-      if (b.gt >= b.hold) startGesture(b);
+      if (b.gt >= b.hold) { if (b.calm) toHome(b); else startGesture(b); }
     }
     b.glow *= Math.pow(.35, dt);
   }
@@ -367,20 +429,49 @@ export function makeCrowd(kind) {
       b.w.x = fromLeft ? 0 : W; b.w.mirror = !fromLeft; b.w.phase = seed(tag) * 6;
       roam(b, false);
       if (reduced) standStill(b, bots.length, Math.max(1, this.capacity()));
+      else if (calm) { b.calm = true; b.home = null; }   // called in already: it walks to the spot it picked and stands there
       bots.push(b);
     },
+    /**
+     * That is enough roaming: each of them finishes what it is doing, pulls up,
+     * turns to us and stands. Whoever walks on after this is called in too.
+     */
+    settle() {
+      if (calm) return;
+      calm = true;
+      // They pull up spread along the floor, not in a heap: each takes the
+      // nearest spot that leaves room for the one beside it.
+      const line = [...bots].sort((a, c) => a.w.x - c.w.x);
+      const at = line.map((b) => b.w.x);
+      for (let i = 1; i < line.length; i++) at[i] = Math.max(at[i], at[i - 1] + (line[i].H + line[i - 1].H) * .34);
+      for (let i = line.length - 2; i >= 0; i--) at[i] = Math.min(at[i], at[i + 1] - (line[i].H + line[i + 1].H) * .34);
+      line.forEach((b, i) => callIn(b, at[i]));
+    },
+    /** Everyone who is on is standing (and nothing is left to do). */
+    settled() { if (reduced) return true; return calm && bots.every((b) => b.mode === "rest" && b.turn >= 1); },
+    /** They go the way Blip does: every dot into its own antenna's ball, which pops. */
+    vanish() {
+      if (reduced) { bots = []; this.draw(); return; }
+      let i = 0;
+      for (const b of [...bots].sort((a, c) => a.w.x - c.w.x)) { if (b.mode !== "gone") startPour(b, (i++) * .045 + Math.random() * .06); }
+    },
+    /** Nothing of them left: the screen is blank white again. */
+    gone() { return bots.every((b) => b.mode === "gone" && b.pour.done); },
     /** The device is going: the screen is empty again. */
-    leave() { bots = []; T = 0; this.draw(); },
+    leave() { bots = []; T = 0; calm = false; this.draw(); },
     step(dt) {
       if (reduced) return;
       T += dt;
       for (const b of bots) stepBot(b, dt);
+      // Whoever has finished pouring away is dropped.
+      if (bots.some((b) => b.mode === "gone" && b.pour.done)) bots = bots.filter((b) => !(b.mode === "gone" && b.pour.done));
     },
     draw() {
       g.setTransform(view.dpr, 0, 0, view.dpr, 0, 0);
       g.clearRect(0, 0, W, H);
       // Back to front, by where their feet are: the nearer ones pass over the rest.
       for (const b of [...bots].sort((a, c) => a.gy - c.gy)) {
+        if (b.mode === "gone") { b.pour.draw(g); continue; }
         b.dots(g, {
           H: b.H, cell: cellFor(b.H), x: b.w.x, y: b.gy, mirror: b.w.mirror, squash: b.w.squash,
           land: b.w.land || 0, air: b.w.air || 0, st: b.st, t: reduced ? 0 : T,
@@ -389,7 +480,11 @@ export function makeCrowd(kind) {
         });
       }
     },
-    /** Half the frames are enough for figures this small; it halves what they cost. */
-    due() { return (tick = (tick + 1) % 2) === 0; },
+    /**
+     * Half the frames are enough for figures this small; it halves what they
+     * cost. While they are pouring away every frame is drawn: the dots move too
+     * fast for half of them.
+     */
+    due() { if (bots.some((b) => b.mode === "gone")) return true; return (tick = (tick + 1) % 2) === 0; },
   };
 }

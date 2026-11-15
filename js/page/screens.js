@@ -68,7 +68,11 @@ let side = true;
 
 /**
  * Lays them out for this window. Returns where Blip stands between them
- * ({ x, gy, H }) and where his antenna's foot stands ([x, y]) while the screens are up.
+ * ({ x, gy, H }), where his antenna's foot stands ([x, y]) while the screens
+ * are up, and where he goes to watch each of them work (`spots`, and `aim`,
+ * which way he looks from there). Side by side he walks over to the device
+ * that is showing something and turns to it; one above the other there is
+ * nowhere to walk, so he stays where he is and looks up or down at it.
  */
 export function layoutScreens() {
   const VW = view.w, VH = view.h;
@@ -103,6 +107,15 @@ export function layoutScreens() {
     qx = Math.round((VW - Q.w) / 2); qy = y0 + P.h + gap;
     blip = { x: Math.round(VW / 2), gy: Math.round(y0 + P.h + gap * .86), H: bh };
   }
+  // Where he goes when one of them is showing something. Side by side there is
+  // only a hand's width of floor between them, so he walks out of the gap and
+  // stands in front of the one that is showing — on the same floor it stands
+  // on, below everything it is showing — and looks up at it. One above the
+  // other there is nowhere to walk: he stays where he is and looks up or down.
+  const spots = side
+    ? { mid: blip.x, phone: Math.round(px + P.w / 2), desk: Math.round(qx + Q.w / 2) }
+    : { mid: blip.x, phone: blip.x, desk: blip.x };
+  const aim = side ? { phone: [0, -1], desk: [0, -.88] } : { phone: [0, -1], desk: [0, .8] };
   phone.el.style.left = px + "px"; phone.el.style.top = py + "px";
   lap.el.style.left = qx + "px"; lap.el.style.top = qy + "px";
   phone.scn.fit(P.sw); lap.scn.fit(Q.sw);
@@ -111,7 +124,7 @@ export function layoutScreens() {
   arrivals.setRect("phone", { x: px + P.ox, y: py + P.oy, ...phone.scn.size(P.sw) });
   arrivals.setRect("desk", { x: qx + Q.ox, y: qy + Q.oy, ...lap.scn.size(Q.sw) });
   paint(phone); paint(lap);
-  return { blip, foot: [blip.x, blip.gy] };
+  return { blip, foot: [blip.x, blip.gy], spots, aim };
 }
 
 function paint(d) {
@@ -137,6 +150,41 @@ export function showScreens() {
 export function hideScreens() {
   for (const [d, delay] of [[lap, 0], [phone, .05]]) { d.to = 0; d.delay = reduced ? 0 : delay; }
 }
+
+// ---- The crowd on them, and the beats after it ---------------------------------
+/** Enough roaming: both troupes come to a stop, and nobody still on the way dawdles. */
+export function settleScreens() {
+  for (const d of [phone, lap]) { if (d.to === 1) { arrivals.rush(d.kind); d.scn.crowd.settle(); } }
+}
+/** Everyone is on and standing: the page may move on. */
+export function screensSettled() {
+  for (const d of [phone, lap]) { if (d.to === 1 && (arrivals.pending(d.kind) || !d.scn.crowd.settled())) return false; }
+  return true;
+}
+/** They go the way Blip does: every dot into its own antenna's ball (blip/pour.js). */
+export function vanishCrowds() { for (const d of [phone, lap]) d.scn.crowd.vanish(); }
+/** Nothing of them left: both screens are blank white. */
+export function crowdsGone() { for (const d of [phone, lap]) if (!d.scn.crowd.gone()) return false; return true; }
+/** Back to step 1 from the other side: the screens are empty and they walk on again. */
+export function restartCrowds() {
+  for (const d of [phone, lap]) {
+    d.scn.content.hide(); arrivals.stop(d.kind); d.scn.crowd.leave();
+    if (d.to === 1 && d.e > .9) arrivals.start(d.kind);
+  }
+}
+
+/** The device's own beat arrives on its blank screen (`now`: simply there, finished). */
+export function showBeat(kind, now) { (kind === "phone" ? phone : lap).scn.content.show(now); }
+/** One beat off, or (no `kind`) both: the screens are blank white again. */
+export function hideBeats(kind) {
+  for (const d of [phone, lap]) if (!kind || d.kind === kind) d.scn.content.hide();
+}
+/** That beat has finished arriving and is holding — the freeze. */
+export function beatDone(kind) { return (kind === "phone" ? phone : lap).scn.content.done(); }
+/** Nothing on either screen: both are blank white again. */
+export function beatsOff() { for (const d of [phone, lap]) if (d.scn.content.shown()) return false; return true; }
+/** Someone is still on their way over to one of them. */
+export function screensFilling() { for (const d of [phone, lap]) if (d.to === 1 && arrivals.pending(d.kind)) return true; return false; }
 
 export function stepScreens(dt) {
   for (const d of [phone, lap]) {

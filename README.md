@@ -5,8 +5,8 @@ it for the backend's pages and the downloads.
 
 ```
 index.html            the page: markup, one <style>, one inline <script> (GTM), a <noscript> head style; loads js/main.js
-js/                   the page's script, one module per part: paper/ (grain, water, words, glitch), blip/ (figure, dots, walker, antenna), page/ (opening, key, steps, screens, screen, arrivals, crowd), main.js
-css/screens.css       the phone and laptop frames, the app screen in them, the phone's status bar
+js/                   the page's script, one module per part: paper/ (grain, water, words, glitch), blip/ (figure, dots, walker, antenna, pour), page/ (opening, key, steps, screens, screen, arrivals, crowd, content), main.js
+css/screens.css       the phone and laptop frames, the screen in them, the phone's status bar, the terminal and the Live Activity
 api/                  Meta's pixel and its Conversions API copy (see Meta's pixel)
 vercel.json           rewrites to the API, headers, the home page's CSP, caching
 csp.mjs               writes index.html's inline hashes into the home page's CSP
@@ -22,6 +22,11 @@ One sheet of paper, one screen tall, that never scrolls: a scroll, a swipe
 one step instead, one change at a time (a move made during one plays after
 it). The modules in `js/` draw it; `main.js` runs one frame loop for all of
 them.
+
+Nothing waits for a scroll. A step that has finished arriving brings the next
+one on by itself a beat or two later, so the whole thing plays through on its
+own; a scroll only pushes it along, and a scroll back stops it playing by
+itself from then on.
 
 **0, the opening.** A plane of tiny words in the world's scripts that moves
 like water; the dotted bot walks in from the right to the middle and waves
@@ -92,18 +97,52 @@ standing between the two devices is the page's own and is not one of them.
 once on, and `js/page/screen.js` the screen around them (empty white, and the
 phone's status bar).
 
-**2, out again.** On the next move (or by itself four seconds after step 1
-first settles; never again after the visitor has come back to it) he comes
-back out: the antenna floats up to where his head will be and throws his dots
-back to their places, head first, each on a loose spring, so he settles with
-a little wobble, standing small between the devices, himself again on the
-frame the last dot lands (his clock stands still while he is in the antenna,
-so the dots are exactly him).
+**The troupe settles.** A few seconds after the last of them is on, they come
+to a stop: each finishes whatever it is in the middle of, walks the short way
+to a spot that leaves room for the one beside it, turns to us and stands,
+breathing, its eye wandering. Only then will the page go on — asked to move
+before that, it calls them in at once (and whoever is still on their way over
+stops dawdling) and goes the moment they are standing.
 
-Up goes back the same way (2 to 1: back into the antenna; 1 to 0: the devices
-leave and he comes out at the opening's size). A resize while he comes out
-ends it at once, him standing at the new spot. Under `prefers-reduced-motion`
-every change is instant and nothing moves.
+**2, out again, and the screens go blank.** He comes back out: the antenna
+floats up to where his head will be and throws his dots back to their places,
+head first, each on a loose spring, so he settles with a little wobble,
+standing small between the devices, himself again on the frame the last dot
+lands (his clock stands still while he is in the antenna, so the dots are
+exactly him). **The troupe goes the same way he went in,** at the same
+moment: every dot of every bot becomes a particle pulled into that bot's own
+antenna ball, nearest first, shrinking as it arrives, the ball swelling with
+each one it swallows and popping when the last is in — in the bot's own
+colours, not Blip's (`js/blip/pour.js`). Both screens are blank white again.
+
+**3, the computer: a terminal.** Xode installed on a project. It types
+itself — the real install line, the words `install.sh` prints, then `xode` run
+in the project's folder — and freezes with the prompt waiting and the cursor
+blinking. He walks out of the gap and stands in FRONT of the laptop (the page
+puts him over the devices for as long as he is over there), on the floor it
+stands on, below everything it is showing, and points up at it.
+
+**4, the phone: the Live Activity.** The "Bots at work" notice, done: Ready to
+ship, codes while you rest, its stages filled and a pull request opened. It
+drops in under the status bar and freezes; the laptop keeps its terminal
+while the phone has its turn; he walks over and points up at that one.
+
+**5, back to the middle.** Both screens clear and he comes back to the gap,
+facing us. Side by side he really walks over and back; one above the other
+there is nowhere to walk, so he stays where he is and looks (and points) up
+at the phone or down at the laptop. `js/page/content.js` is both beats, built
+as DOM at a fixed design width and scaled to the glass like the status bar,
+so the words stay crisp at whatever size the device is.
+
+Up goes back the same way, and a beat come back to is simply there, finished,
+rather than typing itself again (5 to 4: both beats back; 4 to 3: the phone's
+goes; 3 to 2: both go and he returns to the middle; 2 to 1: back into the
+antenna and the screens fill again; 1 to 0: the devices leave and he comes out
+at the opening's size). A resize while he comes out ends it at once, him
+standing at the new spot; a resize while he is over by a device keeps him
+there, where that device now is. Under `prefers-reduced-motion` every change
+is instant and nothing moves: the bots are simply on the glass, standing, and
+each beat is simply there, finished, on the frame it is asked for.
 
 ## The download is always a link
 

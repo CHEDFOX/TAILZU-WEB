@@ -28,7 +28,7 @@ const g = cv.getContext("2d");
 const stages = new Map();
 let T = 0;
 
-export function register(kind, crowd) { stages.set(kind, { crowd, rect: null, queue: [], walking: [], on: false }); }
+export function register(kind, crowd) { stages.set(kind, { crowd, rect: null, queue: [], walking: [], on: false, rush: false }); }
 export function setRect(kind, rect) { const s = stages.get(kind); if (s) s.rect = rect; }
 
 /** The page canvas follows the window. */
@@ -47,14 +47,14 @@ function sideFor(rect) {
 export function start(kind) {
   const s = stages.get(kind);
   if (!s || s.on || !s.rect) return;
-  s.on = true;
+  s.on = true; s.rush = false;
   const n = s.crowd.capacity();
   s.queue = [];
   for (let i = 0; i < n; i++) {
     const def = BOTS[i % BOTS.length];
     // The gap after the one before, not a time from the start: they come over
     // in a straggling line, not all at once and not over half a minute.
-    const gap = i === 0 ? .25 : (kind === "phone" ? .7 : .36) * (.6 + Math.random());
+    const gap = i === 0 ? .2 : (kind === "phone" ? .42 : .2) * (.6 + Math.random());
     s.queue.push({ def, tag: def.name + "/" + Math.floor(i / BOTS.length), wait: gap });
   }
   // Nobody walks under reduced motion: they are simply on the glass already.
@@ -65,14 +65,33 @@ export function start(kind) {
 export function stop(kind) {
   const s = stages.get(kind);
   if (!s) return;
-  s.on = false; s.queue = []; s.walking = [];
+  s.on = false; s.rush = false; s.queue = []; s.walking = [];
 }
+
+/**
+ * The page has been asked to move on: nobody is left out, but they stop
+ * dawdling — whoever is waiting their turn comes at once and whoever is on the
+ * way puts their head down.
+ */
+export function rush(kind) {
+  const s = stages.get(kind);
+  if (!s || s.rush) return;
+  s.rush = true;
+  for (let i = 0; i < s.queue.length; i++) s.queue[i].wait = .05 + i * .07;
+  for (const b of s.walking) b.sp *= 2.2;
+}
+
+/**
+ * Anyone still to come to this device: waiting their turn, on the way, or —
+ * before the device has even landed — all of them.
+ */
+export function pending(kind) { const s = stages.get(kind); return !!s && (!s.on || s.queue.length > 0 || s.walking.length > 0); }
 
 function spawn(s, q) {
   const H = s.crowd.arrivalH(q.tag), fromLeft = sideFor(s.rect);
   const k = pickOf(WALKS), r = seed(q.tag);
   // It has a whole page to cross, so however it walks it does not dawdle.
-  const sp = Math.max(H * 1.7, H * k.sp * (.85 + r * .5));
+  const sp = Math.max(H * 1.7, H * k.sp * (.85 + r * .5)) * (s.rush ? 2.2 : 1);
   const b = {
     def: q.def, tag: q.tag, fromLeft, dots: makeDots(),
     ink: inkOf(q.def.c), lit: litOf(q.def.c),

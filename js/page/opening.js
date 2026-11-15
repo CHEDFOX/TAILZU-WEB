@@ -1,7 +1,9 @@
 // The opening: he walks in from the right to the middle and waves; then he
 // watches the pointer, and the pointer moves the water. After that the page
 // can hand him to his antenna (intoAntenna) and have him come back out of it,
-// at the opening's spot or at another one, smaller (outOfAntenna).
+// at the opening's spot or at another one, smaller (outOfAntenna) — and, once
+// he is out and standing between the two devices, send him over to whichever
+// of them is showing something and back to the middle again (sendBlip).
 import { TAU, clamp, lerp, easeOut, easeIO, reduced, view } from "../util.js";
 import { makeWalker } from "../blip/walker.js";
 import { makeDots } from "../blip/dots.js";
@@ -10,6 +12,8 @@ import { splash } from "../paper/water.js";
 
 const botCv = document.getElementById("bot"), bctx = botCv.getContext("2d");
 const hero = document.getElementById("hero");
+/** Him over the devices instead of behind them, while he is over by one of them. */
+const fore = (on) => hero.classList.toggle("fore", on);
 
 /** What the rest of the page reads: he has said hello (the key may come). */
 export const opening = { introDone: false };
@@ -22,6 +26,9 @@ let spot = null;
 const curH = () => (spot ? spot.H : BH), curGround = () => (spot ? spot.gy : ground());
 const cellFor = (H) => Math.max(2, Math.round(H / 92 * view.dpr)) / view.dpr;
 let T = 0;
+// Where the page has sent him and which way he looks from there (null: he is
+// where he was put, watching the pointer). page/steps.js sets it.
+let errand = null;
 const SPEED = () => Math.max(170, Math.min(290, view.w * .19));
 const B = makeWalker({ H: curH, ground: curGround, speed: SPEED, slow: () => Math.min(190, view.w * .17), splash });
 // Whole and walking about ("figure"), or poured into his antenna, going in or coming out ("antenna").
@@ -54,7 +61,34 @@ function updateBot(dt) {
     st.look = [lerp(1, 0, k), lerp(.15, 0, k)];
     if (k >= 1) { B.squash = 0; B.mode = "wave"; B.t0 = t; B.waveN = 0; }
   }
+  // Over to one of the screens, or back to the middle: he walks there, pulls
+  // up, and turns to the thing he was sent to look at.
+  if (B.mode === "goto") {
+    st.walkK = Math.min(1, st.walkK + dt * 6);
+    if (B.stride(dt, errand.x)) { B.mode = "land"; B.t0 = t; }
+  }
+  if (B.mode === "land") {
+    const k = clamp((t - B.t0) / .26);
+    B.A *= Math.pow(.02, dt);
+    B.squash = Math.sin(Math.PI * k) * .16;
+    st.walkK = 1 - easeOut(k);
+    if (k >= 1) {
+      B.squash = 0; B.t0 = t;
+      if (errand.aim) { B.mirror = errand.aim[0] < -.1; B.mode = "watch"; }
+      else { B.mirror = false; B.mode = "idle"; errand = null; fore(false); st.look = [0, 0]; lookAim[0] = lookAim[1] = 0; }
+    }
+  }
   B.gait(dt);
+  if (B.mode === "watch") {
+    // Looking at it, with a hand up at it as he gets there: that one, there.
+    const k = t - B.t0, a = errand.aim;
+    const up = clamp(easeOut(k / .3) - easeIO((k - 1.2) / .45));
+    const pa = a[1] < -.5 ? 2.7 : a[1] > .5 ? .55 : 1.5;
+    st.ra = [lerp(.16, pa, up), lerp(.12, .06, up)]; st.la = [.16, .12];
+    st.look = [lerp(st.look[0], a[0] * .9, .09), lerp(st.look[1], a[1] * .7, .09)];
+    st.tilt = -.05 * a[0] * up + .03 * a[1]; st.brows = lerp(.3, .6, up); st.mouth = "smile";
+    B.glow = Math.max(0, B.glow * .97);
+  }
   if (B.mode === "wave" || B.mode === "idle") {
     const k = B.mode === "wave" ? t - B.t0 : 99;
     const up = reduced ? 1 : easeOut(k / .45) - easeIO((k - 3.4) / .55);
@@ -114,7 +148,7 @@ export function fitOpening() {
   hero.style.height = view.h + "px";
 }
 /** From the top: off to the right, about to walk in. */
-export function resetOpening() { T = 0; opening.introDone = false; lastPt = null; lookAim[0] = lookAim[1] = 0; spot = null; form = "figure"; resetBot(); }
+export function resetOpening() { T = 0; fore(false); opening.introDone = false; lastPt = null; lookAim[0] = lookAim[1] = 0; spot = null; errand = null; form = "figure"; resetBot(); }
 /** Still on his way in (a resize then starts the opening again). */
 export const walkingIn = () => B.mode === "wait" || B.mode === "walk";
 /** Back to the middle of a window that changed size. */
@@ -152,7 +186,7 @@ export function moveAntenna(at, size) { antenna.place(at, size); }
  * or at the opening's spot when `to` is null: standing easy, facing us.
  */
 export function outOfAntenna(to) {
-  spot = to ? { x: to.x, gy: to.gy, H: to.H } : null;
+  spot = to ? { x: to.x, gy: to.gy, H: to.H } : null; errand = null; fore(false);
   B.x = to ? to.x : view.w / 2; B.mirror = false; B.squash = 0; B.land = 0; B.air = 0; B.A = 0; B.v = 0; B.mode = "idle";
   Object.assign(B.st, { ra: [.16, .12], la: [.16, .12], brows: .3, tilt: 0, mouth: "smile", legs: [{ th: 0, lift: 0 }, { th: 0, lift: 0 }], drop: 0, bob: 0, swayK: 1, antWob: 0, walkK: 0, look: [0, 0] });
   B.glow = .4;
@@ -160,4 +194,29 @@ export function outOfAntenna(to) {
   antenna.blow(c);
 }
 /** Where he stands beside the screens, when the window changes size while he is there. */
-export function moveSpot(to) { if (spot) { spot = { x: to.x, gy: to.gy, H: to.H }; B.x = to.x; } }
+export function moveSpot(to) { if (spot) { spot = { x: to.x, gy: to.gy, H: to.H }; if (!errand) B.x = to.x; } }
+/**
+ * Over to x, to look the way `aim` ([x, y], -1 to 1) points when he gets
+ * there — one of the screens — or, with no aim, back to where he was standing,
+ * facing us. Under reduced motion he is simply there.
+ */
+export function sendBlip(x, aim) {
+  errand = { x, aim: aim || null };
+  // Over there he walks in front of the device, not behind it.
+  if (aim) fore(true);
+  if (reduced) {
+    B.x = x; B.mirror = !!aim && aim[0] < -.1; B.mode = aim ? "watch" : "idle"; B.t0 = T - 2;
+    if (!aim) { errand = null; fore(false); B.st.look = [0, 0]; }
+    return;
+  }
+  if (Math.abs(B.x - x) < 2) { B.mode = "land"; B.t0 = T - .2; return; }
+  B.mirror = x < B.x; B.mode = "goto";
+}
+/** A resize while he is over by one of the screens: the same errand, in the new place. */
+export function moveErrand(x, aim) {
+  if (!errand) return;
+  errand = { x, aim: aim || null };
+  if (B.mode === "watch" || B.mode === "land") B.x = x;
+}
+/** He has got where he was sent (and is looking at it). */
+export const blipThere = () => errand === null || B.mode === "watch" || B.mode === "idle";

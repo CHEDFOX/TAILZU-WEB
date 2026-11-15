@@ -1,9 +1,15 @@
-// What is inside the phone's and the laptop's glass on step 1: an empty white
-// screen, the phone's own status bar over it, and the bots that walk on off
-// the page (page/arrivals.js) and wander about on it (page/crowd.js). Nothing
-// else — no app screen, no copy. The screen starts empty every time the
-// device goes and comes back.
+// What is inside the phone's and the laptop's glass: an empty white screen,
+// the phone's own status bar over it, and then, in turn,
+//
+//   the bots that walk on off the page (page/arrivals.js) and wander about on
+//   it (page/crowd.js), until they settle and pour away; and
+//   the device's own beat (page/content.js) — the laptop's terminal, the
+//   phone's Live Activity — which arrives on the blank screen and freezes.
+//
+// Nothing is there to begin with and nothing is left between the two: the
+// screen starts empty every time the device goes and comes back.
 import { makeCrowd } from "./crowd.js";
+import { makeContent } from "./content.js";
 
 const PH = 844 / 390;                       // the phone's screen, tall per wide
 const DESK = .625;                          // the laptop's, wide per tall
@@ -24,21 +30,27 @@ function statusBar() {
 }
 
 export function makeScreen(kind) {
-  const root = el("div", `wl wl-${kind}`), crowd = makeCrowd(kind);
-  root.appendChild(crowd.el);
+  const root = el("div", `wl wl-${kind}`), crowd = makeCrowd(kind), content = makeContent(kind);
+  root.append(crowd.el, content.el);
   let bar = null;
   if (kind === "phone") { bar = statusBar(); root.appendChild(bar); }
   return {
     el: root,
     crowd,
+    content,
     /** The glass is `w` CSS pixels wide; how tall follows from which device it is. */
     size: (w) => ({ w, h: kind === "phone" ? w * PH : Math.round(w * DESK) }),
     /** The device's screen is `w` CSS pixels wide: the bots' floor, and the status bar, scaled to it. */
     fit(w) {
       crowd.fit(w, this.size(w).h);
+      content.fit(w);
       if (bar) bar.style.transform = `scale(${(w / 390).toFixed(4)})`;
     },
-    leave: () => crowd.leave(),
-    step(dt) { crowd.step(dt); if (crowd.due()) crowd.draw(); },
+    leave() { crowd.leave(); content.clear(); },
+    step(dt) {
+      crowd.step(dt);
+      if (crowd.due()) crowd.draw();
+      content.step(dt);
+    },
   };
 }

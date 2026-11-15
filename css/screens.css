@@ -2,6 +2,9 @@
 /* The bots' walk across the page to the devices (js/page/arrivals.js). Under
    #screens, so the last of the walk is hidden behind the device's frame. */
 #walkers { position: fixed; inset: 0; z-index: 2; width: 100%; height: 100%; display: block; pointer-events: none; }
+/* While he is over by one of the devices he walks in front of it, not behind
+   it: page/opening.js puts this on #hero for as long as he is over there. */
+#hero.fore { z-index: 4; }
 #screens { position: fixed; inset: 0; z-index: 3; pointer-events: none; overflow: hidden; }
 #screens .dev { position: absolute; left: 0; top: 0; transform-origin: 50% 100%; will-change: transform, opacity; visibility: hidden; opacity: 0; }
 #screens .scr { position: relative; overflow: hidden; background: #fff; isolation: isolate; }
@@ -42,6 +45,55 @@
 .wl-status { position: absolute; left: 0; top: 0; width: 390px; height: 54px; display: flex; align-items: center; justify-content: space-between; box-sizing: border-box;
   padding: 6px 30px 0 46px; transform-origin: 0 0; color: #0A0A0A; font: 600 17px/1 ui-sans-serif, system-ui, -apple-system, sans-serif; letter-spacing: -.2px; }
 .wl-status svg { display: block; }
+
+/* ---- What each screen shows once the bots have gone (js/page/content.js) ----
+   Both beats are drawn at a fixed design width (the laptop 1280, the phone
+   390) and scaled to the glass, like the phone's status bar, so the words stay
+   crisp at whatever size the device is. */
+.ct { position: absolute; left: 0; top: 0; z-index: 5; transform-origin: 0 0; }
+.ct-desk { width: 1280px; height: 800px; }
+.ct-phone { width: 390px; height: 844px; }
+
+/* The laptop: a terminal on the desktop. Xode installed with one line, then
+   run in a project's folder, its prompt left waiting. */
+.tm { position: absolute; inset: 48px; display: flex; flex-direction: column; overflow: hidden;
+  border-radius: 14px; background: #151311; color: #F3E2C6;
+  font: 400 30px/1.62 ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+  box-shadow: 0 2px 4px rgba(40, 30, 20, .18), 0 40px 80px -40px rgba(40, 30, 20, .5); }
+.tm-bar { flex: none; display: flex; align-items: center; gap: 12px; height: 64px; padding: 0 22px; box-sizing: border-box;
+  background: #1F1C19; border-bottom: 1px solid rgba(243, 226, 198, .08); }
+.tm-d { width: 17px; height: 17px; border-radius: 50%; background: rgba(243, 226, 198, .22); }
+.tm-bar .tm-t { margin: 0 auto; padding-right: 76px; font-size: 24px; color: rgba(243, 226, 198, .45); }
+.tm-body { padding: 28px 34px; }
+.tm-r { white-space: pre; }
+.tm-at { color: rgba(243, 226, 198, .45); }
+.tm-sh { color: #5FD13C; padding: 0 .5ch; }
+.tm-ou { color: rgba(243, 226, 198, .82); }
+.tm-dim { color: rgba(243, 226, 198, .42); }
+.tm-lit .tm-ou { color: #7BE35C; }
+.tm-ps { color: #5FD13C; padding-right: .6ch; }
+.tm-cur { display: inline-block; width: .62ch; height: 1.05em; vertical-align: -.17em; background: #F3E2C6; animation: tm-blink 1.1s steps(1) infinite; }
+@keyframes tm-blink { 0%, 55% { opacity: 1; } 56%, 100% { opacity: 0; } }
+
+/* The phone: the "Bots at work" Live Activity, done. It drops in under the
+   status bar and its stages fill behind it. */
+.la { position: absolute; left: 0; top: 0; width: 100%; padding: 86px 14px 0; box-sizing: border-box;
+  font: 400 15px/1.4 ui-sans-serif, system-ui, -apple-system, sans-serif; }
+.la-card { padding: 18px 20px 16px; border-radius: 26px; background: #151311; color: #F3E2C6; transform-origin: 50% 0;
+  box-shadow: 0 1px 2px rgba(40, 30, 20, .2), 0 18px 32px -18px rgba(40, 30, 20, .55); }
+.la-head { display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; color: rgba(243, 226, 198, .5); }
+.la-mark { width: 20px; height: 20px; border-radius: 50%; background: #F3E2C6; box-shadow: 0 0 0 2px rgba(95, 209, 60, .55), 0 0 10px rgba(95, 209, 60, .45); }
+.la-who { color: rgba(243, 226, 198, .9); }
+.la-when { margin-left: auto; font-weight: 400; }
+.la-big { margin-top: 12px; font-size: 27px; font-weight: 700; letter-spacing: -.5px; line-height: 1.1; }
+.la-sub { margin-top: 3px; font-size: 15px; color: rgba(243, 226, 198, .6); }
+.la-bar { position: relative; height: 6px; margin-top: 16px; border-radius: 99px; background: rgba(243, 226, 198, .14); overflow: hidden; }
+.la-fill { display: block; width: 0; height: 100%; border-radius: 99px; background: #5FD13C; }
+.la-steps { display: flex; justify-content: space-between; margin-top: 8px; font-size: 11px; font-weight: 600; letter-spacing: .3px; }
+.la-steps span { color: rgba(243, 226, 198, .35); }
+.la-foot { margin-top: 13px; padding-top: 12px; border-top: 1px solid rgba(243, 226, 198, .12); font-size: 13px; color: rgba(243, 226, 198, .7); }
+
+@media (prefers-reduced-motion: reduce) { .tm-cur { animation: none; } }
 
 /* Words only a screen reader hears. */
 .sr { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }

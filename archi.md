@@ -42,14 +42,18 @@ js/                     the page's script, one ES module per part (no build step
   blip/dots.js          the one renderer that turns the figure into his ink sticker and dots
   blip/walker.js        his bouncy walk (any scene: its height, ground, speed and water)
   blip/antenna.js       into his antenna and back out: every dot of him a particle on springs; the antenna a springy stalk with a glowing ball
+  blip/pour.js          the small one's version of it: a figure's dots into its own ball, which then pops (the bots leaving the screens)
   page/opening.js       the opening: he walks in from the right and waves, then watches the pointer; hands him to the antenna and back
   page/key.js           the "Take me home" key and the name, arriving after the wave
-  page/steps.js         the page never scrolls: a scroll, swipe or key moves it one step (0 opening, 1 into the antenna + screens, 2 out again)
+  page/steps.js         the page never scrolls: a scroll, swipe or key moves it one step, and a step that has arrived brings the next on by itself
+                        (0 opening, 1 antenna + screens + the bots, 2 out again and the bots pour away, 3 the terminal, 4 the Live Activity, 5 back to the middle)
   page/screens.js       the phone and the laptop either side of him (above and below on a tall window), on springs
-  page/screen.js        what is in them: an empty white screen, and the phone's status bar
+  page/screen.js        what is in them: an empty white screen, the phone's status bar, the bots, and then that device's beat
   page/arrivals.js      the bots' walk in off the page to a device, on a canvas under it (so the last of it is behind the frame)
-  page/crowd.js         the milling about once on the glass: random spots, random paces, eighteen things they do (flips, cartwheels, handstands and the rest), one colour each
-css/screens.css         the devices' frames and the screen in them
+  page/crowd.js         the milling about once on the glass: random spots, random paces, eighteen things they do (flips, cartwheels, handstands and the rest), one colour each;
+                        then settling to a stop, and pouring away
+  page/content.js       what each screen shows after them: the laptop's terminal (Xode installed on a project) and the phone's "Bots at work" Live Activity
+css/screens.css         the devices' frames, the screen in them, the terminal and the Live Activity
 api/                    Vercel serverless functions (Node)
   _meta.js              shared Meta pixel / Conversions API helpers (reads the dataset id and token from Vercel env)
   site-event.js         POST /v1/site/event: a page event (e.g. a download press) sent to Meta's Conversions API
@@ -70,8 +74,12 @@ README.md               how the page behaves, what to run after a change, how pu
 | Looking for | Where |
 |---|---|
 | The first screen: the plane of words, the bot's walk and wave, the key's arrival | `js/paper/words.js`, `js/blip/figure.js`, `js/page/opening.js`, `js/page/key.js` |
-| The steps (what a scroll does, the step 2 that comes by itself after 4 s the first time) | `js/page/steps.js` |
+| The steps (what a scroll does, how long each holds before the next comes by itself) | `js/page/steps.js` (`AUTO`, `ROAM`) |
 | Into the antenna and out (the springs, the order, the stalk) | `js/blip/antenna.js` (its constants at the top) |
+| The bots pouring away the same way | `js/blip/pour.js`, started by `js/page/crowd.js` (`vanish`) |
+| Them settling to a stop before the page moves on | `js/page/crowd.js` (`settle`, `callIn`, `toHome`, `rest`), gated in `js/page/steps.js` |
+| The terminal's lines and the Live Activity's words | `js/page/content.js` (`TERM`, `activity`), styled in `css/screens.css` |
+| Blip walking over to a screen and standing in front of it | `js/page/opening.js` (`sendBlip`, modes `goto`/`land`/`watch`, `#hero.fore`), spots from `js/page/screens.js` (`layoutScreens`) |
 | The phone and laptop: sizes, places, their springs | `js/page/screens.js` (`layoutScreens`), `css/screens.css` |
 | The bots: who they are, how they walk, the eighteen things they do | `js/page/crowd.js` (`BOTS`, `WALKS`, `GEST`; `GEST_BAG` weights the showy ones) |
 | Turning a figure over for a flip, and its ground shadow | `js/blip/dots.js` (`o.roll`, `o.rollAt`, `o.shade`, `o.hop`) |
@@ -89,8 +97,10 @@ README.md               how the page behaves, what to run after a change, how pu
 ## How it fits together
 
 - The browser loads `index.html`; `js/main.js` runs one frame loop for every part: the plane of words, the bot walking in
-  and waving, the "Take me home" key and the name; then, step by step as the visitor scrolls, Blip into his antenna and the
-  phone and the laptop, the bots walking in off the page onto their screens, then Blip back out.
+  and waving, the "Take me home" key and the name; then, step by step (a scroll pushes it along, and if nobody scrolls it
+  plays itself), Blip into his antenna and the phone and the laptop, the bots walking in off the page onto their screens,
+  roaming and then settling, Blip back out while they pour away, and the two beats on the blank screens — the terminal and
+  the Live Activity — that he walks over to and points at, before he comes back to the middle and they clear.
 - Everything dynamic belongs to the backend: Vercel rewrites `/v1/...`, `/download`, the installers and the
   backend's pages to `api.x0bot.com`, so the site never handles accounts, payments or large files itself.
 - Only the page's own analytics run here (`api/`), with credentials from Vercel's environment variables.
