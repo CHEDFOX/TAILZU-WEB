@@ -5,11 +5,13 @@
 //      bots walk on off the page and roam about on them until they settle
 //   2  he comes back out of the antenna, whole, standing between them, and the
 //      troupe pours away the same way he went in: both screens blank again
-//   3  the laptop: a terminal, Xode installed on a project — he walks over to
-//      it and looks at it while it types itself, and it freezes
-//   4  the phone: the "Bots at work" Live Activity, ready to ship — he walks
-//      over to that one, and it freezes
-//   5  he comes back to the middle and both screens clear
+//   3  the laptop: a terminal, Xode installed on a project. He walks away off
+//      the page into that screen, small, and roams and throws himself about on
+//      it while the terminal types itself and freezes
+//   4  the phone: the "Bots at work" Live Activity, ready to ship. He walks off
+//      the laptop, across, and onto that screen instead
+//   5  he comes back off the glass to the middle, growing as he comes, and both
+//      screens clear
 //
 // Nothing waits for a scroll. A step that has finished arriving comes on by
 // itself a beat later, so the whole thing plays through on its own; a scroll
@@ -18,16 +20,16 @@
 // same way. One change at a time: moves made during one are kept, counted,
 // and played after it.
 import { view } from "../util.js";
-import { canTake, blipForm, blipPoured, intoAntenna, outOfAntenna, moveAntenna, moveSpot, sendBlip, moveErrand, blipThere } from "./opening.js";
+import { canTake, blipForm, blipPoured, intoAntenna, outOfAntenna, moveAntenna, moveSpot } from "./opening.js";
 import {
   layoutScreens, showScreens, hideScreens, screensEnterAt,
   settleScreens, screensSettled, screensFilling, vanishCrowds, crowdsGone, restartCrowds,
-  showBeat, hideBeats, beatDone, beatsOff,
+  showBeat, hideBeats, beatDone, beatsOff, blipTo, blipThere, blipOut,
 } from "./screens.js";
 import { revealKey, keyShown, settleKey } from "./key.js";
 
 // How long a step that has arrived holds before the next comes by itself.
-const AUTO = [0, 1.6, 1.1, 2.4, 2.8, 0];
+const AUTO = [0, 1.6, 1.1, 4.6, 4.6, 0];
 const ROAM = 2.4;               // seconds of roaming after the last bot is on, before they settle by themselves
 const LAST = 5;
 const say = document.getElementById("say"), botCv = document.getElementById("bot");
@@ -35,30 +37,30 @@ const SAID = [
   "",
   "Blip pours into his antenna. A phone and a computer come in either side of it, their screens empty, and the bots walk in off the page and roam about on them.",
   "The bots pour away into their own antennas, and Blip comes back out of his and stands between the phone and the computer. Both screens are blank.",
-  "On the computer, a terminal: Xode installed with one line, and run in a project's folder. Blip goes over to watch it.",
-  "On the phone, the Bots at work Live Activity: ready to ship, a pull request opened. It codes while you rest. Blip goes over to that one.",
+  "On the computer, a terminal: Xode installed with one line, and run in a project's folder. Blip walks into that screen, small, and plays about on it.",
+  "On the phone, the Bots at work Live Activity: ready to ship, a pull request opened. It codes while you rest. Blip crosses to that screen and plays about on that one.",
   "Blip comes back to the middle, and both screens clear.",
 ];
 const LABEL = [
   botCv.getAttribute("aria-label"),
   "Blip, poured into his antenna, which stands swaying between the phone and the computer.",
   "Blip, standing between the phone and the computer.",
-  "Blip, over by the computer, looking at the terminal on it.",
-  "Blip, over by the phone, looking at the notice on it.",
+  "Blip, small, on the computer's screen in front of the terminal.",
+  "Blip, small, on the phone's screen under the notice.",
   "Blip, back in the middle between the phone and the computer.",
 ];
 let step = 0, want = 0, busy = null, idle = 0, auto = false, dwell = 0, L = null;
 
-/** Where he is sent on each step, and which way he looks from there. */
-const errandFor = (n) => (n === 3 ? [L.spots.desk, L.aim.desk] : n === 4 ? [L.spots.phone, L.aim.phone] : [L.spots.mid, null]);
+/** Which screen he is on at each step (null: standing in the middle). */
+const whereOn = (n) => (n === 3 ? "desk" : n === 4 ? "phone" : null);
 
 /** Lays the screens out for this window; whatever is between them moves with them. */
 export function layoutSteps() {
   L = layoutScreens();
   if (step > 0 || busy) { moveAntenna(L.foot, L.blip.H); moveSpot(L.blip); }
-  // He was sent over to one of them: the same errand, where that screen is now.
+  // He is off to one of the screens: the same trip, where that screen is now.
   const n = busy ? busy.to : step;
-  if (n >= 3) moveErrand(...errandFor(n));
+  if (n >= 3 || blipOut()) blipTo(whereOn(n), L.blip);
 }
 
 function go(dir) {
@@ -82,18 +84,17 @@ function start(to) {
   } else if (to === 3 || to === 4) {
     // Forward the beat types (or drops) itself; coming back to it, it is
     // simply there, finished. The laptop keeps its terminal while the phone
-    // has its turn, and loses it on the way back out.
-    const back = from > to, kind = to === 3 ? "desk" : "phone";
+    // has its turn, and loses it on the way back out. He walks off the page
+    // and onto that screen, small, and joins in on it.
+    const back = from > to, kind = whereOn(to);
     if (to === 3) { showBeat("desk", back); if (back) hideBeats("phone"); }
     else { showBeat("desk", true); showBeat("phone", back); }
-    sendBlip(...errandFor(to));
-    busy = { to, done: () => beatDone(kind) && blipThere() };
-  } else if (from === 4 && to === 5) {
-    hideBeats(); sendBlip(...errandFor(5));
-    busy = { to, done: () => beatsOff() && blipThere() };
-  } else if (from === 3 && to === 2) {
-    hideBeats(); sendBlip(...errandFor(2));
-    busy = { to, done: () => beatsOff() && blipThere() };
+    blipTo(kind, L.blip);
+    busy = { to, done: () => beatDone(kind) && blipThere(kind) };
+  } else if ((from === 4 && to === 5) || (from === 3 && to === 2)) {
+    // Off the glass, back across the page, growing as he comes.
+    hideBeats(); blipTo(null, L.blip);
+    busy = { to, done: () => beatsOff() && blipThere(null) };
   } else if (from === 2 && to === 1) {
     // Back the other way: into the antenna, and the screens fill again.
     intoAntenna(L.foot, L.blip.H); restartCrowds();

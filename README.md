@@ -118,31 +118,43 @@ colours, not Blip's (`js/blip/pour.js`). Both screens are blank white again.
 **3, the computer: a terminal.** Xode installed on a project. It types
 itself — the real install line, the words `install.sh` prints, then `xode` run
 in the project's folder — and freezes with the prompt waiting and the cursor
-blinking. He walks out of the gap and stands in FRONT of the laptop (the page
-puts him over the devices for as long as he is over there), on the floor it
-stands on, below everything it is showing, and points up at it.
+blinking. The terminal leaves the bottom of the screen clear, because that is
+the floor **Blip walks about on**: he goes the way the bots went, the other
+way round. The page lends him out, he walks off out of the gap and as he goes
+he SHRINKS and his feet rise, so he walks away from us into the screen, slips
+behind the frame and comes out on the glass small — one of the troupe now,
+roaming and throwing himself about with the same eighteen moves, in his own
+ink and bone.
 
 **4, the phone: the Live Activity.** The "Bots at work" notice, done: Ready to
 ship, codes while you rest, its stages filled and a pull request opened. It
-drops in under the status bar and freezes; the laptop keeps its terminal
-while the phone has its turn; he walks over and points up at that one.
+drops in under the status bar and freezes; the laptop keeps its terminal while
+the phone has its turn; and he walks off the laptop's glass, back out onto the
+page and over to that screen instead.
 
-**5, back to the middle.** Both screens clear and he comes back to the gap,
-facing us. Side by side he really walks over and back; one above the other
-there is nowhere to walk, so he stays where he is and looks (and points) up
-at the phone or down at the laptop. `js/page/content.js` is both beats, built
-as DOM at a fixed design width and scaled to the glass like the status bar,
-so the words stay crisp at whatever size the device is.
+**5, back to the middle.** Both screens clear, he comes off the phone's glass
+and walks back to the gap, growing as he comes, and stands there facing us.
+The shrink and the rise are one eased ramp over the whole walk, so he curves
+away rather than climbing a slope — on a tall window the glass he is heading
+for is a long way above the floor he stands on, and he swings out first to
+give himself the run. On the glass he keeps to the front of it, so he never
+wanders up into what the screen is showing. `js/page/content.js` is both
+beats, built as DOM at a fixed design width and scaled to the glass like the
+status bar, so the words stay crisp at whatever size the device is;
+`js/page/arrivals.js` is his trip, `js/page/crowd.js` takes him in
+(`admitGuest`) and lets him go again.
 
 Up goes back the same way, and a beat come back to is simply there, finished,
-rather than typing itself again (5 to 4: both beats back; 4 to 3: the phone's
-goes; 3 to 2: both go and he returns to the middle; 2 to 1: back into the
-antenna and the screens fill again; 1 to 0: the devices leave and he comes out
-at the opening's size). A resize while he comes out ends it at once, him
-standing at the new spot; a resize while he is over by a device keeps him
-there, where that device now is. Under `prefers-reduced-motion` every change
-is instant and nothing moves: the bots are simply on the glass, standing, and
-each beat is simply there, finished, on the frame it is asked for.
+rather than typing itself again (5 to 4: both beats back and he walks onto the
+phone; 4 to 3: the phone's goes and he crosses back to the laptop; 3 to 2:
+both go and he comes back to the middle; 2 to 1: back into the antenna and the
+screens fill again; 1 to 0: the devices leave and he comes out at the
+opening's size). A resize while he comes out of the antenna ends it at once,
+him standing at the new spot; a resize while he is walking re-aims the trip,
+not him. Under `prefers-reduced-motion` every change is instant and nothing
+moves: the bots are simply on the glass, standing, Blip is simply on the one
+he was sent to, and each beat is simply there, finished, on the frame it is
+asked for.
 
 ## The download is always a link
 

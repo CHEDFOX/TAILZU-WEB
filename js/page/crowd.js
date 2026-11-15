@@ -53,6 +53,8 @@ export const WALKS = [
   { k: "bound", sp: 2.9, slow: .8, hop: 1.5 },
 ];
 export const pickOf = (a) => a[(Math.random() * a.length) | 0];
+/** Blip himself when he comes onto a screen: no colour of his own, so the renderer draws him in his. */
+const GUEST = { name: "Blip", c: null };
 
 const rgb = (s) => [parseInt(s.slice(1, 3), 16), parseInt(s.slice(3, 5), 16), parseInt(s.slice(5, 7), 16)];
 /** `hex` carried k of the way to [r,g,b]. */
@@ -210,7 +212,7 @@ export function makeCrowd(kind) {
   const cv = document.createElement("canvas");
   cv.className = "crowd";
   const g = cv.getContext("2d");
-  let W = 0, H = 0, T = 0, bots = [], tick = 0, calm = false;
+  let W = 0, H = 0, T = 0, bots = [], tick = 0, calm = false, guest = null, guestN = 0;
 
   /** How tall a bot of this build standing `d` deep is, and where its feet are. */
   const sizeAt = (r3, d) => Math.max(14, Math.min(W * .24, H * .28) * (1 + r3 * .22) * lerp(1, .55, d));
@@ -220,13 +222,13 @@ export function makeCrowd(kind) {
     const b = {
       def, tag, dots: makeDots(),
       r: seed(tag), r2: seed(tag + "·"), r3: seed("·" + tag),
-      ink: inkOf(def.c), lit: litOf(def.c),
+      ink: def.c ? inkOf(def.c) : undefined, lit: def.c ? litOf(def.c) : undefined,
       H: 10, gy: 10, d: 0, sp: 10, slowK: 1, hopK: 0,
       d0: 0, d1: 0, xa: 0, span: 1,                // the leg it is on: depth from, depth to, where it set off
       mode: "walk", hold: 0, to: 0, whim: 0, cross: false,
       gest: "", gt: 0, gdur: 1, spun: false, glow: 0, turn: 0, run: 0,
       roll: 0, rollAt: .5, flair: .4, flairT: 9, flairK: 0,
-      calm: false, home: null, pour: null,
+      calm: false, home: null, pour: null, guest: false,
       st: freshState(),
     };
     b.w = makeWalker({
@@ -248,7 +250,9 @@ export function makeCrowd(kind) {
   /** Somewhere else to be: anywhere at all, at any depth, now and then clean off the edge. */
   function roam(b, mayCross = true) {
     b.d0 = b.d;
-    b.d1 = clamp(b.d0 + (Math.random() * 2 - 1) * .55 + (Math.random() - .5) * .3, 0, 1);
+    // Blip keeps to the front of the glass, so he never wanders up into
+    // whatever the screen is showing.
+    b.d1 = clamp(b.d0 + (Math.random() * 2 - 1) * .55 + (Math.random() - .5) * .3, 0, b.guest ? .4 : 1);
     b.cross = mayCross && Math.random() < .07;
     const m = b.H * .45;
     b.to = b.cross ? (Math.random() < .5 ? -b.H : W + b.H) : m + Math.random() * Math.max(1, W - 2 * m);
@@ -324,6 +328,15 @@ export function makeCrowd(kind) {
     const st = b.st;
     if (b.mode === "gone") { b.pour.step(dt); return; }
     if (b.mode === "still") return;
+
+    if (b.mode === "exit") {
+      // The guest on his way off the glass: out to the edge, coming forward as he goes.
+      depthNow(b);
+      st.walkK = Math.min(1, st.walkK + dt * 6);
+      b.w.stride(dt, b.to); b.w.gait(dt);
+      b.glow *= Math.pow(.25, dt);
+      return;
+    }
 
     if (b.mode === "rest") {
       // Standing: turned to us, arms down, breathing, its eye wandering.
@@ -432,6 +445,47 @@ export function makeCrowd(kind) {
       else if (calm) { b.calm = true; b.home = null; }   // called in already: it walks to the spot it picked and stands there
       bots.push(b);
     },
+    /** How tall Blip is on this glass, and so how tall he is when he reaches it. */
+    guestH: () => sizeAt(1, 0),
+    /**
+     * Blip comes on, from `fromLeft`'s side: the biggest build of all of them,
+     * in his own ink and bone, and from then on he is one of the troupe —
+     * roaming, and throwing himself about with the same eighteen moves.
+     */
+    admitGuest(fromLeft) {
+      const b = makeBot(GUEST, "Blip/" + guestN++);
+      b.r3 = 1; b.guest = true;
+      b.d = 0; b.H = sizeAt(1, 0); b.gy = floorAt(0);
+      b.w.x = fromLeft ? 0 : W; b.w.mirror = !fromLeft; b.w.phase = 0;
+      roam(b, false);
+      if (reduced) { b.mode = "rest"; b.turn = 1; b.w.x = W * .5; b.w.mirror = false; b.st.walkK = 0; }
+      bots.push(b); guest = b;
+    },
+    /** He is on this glass (and not on his way off it). */
+    guestOn: () => !!guest && guest.mode !== "exit",
+    /** Off you go: he breaks off whatever he is doing and walks off `left`'s edge. */
+    leaveGuest(left) {
+      if (!guest || guest.mode === "exit") return;
+      const b = guest;
+      b.calm = false; b.cross = false; b.whim = 1e9;
+      b.d0 = b.d; b.d1 = 0;                        // forward again on the way out, so he leaves at the size he came in
+      b.to = left ? -b.H * 1.2 : W + b.H * 1.2;
+      b.xa = b.w.x; b.span = Math.max(1, Math.abs(b.to - b.xa));
+      b.sp = b.H * 2.4; b.slowK = 1; b.hopK = 0;
+      b.w.mirror = left; b.w.squash = 0; b.roll = 0; b.mode = "exit";
+    },
+    /**
+     * He has crossed the edge of the glass: where he was, for whoever picks him
+     * up on the page. Null until then, and only once (he is off the screen's
+     * books from the frame it answers).
+     */
+    takeGuest() {
+      if (!guest || guest.mode !== "exit") return null;
+      const b = guest, left = b.to < 0;
+      if (left ? b.w.x > 0 : b.w.x < W) return null;
+      bots = bots.filter((o) => o !== b); guest = null;
+      return { x: b.w.x, H: b.H, floor: b.gy, left };
+    },
     /**
      * That is enough roaming: each of them finishes what it is doing, pulls up,
      * turns to us and stands. Whoever walks on after this is called in too.
@@ -441,24 +495,24 @@ export function makeCrowd(kind) {
       calm = true;
       // They pull up spread along the floor, not in a heap: each takes the
       // nearest spot that leaves room for the one beside it.
-      const line = [...bots].sort((a, c) => a.w.x - c.w.x);
+      const line = bots.filter((b) => !b.guest).sort((a, c) => a.w.x - c.w.x);
       const at = line.map((b) => b.w.x);
       for (let i = 1; i < line.length; i++) at[i] = Math.max(at[i], at[i - 1] + (line[i].H + line[i - 1].H) * .34);
       for (let i = line.length - 2; i >= 0; i--) at[i] = Math.min(at[i], at[i + 1] - (line[i].H + line[i + 1].H) * .34);
       line.forEach((b, i) => callIn(b, at[i]));
     },
     /** Everyone who is on is standing (and nothing is left to do). */
-    settled() { if (reduced) return true; return calm && bots.every((b) => b.mode === "rest" && b.turn >= 1); },
+    settled() { if (reduced) return true; return calm && bots.every((b) => b.guest || (b.mode === "rest" && b.turn >= 1)); },
     /** They go the way Blip does: every dot into its own antenna's ball, which pops. */
     vanish() {
       if (reduced) { bots = []; this.draw(); return; }
       let i = 0;
-      for (const b of [...bots].sort((a, c) => a.w.x - c.w.x)) { if (b.mode !== "gone") startPour(b, (i++) * .045 + Math.random() * .06); }
+      for (const b of [...bots].sort((a, c) => a.w.x - c.w.x)) { if (!b.guest && b.mode !== "gone") startPour(b, (i++) * .045 + Math.random() * .06); }
     },
     /** Nothing of them left: the screen is blank white again. */
-    gone() { return bots.every((b) => b.mode === "gone" && b.pour.done); },
+    gone() { return bots.every((b) => b.guest || (b.mode === "gone" && b.pour.done)); },
     /** The device is going: the screen is empty again. */
-    leave() { bots = []; T = 0; calm = false; this.draw(); },
+    leave() { bots = []; guest = null; T = 0; calm = false; this.draw(); },
     step(dt) {
       if (reduced) return;
       T += dt;
@@ -485,6 +539,6 @@ export function makeCrowd(kind) {
      * cost. While they are pouring away every frame is drawn: the dots move too
      * fast for half of them.
      */
-    due() { if (bots.some((b) => b.mode === "gone")) return true; return (tick = (tick + 1) % 2) === 0; },
+    due() { if (guest || bots.some((b) => b.mode === "gone")) return true; return (tick = (tick + 1) % 2) === 0; },
   };
 }

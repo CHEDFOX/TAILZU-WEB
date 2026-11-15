@@ -2,9 +2,6 @@
 /* The bots' walk across the page to the devices (js/page/arrivals.js). Under
    #screens, so the last of the walk is hidden behind the device's frame. */
 #walkers { position: fixed; inset: 0; z-index: 2; width: 100%; height: 100%; display: block; pointer-events: none; }
-/* While he is over by one of the devices he walks in front of it, not behind
-   it: page/opening.js puts this on #hero for as long as he is over there. */
-#hero.fore { z-index: 4; }
 #screens { position: fixed; inset: 0; z-index: 3; pointer-events: none; overflow: hidden; }
 #screens .dev { position: absolute; left: 0; top: 0; transform-origin: 50% 100%; will-change: transform, opacity; visibility: hidden; opacity: 0; }
 #screens .scr { position: relative; overflow: hidden; background: #fff; isolation: isolate; }
@@ -41,7 +38,9 @@
 
 /* The screen itself: empty white, the bots' canvas over all of it, and on the phone the system's status bar over that. */
 .wl { position: absolute; inset: 0; overflow: hidden; background: #fff; }
-.crowd { position: absolute; left: 0; top: 0; display: block; }
+/* The bots on the glass, and Blip when he is one of them: over whatever the
+   screen is showing, under the sheen on it. */
+.crowd { position: absolute; left: 0; top: 0; z-index: 6; display: block; }
 .wl-status { position: absolute; left: 0; top: 0; width: 390px; height: 54px; display: flex; align-items: center; justify-content: space-between; box-sizing: border-box;
   padding: 6px 30px 0 46px; transform-origin: 0 0; color: #0A0A0A; font: 600 17px/1 ui-sans-serif, system-ui, -apple-system, sans-serif; letter-spacing: -.2px; }
 .wl-status svg { display: block; }
@@ -55,8 +54,9 @@
 .ct-phone { width: 390px; height: 844px; }
 
 /* The laptop: a terminal on the desktop. Xode installed with one line, then
-   run in a project's folder, its prompt left waiting. */
-.tm { position: absolute; inset: 48px; display: flex; flex-direction: column; overflow: hidden;
+   run in a project's folder, its prompt left waiting. It leaves the bottom of
+   the screen clear, which is the floor Blip walks about on when he is on it. */
+.tm { position: absolute; inset: 44px 56px 248px; display: flex; flex-direction: column; overflow: hidden;
   border-radius: 14px; background: #151311; color: #F3E2C6;
   font: 400 30px/1.62 ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
   box-shadow: 0 2px 4px rgba(40, 30, 20, .18), 0 40px 80px -40px rgba(40, 30, 20, .5); }

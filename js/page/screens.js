@@ -68,11 +68,10 @@ let side = true;
 
 /**
  * Lays them out for this window. Returns where Blip stands between them
- * ({ x, gy, H }), where his antenna's foot stands ([x, y]) while the screens
- * are up, and where he goes to watch each of them work (`spots`, and `aim`,
- * which way he looks from there). Side by side he walks over to the device
- * that is showing something and turns to it; one above the other there is
- * nowhere to walk, so he stays where he is and looks up or down at it.
+ * ({ x, gy, H }) and where his antenna's foot stands ([x, y]) while the
+ * screens are up. Where he goes when he leaves that spot — into one of the
+ * screens — is page/arrivals.js's business; it is given this same spot, so a
+ * resize moves where he is heading, not him.
  */
 export function layoutScreens() {
   const VW = view.w, VH = view.h;
@@ -107,15 +106,6 @@ export function layoutScreens() {
     qx = Math.round((VW - Q.w) / 2); qy = y0 + P.h + gap;
     blip = { x: Math.round(VW / 2), gy: Math.round(y0 + P.h + gap * .86), H: bh };
   }
-  // Where he goes when one of them is showing something. Side by side there is
-  // only a hand's width of floor between them, so he walks out of the gap and
-  // stands in front of the one that is showing — on the same floor it stands
-  // on, below everything it is showing — and looks up at it. One above the
-  // other there is nowhere to walk: he stays where he is and looks up or down.
-  const spots = side
-    ? { mid: blip.x, phone: Math.round(px + P.w / 2), desk: Math.round(qx + Q.w / 2) }
-    : { mid: blip.x, phone: blip.x, desk: blip.x };
-  const aim = side ? { phone: [0, -1], desk: [0, -.88] } : { phone: [0, -1], desk: [0, .8] };
   phone.el.style.left = px + "px"; phone.el.style.top = py + "px";
   lap.el.style.left = qx + "px"; lap.el.style.top = qy + "px";
   phone.scn.fit(P.sw); lap.scn.fit(Q.sw);
@@ -124,7 +114,7 @@ export function layoutScreens() {
   arrivals.setRect("phone", { x: px + P.ox, y: py + P.oy, ...phone.scn.size(P.sw) });
   arrivals.setRect("desk", { x: qx + Q.ox, y: qy + Q.oy, ...lap.scn.size(Q.sw) });
   paint(phone); paint(lap);
-  return { blip, foot: [blip.x, blip.gy], spots, aim };
+  return { blip, foot: [blip.x, blip.gy] };
 }
 
 function paint(d) {
@@ -183,6 +173,13 @@ export function hideBeats(kind) {
 export function beatDone(kind) { return (kind === "phone" ? phone : lap).scn.content.done(); }
 /** Nothing on either screen: both are blank white again. */
 export function beatsOff() { for (const d of [phone, lap]) if (d.scn.content.shown()) return false; return true; }
+/** Blip himself: off to one of the screens, about on it, or back to the middle. */
+export function blipTo(kind, home) { arrivals.guestTo(kind, home); }
+/** He has got there (`kind` null: back in the middle). */
+export function blipThere(kind) { return arrivals.guestThere(kind); }
+/** He is out of the page's hands, somewhere between the two. */
+export const blipOut = () => arrivals.guestBusy();
+
 /** Someone is still on their way over to one of them. */
 export function screensFilling() { for (const d of [phone, lap]) if (d.to === 1 && arrivals.pending(d.kind)) return true; return false; }
 
