@@ -1,4 +1,4 @@
-/* The phone and the laptop beside Blip, and the app's first screen in them (js/page/screens.js, js/page/welcome.js). */
+/* The phone and the laptop beside Blip, and the screen the bots walk onto in them (js/page/screens.js, js/page/screen.js, js/page/crowd.js). */
 #screens { position: fixed; inset: 0; z-index: 3; pointer-events: none; overflow: hidden; }
 #screens .dev { position: absolute; left: 0; top: 0; transform-origin: 50% 100%; will-change: transform, opacity; visibility: hidden; opacity: 0; }
 #screens .scr { position: relative; overflow: hidden; background: #fff; isolation: isolate; }
@@ -33,9 +33,9 @@
 #screens .laptop::after { content: ""; position: absolute; z-index: -1; left: 1%; right: 1%; bottom: -6px; height: 12px; border-radius: 50%; background: radial-gradient(closest-side, rgba(60, 42, 24, .28), rgba(60, 42, 24, 0)); }
 #screens .laptop::before { content: ""; position: absolute; z-index: -1; left: -4%; right: -4%; bottom: -24px; height: 48px; border-radius: 50%; background: radial-gradient(closest-side, rgba(60, 42, 24, .12), rgba(60, 42, 24, 0)); }
 
-/* The app's Welcome: the app's own render, at the screen's width; on the phone, the system's status bar over it. */
+/* The screen itself: empty white, the bots' canvas over all of it, and on the phone the system's status bar over that. */
 .wl { position: absolute; inset: 0; overflow: hidden; background: #fff; }
-.wl-shot { position: absolute; left: 0; display: block; }
+.crowd { position: absolute; left: 0; top: 0; display: block; }
 .wl-status { position: absolute; left: 0; top: 0; width: 390px; height: 54px; display: flex; align-items: center; justify-content: space-between; box-sizing: border-box;
   padding: 6px 30px 0 46px; transform-origin: 0 0; color: #0A0A0A; font: 600 17px/1 ui-sans-serif, system-ui, -apple-system, sans-serif; letter-spacing: -.2px; }
 .wl-status svg { display: block; }

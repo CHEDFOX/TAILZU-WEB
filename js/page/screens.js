@@ -1,19 +1,19 @@
-// The phone and the laptop, each showing the app's first screen. On a wide
+// The phone and the laptop, each with an empty screen the bots walk onto. On a wide
 // window they stand side by side on one floor, the phone on the left, the
 // laptop (the bigger of the two) on the right, Blip in the gap between them,
 // the three centred together; on a tall one the phone is above, the laptop
 // below, and Blip in the middle. They come in (and go) on springs, each from
 // its own side.
 import { TAU, clamp, reduced, view } from "../util.js";
-import { makeWelcome } from "./welcome.js";
+import { makeScreen } from "./screen.js";
 
 const box = document.getElementById("screens");
 const PH = 844 / 390;                       // the phone's screen, tall per wide
 const W_IN = TAU * 1.3, Z_IN = .78;         // their springs
 
 function device(kind) {
-  const d = document.createElement("div"), scr = document.createElement("div"), welcome = makeWelcome(kind);
-  scr.className = "scr"; scr.appendChild(welcome.el);
+  const d = document.createElement("div"), scr = document.createElement("div"), scn = makeScreen(kind);
+  scr.className = "scr"; scr.appendChild(scn.el);
   if (kind === "phone") {
     d.className = "dev phone";
     const frame = document.createElement("div"), glass = document.createElement("div"), isl = document.createElement("i");
@@ -28,7 +28,7 @@ function device(kind) {
     glass.appendChild(scr); lid.appendChild(glass); d.append(lid, base);
   }
   box.appendChild(d);
-  return { el: d, welcome, e: 0, v: 0, to: 0, delay: 0, w: 0, h: 0 };
+  return { el: d, scn, e: 0, v: 0, to: 0, delay: 0, w: 0, h: 0 };
 }
 const phone = device("phone"), lap = device("desk");
 
@@ -102,7 +102,7 @@ export function layoutScreens() {
   }
   phone.el.style.left = px + "px"; phone.el.style.top = py + "px";
   lap.el.style.left = qx + "px"; lap.el.style.top = qy + "px";
-  phone.welcome.fit(P.sw); lap.welcome.fit(Q.sw);
+  phone.scn.fit(P.sw); lap.scn.fit(Q.sw);
   paint(phone); paint(lap);
   return { blip, foot: [blip.x, blip.gy] };
 }
@@ -138,5 +138,10 @@ export function stepScreens(dt) {
     else { d.v += (W_IN * W_IN * (d.to - d.e) - 2 * Z_IN * W_IN * d.v) * dt; d.e += d.v * dt; }
     if (d.to === 0 && d.e < .002) { d.e = 0; d.v = 0; }
     paint(d);
+    // The first bot steps on once the device itself is nearly in; the screen
+    // is empty again once it has gone.
+    if (d.to === 1 && d.e > .55) d.scn.enter();
+    if (d.to === 0 && d.e === 0) d.scn.leave();
+    if (d.e > .02) d.scn.step(dt);
   }
 }

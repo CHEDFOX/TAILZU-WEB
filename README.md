@@ -5,9 +5,8 @@ it for the backend's pages and the downloads.
 
 ```
 index.html            the page: markup, one <style>, one inline <script> (GTM), a <noscript> head style; loads js/main.js
-js/                   the page's script, one module per part: paper/ (grain, water, words, glitch), blip/ (figure, dots, walker, antenna), page/ (opening, key, steps, screens, welcome), main.js
+js/                   the page's script, one module per part: paper/ (grain, water, words, glitch), blip/ (figure, dots, walker, antenna), page/ (opening, key, steps, screens, screen, crowd), main.js
 css/screens.css       the phone and laptop frames, the app screen in them, the phone's status bar
-media/                welcome-phone.webp and welcome-desk.webp: the app's first screen, from the app's own renderers (see The page)
 api/                  Meta's pixel and its Conversions API copy (see Meta's pixel)
 vercel.json           rewrites to the API, headers, the home page's CSP, caching
 csp.mjs               writes index.html's inline hashes into the home page's CSP
@@ -44,14 +43,22 @@ come in on springs, each from its side: on a wide window side by side on one
 floor (the phone on the left, the laptop, the bigger, on the right, the
 antenna between them, the three centred together); on a tall one the phone
 above and the laptop below, and there they wait until all of him is in, so
-they never cover him. Both show the app's real first screen, the Bots app's
-Welcome (Blip waving, "Hi, I'm X0.", "Everything here is a bot. Tell them
-what you need; they do the work."), drawn by the app's own renderers, with
-the Start button and the link under it painted out (the page moves on
-without a press) and, on the window, the list of first bots too. To make
-them again: `cd TAILZU-BACKEND/tulmi && npx tsx scripts/bots-render/render.ts bots.welcome --out <dir>`,
-paint white over the button and the link (and the window's bots list), and
-save the phone at 780 x 1688 and the window at 1600 x 1000 as WebP in `media/`.
+they never cover him.
+
+Both screens are empty white when they arrive. Then the bots come on, one at
+a time, each from the other side of the screen to the last: Xode, Keylessbord,
+Plan Ease, Travel bot, Oracle, Mail, Lingo and Meetings, as many of them as
+the screen is wide enough for. One runs on and brakes, one strolls, one skids
+to a stop, one comes on hopping. Each keeps to a band of its own and wanders
+it, stopping to wave, to look about, to stretch or to nod, and then moving
+on. They stand in lanes: the further up the screen, the smaller and the
+further back, and the nearer ones pass in front. Each wears the colour the
+app gives it (TAILZU-BACKEND `src/bots/builtin.ts`, with
+`experience/bots/palette.ts` for the hex) — the dots a pale wash of it, the
+sticker under them a dark one — and each is drawn by the same renderer as
+Blip himself. The Blip standing between the two devices is the page's own and
+is not one of them. `js/page/crowd.js` holds all of it; the screen around
+them (empty white, and the phone's status bar) is `js/page/screen.js`.
 
 **2, out again.** On the next move (or by itself four seconds after step 1
 first settles; never again after the visitor has come back to it) he comes

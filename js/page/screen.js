@@ -1,16 +1,11 @@
-// The app's first screen, the Bots app's Welcome, as the app's own renderers
-// draw it: Blip waving, "Hi, I'm X0.", "Everything here is a bot…" (the phone
-// at 390 x 844; the window at 1280 x 800). The
-// pictures are the render check's (TAILZU-BACKEND scripts/bots-render,
-// screen bots.welcome) with the Start button and the "I already have an
-// account" link under it painted out (the page moves on without a press),
-// and on the window its list of first bots too.
-// On the phone the system's status bar sits over it, and the screen sits
-// below the island as a phone's safe area puts it.
-const SHOT = {
-  phone: { src: "/media/welcome-phone.webp", w: 390, h: 844, top: 16 },
-  desk: { src: "/media/welcome-desk.webp", w: 1280, h: 800, top: 0 },
-};
+// What is inside the phone's and the laptop's glass on step 1: an empty white
+// screen, the phone's own status bar over it, and the bots that come in and
+// wander about on it (page/crowd.js). Nothing else — no app screen, no copy.
+// The screen starts empty every time the device goes and comes back.
+import { makeCrowd } from "./crowd.js";
+
+const PH = 844 / 390;                       // the phone's screen, tall per wide
+const DESK = .625;                          // the laptop's, wide per tall
 const NS = "http://www.w3.org/2000/svg";
 const svg = (tag, attrs) => { const e = document.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); return e; };
 const el = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text) e.textContent = text; return e; };
@@ -27,19 +22,21 @@ function statusBar() {
   return s;
 }
 
-export function makeWelcome(kind) {
-  const S = SHOT[kind], root = el("div", `wl wl-${kind}`), img = el("img", "wl-shot");
-  img.src = S.src; img.alt = ""; img.decoding = "async";
-  root.appendChild(img);
+export function makeScreen(kind) {
+  const root = el("div", `wl wl-${kind}`), crowd = makeCrowd(kind);
+  root.appendChild(crowd.el);
   let bar = null;
   if (kind === "phone") { bar = statusBar(); root.appendChild(bar); }
   return {
     el: root,
-    /** The device's screen is `w` CSS pixels wide: the picture at that width (sharp), the status bar scaled to it. */
+    /** The device's screen is `w` CSS pixels wide: the bots' floor, and the status bar, scaled to it. */
     fit(w) {
-      const k = w / S.w;
-      img.style.width = w + "px"; img.style.height = Math.round(S.h * k) + "px"; img.style.top = (S.top * k).toFixed(2) + "px";
-      if (bar) bar.style.transform = `scale(${k.toFixed(4)})`;
+      const h = kind === "phone" ? w * PH : w * DESK;
+      crowd.fit(w, h);
+      if (bar) bar.style.transform = `scale(${(w / 390).toFixed(4)})`;
     },
+    enter: () => crowd.enter(),
+    leave: () => crowd.leave(),
+    step(dt) { crowd.step(dt); if (crowd.due()) crowd.draw(); },
   };
 }

@@ -6,6 +6,8 @@ import { BAYER, figure } from "./figure.js";
  * greys into a small buffer (one cell per dot), then an ink sticker grown
  * around it, then the dots the dither lets through, then the antenna's glow.
  * o: { H, cell, x, y (feet, ground), mirror, squash, land, air, st, t, glow, padX, capture }.
+ * o.ink and o.lit recolour the sticker and the dots (the bots on the screens
+ * each wear their own); left out, they are Blip's own ink and bone.
  * Returns the hand and the antenna's ball in g's coordinates. With o.capture
  * it draws nothing and also returns every dot it would have drawn, where it
  * would have drawn it: `ink` and `lit`, flat [x, y, x, y, ...] lists (the
@@ -35,7 +37,7 @@ export function makeDots() {
     g.save(); g.translate(o.x, o.y); g.scale(sq * (1 + .05 * land - .02 * air), 1 - .06 * land + .03 * air); g.translate(-o.x, -o.y);
     for (let i = 0; i < bw * bh; i++) on[i] = src[i * 4 + 3] > 60 ? 1 : 0;
     // The sticker: every cell the figure touches, grown by one, in ink.
-    g.fillStyle = "#151311"; g.beginPath();
+    g.fillStyle = o.ink || "#151311"; g.beginPath();
     for (let y = 0; y < bh; y++) for (let x = 0; x < bw; x++) {
       let hit = on[y * bw + x];
       if (!hit) for (let j = -1; j <= 1 && !hit; j++) for (let i = -1; i <= 1 && !hit; i++) { const xx = x + i, yy = y + j; if (xx >= 0 && yy >= 0 && xx < bw && yy < bh && on[yy * bw + xx]) hit = 1; }
@@ -43,7 +45,7 @@ export function makeDots() {
     }
     g.fill();
     // The dots: lit where the grey beats the dither's threshold.
-    g.fillStyle = "#F3E2C6"; g.beginPath();
+    g.fillStyle = o.lit || "#F3E2C6"; g.beginPath();
     for (let y = 0; y < bh; y++) for (let x = 0; x < bw; x++) {
       const i = (y * bw + x) * 4, a = src[i + 3]; if (a < 90) continue;
       const lum = (src[i] * .3 + src[i + 1] * .59 + src[i + 2] * .11) / 255 * (a / 255);
