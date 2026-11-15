@@ -48,7 +48,7 @@ js/                     the page's script, one ES module per part (no build step
   page/screens.js       the phone and the laptop either side of him (above and below on a tall window), on springs
   page/screen.js        what is in them: an empty white screen, and the phone's status bar
   page/arrivals.js      the bots' walk in off the page to a device, on a canvas under it (so the last of it is behind the frame)
-  page/crowd.js         the milling about once on the glass: random spots, random paces, a dozen things they do, one colour each
+  page/crowd.js         the milling about once on the glass: random spots, random paces, eighteen things they do (flips, cartwheels, handstands and the rest), one colour each
 css/screens.css         the devices' frames and the screen in them
 api/                    Vercel serverless functions (Node)
   _meta.js              shared Meta pixel / Conversions API helpers (reads the dataset id and token from Vercel env)
@@ -73,7 +73,8 @@ README.md               how the page behaves, what to run after a change, how pu
 | The steps (what a scroll does, the step 2 that comes by itself after 4 s the first time) | `js/page/steps.js` |
 | Into the antenna and out (the springs, the order, the stalk) | `js/blip/antenna.js` (its constants at the top) |
 | The phone and laptop: sizes, places, their springs | `js/page/screens.js` (`layoutScreens`), `css/screens.css` |
-| The bots: who they are, how they walk, the dozen things they do | `js/page/crowd.js` (`BOTS`, `WALKS`, `GEST`) |
+| The bots: who they are, how they walk, the eighteen things they do | `js/page/crowd.js` (`BOTS`, `WALKS`, `GEST`; `GEST_BAG` weights the showy ones) |
+| Turning a figure over for a flip, and its ground shadow | `js/blip/dots.js` (`o.roll`, `o.rollAt`, `o.shade`, `o.hop`) |
 | How many fit a screen, how big they are, how they roam it | `js/page/crowd.js` (`capacity`, `sizeAt`, `roam`) |
 | Their walk across the page, and where the door into each screen is | `js/page/arrivals.js`; the glass's place on the page is `js/page/screens.js` (`layoutScreens`, `arrivals.setRect`) |
 | The download button's per-device target | `js/page/key.js` (`homeLink`) |

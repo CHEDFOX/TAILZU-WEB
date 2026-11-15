@@ -58,16 +58,28 @@ Mail, Lingo and Meetings, and past the end of the roster it starts again — as
 many as the screen is wide enough for, which is about fourteen on a laptop
 and four on a phone.
 
-Once on, nothing about them is laid out. A bot walks to a spot it picked at
-random, at a speed it picked at random (it runs, strolls, ambles, skids,
-hops or bounds), changing its mind on the way as often as not; wherever it
-stops it does one of a dozen things — waves, looks about, stretches, nods,
-jumps, spins on the spot, dances, points, shrugs, peers, bounces, scratches —
-waits as long as it likes, and goes somewhere else. It roams in two
-directions, not one: every walk also carries it nearer or further, which
-makes it bigger or smaller and moves its floor up or down the screen, and the
-ones in front pass over the ones behind. Now and then one walks clean off an
-edge and comes back on from the other.
+Once on, nothing about them is laid out, **and none of them ever just
+stands there.** A bot walks to a spot it picked at random, at a speed it
+picked at random (it runs, strolls, ambles, skids, hops or bounds), changing
+its mind on the way as often as not — and even on the way it is up to
+something: a skip, a wave over its shoulder, a look round. Where it stops it
+throws itself into two to five things one after another, out of eighteen:
+backflips, cartwheels, handstands, a spin on the floor, jumps, spins, kicks,
+a dance, a moonwalk, and between them the small talk — a wave, a look, a
+stretch, a nod, a bounce, a point, a shrug, a peer, a scratch. The showy ones
+come up about twice as often as the small talk, and between any two is a
+breath of a quarter of a second, not a pause: it settles, looks about and
+goes again. Then it walks somewhere else and starts over.
+
+The flips and the cartwheels turn the whole figure over, which the renderer
+does about a point part way up it (`roll`, `rollAt`). Each bot keeps the
+shadow it stands in, which shrinks and fades as it leaves the floor, so a
+jump reads as a jump and not as a bot hanging in the air.
+
+It roams in two directions, not one: every walk also carries it nearer or
+further, which makes it bigger or smaller and moves its floor up or down the
+screen, and the ones in front pass over the ones behind. Now and then one
+walks clean off an edge and comes back on from the other.
 
 Each wears the colour the app gives it (TAILZU-BACKEND `src/bots/builtin.ts`,
 with `experience/bots/palette.ts` for the hex) — the dots a pale wash of it,

@@ -62,79 +62,137 @@ export const freshState = () => ({
   legs: [{ th: 0, lift: 0 }, { th: 0, lift: 0 }], drop: 0, bob: 0, swayK: 1, antWob: 0, walkK: 1, look: [0, 0],
 });
 
-// ---- The things they do when they stop ----------------------------------------
+// ---- The things they do -------------------------------------------------------
 // Each is given the bot, how far through it is (0 to 1) and the state to pose.
+// `travel` carries it that many of its own heights the way it faces while it
+// plays; `roll` and `rollAt` on the bot turn the whole figure over, which is
+// what the flips and the cartwheels are made of. `big` marks the ones with
+// real weight behind them, so they come up more often than the small talk.
+const TAU2 = TAU;
 const GEST = {
-  wave: { secs: 2.4, play(b, k, st) {
+  // -- the showy ones ----------------------------------------------------------
+  backflip: { secs: 1.25, big: 1, travel: -.5, play(b, k, st) {
+    const crouch = clamp(k / .18), air = k > .18 && k < .84 ? Math.sin(Math.PI * (k - .18) / .66) : 0;
+    const land = k > .84 ? Math.sin(Math.PI * (k - .84) / .16) : 0;
+    b.roll = -TAU2 * easeIO(clamp((k - .16) / .68)) * (b.w.mirror ? -1 : 1);
+    b.rollAt = .5;
+    st.drop += b.H * .09 * crouch * (1 - k) - b.H * .40 * air + b.H * .07 * land;
+    st.legs[0].th = st.legs[1].th = -.7 * air; st.legs[0].lift = st.legs[1].lift = b.H * .03 * air;
+    st.ra = [.16 + 2.6 * air, .12 - .6 * air]; st.la = [.16 + 2.6 * air, .12 - .6 * air];
+    st.mouth = "grin"; st.brows = .3 + .6 * air;
+  } },
+  cartwheel: { secs: 1.5, big: 1, travel: 2.2, play(b, k, st) {
+    b.roll = TAU2 * easeIO(k) * (b.w.mirror ? -1 : 1); b.rollAt = .5;
+    const out = Math.sin(Math.PI * clamp(k / .9)) ** .4;
+    st.legs[0].th = .75 * out; st.legs[1].th = -.75 * out;
+    st.ra = [2.7 * out + .16, .1]; st.la = [2.7 * out + .16, .1];
+    st.drop -= b.H * .06 * out; st.mouth = "grin"; st.brows = .7;
+  } },
+  handstand: { secs: 2.3, big: 1, play(b, k, st) {
+    const up = easeIO(clamp(k / .22)) - easeIO(clamp((k - .78) / .22));
+    b.roll = Math.PI * up * (b.w.mirror ? -1 : 1); b.rollAt = .5;
+    const wob = Math.sin(k * TAU2 * 3) * .07 * up;
+    b.roll += wob;
+    st.legs[0].th = .3 * up + wob; st.legs[1].th = -.25 * up - wob;
+    st.ra = [2.9 * up + .16, .1]; st.la = [2.9 * up + .16, .1];
+    st.mouth = up > .5 ? "grin" : "smile"; st.brows = .2;
+  } },
+  breakdance: { secs: 2.4, big: 1, play(b, k, st) {
+    const inLow = Math.sin(Math.PI * clamp(k / .9)) ** .5;
+    b.roll = TAU2 * 2 * easeIO(k) * (b.r2 < .5 ? -1 : 1) * inLow; b.rollAt = .22;
+    st.drop += b.H * .16 * inLow;
+    st.legs[0].th = .9 * inLow; st.legs[1].th = -.55 * inLow;
+    st.ra = [1.9 * inLow + .16, .4]; st.la = [.9 * inLow + .16, -.3];
+    st.mouth = "grin"; st.brows = .8;
+  } },
+  jump: { secs: 1.2, big: 1, play(b, k, st) {
+    const crouch = Math.sin(Math.PI * clamp(k / .22)) * clamp(1 - k / .3);
+    const air = k > .2 && k < .8 ? Math.sin(Math.PI * (k - .2) / .6) : 0;
+    const land = k > .76 ? Math.max(0, Math.sin(Math.PI * (k - .76) / .24)) : 0;
+    st.drop += b.H * .08 * crouch - b.H * .34 * air + b.H * .06 * land;
+    st.ra = [.16 + 2.6 * air, .12 - .55 * air]; st.la = [.16 + 2.6 * air, .12 - .55 * air];
+    st.legs[0].th = st.legs[1].th = -.5 * air;
+    st.mouth = air > .25 ? "grin" : "smile"; st.brows = .3 + .55 * air;
+  } },
+  spin: { secs: 1.1, big: 1, play(b, k, st) {
+    b.w.squash = Math.sin(Math.PI * k) * .95;
+    if (k > .5 && !b.spun) { b.w.mirror = !b.w.mirror; b.spun = true; }
+    const a = Math.sin(Math.PI * k);
+    st.ra = [.16 + 1.9 * a, .12]; st.la = [.16 + 1.9 * a, .12];
+    st.drop -= b.H * .07 * a; st.tilt = .12 * Math.sin(TAU2 * k); st.mouth = "grin";
+  } },
+  kick: { secs: 1.0, big: 1, play(b, k, st) {
+    const out = Math.sin(Math.PI * clamp(k / .85)) ** .45;
+    st.legs[0].th = 1.25 * out; st.legs[1].th = -.2 * out; st.legs[0].lift = b.H * .05 * out;
+    st.tilt = -.22 * out; st.ra = [.16 + 1.4 * out, .5]; st.la = [.16 - .6 * out, .1];
+    st.drop -= b.H * .02 * out; st.mouth = "grin"; st.brows = .8;
+  } },
+  dance: { secs: 3.0, big: 1, play(b, k, st) {
+    const p = k * TAU2 * 3, hop = Math.max(0, Math.sin(p * 2));
+    st.ra = [1.0 + .9 * Math.sin(p), .1 + .35 * Math.cos(p)];
+    st.la = [1.0 - .9 * Math.sin(p), .1 - .35 * Math.cos(p)];
+    st.tilt = .16 * Math.sin(p); st.drop -= b.H * .09 * hop;
+    st.legs[0].lift = b.H * .03 * hop; st.legs[1].lift = b.H * .03 * (1 - hop);
+    st.look = [.5 * Math.sin(p), 0]; st.mouth = "grin"; st.brows = .8;
+    b.glow = Math.max(b.glow, .5 * hop);
+  } },
+  wave: { secs: 2.2, big: 1, play(b, k, st) {
     const up = easeOut(k / .18) - easeIO((k - .76) / .2);
-    const osc = k > .14 && k < .8 ? Math.sin((k - .14) * TAU * 3.1) : 0;
+    const osc = k > .14 && k < .8 ? Math.sin((k - .14) * TAU2 * 3.1) : 0;
     st.ra = [lerp(.16, 2.5, up), lerp(.12, -.55, up) + .34 * osc * up];
     st.mouth = up > .3 ? "grin" : "smile"; st.brows = lerp(.3, .75, up); st.tilt = -.06 * up;
+    st.drop -= b.H * .02 * Math.abs(osc) * up;
     b.glow = Math.max(b.glow, up);
   } },
-  look: { secs: 2.7, play(b, k, st) {
-    const s = Math.sin(k * TAU) * (k < .92 ? 1 : easeOut((1 - k) / .08));
-    st.look = [s, .1 * Math.cos(k * TAU * 2)]; st.tilt = .05 * s; st.brows = .45;
+  moonwalk: { secs: 1.8, big: 1, travel: -1.6, play(b, k, st) {
+    const p = k * TAU2 * 3.2;
+    st.legs[0].th = .5 * Math.sin(p); st.legs[1].th = -.5 * Math.sin(p);
+    st.legs[0].lift = b.H * .02 * Math.max(0, Math.sin(p));
+    st.ra = [.5 + .3 * Math.cos(p), .3]; st.la = [.5 - .3 * Math.cos(p), .3];
+    st.tilt = -.08; st.walkK = 1; st.mouth = "grin";
   } },
-  stretch: { secs: 2.1, play(b, k, st) {
+  // -- the small talk between them --------------------------------------------
+  look: { secs: 1.5, play(b, k, st) {
+    const s = Math.sin(k * TAU2) * (k < .9 ? 1 : easeOut((1 - k) / .1));
+    st.look = [s, .12 * Math.cos(k * TAU2 * 2)]; st.tilt = .07 * s; st.brows = .45;
+  } },
+  stretch: { secs: 1.6, play(b, k, st) {
     const up = Math.sin(Math.PI * clamp(k / .85)) ** .7;
     st.ra = [lerp(.16, 2.9, up), lerp(.12, -.2, up)]; st.la = [lerp(.16, 2.9, up), lerp(.12, -.2, up)];
-    st.drop -= b.H * .02 * up; st.brows = lerp(.3, .8, up); st.mouth = up > .5 ? "grin" : "smile";
+    st.drop -= b.H * .04 * up; st.brows = lerp(.3, .8, up); st.mouth = up > .5 ? "grin" : "smile";
   } },
-  nod: { secs: 1.7, play(b, k, st) {
-    const n = Math.sin(k * TAU * 2) * (1 - k * .4);
-    st.tilt = .12 * n; st.drop += b.H * .012 * Math.max(0, n); st.brows = .55; st.mouth = "grin";
+  nod: { secs: 1.1, play(b, k, st) {
+    const n = Math.sin(k * TAU2 * 2) * (1 - k * .4);
+    st.tilt = .16 * n; st.drop += b.H * .018 * Math.max(0, n); st.brows = .55; st.mouth = "grin";
   } },
-  bounce: { secs: 1.7, play(b, k, st) {
-    const n = Math.max(0, Math.sin(k * Math.PI * 3)) * (1 - k * .5);
-    st.drop -= b.H * .09 * n; st.ra = [.16 + .5 * n, .12]; st.la = [.16 + .5 * n, .12];
-    st.legs[0].lift = st.legs[1].lift = b.H * .02 * n; st.mouth = n > .4 ? "grin" : "smile";
+  bounce: { secs: 1.3, play(b, k, st) {
+    const n = Math.max(0, Math.sin(k * Math.PI * 3)) * (1 - k * .4);
+    st.drop -= b.H * .13 * n; st.ra = [.16 + .7 * n, .12]; st.la = [.16 + .7 * n, .12];
+    st.legs[0].lift = st.legs[1].lift = b.H * .025 * n; st.mouth = n > .4 ? "grin" : "smile";
   } },
-  jump: { secs: 1.5, play(b, k, st) {
-    // Down, up and off the floor, then a squash as it lands.
-    const crouch = Math.sin(Math.PI * clamp(k / .22)) * clamp(1 - k / .3);
-    const air = k > .22 && k < .78 ? Math.sin(Math.PI * (k - .22) / .56) : 0;
-    const land = k > .74 ? Math.max(0, Math.sin(Math.PI * (k - .74) / .26)) : 0;
-    st.drop += b.H * .07 * crouch - b.H * .3 * air + b.H * .05 * land;
-    st.ra = [.16 + 2.4 * air, .12 - .5 * air]; st.la = [.16 + 2.4 * air, .12 - .5 * air];
-    st.legs[0].th = st.legs[1].th = -.45 * air; st.mouth = air > .3 ? "grin" : "smile"; st.brows = .3 + .5 * air;
-  } },
-  spin: { secs: 1.3, play(b, k, st) {
-    // Through side-on and round the other way.
-    b.w.squash = Math.sin(Math.PI * k) * .92;
-    if (k > .5 && !b.spun) { b.w.mirror = !b.w.mirror; b.spun = true; }
-    st.ra = [.16 + .8 * Math.sin(Math.PI * k), .12]; st.la = [.16 + .8 * Math.sin(Math.PI * k), .12];
-    st.tilt = .1 * Math.sin(TAU * k); st.mouth = "grin";
-  } },
-  dance: { secs: 3.2, play(b, k, st) {
-    const p = k * TAU * 3;
-    st.ra = [.9 + .7 * Math.sin(p), .1 + .3 * Math.cos(p)];
-    st.la = [.9 - .7 * Math.sin(p), .1 - .3 * Math.cos(p)];
-    st.tilt = .11 * Math.sin(p); st.drop -= b.H * .03 * Math.abs(Math.sin(p));
-    st.look = [.4 * Math.sin(p), 0]; st.mouth = "grin"; st.brows = .7;
-  } },
-  point: { secs: 2.2, play(b, k, st) {
-    const up = Math.sin(Math.PI * clamp(k / .9)) ** .5, s = b.r2 < .5 ? -1 : 1;
+  point: { secs: 1.3, play(b, k, st) {
+    const up = Math.sin(Math.PI * clamp(k / .9)) ** .5, sgn = b.r2 < .5 ? -1 : 1;
     st.ra = [lerp(.16, 1.62, up), lerp(.12, .04, up)];
-    st.look = [s * up, 0]; st.tilt = .05 * s * up; st.brows = .6;
+    st.look = [sgn * up, 0]; st.tilt = .07 * sgn * up; st.brows = .6;
   } },
-  shrug: { secs: 2.0, play(b, k, st) {
+  shrug: { secs: 1.3, play(b, k, st) {
     const up = Math.sin(Math.PI * clamp(k / .88)) ** .6;
     st.ra = [lerp(.16, 1.15, up), lerp(.12, -.95, up)]; st.la = [lerp(.16, 1.15, up), lerp(.12, -.95, up)];
-    st.drop -= b.H * .012 * up; st.brows = lerp(.3, .95, up); st.mouth = "smile";
+    st.drop -= b.H * .015 * up; st.brows = lerp(.3, .95, up);
   } },
-  peer: { secs: 2.6, play(b, k, st) {
-    // Leans in, has a good look up, leans back.
+  peer: { secs: 1.5, play(b, k, st) {
     const up = Math.sin(Math.PI * clamp(k / .9));
-    st.tilt = .18 * up; st.look = [.25 * Math.sin(k * TAU * .8), -.85 * up]; st.brows = lerp(.3, .1, up);
+    st.tilt = .22 * up; st.look = [.25 * Math.sin(k * TAU2 * .8), -.85 * up]; st.brows = lerp(.3, .1, up);
   } },
-  scratch: { secs: 2.3, play(b, k, st) {
-    const up = Math.sin(Math.PI * clamp(k / .9)) ** .6, j = Math.sin(k * TAU * 5) * up;
+  scratch: { secs: 1.4, play(b, k, st) {
+    const up = Math.sin(Math.PI * clamp(k / .9)) ** .6, j = Math.sin(k * TAU2 * 5) * up;
     st.ra = [lerp(.16, 2.2, up), lerp(.12, -1.15, up) + .12 * j];
-    st.tilt = -.07 * up; st.brows = .2; st.look = [.3 * up, -.2 * up];
+    st.tilt = -.09 * up; st.brows = .2; st.look = [.3 * up, -.2 * up];
   } },
 };
 const GEST_KEYS = Object.keys(GEST);
+/** The showy ones go in twice, so they come up about twice as often. */
+const GEST_BAG = GEST_KEYS.flatMap((k) => (GEST[k].big ? [k, k] : [k]));
 
 /**
  * The crowd on one screen. `kind` is "phone" or "desk", which only decides how
@@ -158,7 +216,8 @@ export function makeCrowd(kind) {
       H: 10, gy: 10, d: 0, sp: 10, slowK: 1, hopK: 0,
       d0: 0, d1: 0, xa: 0, span: 1,                // the leg it is on: depth from, depth to, where it set off
       mode: "walk", hold: 0, to: 0, whim: 0, cross: false,
-      gest: "wave", gt: 0, gdur: 1, spun: false, glow: 0, turn: 0,
+      gest: "", gt: 0, gdur: 1, spun: false, glow: 0, turn: 0, run: 0,
+      roll: 0, rollAt: .5, flair: .4, flairT: 9, flairK: 0,
       st: freshState(),
     };
     b.w = makeWalker({
@@ -185,7 +244,7 @@ export function makeCrowd(kind) {
     const m = b.H * .45;
     b.to = b.cross ? (Math.random() < .5 ? -b.H : W + b.H) : m + Math.random() * Math.max(1, W - 2 * m);
     b.xa = b.w.x; b.span = Math.max(1, Math.abs(b.to - b.xa));
-    b.w.squash = 0;                                // whatever a spin left it as
+    b.w.squash = 0; b.roll = 0;                    // whatever a flip or a spin left it as
     const k = pickOf(WALKS);
     b.sp = b.H * k.sp * (.8 + b.r * .4); b.slowK = b.cross ? 3 : k.slow; b.hopK = k.hop;
     b.w.mirror = b.to < b.w.x;
@@ -193,11 +252,19 @@ export function makeCrowd(kind) {
     b.mode = "walk";
   }
 
+  /**
+   * The next thing it does. It never just stands: when it is not walking it is
+   * part way through one of these, and it strings two to five of them together
+   * before it goes anywhere.
+   */
   function startGesture(b) {
-    b.w.squash = 0;
-    b.gest = GEST_KEYS[(Math.random() * GEST_KEYS.length) | 0];
-    b.gt = 0; b.gdur = GEST[b.gest].secs * (.8 + Math.random() * .5);
+    b.w.squash = 0; b.roll = 0; b.rollAt = .5;
+    let g = GEST_BAG[(Math.random() * GEST_BAG.length) | 0];
+    if (g === b.gest) g = GEST_BAG[(Math.random() * GEST_BAG.length) | 0];   // not the same thing twice
+    b.gest = g;
+    b.gt = 0; b.gdur = GEST[g].secs * (.85 + Math.random() * .4);
     b.spun = false; b.turn = 0; b.mode = "gesture";
+    if (b.run === undefined || b.run <= 0) b.run = 2 + ((Math.random() * 4) | 0);  // how many before it moves on
   }
 
   /** Under reduced motion nothing moves: they are simply there, standing, facing us. */
@@ -218,18 +285,30 @@ export function makeCrowd(kind) {
       // A change of mind, part of the way there.
       b.whim -= dt;
       if (b.whim <= 0 && !b.cross) { if (Math.random() < .45) roam(b); else b.whim = 1 + Math.random() * 2; }
-      if (b.w.stride(dt, b.to)) {
+      const there = b.w.stride(dt, b.to);
+      b.w.gait(dt);
+      // Even on the way it is up to something: a hop, a skip, a wave as it goes.
+      b.flair -= dt;
+      if (b.flair <= 0) { b.flair = .5 + Math.random() * 1.4; b.flairT = 0; b.flairK = Math.random(); }
+      if (b.flairT < .5) {
+        b.flairT += dt;
+        const a = Math.sin(Math.PI * clamp(b.flairT / .5));
+        if (b.flairK < .4) st.drop -= b.H * .18 * a;                       // a skip
+        else if (b.flairK < .7) { st.ra = [.16 + 2.3 * a, .12 - .5 * a]; b.glow = Math.max(b.glow, .7 * a); }  // a wave on the move
+        else { st.tilt = .2 * a; st.look = [(b.r2 < .5 ? -1 : 1) * a, -.3 * a]; }                              // a look round
+      }
+      if (b.hopK) st.drop -= b.H * .055 * b.hopK * Math.max(0, Math.sin(b.w.phase));
+      if (there) {
         // Off the edge: on again from the other side, still going.
         if (b.cross) { b.w.x = b.to < 0 ? W + b.H : -b.H; b.cross = false; roam(b, false); }
-        else startGesture(b);
+        else { b.run = 0; startGesture(b); }
       }
-      b.w.gait(dt);
-      if (b.hopK) st.drop -= b.H * .055 * b.hopK * Math.max(0, Math.sin(b.w.phase));
       b.glow *= Math.pow(.25, dt);
       return;
     }
 
-    // Standing: it turns to face us, does its thing, then waits as long as it likes.
+    // On the spot. It is always part way through something; the pose starts
+    // clean every frame and whatever it is doing writes over it.
     b.w.A *= Math.pow(.02, dt);
     b.turn = Math.min(1, b.turn + dt * 4);
     if (b.gest !== "spin") { st.walkK = 1 - easeOut(b.turn); b.w.squash *= Math.pow(.02, dt); }
@@ -238,18 +317,31 @@ export function makeCrowd(kind) {
     st.ra = [.16, .12]; st.la = [.16, .12]; st.tilt = 0; st.brows = .3; st.mouth = "smile";
     st.look = [lerp(st.look[0], 0, .06), lerp(st.look[1], 0, .06)];
     st.antWob *= Math.pow(.05, dt);
+    b.roll = 0;
 
     if (b.mode === "gesture") {
       b.gt += dt;
-      GEST[b.gest].play(b, clamp(b.gt / b.gdur), st);
-      // Sometimes one thing straight after another, sometimes a pause, sometimes off at once.
-      if (b.gt >= b.gdur) {
-        if (Math.random() < .3) startGesture(b);
-        else { b.mode = "rest"; b.hold = .2 + Math.random() * 2.6; }
+      const G = GEST[b.gest], k = clamp(b.gt / b.gdur);
+      G.play(b, k, st);
+      // Some of them carry it along the floor as they play.
+      if (G.travel) {
+        b.w.x = clamp(b.w.x + G.travel * b.H * (b.w.mirror ? -1 : 1) * dt / b.gdur, -b.H * .4, W + b.H * .4);
       }
-    } else if (b.mode === "rest") {
-      b.hold -= dt;
-      if (b.hold <= 0) { if (Math.random() < .18) startGesture(b); else roam(b); }
+      if (b.gt >= b.gdur) {
+        b.run--;
+        // A breath between two of them, never a stand about: the catch-breath
+        // is itself a move, and short.
+        if (b.run > 0) { b.mode = "breath"; b.hold = .12 + Math.random() * .4; b.gt = 0; }
+        else roam(b);
+      }
+    } else if (b.mode === "breath") {
+      // Still going: it settles, looks about and gathers itself for the next.
+      const a = clamp(b.gt / Math.max(.01, b.hold));
+      st.drop -= b.H * .02 * Math.sin(Math.PI * a);
+      st.look = [Math.sin(T * 2.2 + b.r * 6) * .35, .1];
+      st.brows = .4;
+      b.gt += dt;
+      if (b.gt >= b.hold) startGesture(b);
     }
     b.glow *= Math.pow(.35, dt);
   }
@@ -292,7 +384,8 @@ export function makeCrowd(kind) {
         b.dots(g, {
           H: b.H, cell: cellFor(b.H), x: b.w.x, y: b.gy, mirror: b.w.mirror, squash: b.w.squash,
           land: b.w.land || 0, air: b.w.air || 0, st: b.st, t: reduced ? 0 : T,
-          glow: b.glow, ink: b.ink, lit: b.lit,
+          glow: b.glow, ink: b.ink, lit: b.lit, roll: b.roll || 0, rollAt: b.rollAt,
+          shade: 2.4, hop: clamp(-b.st.drop / (b.H * .4)),
         });
       }
     },
