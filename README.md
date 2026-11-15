@@ -6,7 +6,8 @@ it for the backend's pages and the downloads.
 ```
 index.html            the page: markup, one <style>, one inline <script> (GTM), a <noscript> head style; loads js/main.js
 js/                   the page's script, one module per part: paper/ (grain, water, words, glitch), blip/ (figure, dots, walker, antenna, pour), page/ (opening, key, steps, screens, screen, arrivals, crowd, content), main.js
-css/screens.css       the phone and laptop frames, the screen in them, the phone's status bar, the terminal and the Live Activity
+css/screens.css       the phone and laptop frames, the screen in them, the phone's status bar, and the four beats they show
+media/meet/           three short muted clips of people on a video call, for the call on the laptop (Mixkit, free stock video)
 api/                  Meta's pixel and its Conversions API copy (see Meta's pixel)
 vercel.json           rewrites to the API, headers, the home page's CSP, caching
 csp.mjs               writes index.html's inline hashes into the home page's CSP
@@ -144,17 +145,46 @@ status bar, so the words stay crisp at whatever size the device is;
 `js/page/arrivals.js` is his trip, `js/page/crowd.js` takes him in
 (`admitGuest`) and lets him go again.
 
+**6, the computer: a video call.** Three people on their cameras and, in with
+them, the meeting bot — which is where Blip's own face turns up INSIDE the
+product. It is in the call, it listens, and asked what the meeting came to it
+answers out loud, its tile ringed while it talks and the captions running
+under the grid: *four follow-up emails, and the cart bug fixed before Friday.*
+That is the real meeting bot (TAILZU-BACKEND `src/meet`, which joins calls
+through Recall.ai), down to its rule of saying first what was decided and who
+does what. He does not walk into this one: he is already in it, so the Blip
+between the devices stands where he is and turns to watch.
+
+**7, the phone: the plan.** What that call came to, waiting for a word:
+*Send 4 follow-up emails* and *Fix the cart bug*, and the app's own
+**Approve and start**. He turns the other way and watches that.
+
+**8, both clear**, and he faces us again.
+
+The three people are real footage — three five-second clips, muted, looping,
+480×270, about 45 KB each (`media/meet/`, from Mixkit's free stock video,
+which allows commercial use without attribution). They are fetched the first
+time the call is asked for and never on the page's first load, and they stop
+when it goes. Behind each one a drawn figure in a lit room stands in, so with
+no network, no autoplay or no video at all the tile still reads as somebody on
+a camera; under `prefers-reduced-motion` the clips load and hold on their
+first frame. Swap a clip for your own and nothing else changes.
+
 Up goes back the same way, and a beat come back to is simply there, finished,
-rather than typing itself again (5 to 4: both beats back and he walks onto the
-phone; 4 to 3: the phone's goes and he crosses back to the laptop; 3 to 2:
-both go and he comes back to the middle; 2 to 1: back into the antenna and the
-screens fill again; 1 to 0: the devices leave and he comes out at the
-opening's size). A resize while he comes out of the antenna ends it at once,
-him standing at the new spot; a resize while he is walking re-aims the trip,
-not him. Under `prefers-reduced-motion` every change is instant and nothing
-moves: the bots are simply on the glass, standing, Blip is simply on the one
-he was sent to, and each beat is simply there, finished, on the frame it is
-asked for.
+rather than typing itself again (8 to 7 and 7 to 6: the beats come back; 5 to
+4: both beats back and he walks onto the phone; 4 to 3: the phone's goes and
+he crosses back to the laptop; 3 to 2: both go and he comes back to the
+middle; 2 to 1: back into the antenna and the screens fill again; 1 to 0: the
+devices leave and he comes out at the opening's size). A resize while he comes
+out of the antenna ends it at once, him standing at the new spot; a resize
+while he is walking re-aims the trip, not him. Under `prefers-reduced-motion`
+every change is instant and nothing moves: the bots are simply on the glass,
+standing, Blip is simply on the one he was sent to, and each beat is simply
+there, finished, on the frame it is asked for.
+
+`js/page/steps.js` holds the whole running order in one table (`SCENE`): what
+is on each screen at each step, and whether he walks into one or watches from
+the middle.
 
 ## The download is always a link
 

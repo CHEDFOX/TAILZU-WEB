@@ -53,8 +53,10 @@ js/                     the page's script, one ES module per part (no build step
                         the bots in off the page, and Blip both ways — out of the gap into a screen, shrinking as he goes, and back
   page/crowd.js         the milling about once on the glass: random spots, random paces, eighteen things they do (flips, cartwheels, handstands and the rest), one colour each;
                         then settling to a stop, and pouring away; and Blip himself as a guest on the glass when he comes in
-  page/content.js       what each screen shows after them: the laptop's terminal (Xode installed on a project) and the phone's "Bots at work" Live Activity
-css/screens.css         the devices' frames, the screen in them, the terminal and the Live Activity
+  page/content.js       the four beats the screens show: the laptop's terminal and its video call (the meeting bot wearing Blip's face),
+                        the phone's "Bots at work" Live Activity and the plan that call came to
+css/screens.css         the devices' frames, the screen in them, and the four beats they show
+media/meet/             three muted five-second clips of people on a video call, for the call on the laptop (Mixkit, free stock video)
 api/                    Vercel serverless functions (Node)
   _meta.js              shared Meta pixel / Conversions API helpers (reads the dataset id and token from Vercel env)
   site-event.js         POST /v1/site/event: a page event (e.g. a download press) sent to Meta's Conversions API
@@ -79,7 +81,10 @@ README.md               how the page behaves, what to run after a change, how pu
 | Into the antenna and out (the springs, the order, the stalk) | `js/blip/antenna.js` (its constants at the top) |
 | The bots pouring away the same way | `js/blip/pour.js`, started by `js/page/crowd.js` (`vanish`) |
 | Them settling to a stop before the page moves on | `js/page/crowd.js` (`settle`, `callIn`, `toHome`, `rest`), gated in `js/page/steps.js` |
-| The terminal's lines and the Live Activity's words | `js/page/content.js` (`TERM`, `activity`), styled in `css/screens.css` |
+| The beats' words: the terminal, the call, the Live Activity, the plan | `js/page/content.js` (`TERM`, `SAID_IN`, `PEOPLE`, `activity`, `TODO`), styled in `css/screens.css` |
+| The running order: what is on each screen at each step | `js/page/steps.js` (`SCENE`, `AUTO`) |
+| The people on the call (real clips) and swapping them | `media/meet/call-{1,2,3}.mp4` (Mixkit free stock video), named in `js/page/content.js` (`PEOPLE`); `media-src 'self'` in `vercel.json` |
+| The bot's face in its tile on the call | `js/page/content.js` (`botFace`), drawn with `js/blip/dots.js` |
 | Blip walking off into a screen and back | `js/page/arrivals.js` (`guestTo`, `plan`), `js/page/crowd.js` (`admitGuest`, `leaveGuest`, `takeGuest`), `js/page/opening.js` (`lendBlip`, `returnBlip`) |
 | The phone and laptop: sizes, places, their springs | `js/page/screens.js` (`layoutScreens`), `css/screens.css` |
 | The bots: who they are, how they walk, the eighteen things they do | `js/page/crowd.js` (`BOTS`, `WALKS`, `GEST`; `GEST_BAG` weights the showy ones) |
@@ -102,7 +107,8 @@ README.md               how the page behaves, what to run after a change, how pu
   plays itself), Blip into his antenna and the phone and the laptop, the bots walking in off the page onto their screens,
   roaming and then settling, Blip back out while they pour away, and the two beats on the blank screens — the terminal and
   the Live Activity — that he walks away into, small, one screen and then the other, before he comes back to the middle and
-  they clear.
+  they clear; then a second pair he watches from where he stands, because he is in them — a video call with the meeting bot
+  wearing his face in it, and the plan that call came to, waiting to be approved.
 - Everything dynamic belongs to the backend: Vercel rewrites `/v1/...`, `/download`, the installers and the
   backend's pages to `api.x0bot.com`, so the site never handles accounts, payments or large files itself.
 - Only the page's own analytics run here (`api/`), with credentials from Vercel's environment variables.

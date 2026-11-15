@@ -74,7 +74,9 @@ function updateBot(dt) {
     if (B.mode === "wave" && k > 4.1) { B.mode = "idle"; opening.introDone = true; }
   }
   if (B.mode === "idle") {
-    st.look = [lerp(st.look[0], lookAim[0], .08), lerp(st.look[1], lookAim[1], .08)];
+    const a = watch || lookAim;
+    st.look = [lerp(st.look[0], a[0], .08), lerp(st.look[1], a[1], .08)];
+    st.tilt = lerp(st.tilt, watch ? -.05 * watch[0] + .03 * watch[1] : 0, .06);
     B.glow *= .97;
   }
 }
@@ -95,6 +97,9 @@ function drawBot(t) {
 
 // ---- The visitor's hand on the water, once the bot has said hello --------
 const lookAim = [0, 0];
+// Something on the page worth looking at instead (one of the screens, while it
+// is showing something): [x, y], -1 to 1. page/steps.js sets it.
+let watch = null;
 let lastPt = null;
 addEventListener("pointermove", (e) => {
   const now = performance.now();
@@ -119,7 +124,7 @@ export function fitOpening() {
   hero.style.height = view.h + "px";
 }
 /** From the top: off to the right, about to walk in. */
-export function resetOpening() { T = 0; away = false; opening.introDone = false; lastPt = null; lookAim[0] = lookAim[1] = 0; spot = null; form = "figure"; resetBot(); }
+export function resetOpening() { T = 0; away = false; watch = null; opening.introDone = false; lastPt = null; lookAim[0] = lookAim[1] = 0; spot = null; form = "figure"; resetBot(); }
 /** Still on his way in (a resize then starts the opening again). */
 export const walkingIn = () => B.mode === "wait" || B.mode === "walk";
 /** Back to the middle of a window that changed size. */
@@ -181,3 +186,5 @@ export function returnBlip(to) {
 }
 /** He is out there somewhere and the page is not drawing him. */
 export const blipAway = () => away;
+/** Something worth watching from where he stands ([x, y], -1 to 1), or null for the pointer. */
+export function watchBlip(aim) { watch = aim || null; }

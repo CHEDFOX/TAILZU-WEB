@@ -202,8 +202,8 @@ export function guestTo(to, home) {
   else beginWalk(lendBlip());
 }
 
-/** He has got where he was sent: onto that glass, or back to the middle (null). */
-export function guestThere(to) { return !!trip && trip.to === to && trip.phase === "there"; }
+/** He has got where he was sent: onto that glass, or back to the middle (null) — where he is anyway if he has never left it. */
+export function guestThere(to) { return trip ? trip.to === to && trip.phase === "there" : to === null; }
 /** He is out of the page's hands: on his way somewhere, or on a glass. */
 export const guestBusy = () => !!trip && !(trip.to === null && trip.phase === "there");
 

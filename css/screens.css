@@ -93,6 +93,85 @@
 .la-steps span { color: rgba(243, 226, 198, .35); }
 .la-foot { margin-top: 13px; padding-top: 12px; border-top: 1px solid rgba(243, 226, 198, .12); font-size: 13px; color: rgba(243, 226, 198, .7); }
 
+/* The laptop's video call: three people on their cameras and the meeting bot
+   in with them (js/page/content.js `meeting`). The people are drawn, not
+   filmed — a room, a lamp, a figure and the softness of a webcam — so the page
+   carries no footage of anyone; swap a tile's background for a <video> and the
+   rest of it stays as it is. */
+.mt { position: absolute; inset: 0; display: flex; flex-direction: column; gap: 18px; padding: 22px 26px 18px; box-sizing: border-box;
+  background: radial-gradient(120% 90% at 50% 0%, #26262B, #131316 70%); color: #F3E2C6;
+  font: 400 22px/1.3 ui-sans-serif, system-ui, -apple-system, sans-serif; }
+.mt-top { flex: none; display: flex; align-items: center; gap: 14px; height: 40px; }
+.mt-ttl { font-size: 25px; font-weight: 600; }
+.mt-clock { font-size: 21px; color: rgba(243, 226, 198, .5); font-variant-numeric: tabular-nums; }
+.mt-rec { margin-left: auto; display: inline-flex; align-items: center; gap: 8px; font-size: 17px; font-weight: 700; letter-spacing: 1.2px; color: rgba(243, 226, 198, .55); }
+.mt-rec::before { content: ""; width: 11px; height: 11px; border-radius: 50%; background: #D8553C; }
+.mt-grid { flex: 1 1 auto; display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 16px; min-height: 0; }
+
+/* One camera tile. */
+.mt-cam { position: relative; overflow: hidden; border-radius: 18px; background: #0E0F11; }
+.mt-wall { position: absolute; inset: 0; background:
+  radial-gradient(90% 120% at var(--lx) -10%, var(--lamp), rgba(0, 0, 0, 0) 60%),
+  linear-gradient(170deg, var(--wall1), var(--wall2)); }
+.mt-lamp { position: absolute; inset: 0; background: radial-gradient(38% 46% at var(--gx) 14%, rgba(255, 238, 205, .5), rgba(255, 238, 205, 0) 70%); }
+.mt-fig { position: absolute; left: var(--fx); bottom: 0; width: var(--fw); height: var(--fh); transform: translateX(-50%);
+  filter: blur(3.4px); animation: mt-sway var(--sway) ease-in-out infinite alternate; }
+.mt-sh { position: absolute; left: 50%; bottom: 0; width: 100%; height: 44%; transform: translateX(-50%);
+  border-radius: 42% 42% 0 0 / 78% 78% 0 0; background: linear-gradient(168deg, var(--cloth2), var(--cloth)); }
+.mt-nk { position: absolute; left: 50%; bottom: 34%; width: 23%; height: 16%; transform: translateX(-50%);
+  border-radius: 40%; background: var(--skin3); }
+.mt-hd { position: absolute; left: 50%; bottom: 42%; width: 42%; height: 42%; transform: translateX(-50%);
+  border-radius: 48% 48% 44% 44% / 54% 54% 46% 46%;
+  background: radial-gradient(58% 54% at 36% 28%, var(--skin1), var(--skin2) 58%, var(--skin3) 96%); }
+.mt-hr { position: absolute; left: 50%; bottom: 58%; width: 47%; height: 28%; transform: translateX(-50%);
+  border-radius: 48% 48% 26% 26% / 66% 66% 34% 34%; background: linear-gradient(180deg, var(--hair1), var(--hair2) 78%, rgba(0, 0, 0, 0)); }
+.mt-cam::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 22%;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0), rgba(0, 0, 0, .3)); }
+.mt-vid { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; opacity: 0; transition: opacity .25s; }
+.mt-vg { position: absolute; inset: 0; background: radial-gradient(105% 105% at 50% 42%, rgba(0, 0, 0, 0) 52%, rgba(0, 0, 0, .42)); }
+.mt-name { position: absolute; left: 14px; bottom: 11px; padding: 4px 11px; border-radius: 8px; font-size: 18px; font-weight: 600;
+  background: rgba(10, 10, 12, .52); color: #F3E2C6; }
+.p1 { --wall1: #3A4450; --wall2: #1B2027; --lamp: rgba(150, 190, 230, .3); --lx: 86%; --gx: 74%; --fx: 44%; --fw: 46%; --fh: 76%; --sway: 7.5s;
+  --skin1: #E3B592; --skin2: #C2865F; --skin3: #8E5B3C; --hair1: #2B1F18; --hair2: #120D0A; --cloth: #1F3A45; --cloth2: #2E5666; }
+.p2 { --wall1: #4A4036; --wall2: #221C16; --lamp: rgba(255, 214, 150, .32); --lx: 16%; --gx: 24%; --fx: 58%; --fw: 40%; --fh: 66%; --sway: 9.2s;
+  --skin1: #F0CBA8; --skin2: #D59E73; --skin3: #9C6A45; --hair1: #4A3522; --hair2: #221709; --cloth: #3B3A36; --cloth2: #57544C; }
+.p3 { --wall1: #3F3A48; --wall2: #1A1820; --lamp: rgba(200, 170, 255, .26); --lx: 60%; --gx: 52%; --fx: 45%; --fw: 50%; --fh: 82%; --sway: 8.3s;
+  --skin1: #C8906B; --skin2: #9E6440; --skin3: #6B3F27; --hair1: #1A1310; --hair2: #0B0806; --cloth: #46313C; --cloth2: #6A4A58; }
+@keyframes mt-sway { from { transform: translate(-50%, 1px) rotate(-.5deg); } to { transform: translate(-49%, -2px) rotate(.6deg); } }
+
+/* The bot's own tile: Blip's face, on a camera like the rest of them, ringed while it talks. */
+.mt-bot { background: #0D0F0E; }
+.mt-bg { position: absolute; inset: 0; background: radial-gradient(70% 80% at 50% 14%, #203029, #0C0E0D 72%); }
+.mt-face { position: absolute; left: 50%; top: 0; transform: translateX(-50%); display: block; }
+.mt-ring { position: absolute; inset: 0; border-radius: 18px; box-shadow: inset 0 0 0 4px #5FD13C, 0 0 22px rgba(95, 209, 60, .35); opacity: 0;
+  animation: mt-talk 1.6s ease-in-out infinite; }
+.mt-bn { background: rgba(47, 93, 80, .75); }
+@keyframes mt-talk { 0%, 100% { box-shadow: inset 0 0 0 3px rgba(95, 209, 60, .7), 0 0 14px rgba(95, 209, 60, .22); } 50% { box-shadow: inset 0 0 0 5px #5FD13C, 0 0 26px rgba(95, 209, 60, .45); } }
+
+/* The live captions under it, and the call's own buttons. */
+.mt-cc { flex: none; min-height: 34px; font-size: 23px; line-height: 1.25; color: rgba(243, 226, 198, .9); }
+.mt-who { color: rgba(243, 226, 198, .45); font-weight: 600; }
+.mt-who:not(:empty)::after { content: " "; }
+.mt-wbot { color: #5FD13C; }
+.mt-bar { flex: none; display: flex; justify-content: center; gap: 16px; }
+.mt-b { display: grid; place-items: center; width: 54px; height: 54px; border-radius: 50%; background: rgba(243, 226, 198, .11); color: rgba(243, 226, 198, .86); }
+.mt-b svg { width: 27px; height: 27px; display: block; }
+.mt-end { width: 80px; border-radius: 27px; background: #C2452E; color: #fff; }
+
+/* The phone's plan, straight out of that call. */
+.pl .la-card { padding-bottom: 14px; }
+.pl-list { margin: 15px 0 0; padding: 13px 0 0; list-style: none; border-top: 1px solid rgba(243, 226, 198, .12); }
+.pl-r { display: flex; align-items: center; gap: 11px; padding: 6px 0; font-size: 15px; }
+.pl-i { flex: none; display: grid; place-items: center; width: 26px; height: 26px; border-radius: 8px; background: rgba(95, 209, 60, .16); color: #7BE35C; }
+.pl-i svg { width: 15px; height: 15px; display: block; }
+.pl-n { flex: 1 1 auto; }
+.pl-s { font-weight: 400; font-size: 13px; color: rgba(243, 226, 198, .45); }
+.pl-act { display: flex; align-items: center; gap: 14px; margin-top: 15px; }
+.pl-go { flex: 1 1 auto; padding: 11px 0; border-radius: 13px; text-align: center; font-size: 15px; font-weight: 700; background: #5FD13C; color: #10140E; }
+.pl-no { font-size: 14px; color: rgba(243, 226, 198, .55); }
+
+@media (prefers-reduced-motion: reduce) { .mt-fig, .mt-ring { animation: none; } }
+
 @media (prefers-reduced-motion: reduce) { .tm-cur { animation: none; } }
 
 /* Words only a screen reader hears. */

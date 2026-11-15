@@ -69,9 +69,10 @@ let side = true;
 /**
  * Lays them out for this window. Returns where Blip stands between them
  * ({ x, gy, H }) and where his antenna's foot stands ([x, y]) while the
- * screens are up. Where he goes when he leaves that spot — into one of the
- * screens — is page/arrivals.js's business; it is given this same spot, so a
- * resize moves where he is heading, not him.
+ * screens are up, and which way he looks at each device (`aim`) when he is
+ * watching one from there. Where he goes when he leaves that spot — into one
+ * of the screens — is page/arrivals.js's business; it is given this same spot,
+ * so a resize moves where he is heading, not him.
  */
 export function layoutScreens() {
   const VW = view.w, VH = view.h;
@@ -106,6 +107,9 @@ export function layoutScreens() {
     qx = Math.round((VW - Q.w) / 2); qy = y0 + P.h + gap;
     blip = { x: Math.round(VW / 2), gy: Math.round(y0 + P.h + gap * .86), H: bh };
   }
+  // Which way he looks from the middle at each of them, when he is watching
+  // rather than walking into one.
+  const aim = side ? { phone: [-1, -.18], desk: [1, -.18] } : { phone: [0, -1], desk: [0, .7] };
   phone.el.style.left = px + "px"; phone.el.style.top = py + "px";
   lap.el.style.left = qx + "px"; lap.el.style.top = qy + "px";
   phone.scn.fit(P.sw); lap.scn.fit(Q.sw);
@@ -114,7 +118,7 @@ export function layoutScreens() {
   arrivals.setRect("phone", { x: px + P.ox, y: py + P.oy, ...phone.scn.size(P.sw) });
   arrivals.setRect("desk", { x: qx + Q.ox, y: qy + Q.oy, ...lap.scn.size(Q.sw) });
   paint(phone); paint(lap);
-  return { blip, foot: [blip.x, blip.gy] };
+  return { blip, foot: [blip.x, blip.gy], aim };
 }
 
 function paint(d) {
@@ -163,16 +167,16 @@ export function restartCrowds() {
   }
 }
 
-/** The device's own beat arrives on its blank screen (`now`: simply there, finished). */
-export function showBeat(kind, now) { (kind === "phone" ? phone : lap).scn.content.show(now); }
+/** One of a device's beats arrives on its blank screen (`now`: simply there, finished). */
+export function showBeat(kind, name, now) { (kind === "phone" ? phone : lap).scn.content.show(name, now); }
 /** One beat off, or (no `kind`) both: the screens are blank white again. */
 export function hideBeats(kind) {
   for (const d of [phone, lap]) if (!kind || d.kind === kind) d.scn.content.hide();
 }
 /** That beat has finished arriving and is holding — the freeze. */
 export function beatDone(kind) { return (kind === "phone" ? phone : lap).scn.content.done(); }
-/** Nothing on either screen: both are blank white again. */
-export function beatsOff() { for (const d of [phone, lap]) if (d.scn.content.shown()) return false; return true; }
+/** Nothing on that screen: it is blank white again. */
+export function beatOff(kind) { return !(kind === "phone" ? phone : lap).scn.content.shown(); }
 /** Blip himself: off to one of the screens, about on it, or back to the middle. */
 export function blipTo(kind, home) { arrivals.guestTo(kind, home); }
 /** He has got there (`kind` null: back in the middle). */
