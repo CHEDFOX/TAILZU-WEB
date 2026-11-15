@@ -59,7 +59,7 @@ const SAID = [
   "On the computer, a terminal: Xode installed with one line, and run in a project's folder. Blip walks into that screen, small, and plays about on it.",
   "On the phone, the Bots at work Live Activity: ready to ship, a pull request opened. It codes while you rest. Blip crosses to that screen and plays about on that one.",
   "Blip comes back to the middle, and both screens clear.",
-  "On the computer, a video call: three people on their cameras and the meeting bot sitting in with them, wearing Blip's face. Asked what the meeting came to, it answers: four follow-up emails, and the cart bug fixed before Friday.",
+  "On the computer, a video call: three people on their cameras and X0, the meeting bot, sitting in with them, wearing Blip's face. Asked what the meeting came to, it answers: four follow-up emails, and the cart bug fixed before Friday.",
   "On the phone, what that call came to, waiting for a word: send four follow-up emails, fix the cart bug. Approve and start.",
   "Both screens clear, and Blip stands between them again.",
 ];
@@ -70,7 +70,7 @@ const LABEL = [
   "Blip, small, on the computer's screen in front of the terminal.",
   "Blip, small, on the phone's screen under the notice.",
   "Blip, back in the middle between the phone and the computer.",
-  "Blip, in the middle, watching the video call on the computer.",
+  "Blip, in the middle, watching the video call on the computer, X0 sitting in it.",
   "Blip, in the middle, watching the plan arrive on the phone.",
   "Blip, standing between the phone and the computer, facing us.",
 ];

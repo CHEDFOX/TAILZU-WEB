@@ -89,7 +89,9 @@ function terminal() {
 // Three people on their cameras and the meeting bot in with them, which is
 // where Blip's own face turns up inside the product: it joins the call, listens,
 // and answers out loud (TAILZU-BACKEND src/meet). Its one rule in the call is to
-// say first what was decided and who does what, which is what it says here.
+// say first what was decided and who does what, which is what it says here. In
+// the call it goes by X0, the brand's own name, not by the bot's name in the
+// app ("Meetings"): on somebody else's call it is X0 that turned up.
 //
 // The three are real footage (media/meet, Mixkit's free stock video), muted
 // and looping, fetched only when the beat is first asked for so the page's
@@ -103,7 +105,7 @@ const PEOPLE = [
 ];
 const SAID_IN = [
   { who: "Priya", line: "So — X0, what did we land on?", wait: .9, bot: false },
-  { who: "Meetings", line: "Four follow-up emails, and the cart bug fixed before Friday.", wait: .7, bot: true },
+  { who: "X0", line: "Four follow-up emails, and the cart bug fixed before Friday.", wait: .7, bot: true },
 ];
 
 /** Blip's face on the call: the figure drawn big and cropped to his head, like a camera on him. */
@@ -166,7 +168,7 @@ function meeting() {
   const face = botFace();
   const bot = el("div", "mt-cam mt-bot");
   const ring = el("i", "mt-ring");
-  bot.append(el("i", "mt-bg"), face.el, ring, el("b", "mt-name mt-bn", "Meetings"));
+  bot.append(el("i", "mt-bg"), face.el, ring, el("b", "mt-name mt-bn", "X0"));
   grid.appendChild(bot);
   const cc = el("div", "mt-cc"), who = el("span", "mt-who", ""), line = el("span", "mt-line", "");
   cc.append(who, line);
@@ -273,7 +275,7 @@ const TODO = [
 function planCard() {
   const root = el("div", "la pl"), card = el("div", "la-card");
   const head = el("div", "la-head");
-  head.append(el("i", "la-mark"), el("span", "la-who", "Meetings"), el("span", "la-when", "now"));
+  head.append(el("i", "la-mark"), el("span", "la-who", "X0"), el("span", "la-when", "now"));
   card.append(head, el("div", "la-big", "Meeting done"), el("div", "la-sub", "Weekly — Growth · 31 min. Here is the plan."));
   const list = el("ul", "pl-list"), rows = TODO.map((d) => {
     const li = el("li", "pl-r"), ic = el("i", "pl-i");

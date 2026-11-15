@@ -146,13 +146,14 @@ status bar, so the words stay crisp at whatever size the device is;
 (`admitGuest`) and lets him go again.
 
 **6, the computer: a video call.** Three people on their cameras and, in with
-them, the meeting bot — which is where Blip's own face turns up INSIDE the
+them, **X0** — the meeting bot, and where Blip's own face turns up INSIDE the
 product. It is in the call, it listens, and asked what the meeting came to it
 answers out loud, its tile ringed while it talks and the captions running
 under the grid: *four follow-up emails, and the cart bug fixed before Friday.*
 That is the real meeting bot (TAILZU-BACKEND `src/meet`, which joins calls
 through Recall.ai), down to its rule of saying first what was decided and who
-does what. He does not walk into this one: he is already in it, so the Blip
+does what; on the call it goes by X0, the brand's name, not by the bot's name
+in the app ("Meetings"). He does not walk into this one: he is already in it, so the Blip
 between the devices stands where he is and turns to watch.
 
 **7, the phone: the plan.** What that call came to, waiting for a word:
