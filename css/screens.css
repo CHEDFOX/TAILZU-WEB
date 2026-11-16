@@ -36,13 +36,30 @@
 #screens .laptop::after { content: ""; position: absolute; z-index: -1; left: 1%; right: 1%; bottom: -6px; height: 12px; border-radius: 50%; background: radial-gradient(closest-side, rgba(60, 42, 24, .28), rgba(60, 42, 24, 0)); }
 #screens .laptop::before { content: ""; position: absolute; z-index: -1; left: -4%; right: -4%; bottom: -24px; height: 48px; border-radius: 50%; background: radial-gradient(closest-side, rgba(60, 42, 24, .12), rgba(60, 42, 24, 0)); }
 
-/* The screen itself: empty white, the bots' canvas over all of it, and on the phone the system's status bar over that. */
+/* The screen itself: empty white, the bots' canvas over all of it, and on the
+   phone the system's status bar over that. The phone's own screen is not white
+   — it is a phone, so it has a wallpaper and a lock screen on it, the way the
+   one in your hand does. */
 .wl { position: absolute; inset: 0; overflow: hidden; background: #fff; }
+.wl-phone { background: #D9C9A5 url("/media/phone/wall.webp") center / cover no-repeat; }
+/* What a phone darkens the top of the wallpaper by, so the clock and the
+   status bar read white over whatever is behind them. */
+.wl-phone::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 42%; z-index: 1; pointer-events: none;
+  background: linear-gradient(180deg, rgba(12, 14, 9, .5), rgba(12, 14, 9, .22) 48%, rgba(12, 14, 9, 0)); }
+.wl-lock { position: absolute; left: 0; top: 0; z-index: 2; width: 390px; height: 844px; transform-origin: 0 0; pointer-events: none;
+  color: #fff; text-align: center; text-shadow: 0 1px 12px rgba(0, 0, 0, .3);
+  font-family: ui-sans-serif, system-ui, -apple-system, sans-serif; }
+.wl-date { padding-top: 74px; font-size: 17px; font-weight: 600; letter-spacing: .1px; opacity: .92; }
+.wl-time { margin-top: 2px; font-size: 80px; font-weight: 500; line-height: 1.04; letter-spacing: -2px; font-variant-numeric: tabular-nums; }
+.wl-home { position: absolute; left: 0; top: 0; z-index: 8; width: 390px; height: 844px; transform-origin: 0 0; pointer-events: none; }
+.wl-home::after { content: ""; position: absolute; left: 50%; bottom: 9px; width: 139px; height: 5px; margin-left: -69.5px;
+  border-radius: 99px; background: rgba(255, 255, 255, .85); }
 /* The bots on the glass, and Blip when he is one of them: over whatever the
    screen is showing, under the sheen on it. */
 .crowd { position: absolute; left: 0; top: 0; z-index: 6; display: block; }
-.wl-status { position: absolute; left: 0; top: 0; width: 390px; height: 54px; display: flex; align-items: center; justify-content: space-between; box-sizing: border-box;
-  padding: 6px 30px 0 46px; transform-origin: 0 0; color: #0A0A0A; font: 600 17px/1 ui-sans-serif, system-ui, -apple-system, sans-serif; letter-spacing: -.2px; }
+.wl-status { position: absolute; left: 0; top: 0; z-index: 8; width: 390px; height: 54px; display: flex; align-items: center; justify-content: space-between; box-sizing: border-box;
+  padding: 6px 30px 0 46px; transform-origin: 0 0; color: #fff; font: 600 17px/1 ui-sans-serif, system-ui, -apple-system, sans-serif; letter-spacing: -.2px;
+  text-shadow: 0 1px 8px rgba(0, 0, 0, .25); }
 .wl-status svg { display: block; }
 
 /* ---- What each screen shows once the bots have gone (js/page/content.js) ----
@@ -77,7 +94,7 @@
 
 /* The phone: the "Bots at work" Live Activity, done. It drops in under the
    status bar and its stages fill behind it. */
-.la { position: absolute; left: 0; top: 0; width: 100%; padding: 86px 14px 0; box-sizing: border-box;
+.la { position: absolute; left: 0; top: 0; width: 100%; padding: 248px 14px 0; box-sizing: border-box;
   font: 400 15px/1.4 ui-sans-serif, system-ui, -apple-system, sans-serif; }
 .la-card { padding: 18px 20px 16px; border-radius: 26px; background: #151311; color: #F3E2C6; transform-origin: 50% 0;
   box-shadow: 0 1px 2px rgba(40, 30, 20, .2), 0 18px 32px -18px rgba(40, 30, 20, .55); }

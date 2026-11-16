@@ -8,6 +8,7 @@ index.html            the page: markup, one <style>, one inline <script> (GTM), 
 js/                   the page's script, one module per part: paper/ (grain, water, words, glitch), blip/ (figure, dots, walker, antenna, pour), page/ (opening, key, steps, screens, screen, arrivals, crowd, content), main.js
 css/screens.css       the phone and laptop frames, the screen in them, the phone's status bar, and the four beats they show
 media/meet/           three short muted clips of people on a video call, for the call on the laptop (Mixkit, free stock video)
+media/phone/          the phone's wallpaper (a blurred photograph, Unsplash through Lorem Picsum)
 api/                  Meta's pixel and its Conversions API copy (see Meta's pixel)
 vercel.json           rewrites to the API, headers, the home page's CSP, caching
 csp.mjs               writes index.html's inline hashes into the home page's CSP
@@ -51,7 +52,11 @@ antenna between them, the three centred together); on a tall one the phone
 above and the laptop below, and there they wait until all of him is in, so
 they never cover him.
 
-Both screens are empty white when they arrive, and they fill the way a room
+The laptop's screen is empty white when it arrives; the phone's is a phone —
+its own **wallpaper** (a photograph blurred until it is an abstract, 17 KB),
+the **lock screen** over it with the visitor's own date and time, the status
+bar white over a scrim at the top and the home bar at the foot. Everything the
+phone shows after this, it shows on that. And then they fill the way a room
 fills: **the bots walk in off the page**. One at a time a bot comes on at the
 edge of the WINDOW, out on the sheet of words where Blip himself walks — its
 steps sending the same rings through the water — and makes its way across to

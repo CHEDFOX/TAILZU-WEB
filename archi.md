@@ -48,7 +48,8 @@ js/                     the page's script, one ES module per part (no build step
   page/steps.js         the page never scrolls: a scroll, swipe or key moves it one step, and a step that has arrived brings the next on by itself
                         (0 opening, 1 antenna + screens + the bots, 2 out again and the bots pour away, 3 the terminal, 4 the Live Activity, 5 back to the middle)
   page/screens.js       the phone and the laptop either side of him (above and below on a tall window), on springs
-  page/screen.js        what is in them: an empty white screen, the phone's status bar, the bots, and then that device's beat
+  page/screen.js        what is in them: the laptop's empty white screen, the phone's wallpaper, lock screen (the visitor's own clock),
+                        status bar and home bar, the bots on both, and then that device's beat
   page/arrivals.js      the walk between the paper and the glass, on a canvas under the devices (so the last of it is behind the frame):
                         the bots in off the page, and Blip both ways — out of the gap into a screen, shrinking as he goes, and back
   page/crowd.js         the milling about once on the glass: random spots, random paces, eighteen things they do (flips, cartwheels, handstands and the rest), one colour each;
@@ -57,6 +58,7 @@ js/                     the page's script, one ES module per part (no build step
                         the phone's "Bots at work" Live Activity, the plan that call came to, and the mail bot's notice two days on
 css/screens.css         the devices' frames, the screen in them, and the four beats they show
 media/meet/             three muted five-second clips of people on a video call, for the call on the laptop (Mixkit, free stock video)
+media/phone/            the phone's wallpaper, a photograph blurred into an abstract (Unsplash through Lorem Picsum)
 api/                    Vercel serverless functions (Node)
   _meta.js              shared Meta pixel / Conversions API helpers (reads the dataset id and token from Vercel env)
   site-event.js         POST /v1/site/event: a page event (e.g. a download press) sent to Meta's Conversions API
@@ -85,6 +87,7 @@ README.md               how the page behaves, what to run after a change, how pu
 | The running order: what is on each screen at each step | `js/page/steps.js` (`SCENE`, `AUTO`) |
 | The people on the call (real clips) and swapping them | `media/meet/call-{1,2,3}.mp4` (Mixkit free stock video), named in `js/page/content.js` (`PEOPLE`); `media-src 'self'` in `vercel.json` |
 | The bot's face in its tile on the call | `js/page/content.js` (`botFace`), drawn with `js/blip/dots.js` |
+| The phone's wallpaper, clock and status bar | `media/phone/wall.webp`, `js/page/screen.js` (`lockFace`, `statusBar`, `clockNow`), `css/screens.css` (`.wl-phone`, `.wl-lock`) |
 | Blip walking off into a screen and back | `js/page/arrivals.js` (`guestTo`, `plan`), `js/page/crowd.js` (`admitGuest`, `leaveGuest`, `takeGuest`), `js/page/opening.js` (`lendBlip`, `returnBlip`) |
 | The phone and laptop: sizes, places, their springs | `js/page/screens.js` (`layoutScreens`), `css/screens.css` |
 | The bots: who they are, how they walk, the eighteen things they do | `js/page/crowd.js` (`BOTS`, `WALKS`, `GEST`; `GEST_BAG` weights the showy ones) |
