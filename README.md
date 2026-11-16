@@ -5,9 +5,10 @@ it for the backend's pages and the downloads.
 
 ```
 index.html            the page: markup, one <style>, one inline <script> (GTM), a <noscript> head style; loads js/main.js
-js/                   the page's script, one module per part: paper/ (grain, water, words, glitch), blip/ (figure, dots, walker, antenna), page/ (opening, key, steps, screens, welcome), main.js
-css/screens.css       the phone and laptop frames, the app screen in them, the phone's status bar
-media/                welcome-phone.webp and welcome-desk.webp: the app's first screen, from the app's own renderers (see The page)
+js/                   the page's script, one module per part: paper/ (grain, water, words, glitch), blip/ (figure, dots, walker, antenna, pour), page/ (opening, key, steps, screens, screen, arrivals, crowd, content), main.js
+css/screens.css       the phone and laptop frames, the screen in them, the phone's status bar, and the four beats they show
+media/meet/           three short muted clips of people on a video call, for the call on the laptop (Mixkit, free stock video)
+media/phone/          the phone's wallpaper (a blurred photograph, Unsplash through Lorem Picsum)
 api/                  Meta's pixel and its Conversions API copy (see Meta's pixel)
 vercel.json           rewrites to the API, headers, the home page's CSP, caching
 csp.mjs               writes index.html's inline hashes into the home page's CSP
@@ -23,6 +24,11 @@ One sheet of paper, one screen tall, that never scrolls: a scroll, a swipe
 one step instead, one change at a time (a move made during one plays after
 it). The modules in `js/` draw it; `main.js` runs one frame loop for all of
 them.
+
+Nothing waits for a scroll. A step that has finished arriving brings the next
+one on by itself a beat or two later, so the whole thing plays through on its
+own; a scroll only pushes it along, and a scroll back stops it playing by
+itself from then on.
 
 **0, the opening.** A plane of tiny words in the world's scripts that moves
 like water; the dotted bot walks in from the right to the middle and waves
@@ -44,27 +50,160 @@ come in on springs, each from its side: on a wide window side by side on one
 floor (the phone on the left, the laptop, the bigger, on the right, the
 antenna between them, the three centred together); on a tall one the phone
 above and the laptop below, and there they wait until all of him is in, so
-they never cover him. Both show the app's real first screen, the Bots app's
-Welcome (Blip waving, "Hi, I'm X0.", "Everything here is a bot. Tell them
-what you need; they do the work."), drawn by the app's own renderers, with
-the Start button and the link under it painted out (the page moves on
-without a press) and, on the window, the list of first bots too. To make
-them again: `cd TAILZU-BACKEND/tulmi && npx tsx scripts/bots-render/render.ts bots.welcome --out <dir>`,
-paint white over the button and the link (and the window's bots list), and
-save the phone at 780 x 1688 and the window at 1600 x 1000 as WebP in `media/`.
+they never cover him.
 
-**2, out again.** On the next move (or by itself four seconds after step 1
-first settles; never again after the visitor has come back to it) he comes
-back out: the antenna floats up to where his head will be and throws his dots
-back to their places, head first, each on a loose spring, so he settles with
-a little wobble, standing small between the devices, himself again on the
-frame the last dot lands (his clock stands still while he is in the antenna,
-so the dots are exactly him).
+The laptop's screen is empty white when it arrives; the phone's is a phone —
+its own **wallpaper** (a photograph blurred until it is an abstract, 17 KB),
+the **lock screen** over it with the visitor's own date and time, the status
+bar white over a scrim at the top and the home bar at the foot. Everything the
+phone shows after this, it shows on that. And then they fill the way a room
+fills: **the bots walk in off the page**. One at a time a bot comes on at the
+edge of the WINDOW, out on the sheet of words where Blip himself walks — its
+steps sending the same rings through the water — and makes its way across to
+the device it is heading for. It is already the size it will be on the glass,
+walking along the line its floor will be on, so nothing about it changes when
+it gets there: the devices are painted over that canvas, so the last of the
+walk happens behind the frame, and it slips behind the bezel on the page and
+comes out on the screen. Xode, Keylessbord, Plan Ease, Travel bot, Oracle,
+Mail, Lingo and Meetings, and past the end of the roster it starts again — as
+many as the screen is wide enough for, which is about fourteen on a laptop
+and four on a phone.
 
-Up goes back the same way (2 to 1: back into the antenna; 1 to 0: the devices
-leave and he comes out at the opening's size). A resize while he comes out
-ends it at once, him standing at the new spot. Under `prefers-reduced-motion`
-every change is instant and nothing moves.
+Once on, nothing about them is laid out, **and none of them ever just
+stands there.** A bot walks to a spot it picked at random, at a speed it
+picked at random (it runs, strolls, ambles, skids, hops or bounds), changing
+its mind on the way as often as not — and even on the way it is up to
+something: a skip, a wave over its shoulder, a look round. Where it stops it
+throws itself into two to five things one after another, out of eighteen:
+backflips, cartwheels, handstands, a spin on the floor, jumps, spins, kicks,
+a dance, a moonwalk, and between them the small talk — a wave, a look, a
+stretch, a nod, a bounce, a point, a shrug, a peer, a scratch. The showy ones
+come up about twice as often as the small talk, and between any two is a
+breath of a quarter of a second, not a pause: it settles, looks about and
+goes again. Then it walks somewhere else and starts over.
+
+The flips and the cartwheels turn the whole figure over, which the renderer
+does about a point part way up it (`roll`, `rollAt`). Each bot keeps the
+shadow it stands in, which shrinks and fades as it leaves the floor, so a
+jump reads as a jump and not as a bot hanging in the air.
+
+It roams in two directions, not one: every walk also carries it nearer or
+further, which makes it bigger or smaller and moves its floor up or down the
+screen, and the ones in front pass over the ones behind. Now and then one
+walks clean off an edge and comes back on from the other.
+
+Each wears the colour the app gives it (TAILZU-BACKEND `src/bots/builtin.ts`,
+with `experience/bots/palette.ts` for the hex) — the dots a pale wash of it,
+the sticker under them a dark one — and each is drawn by the same renderer as
+Blip himself, which takes an ink and a lit colour and falls back to his own.
+Every bot has its own seed, so the second Xode is not the first one. The Blip
+standing between the two devices is the page's own and is not one of them.
+
+`js/page/arrivals.js` is the walk over, `js/page/crowd.js` the milling about
+once on, and `js/page/screen.js` the screen around them (empty white, and the
+phone's status bar).
+
+**The troupe settles.** A few seconds after the last of them is on, they come
+to a stop: each finishes whatever it is in the middle of, walks the short way
+to a spot that leaves room for the one beside it, turns to us and stands,
+breathing, its eye wandering. Only then will the page go on — asked to move
+before that, it calls them in at once (and whoever is still on their way over
+stops dawdling) and goes the moment they are standing.
+
+**2, out again, and the screens go blank.** He comes back out: the antenna
+floats up to where his head will be and throws his dots back to their places,
+head first, each on a loose spring, so he settles with a little wobble,
+standing small between the devices, himself again on the frame the last dot
+lands (his clock stands still while he is in the antenna, so the dots are
+exactly him). **The troupe goes the same way he went in,** at the same
+moment: every dot of every bot becomes a particle pulled into that bot's own
+antenna ball, nearest first, shrinking as it arrives, the ball swelling with
+each one it swallows and popping when the last is in — in the bot's own
+colours, not Blip's (`js/blip/pour.js`). Both screens are blank white again.
+
+**3, the computer: a terminal.** Xode installed on a project. It types
+itself — the real install line, the words `install.sh` prints, then `xode` run
+in the project's folder — and freezes with the prompt waiting and the cursor
+blinking. The terminal leaves the bottom of the screen clear, because that is
+the floor **Blip walks about on**: he goes the way the bots went, the other
+way round. The page lends him out, he walks off out of the gap and as he goes
+he SHRINKS and his feet rise, so he walks away from us into the screen, slips
+behind the frame and comes out on the glass small — one of the troupe now,
+roaming and throwing himself about with the same eighteen moves, in his own
+ink and bone.
+
+**4, the phone: the Live Activity.** The "Bots at work" notice, done: Ready to
+ship, codes while you rest, its stages filled and a pull request opened. It
+drops in under the status bar and freezes; the laptop keeps its terminal while
+the phone has its turn; and he walks off the laptop's glass, back out onto the
+page and over to that screen instead.
+
+**5, back to the middle.** Both screens clear, he comes off the phone's glass
+and walks back to the gap, growing as he comes, and stands there facing us.
+The shrink and the rise are one eased ramp over the whole walk, so he curves
+away rather than climbing a slope — on a tall window the glass he is heading
+for is a long way above the floor he stands on, and he swings out first to
+give himself the run. On the glass he keeps to the front of it, so he never
+wanders up into what the screen is showing. `js/page/content.js` is both
+beats, built as DOM at a fixed design width and scaled to the glass like the
+status bar, so the words stay crisp at whatever size the device is;
+`js/page/arrivals.js` is his trip, `js/page/crowd.js` takes him in
+(`admitGuest`) and lets him go again.
+
+**6, the computer: a video call.** Three people on their cameras and, in with
+them, **X0** — the meeting bot, and where Blip's own face turns up INSIDE the
+product. It is in the call, it listens, and asked what the meeting came to it
+answers out loud, its tile ringed while it talks and the captions running
+under the grid: *four follow-up emails, and the cart bug fixed before Friday.*
+That is the real meeting bot (TAILZU-BACKEND `src/meet`, which joins calls
+through Recall.ai), down to its rule of saying first what was decided and who
+does what; on the call it goes by X0, the brand's name, not by the bot's name
+in the app ("Meetings"). He does not walk into this one: he is already in it, so the Blip
+between the devices stands where he is and turns to watch.
+
+**7, the phone: the plan.** What that call came to, waiting for a word:
+*Send 4 follow-up emails* and *Fix the cart bug*, and the app's own
+**Approve and start**. He turns the other way and watches that.
+
+**8, the phone again, two days on.** That notice goes and the mail bot's
+arrives in its place: *45 emails answered — two days, none of them needed
+you.* And then the one thing in those two days it will NOT decide on its own,
+flagged in rust under the count: *3 distributors got defective material. Same
+batch, three days apart. I did not answer these.* **Look into it.** That is
+the whole promise in one card — it gets through the work, and it hands back
+the part that is yours.
+
+**9, both clear**, and he faces us again.
+
+The three people are real footage — three five-second clips, muted, looping,
+480×270, 43 to 61 KB each (`media/meet/`, from Mixkit's free stock video,
+which allows commercial use without attribution). Each is framed the way a
+camera on a laptop frames you — head and shoulders, the room behind, the lid
+in the bottom of the shot — and each of them is talking or listening, not
+working alone at a desk: in a grid of four, three people quietly at work would
+not read as a meeting. They are fetched the first
+time the call is asked for and never on the page's first load, and they stop
+when it goes. Behind each one a drawn figure in a lit room stands in, so with
+no network, no autoplay or no video at all the tile still reads as somebody on
+a camera; under `prefers-reduced-motion` the clips load and hold on their
+first frame. Swap a clip for your own and nothing else changes.
+
+Up goes back the same way, and a beat come back to is simply there, finished,
+rather than typing itself again (9 to 8, 8 to 7 and 7 to 6: the beats come
+back; 5 to
+4: both beats back and he walks onto the phone; 4 to 3: the phone's goes and
+he crosses back to the laptop; 3 to 2: both go and he comes back to the
+middle; 2 to 1: back into the antenna and the screens fill again; 1 to 0: the
+devices leave and he comes out at the opening's size). A resize while he comes
+out of the antenna ends it at once, him standing at the new spot; a resize
+while he is walking re-aims the trip, not him. Under `prefers-reduced-motion`
+every change is instant and nothing moves: the bots are simply on the glass,
+standing, Blip is simply on the one he was sent to, and each beat is simply
+there, finished, on the frame it is asked for.
+
+`js/page/steps.js` holds the whole running order in one table (`SCENE`): what
+is on each screen at each step, and whether he walks into one or watches from
+the middle.
 
 ## The download is always a link
 

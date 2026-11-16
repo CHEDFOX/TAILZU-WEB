@@ -1,19 +1,20 @@
-// The phone and the laptop, each showing the app's first screen. On a wide
+// The phone and the laptop, each with an empty screen the bots walk onto. On a wide
 // window they stand side by side on one floor, the phone on the left, the
 // laptop (the bigger of the two) on the right, Blip in the gap between them,
 // the three centred together; on a tall one the phone is above, the laptop
 // below, and Blip in the middle. They come in (and go) on springs, each from
 // its own side.
 import { TAU, clamp, reduced, view } from "../util.js";
-import { makeWelcome } from "./welcome.js";
+import { makeScreen } from "./screen.js";
+import * as arrivals from "./arrivals.js";
 
 const box = document.getElementById("screens");
 const PH = 844 / 390;                       // the phone's screen, tall per wide
 const W_IN = TAU * 1.3, Z_IN = .78;         // their springs
 
 function device(kind) {
-  const d = document.createElement("div"), scr = document.createElement("div"), welcome = makeWelcome(kind);
-  scr.className = "scr"; scr.appendChild(welcome.el);
+  const d = document.createElement("div"), scr = document.createElement("div"), scn = makeScreen(kind);
+  scr.className = "scr"; scr.appendChild(scn.el);
   if (kind === "phone") {
     d.className = "dev phone";
     const frame = document.createElement("div"), glass = document.createElement("div"), isl = document.createElement("i");
@@ -28,7 +29,8 @@ function device(kind) {
     glass.appendChild(scr); lid.appendChild(glass); d.append(lid, base);
   }
   box.appendChild(d);
-  return { el: d, welcome, e: 0, v: 0, to: 0, delay: 0, w: 0, h: 0 };
+  arrivals.register(kind, scn.crowd);
+  return { el: d, kind, scn, e: 0, v: 0, to: 0, delay: 0, w: 0, h: 0 };
 }
 const phone = device("phone"), lap = device("desk");
 
@@ -49,7 +51,8 @@ function sizePhone(ps) {
   s.width = w + "px"; s.height = h + "px";
   s.setProperty("--pb", pb + "px"); s.setProperty("--pr", r + "px"); s.setProperty("--pw", ps + "px");
   phone.w = w; phone.h = h;
-  return { w, h, sw: ps };
+  // Where the glass sits inside the device box: the band, then the bezel.
+  return { w, h, sw: ps, ox: pBez(ps), oy: pBez(ps) };
 }
 /** A laptop whose screen is `sw` wide: the lid, a thin bezel with the camera, and a base 6% wider. */
 function sizeLaptop(sw) {
@@ -58,14 +61,18 @@ function sizeLaptop(sw) {
   s.width = p.w + "px"; s.height = p.h + "px";
   for (const [k, v] of [["--lw", p.lw], ["--lh", p.lh], ["--lx", p.lx], ["--lb", p.lb], ["--lbb", p.lbb], ["--lr", p.lr], ["--bw", p.bw], ["--bh", p.bh], ["--sw", sw], ["--sh", p.sh]]) s.setProperty(k, v + "px");
   lap.w = p.w; lap.h = p.h;
-  return { w: p.w, h: p.h, sw };
+  return { w: p.w, h: p.h, sw, ox: p.lx + 1.25 + p.lb, oy: 1.25 + p.lb };
 }
 
 let side = true;
 
 /**
  * Lays them out for this window. Returns where Blip stands between them
- * ({ x, gy, H }) and where his antenna's foot stands ([x, y]) while the screens are up.
+ * ({ x, gy, H }) and where his antenna's foot stands ([x, y]) while the
+ * screens are up, and which way he looks at each device (`aim`) when he is
+ * watching one from there. Where he goes when he leaves that spot — into one
+ * of the screens — is page/arrivals.js's business; it is given this same spot,
+ * so a resize moves where he is heading, not him.
  */
 export function layoutScreens() {
   const VW = view.w, VH = view.h;
@@ -100,11 +107,18 @@ export function layoutScreens() {
     qx = Math.round((VW - Q.w) / 2); qy = y0 + P.h + gap;
     blip = { x: Math.round(VW / 2), gy: Math.round(y0 + P.h + gap * .86), H: bh };
   }
+  // Which way he looks from the middle at each of them, when he is watching
+  // rather than walking into one.
+  const aim = side ? { phone: [-1, -.18], desk: [1, -.18] } : { phone: [0, -1], desk: [0, .7] };
   phone.el.style.left = px + "px"; phone.el.style.top = py + "px";
   lap.el.style.left = qx + "px"; lap.el.style.top = qy + "px";
-  phone.welcome.fit(P.sw); lap.welcome.fit(Q.sw);
+  phone.scn.fit(P.sw); lap.scn.fit(Q.sw);
+  // Where each glass is on the page, for the bots walking over to it.
+  arrivals.fitPage();
+  arrivals.setRect("phone", { x: px + P.ox, y: py + P.oy, ...phone.scn.size(P.sw) });
+  arrivals.setRect("desk", { x: qx + Q.ox, y: qy + Q.oy, ...lap.scn.size(Q.sw) });
   paint(phone); paint(lap);
-  return { blip, foot: [blip.x, blip.gy] };
+  return { blip, foot: [blip.x, blip.gy], aim };
 }
 
 function paint(d) {
@@ -131,6 +145,48 @@ export function hideScreens() {
   for (const [d, delay] of [[lap, 0], [phone, .05]]) { d.to = 0; d.delay = reduced ? 0 : delay; }
 }
 
+// ---- The crowd on them, and the beats after it ---------------------------------
+/** Enough roaming: both troupes come to a stop, and nobody still on the way dawdles. */
+export function settleScreens() {
+  for (const d of [phone, lap]) { if (d.to === 1) { arrivals.rush(d.kind); d.scn.crowd.settle(); } }
+}
+/** Everyone is on and standing: the page may move on. */
+export function screensSettled() {
+  for (const d of [phone, lap]) { if (d.to === 1 && (arrivals.pending(d.kind) || !d.scn.crowd.settled())) return false; }
+  return true;
+}
+/** They go the way Blip does: every dot into its own antenna's ball (blip/pour.js). */
+export function vanishCrowds() { for (const d of [phone, lap]) d.scn.crowd.vanish(); }
+/** Nothing of them left: both screens are blank white. */
+export function crowdsGone() { for (const d of [phone, lap]) if (!d.scn.crowd.gone()) return false; return true; }
+/** Back to step 1 from the other side: the screens are empty and they walk on again. */
+export function restartCrowds() {
+  for (const d of [phone, lap]) {
+    d.scn.content.hide(); arrivals.stop(d.kind); d.scn.crowd.leave();
+    if (d.to === 1 && d.e > .9) arrivals.start(d.kind);
+  }
+}
+
+/** One of a device's beats arrives on its blank screen (`now`: simply there, finished). */
+export function showBeat(kind, name, now) { (kind === "phone" ? phone : lap).scn.content.show(name, now); }
+/** One beat off, or (no `kind`) both: the screens are blank white again. */
+export function hideBeats(kind) {
+  for (const d of [phone, lap]) if (!kind || d.kind === kind) d.scn.content.hide();
+}
+/** That beat has finished arriving and is holding — the freeze. */
+export function beatDone(kind) { return (kind === "phone" ? phone : lap).scn.content.done(); }
+/** Nothing on that screen: it is blank white again. */
+export function beatOff(kind) { return !(kind === "phone" ? phone : lap).scn.content.shown(); }
+/** Blip himself: off to one of the screens, about on it, or back to the middle. */
+export function blipTo(kind, home) { arrivals.guestTo(kind, home); }
+/** He has got there (`kind` null: back in the middle). */
+export function blipThere(kind) { return arrivals.guestThere(kind); }
+/** He is out of the page's hands, somewhere between the two. */
+export const blipOut = () => arrivals.guestBusy();
+
+/** Someone is still on their way over to one of them. */
+export function screensFilling() { for (const d of [phone, lap]) if (d.to === 1 && arrivals.pending(d.kind)) return true; return false; }
+
 export function stepScreens(dt) {
   for (const d of [phone, lap]) {
     if (d.delay > 0) { d.delay -= dt; continue; }
@@ -138,5 +194,13 @@ export function stepScreens(dt) {
     else { d.v += (W_IN * W_IN * (d.to - d.e) - 2 * Z_IN * W_IN * d.v) * dt; d.e += d.v * dt; }
     if (d.to === 0 && d.e < .002) { d.e = 0; d.v = 0; }
     paint(d);
+    // The bots set off across the page once the device has all but landed;
+    // the screen is empty again, and whoever is still walking over turns back,
+    // once it has gone.
+    if (d.to === 1 && d.e > .9) arrivals.start(d.kind);
+    if (d.to === 0 && d.e === 0) { arrivals.stop(d.kind); d.scn.leave(); }
+    if (d.e > .02) d.scn.step(dt);
   }
+  arrivals.step(dt);
+  arrivals.draw();
 }

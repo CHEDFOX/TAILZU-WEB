@@ -6,6 +6,14 @@ import { BAYER, figure } from "./figure.js";
  * greys into a small buffer (one cell per dot), then an ink sticker grown
  * around it, then the dots the dither lets through, then the antenna's glow.
  * o: { H, cell, x, y (feet, ground), mirror, squash, land, air, st, t, glow, padX, capture }.
+ * o.ink and o.lit recolour the sticker and the dots (the bots on the screens
+ * each wear their own); left out, they are Blip's own ink and bone.
+ * o.roll turns the whole figure, in radians, about a point o.rollAt of its
+ * height up from its feet (0 the feet, .5 its middle): what a flip, a
+ * cartwheel or a handstand is made of.
+ * o.shade darkens the shadow it stands in (the small ones on the screens need
+ * a plainer one to read as standing on something), and o.hop, 0 to 1, lifts
+ * it off that shadow: the shadow shrinks and fades as the figure leaves it.
  * Returns the hand and the antenna's ball in g's coordinates. With o.capture
  * it draws nothing and also returns every dot it would have drawn, where it
  * would have drawn it: `ink` and `lit`, flat [x, y, x, y, ...] lists (the
@@ -28,14 +36,20 @@ export function makeDots() {
     const src = fg.getImageData(0, 0, bw, bh).data;
     const ox = o.x - W / 2 - PX, oy = o.y - H - TOP;
     if (o.capture) return capture(o, W, H, cell, ox, oy, bw, bh, src, map(f.hand[0], f.hand[1]), map(f.ball[0], f.ball[1]), sq * (1 + .05 * land - .02 * air), 1 - .06 * land + .03 * air);
-    // The shadow it stands in.
-    const lifted = Math.max(st.legs[0].lift, st.legs[1].lift) / H;
-    g.fillStyle = `rgba(28,24,18,${.1 - air * .04})`; g.beginPath(); g.ellipse(o.x, o.y - .004 * H, H * (.2 - lifted * .5 - air * .03) * sq, H * .022, 0, 0, TAU); g.fill();
-    // Squashed as it lands, stretched in the air: the weight of it.
-    g.save(); g.translate(o.x, o.y); g.scale(sq * (1 + .05 * land - .02 * air), 1 - .06 * land + .03 * air); g.translate(-o.x, -o.y);
+    // The shadow it stands in, and what is left of it when it is in the air.
+    const lifted = Math.max(st.legs[0].lift, st.legs[1].lift) / H, hop = o.hop || 0;
+    const shade = (o.shade === undefined ? 1 : o.shade) * (1 - hop * .6);
+    g.fillStyle = `rgba(28,24,18,${(.1 - air * .04) * shade})`; g.beginPath();
+    g.ellipse(o.x, o.y - .004 * H, H * (.2 - lifted * .5 - air * .03 - hop * .08) * sq, H * .022, 0, 0, TAU); g.fill();
+    // Squashed as it lands, stretched in the air: the weight of it; and turned
+    // over, if it is in the middle of throwing itself about.
+    const roll = o.roll || 0, pvy = o.y - H * (o.rollAt || 0);
+    g.save();
+    if (roll) { g.translate(o.x, pvy); g.rotate(roll); g.translate(-o.x, -pvy); }
+    g.translate(o.x, o.y); g.scale(sq * (1 + .05 * land - .02 * air), 1 - .06 * land + .03 * air); g.translate(-o.x, -o.y);
     for (let i = 0; i < bw * bh; i++) on[i] = src[i * 4 + 3] > 60 ? 1 : 0;
     // The sticker: every cell the figure touches, grown by one, in ink.
-    g.fillStyle = "#151311"; g.beginPath();
+    g.fillStyle = o.ink || "#151311"; g.beginPath();
     for (let y = 0; y < bh; y++) for (let x = 0; x < bw; x++) {
       let hit = on[y * bw + x];
       if (!hit) for (let j = -1; j <= 1 && !hit; j++) for (let i = -1; i <= 1 && !hit; i++) { const xx = x + i, yy = y + j; if (xx >= 0 && yy >= 0 && xx < bw && yy < bh && on[yy * bw + xx]) hit = 1; }
@@ -43,7 +57,7 @@ export function makeDots() {
     }
     g.fill();
     // The dots: lit where the grey beats the dither's threshold.
-    g.fillStyle = "#F3E2C6"; g.beginPath();
+    g.fillStyle = o.lit || "#F3E2C6"; g.beginPath();
     for (let y = 0; y < bh; y++) for (let x = 0; x < bw; x++) {
       const i = (y * bw + x) * 4, a = src[i + 3]; if (a < 90) continue;
       const lum = (src[i] * .3 + src[i + 1] * .59 + src[i + 2] * .11) / 255 * (a / 255);
@@ -51,7 +65,12 @@ export function makeDots() {
     }
     g.fill();
     g.restore();
-    const hand = map(f.hand[0], f.hand[1]), ball = map(f.ball[0], f.ball[1]);
+    const turn = (p) => {
+      if (!roll) return p;
+      const c = Math.cos(roll), s2 = Math.sin(roll), dx = p[0] - o.x, dy = p[1] - pvy;
+      return [o.x + dx * c - dy * s2, pvy + dx * s2 + dy * c];
+    };
+    const hand = turn(map(f.hand[0], f.hand[1])), ball = turn(map(f.ball[0], f.ball[1]));
     // The antenna's ball lights green: the same green as the water.
     if (o.glow > .02) {
       const [x, y] = ball, r = H * .05, gr = g.createRadialGradient(x, y, 0, x, y, r * 2.4);
