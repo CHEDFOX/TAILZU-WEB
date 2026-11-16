@@ -16,7 +16,9 @@
 // screens are showing: the meeting bot on the call wears his face.
 //   6  the laptop: a video call, the bot sitting in it and answering
 //   7  the phone: what the call came to, waiting to be approved
-//   8  both clear again, and he faces us
+//   8  that notice goes and the mail bot's arrives: two days of answered mail,
+//      and the one thing in it that it hands back
+//   9  both clear again, and he faces us
 //
 // Nothing waits for a scroll. A step that has finished arriving comes on by
 // itself a beat later, so the whole thing plays through on its own; a scroll
@@ -34,9 +36,9 @@ import {
 import { revealKey, keyShown, settleKey } from "./key.js";
 
 // How long a step that has arrived holds before the next comes by itself.
-const AUTO = [0, 1.6, 1.1, 4.6, 4.6, 1.4, 3.6, 4.2, 0];
+const AUTO = [0, 1.6, 1.1, 4.6, 4.6, 1.4, 3.6, 4.2, 4.6, 0];
 const ROAM = 2.4;               // seconds of roaming after the last bot is on, before they settle by themselves
-const LAST = 8;
+const LAST = 9;
 /**
  * What is on each screen at each step, and where he is: `on` is the screen he
  * is on (he walks into it), `watch` the one he looks at from the middle.
@@ -49,6 +51,7 @@ const SCENE = [
   { desk: null, phone: null },
   { desk: "meet", phone: null, watch: "desk" },
   { desk: "meet", phone: "plan", watch: "phone" },
+  { desk: "meet", phone: "mail", watch: "phone" },
   { desk: null, phone: null },
 ];
 const say = document.getElementById("say"), botCv = document.getElementById("bot");
@@ -61,6 +64,7 @@ const SAID = [
   "Blip comes back to the middle, and both screens clear.",
   "On the computer, a video call: three people on their cameras and X0, the meeting bot, sitting in with them, wearing Blip's face. Asked what the meeting came to, it answers: four follow-up emails, and the cart bug fixed before Friday.",
   "On the phone, what that call came to, waiting for a word: send four follow-up emails, fix the cart bug. Approve and start.",
+  "That notice goes and another arrives, two days on: the mail bot has answered forty-five emails and needed nothing, but three distributors got defective material from the same batch, and that one it hands back. Look into it.",
   "Both screens clear, and Blip stands between them again.",
 ];
 const LABEL = [
@@ -72,6 +76,7 @@ const LABEL = [
   "Blip, back in the middle between the phone and the computer.",
   "Blip, in the middle, watching the video call on the computer, X0 sitting in it.",
   "Blip, in the middle, watching the plan arrive on the phone.",
+  "Blip, in the middle, watching the mail bot's notice arrive on the phone.",
   "Blip, standing between the phone and the computer, facing us.",
 ];
 let step = 0, want = 0, busy = null, idle = 0, auto = false, dwell = 0, L = null;

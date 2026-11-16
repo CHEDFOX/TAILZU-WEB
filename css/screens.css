@@ -170,6 +170,18 @@
 .pl-go { flex: 1 1 auto; padding: 11px 0; border-radius: 13px; text-align: center; font-size: 15px; font-weight: 700; background: #5FD13C; color: #10140E; }
 .pl-no { font-size: 14px; color: rgba(243, 226, 198, .55); }
 
+/* The mail bot's notice, two days on: what it got through, and the one thing
+   in it that it will not decide on its own. */
+.mf-flag { display: flex; gap: 11px; margin-top: 15px; padding: 12px 13px; border-radius: 13px;
+  background: rgba(216, 85, 60, .13); box-shadow: inset 2px 0 0 #D8553C; }
+.mf-i { flex: none; display: grid; place-items: center; width: 22px; height: 22px; color: #E8795E; }
+.mf-i svg { width: 18px; height: 18px; display: block; }
+.mf-t { display: flex; flex-direction: column; gap: 3px; }
+.mf-t b { font-size: 15px; font-weight: 600; line-height: 1.25; }
+.mf-t span { font-size: 13px; color: rgba(243, 226, 198, .55); }
+.mf .pl-act { margin-top: 14px; }
+.mf-go { background: #E8795E; color: #241009; }
+
 @media (prefers-reduced-motion: reduce) { .mt-fig, .mt-ring { animation: none; } }
 
 @media (prefers-reduced-motion: reduce) { .tm-cur { animation: none; } }

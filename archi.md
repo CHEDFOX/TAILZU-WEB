@@ -53,8 +53,8 @@ js/                     the page's script, one ES module per part (no build step
                         the bots in off the page, and Blip both ways — out of the gap into a screen, shrinking as he goes, and back
   page/crowd.js         the milling about once on the glass: random spots, random paces, eighteen things they do (flips, cartwheels, handstands and the rest), one colour each;
                         then settling to a stop, and pouring away; and Blip himself as a guest on the glass when he comes in
-  page/content.js       the four beats the screens show: the laptop's terminal and its video call (the meeting bot wearing Blip's face),
-                        the phone's "Bots at work" Live Activity and the plan that call came to
+  page/content.js       the five beats the screens show: the laptop's terminal and its video call (the meeting bot wearing Blip's face),
+                        the phone's "Bots at work" Live Activity, the plan that call came to, and the mail bot's notice two days on
 css/screens.css         the devices' frames, the screen in them, and the four beats they show
 media/meet/             three muted five-second clips of people on a video call, for the call on the laptop (Mixkit, free stock video)
 api/                    Vercel serverless functions (Node)
@@ -81,7 +81,7 @@ README.md               how the page behaves, what to run after a change, how pu
 | Into the antenna and out (the springs, the order, the stalk) | `js/blip/antenna.js` (its constants at the top) |
 | The bots pouring away the same way | `js/blip/pour.js`, started by `js/page/crowd.js` (`vanish`) |
 | Them settling to a stop before the page moves on | `js/page/crowd.js` (`settle`, `callIn`, `toHome`, `rest`), gated in `js/page/steps.js` |
-| The beats' words: the terminal, the call, the Live Activity, the plan | `js/page/content.js` (`TERM`, `SAID_IN`, `PEOPLE`, `activity`, `TODO`), styled in `css/screens.css` |
+| The beats' words: the terminal, the call, the Live Activity, the plan, the mail notice | `js/page/content.js` (`TERM`, `SAID_IN`, `PEOPLE`, `activity`, `TODO`, `mailCard`), styled in `css/screens.css` |
 | The running order: what is on each screen at each step | `js/page/steps.js` (`SCENE`, `AUTO`) |
 | The people on the call (real clips) and swapping them | `media/meet/call-{1,2,3}.mp4` (Mixkit free stock video), named in `js/page/content.js` (`PEOPLE`); `media-src 'self'` in `vercel.json` |
 | The bot's face in its tile on the call | `js/page/content.js` (`botFace`), drawn with `js/blip/dots.js` |
@@ -108,7 +108,8 @@ README.md               how the page behaves, what to run after a change, how pu
   roaming and then settling, Blip back out while they pour away, and the two beats on the blank screens — the terminal and
   the Live Activity — that he walks away into, small, one screen and then the other, before he comes back to the middle and
   they clear; then a second pair he watches from where he stands, because he is in them — a video call with the meeting bot
-  wearing his face in it, and the plan that call came to, waiting to be approved.
+  wearing his face in it, the plan that call came to, and two days on the mail bot's notice: forty-five answered, and the one
+  thing in them it hands back.
 - Everything dynamic belongs to the backend: Vercel rewrites `/v1/...`, `/download`, the installers and the
   backend's pages to `api.x0bot.com`, so the site never handles accounts, payments or large files itself.
 - Only the page's own analytics run here (`api/`), with credentials from Vercel's environment variables.

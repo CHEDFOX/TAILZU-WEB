@@ -160,11 +160,23 @@ between the devices stands where he is and turns to watch.
 *Send 4 follow-up emails* and *Fix the cart bug*, and the app's own
 **Approve and start**. He turns the other way and watches that.
 
-**8, both clear**, and he faces us again.
+**8, the phone again, two days on.** That notice goes and the mail bot's
+arrives in its place: *45 emails answered — two days, none of them needed
+you.* And then the one thing in those two days it will NOT decide on its own,
+flagged in rust under the count: *3 distributors got defective material. Same
+batch, three days apart. I did not answer these.* **Look into it.** That is
+the whole promise in one card — it gets through the work, and it hands back
+the part that is yours.
+
+**9, both clear**, and he faces us again.
 
 The three people are real footage — three five-second clips, muted, looping,
-480×270, about 45 KB each (`media/meet/`, from Mixkit's free stock video,
-which allows commercial use without attribution). They are fetched the first
+480×270, 43 to 61 KB each (`media/meet/`, from Mixkit's free stock video,
+which allows commercial use without attribution). Each is framed the way a
+camera on a laptop frames you — head and shoulders, the room behind, the lid
+in the bottom of the shot — and each of them is talking or listening, not
+working alone at a desk: in a grid of four, three people quietly at work would
+not read as a meeting. They are fetched the first
 time the call is asked for and never on the page's first load, and they stop
 when it goes. Behind each one a drawn figure in a lit room stands in, so with
 no network, no autoplay or no video at all the tile still reads as somebody on
@@ -172,7 +184,8 @@ a camera; under `prefers-reduced-motion` the clips load and hold on their
 first frame. Swap a clip for your own and nothing else changes.
 
 Up goes back the same way, and a beat come back to is simply there, finished,
-rather than typing itself again (8 to 7 and 7 to 6: the beats come back; 5 to
+rather than typing itself again (9 to 8, 8 to 7 and 7 to 6: the beats come
+back; 5 to
 4: both beats back and he walks onto the phone; 4 to 3: the phone's goes and
 he crosses back to the laptop; 3 to 2: both go and he comes back to the
 middle; 2 to 1: back into the antenna and the screens fill again; 1 to 0: the

@@ -312,7 +312,46 @@ function planCard() {
   };
 }
 
-const MAKE = { desk: { term: terminal, meet: meeting }, phone: { live: activity, plan: planCard } };
+// ---- The phone again, a couple of days later -----------------------------------
+// The mail bot's own notice. Not a job finishing: it has been answering mail
+// for two days without being asked anything, and across those answers it has
+// SEEN something — the same complaint three times — which it does not decide
+// on. It hands that one back.
+function mailCard() {
+  const root = el("div", "la pl mf"), card = el("div", "la-card");
+  const head = el("div", "la-head");
+  head.append(el("i", "la-mark"), el("span", "la-who", "Mail"), el("span", "la-when", "now"));
+  card.append(head, el("div", "la-big", "45 emails answered"), el("div", "la-sub", "Two days. None of them needed you."));
+  const flag = el("div", "mf-flag"), ic = el("i", "mf-i");
+  ic.appendChild(svg("M12 2 2 20h20zM12 9v5M12 16.6v.6"));
+  const txt = el("div", "mf-t");
+  txt.append(el("b", "", "3 distributors got defective material"), el("span", "", "Same batch, three days apart. I did not answer these."));
+  flag.append(ic, txt);
+  const act = el("div", "pl-act");
+  act.append(el("b", "pl-go mf-go", "Look into it"), el("span", "pl-no", "Not now"));
+  card.append(flag, act);
+  root.appendChild(card);
+  let t = 0;
+  const paint = () => {
+    const T = reduced ? 9 : t, inK = clamp(T / .42);
+    card.style.transform = `translateY(${((1 - inK) * -34).toFixed(2)}px) scale(${(.96 + .04 * inK).toFixed(4)})`;
+    card.style.opacity = inK.toFixed(3);
+    // The count settles, then the one thing it wants you to see.
+    const f = clamp((T - .55) / .35);
+    flag.style.opacity = f.toFixed(3);
+    flag.style.transform = `translateX(${((1 - f) * 10).toFixed(2)}px)`;
+    act.style.opacity = clamp((T - 1.15) / .3).toFixed(3);
+  };
+  return {
+    el: root,
+    reset() { t = 0; paint(); },
+    finish() { t = 9; paint(); },
+    done: () => t >= 1.6,
+    step(dt) { if (t < 1.8) { t += dt; paint(); } },
+  };
+}
+
+const MAKE = { desk: { term: terminal, meet: meeting }, phone: { live: activity, plan: planCard, mail: mailCard } };
 
 /** The beats this device has. `kind` is "phone" or "desk". */
 export function makeContent(kind) {
