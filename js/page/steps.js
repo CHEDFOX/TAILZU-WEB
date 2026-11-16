@@ -46,8 +46,8 @@ const LAST = 9;
 const SCENE = [
   null, null,
   { desk: null, phone: null },
-  { desk: "code", phone: null, on: "desk" },
-  { desk: "code", phone: "live", on: "phone" },
+  { desk: "scenes", phone: null },
+  { desk: "scenes", phone: "live", on: "phone" },
   { desk: null, phone: null },
   { desk: "meet", phone: null, watch: "desk" },
   { desk: "meet", phone: "plan", watch: "phone" },

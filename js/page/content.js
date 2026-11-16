@@ -353,7 +353,7 @@ function mailCard() {
 }
 
 const MAKE = {
-  desk: { term: terminal, meet: meeting, code: () => makeVignette("code") },
+  desk: { term: terminal, meet: meeting, scenes: () => makeVignette("desk") },
   phone: { live: activity, plan: planCard, mail: mailCard },
 };
 
@@ -379,7 +379,7 @@ export function makeContent(kind) {
       scale = w / DW[kind];
       root.style.transform = `scale(${scale.toFixed(5)})`;
       if (beats.meet) beats.meet.face.fit(298, 176, scale);
-      if (beats.code) beats.code.fit(DW[kind], Math.round(DW[kind] * .625), scale);
+      if (beats.scenes) beats.scenes.fit(DW[kind], Math.round(DW[kind] * .625), scale);
     },
     /** One of this device's beats arrives — or, `now`, is simply there, finished. */
     show(name, now) {
