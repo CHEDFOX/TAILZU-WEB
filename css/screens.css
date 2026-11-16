@@ -68,6 +68,8 @@
    crisp at whatever size the device is. */
 .ct { position: absolute; left: 0; top: 0; z-index: 5; transform-origin: 0 0; }
 .ct-desk { width: 1280px; height: 800px; }
+/* A looping use-case scene, drawn in the app's own dots (js/page/vignette.js). */
+.vg { position: absolute; left: 0; top: 0; display: block; }
 .ct-phone { width: 390px; height: 844px; }
 
 /* The laptop: a terminal on the desktop. Xode installed with one line, then
