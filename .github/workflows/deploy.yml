@@ -1,0 +1,68 @@
+name: Deploy
+
+# Main goes live by itself once the deploy key is set (until then, deploy by hand with ship.sh). A push to main first checks that deploy/nginx/ is the config vercel.json makes and that the home
+# page's CSP matches index.html; then GitHub logs in to the VPS and runs deploy/ship.sh (pull, publish a release, switch to it,
+# install the nginx config only once nginx accepts it). The key it logs in with can run nothing else: the server's
+# authorized_keys pins it to that script, whatever is asked. The key and the server's host line are this repo's Actions
+# secrets VPS_SSH_KEY and VPS_KNOWN_HOSTS. The job that holds them checks nothing out, so no code from the repo runs with them.
+#
+# By hand: Actions → Deploy → Run workflow (on main), or  ssh root@91.108.104.168 /opt/x0bot-site/deploy/ship.sh
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+# One deploy at a time, in order; a deploy under way is never cut off.
+concurrency:
+  group: deploy
+  cancel-in-progress: false
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: The nginx config is the one vercel.json makes
+        run: node deploy/nginx.mjs --check
+      - name: The home page's CSP matches its inline blocks
+        run: node csp.mjs --check
+
+  ship:
+    needs: check
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Ship
+        env:
+          VPS_SSH_KEY: ${{ secrets.VPS_SSH_KEY }}
+          VPS_KNOWN_HOSTS: ${{ secrets.VPS_KNOWN_HOSTS }}
+        run: |
+          set -euo pipefail
+          if [ -z "$VPS_SSH_KEY" ] || [ -z "$VPS_KNOWN_HOSTS" ]; then
+            echo "No deploy key set, so nothing is shipped: run  ssh root@91.108.104.168 /opt/x0bot-site/deploy/ship.sh"; exit 0
+          fi
+          install -m 700 -d ~/.ssh
+          umask 077
+          # The key as it was pasted into the secret, put back whole: a paste can lose its line breaks, gain \r or spaces, or
+          # drop the BEGIN and END lines, and ssh reads none of those.
+          if printf '%s' "$VPS_SSH_KEY" | grep -q '^ *ssh-ed25519 '; then
+            echo "VPS_SSH_KEY holds the public key (ssh-ed25519 …). Paste the private one, from -----BEGIN OPENSSH PRIVATE KEY----- to -----END OPENSSH PRIVATE KEY-----."; exit 1
+          fi
+          body="$(printf '%s' "$VPS_SSH_KEY" | tr -d '\r' | sed -e 's/-----BEGIN OPENSSH PRIVATE KEY-----//g' -e 's/-----END OPENSSH PRIVATE KEY-----//g' | tr -d ' \t\n')"
+          { echo "-----BEGIN OPENSSH PRIVATE KEY-----"; printf '%s\n' "$body" | fold -w 70; echo "-----END OPENSSH PRIVATE KEY-----"; } > ~/.ssh/deploy
+          if ! ssh-keygen -y -f ~/.ssh/deploy > /dev/null 2>&1; then
+            echo "VPS_SSH_KEY is not a whole private key ($(printf '%s' "$body" | wc -c) characters read)."; exit 1
+          fi
+          ssh-keygen -lf ~/.ssh/deploy
+          printf '%s\n' "$VPS_KNOWN_HOSTS" | tr -d '\r' > ~/.ssh/known_hosts
+          ssh -T -i ~/.ssh/deploy -o IdentitiesOnly=yes -o BatchMode=yes -o StrictHostKeyChecking=yes \
+            -o UserKnownHostsFile=~/.ssh/known_hosts -o ServerAliveInterval=30 root@91.108.104.168 ship

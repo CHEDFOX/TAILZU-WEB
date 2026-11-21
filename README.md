@@ -9,9 +9,11 @@ js/                   the page's script, one module per part: paper/ (grain, wat
 css/screens.css       the phone and laptop frames, the screen in them, the phone's status bar, and the four beats they show
 media/meet/           three short muted clips of people on a video call, for the call on the laptop (Mixkit, free stock video)
 media/phone/          the phone's wallpaper (a blurred photograph, Unsplash through Lorem Picsum)
-api/                  Meta's pixel and its Conversions API copy (see Meta's pixel)
-vercel.json           rewrites to the API, headers, the home page's CSP, caching
-csp.mjs               writes index.html's inline hashes into the home page's CSP
+api/                  Meta's pixel as Vercel served it; unused on the VPS (see Meta's pixel)
+vercel.json           rewrites to the API, headers, the home page's CSP, caching: the one place they are written
+csp.mjs               writes index.html's inline hashes into the home page's CSP, then remakes deploy/nginx/
+deploy/               the VPS: nginx.mjs (vercel.json → nginx config), nginx/ (its output), ship.sh, check.sh
+.github/workflows/    deploy.yml: a push to main checks, then ships to the VPS
 robots.txt, og.png, <key>.txt (IndexNow)
 favicon.ico, favicon-32x32.png, favicon.svg, apple-touch-icon.png, icon-192.png, icon-512.png, icon-maskable-512.png, site.webmanifest
                       the app icon, cut from the brand's master picture (favicon.svg carries the same picture, for the backend's head)
@@ -211,7 +213,7 @@ The key (`#home`) is `/download` in the markup; the script points it at what
 this device installs: iPhone and iPad (iPadOS's desktop UA included) → the
 App Store; Android → Google Play; Windows → the Microsoft installer; Mac →
 the `.dmg`; Linux → the `.AppImage` (both straight from `api.x0bot.com`,
-so a hundred megabytes never pass through Vercel); ChromeOS and anything
+so a hundred megabytes never pass through the site's server); ChromeOS and anything
 else → `/download`. Without JavaScript the `<noscript>` block says what
 Tailzu is and links every device. Every download link carries `data-place`
 (`mast`, `noscript`) for the tag manager.
@@ -221,6 +223,7 @@ Tailzu is and links every device. Every download link carries `data-place`
 ```
 cd TAILZU-BACKEND/tulmi && npx tsx scripts/sync-site.mts ../../TAILZU-WEB/index.html   # when the backend's head changed (runs csp.mjs too)
 cd ../../TAILZU-WEB && node csp.mjs                                                    # after any edit to an inline <script> or <style> (js/ needs none)
+node deploy/nginx.mjs                                                                   # after any edit to vercel.json (csp.mjs runs it too)
 ```
 
 Before a push both checks pass (the sync's `--check` runs `csp.mjs --check`):
@@ -252,26 +255,45 @@ deleted, without the app), with the three API calls it makes,
 
 ## The old address, tailzu.space
 
-The same Vercel project still answers tailzu.space and www.tailzu.space, for
+The same server still answers tailzu.space and www.tailzu.space, for
 the apps already installed and links already out there. `vercel.json`'s
 `redirects` send every page there to the same path on x0bot.com (301), and
 leave alone what is not a page: `/v1/*` (a POST does not survive a redirect),
 `/downloads/*` (desktop builds up to 0.4.4 take their update only from
 tailzu.space, and follow no redirect off it), `/.well-known/*` (Apple and
 Google refuse an app-links file behind a redirect) and `/api/*`. Those keep
-being proxied to the API exactly as on x0bot.com. In Vercel's Domains
-settings both tailzu.space names are attached to production with no
-redirect of their own, so this file decides (TAILZU-BACKEND
-docs/domain-x0bot.md).
+being proxied to the API exactly as on x0bot.com. The nginx config made from
+`vercel.json` does the same, so this file decides (TAILZU-BACKEND
+docs/domain-x0bot.md). www.x0bot.com goes to x0bot.com (308).
 
 ## Publishing
 
-The site is on Vercel, deployed from this repo: a push to `main` is the
-deploy, live in under a minute. `vercel.json` proxies `/v1/site`,
+The site is on the VPS (91.108.104.168), behind the same nginx as the API: a
+push to `main` is the deploy, live in under a minute, once the repo has the
+secrets `VPS_SSH_KEY` and `VPS_KNOWN_HOSTS` (without them, deploy by hand with the
+command below). GitHub checks that
+`deploy/nginx/` and the CSP are in sync, then logs in with a key that can run
+only `deploy/ship.sh`, which pulls main, copies the site into a new release
+under `/var/www/x0bot.com/releases`, switches `current` to it in one step, and
+installs the nginx config only if nginx accepts it (otherwise the old one
+stays and the deploy fails). The last five releases are kept.
+
+```
+ssh root@91.108.104.168 /opt/x0bot-site/deploy/ship.sh               # deploy by hand
+ssh root@91.108.104.168 ROLLBACK=1 /opt/x0bot-site/deploy/ship.sh    # back to the release before
+deploy/check.sh                                                       # does the live site answer as it should?
+```
+
+`vercel.json` is still where routes and headers are written; `deploy/nginx.mjs`
+turns it into `deploy/nginx/x0bot.conf` (and `x0bot.http.conf`, the plain-HTTP
+config used until the certificate exists), and refuses anything in it that it
+does not know how to say in nginx. `vercel.json` proxies `/v1/site`,
 `/v1/site/event`, `/site-events.js`, `/v1/demo/transcribe`, `/v1/pay/*`,
 `/v1/account/deletion*`, `/download`, the three installers, the backend's pages and the SEO files to
-the API, and nothing else of it. `.vercelignore` keeps this file, `archi.md`
-and `csp.mjs` off the site.
+the API (sent as `api.x0bot.com`, with the visitor's address), and nothing else
+of it. `.vercelignore` keeps this file, `archi.md` and `csp.mjs` off the site;
+`ship.sh` also leaves out the repo's own machinery (`deploy/`, `api/`,
+`scripts/`, `.github/`, `vercel.json`). nginx keeps no access log for the site.
 
 Headers: `X-Frame-Options: DENY` everywhere. The home page's CSP allows its
 inline blocks by hash, the tag manager's `<noscript>` frame's one style
@@ -288,15 +310,16 @@ hosts added to the CSP.
 
 ## Meta's pixel
 
-`<script src="/site-events.js">` in the head is Meta's pixel. Vercel serves
-it, from `api/site-events.js` through the rewrite in `vercel.json`, with the
-dataset id from the project's environment variables: `META_PIXEL_ID`, and
-`META_CAPI_TOKEN` for the Conversions API. A change there needs a redeploy.
-Until the id is set the file is one comment.
+`<script src="/site-events.js">` in the head is Meta's pixel. The API serves
+it (src/routes/site/sitePages.ts) through the rewrite in `vercel.json`, with
+the dataset id from the server's `.env`: `META_PIXEL_ID`, and
+`META_CAPI_TOKEN` for the Conversions API. A change there needs the API
+restarted. Until the id is set the file is one comment. (`api/` is the copy
+Vercel ran, kept until the move is settled.)
 
 It reports the page view, `ViewContent` on /download and /pricing, and `Lead`
 when a link to an installer or a store is clicked. Each Lead is also posted
-to `/v1/site/event` (`api/site-event.js`), which copies it to the Conversions
+to `/v1/site/event`, which copies it to the Conversions
 API under the same event id.
 
 It does not load for a visitor whose browser asks not to be tracked (Global
