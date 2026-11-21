@@ -20,12 +20,12 @@
 - **Secrets.** Never print, log or commit a key, and never ask the owner to paste one: secrets live only in the server's `.env`. Don't
   search the machine for credentials.
 - **Deploys.** Don't ssh or deploy; give the owner the command: `ssh root@91.108.104.168 "cd ~/tulmi && ./deploy/ship.sh"` (server),
-  `ssh root@91.108.104.168 "cd ~/tulmi && ./deploy/cloudflare.sh"` (Xode's jobs on Cloudflare). This site deploys itself from `main`.
+  `ssh root@91.108.104.168 "cd ~/tulmi && ./deploy/cloudflare.sh"` (Xode's jobs on Cloudflare). This site deploys itself from `main` (to the VPS, `deploy/ship.sh`).
 - **Replies.** Short and simple, with commands to copy and paste.
 
-The public site for X0 Bot. One static page, three small serverless functions, and a set of
+The public site for X0 Bot. One static page and a set of
 rewrites that put the backend's pages (pricing, privacy, downloads, SEO pages) under the same domain. No build
-step, no framework, no dependencies. Deployed by Vercel on every push to `main`.
+step, no framework, no dependencies. Served by nginx on the VPS, deployed on every push to `main`.
 
 ## Layout
 
@@ -59,12 +59,18 @@ js/                     the page's script, one ES module per part (no build step
 css/screens.css         the devices' frames, the screen in them, and the four beats they show
 media/meet/             three muted five-second clips of people on a video call, for the call on the laptop (Mixkit, free stock video)
 media/phone/            the phone's wallpaper, a photograph blurred into an abstract (Unsplash through Lorem Picsum)
-api/                    Vercel serverless functions (Node)
+api/                    the serverless functions Vercel ran (unused on the VPS: the API serves both routes; to delete once the move is settled)
   _meta.js              shared Meta pixel / Conversions API helpers (reads the dataset id and token from Vercel env)
   site-event.js         POST /v1/site/event: a page event (e.g. a download press) sent to Meta's Conversions API
   site-events.js        GET /site-events.js: the pixel loader script
 vercel.json             redirects (tailzu.space → x0bot.com), rewrites to the API, security headers, the page's CSP, caching
-csp.mjs                 writes the hashes of index.html's inline blocks into vercel.json's CSP (`node csp.mjs`, `--check`)
+csp.mjs                 writes the hashes of index.html's inline blocks into vercel.json's CSP, then remakes deploy/nginx/ (`node csp.mjs`, `--check`)
+deploy/
+  nginx.mjs             vercel.json → nginx config (`node deploy/nginx.mjs`, `--check`); fails on anything it cannot translate
+  nginx/x0bot.conf      the config the VPS runs (TLS); x0bot.http.conf is the plain-HTTP one used until the certificate exists
+  ship.sh               on the VPS: pull main, new release, switch, install the nginx config only if nginx accepts it; ROLLBACK=1
+  check.sh              asks the live site (or `--ip` the VPS) every route, header and redirect, and what must never be served
+.github/workflows/deploy.yml  on push to main: the two --checks, then ssh with a key that can run only ship.sh
 robots.txt              crawler rules (search engines and answer engines allowed by name)
 <key>.txt               the IndexNow key file
 og.png                  the link-preview image
@@ -100,7 +106,7 @@ README.md               how the page behaves, what to run after a change, how pu
 | Desktop installers (`Tailzu-Setup.exe`, `Tailzu.dmg`, `Tailzu.AppImage`) | proxied from `api.x0bot.com/downloads/` by `vercel.json` |
 | Installing `xode` (Xode in the terminal) in one line | `install.sh` (`curl -fsSL https://x0bot.com/install.sh \| bash`) and `install.ps1` (`irm https://x0bot.com/install.ps1 \| iex`), served as text by `vercel.json` `headers`; both run `npm install -g @xooteqlab/xode` |
 | Meta pixel and Conversions API | `api/` (site side); the backend keeps its own copy for account events |
-| Security headers and the CSP | `vercel.json` `headers`; hashes kept current by `csp.mjs` |
+| Security headers and the CSP | `vercel.json` `headers`; hashes kept current by `csp.mjs`; served by `deploy/nginx/x0bot.conf` |
 | The old domain's behaviour | `vercel.json` `redirects` (pages 301 to x0bot.com; `/v1`, `/downloads`, `/.well-known`, `/api` still proxied) |
 
 ## How it fits together
@@ -113,9 +119,9 @@ README.md               how the page behaves, what to run after a change, how pu
   they clear; then a second pair he watches from where he stands, because he is in them — a video call with the meeting bot
   wearing his face in it, the plan that call came to, and two days on the mail bot's notice: forty-five answered, and the one
   thing in them it hands back.
-- Everything dynamic belongs to the backend: Vercel rewrites `/v1/...`, `/download`, the installers and the
+- Everything dynamic belongs to the backend: nginx (from `vercel.json`'s rewrites) sends `/v1/...`, `/download`, the installers and the
   backend's pages to `api.x0bot.com`, so the site never handles accounts, payments or large files itself.
-- Only the page's own analytics run here (`api/`), with credentials from Vercel's environment variables.
+- Meta's pixel and its Conversions API copy are the backend's too (`META_PIXEL_ID`, `META_CAPI_TOKEN` in its `.env`).
 
 ## Working on it
 
@@ -123,4 +129,5 @@ README.md               how the page behaves, what to run after a change, how pu
   `js/` need no hash.
 - After the backend's head changed: from `TAILZU-BACKEND/tulmi`, `npx tsx scripts/sync-site.mts ../../TAILZU-WEB/index.html`
   (add `--check` before pushing).
-- Publishing: push to `main`; Vercel deploys in under a minute.
+- After editing `vercel.json`: `node deploy/nginx.mjs` (csp.mjs runs it too); CI refuses a stale `deploy/nginx/`.
+- Publishing: push to `main`; GitHub ships it to the VPS in under a minute. Check with `deploy/check.sh`.

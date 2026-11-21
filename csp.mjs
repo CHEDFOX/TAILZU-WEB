@@ -5,8 +5,8 @@
 // its hash, and a stale hash stops that block from running.
 // Run this after every such edit (and after every sync), then deploy both files:
 //
-//   node csp.mjs            write the hashes into vercel.json
-//   node csp.mjs --check    exit 1 if vercel.json is stale
+//   node csp.mjs            write the hashes into vercel.json, then remake deploy/nginx/ from it
+//   node csp.mjs --check    exit 1 if vercel.json or deploy/nginx/ is stale
 //
 // It edits ONE value: the CSP of the home page's rule (not /demo/*'s, which
 // allows no inline script at all), and in it only the hash runs after
@@ -14,6 +14,7 @@
 // The file is edited in place (that one JSON string is swapped for its new
 // value), so its layout, one rewrite to a line, is kept.
 import { createHash } from "node:crypto";
+import { execFileSync } from "node:child_process";
 import fs from "node:fs";
 
 const at = (f) => new URL(f, import.meta.url);
@@ -40,3 +41,7 @@ if (process.argv.includes("--check")) {
   fs.writeFileSync(at("vercel.json"), after);
   console.log(after === before ? "CSP already in sync" : "vercel.json CSP updated");
 }
+// The VPS serves what vercel.json says, through the nginx config made from it.
+const nginx = [new URL("deploy/nginx.mjs", import.meta.url).pathname];
+if (process.argv.includes("--check")) nginx.push("--check");
+execFileSync(process.execPath, nginx, { stdio: "inherit" });
