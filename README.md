@@ -269,7 +269,9 @@ docs/domain-x0bot.md). www.x0bot.com goes to x0bot.com (308).
 ## Publishing
 
 The site is on the VPS (91.108.104.168), behind the same nginx as the API: a
-push to `main` is the deploy, live in under a minute. GitHub checks that
+push to `main` is the deploy, live in under a minute, once the repo has the
+secrets `VPS_SSH_KEY` and `VPS_KNOWN_HOSTS` (without them, deploy by hand with the
+command below). GitHub checks that
 `deploy/nginx/` and the CSP are in sync, then logs in with a key that can run
 only `deploy/ship.sh`, which pulls main, copies the site into a new release
 under `/var/www/x0bot.com/releases`, switches `current` to it in one step, and

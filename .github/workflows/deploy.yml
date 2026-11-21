@@ -1,6 +1,6 @@
 name: Deploy
 
-# Main goes live by itself. A push to main first checks that deploy/nginx/ is the config vercel.json makes and that the home
+# Main goes live by itself once the deploy key is set (until then, deploy by hand with ship.sh). A push to main first checks that deploy/nginx/ is the config vercel.json makes and that the home
 # page's CSP matches index.html; then GitHub logs in to the VPS and runs deploy/ship.sh (pull, publish a release, switch to it,
 # install the nginx config only once nginx accepts it). The key it logs in with can run nothing else: the server's
 # authorized_keys pins it to that script, whatever is asked. The key and the server's host line are this repo's Actions
@@ -48,7 +48,7 @@ jobs:
         run: |
           set -euo pipefail
           if [ -z "$VPS_SSH_KEY" ] || [ -z "$VPS_KNOWN_HOSTS" ]; then
-            echo "Add VPS_SSH_KEY and VPS_KNOWN_HOSTS in Settings → Secrets and variables → Actions."; exit 1
+            echo "No deploy key set, so nothing is shipped: run  ssh root@91.108.104.168 /opt/x0bot-site/deploy/ship.sh"; exit 0
           fi
           install -m 700 -d ~/.ssh
           umask 077
