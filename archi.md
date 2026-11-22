@@ -41,7 +41,7 @@ js/                     the page's script, one ES module per part (no build step
   paper/water.js        the plane as water: a 2-D wave equation, splash() and sample()
   paper/words.js        the plane of tiny words in the world's scripts, moved by the water; their 0/1 flicker
   paper/glitch.js       the page's own words flicker into 0/1 under the pointer (not inside `[data-noglitch]`, i.e. the film's card)
-css/site.css            the whole page's look: the card, the showcases (box and line), the devices and every screen in them, the gallery, the bands
+css/site.css            the whole page's look: the card, the showcases (box and line), the devices and every screen in them, the six cases, the bands
 media/meet/             three muted five-second clips of people on a video call, for the meeting card (Mixkit, free stock video)
 api/                    the serverless functions Vercel ran (unused on the VPS: the API serves both routes; to delete once the move is settled)
   _meta.js              shared Meta pixel / Conversions API helpers (reads the dataset id and token from Vercel env)
