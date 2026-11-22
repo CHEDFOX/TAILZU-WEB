@@ -5,6 +5,7 @@ it for the backend's pages and the downloads.
 
 ```
 index.html            the page: markup (the film, the views, the bots, the close), the tag manager inline, a <noscript> fallback; loads js/main.js
+media/face.svg        Blip's face, the mark in the mast (the film's vector icon, on its own)
 js/                   the page's script: paper/ (grain, water, words, glitch: the fabric), stage.js (the fabric's loop, the hand and the scroll on the water, the key), main.js (the film and the views), minis.js and blip/ (the small bots)
 css/site.css          everything the page looks like
 media/meet/           three short muted clips of people on a video call, for the meeting card (Mixkit, free stock video)
@@ -38,7 +39,8 @@ moves, and the page's own words flickering into 0/1 under the pointer
    comes forward while the other steps back: a business's mail set up in the
    four steps of the backend's docs/mail.md and its inbox filling, then the
    phone sorting, drafting, asking "Send all" and handing back the one that
-   needs a person; Blip peeking in, "I'm hungry", a deck of food cards, one
+   needs a person; Blip (the real one, drawn like the small bots) peeking round
+   the screen's edge and walking in to listen, "I'm hungry", a deck of food cards, one
    swiped away, the order on its way; Xode with three repos added, a task, a
    plan approved, the work done in sight, a flaky test re-run from the phone,
    shipped, and a daily 8:00 mail set up. Then the desktop fades, the phone
@@ -70,12 +72,14 @@ app's own renderer, `js/blip/blip.js`, copied unchanged from TAILZU-DESKTOP
 `src/shared/blip.js`; its moves, which the app compiles at run time from its
 catalog, are sampled once into `js/blip/moves.js` by
 `node scripts/gen-blip-moves.mjs` (run it again when the catalog or the
-renderer changes, after copying `blip.js` anew).
+renderer changes, after copying `blip.js` anew). `js/blip/kit.js` puts those
+moves back into the renderer, for the small bots and the food story's Blip alike.
 
 ## The download is always a link
 
-Both keys (`[data-get]`, in the mast and at the close) are `/download` in the
-markup; `js/stage.js` points them at what this device installs and names it: iPhone and iPad (iPadOS's desktop UA included) → the
+Both keys (`[data-get]`, in the mast and at the close) say "Take me home" and
+are `/download` in the markup; `js/stage.js` points them at what this device
+installs and names the device under the words ("X0 Bot for Mac"): iPhone and iPad (iPadOS's desktop UA included) → the
 App Store; Android → Google Play; Windows → the Microsoft installer; Mac →
 the `.dmg`; Linux → the `.AppImage` (both straight from `api.x0bot.com`,
 so a hundred megabytes never pass through the site's server); ChromeOS and anything
