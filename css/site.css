@@ -237,12 +237,12 @@ a { color: var(--ink); text-decoration-color: var(--line); text-underline-offset
    playing, which changes with it. Stacked on a narrow window, words first.
    ===================================================================== */
 .show { position: relative; min-height: 100svh; box-sizing: border-box; width: 100vw; margin-inline: calc(50% - 50vw); display: flex; align-items: center; justify-content: center;
-  gap: clamp(18px, 2.6vw, 44px); padding: 84px max(16px, 3vw) 44px; }
+  --gap: clamp(36px, 7vw, 150px); gap: var(--gap); padding: 84px max(16px, 3vw) 44px; }
 .show-box { position: relative; flex: none; box-sizing: border-box;
-  width: min(60rem, calc(100vw - max(32px, 6vw) - clamp(18px, 2.6vw, 44px) - clamp(15rem, 24vw, 22rem)), calc((100svh - 128px) * 1.72));
-  padding: clamp(16px, 2.6vw, 38px); border-radius: 30px; background: rgba(255, 255, 255, .5);
+  width: min(78rem, calc(100vw - max(32px, 6vw) - var(--gap) - clamp(15rem, 22vw, 22rem)), calc((100svh - 128px) * 1.72));
+  padding: clamp(24px, 3.4vw, 60px) clamp(16px, 2.6vw, 38px); border-radius: 30px; background: rgba(255, 255, 255, .5);
   box-shadow: 0 0 0 1px rgba(22, 20, 15, .09), 0 40px 80px -58px rgba(22, 20, 15, .5); }
-.show-say { flex: 0 1 clamp(15rem, 24vw, 22rem); box-sizing: border-box; padding: clamp(20px, 2vw, 30px); border-radius: 24px; background: #fff;
+.show-say { flex: 0 1 clamp(15rem, 22vw, 22rem); box-sizing: border-box; padding: clamp(20px, 2vw, 30px); border-radius: 24px; background: #fff;
   box-shadow: 0 0 0 1px rgba(22, 20, 15, .08), 0 30px 60px -44px rgba(22, 20, 15, .45); }
 .say-k { display: flex; align-items: center; gap: 8px; margin: 0 0 14px; font: 500 11px/1 var(--sans); letter-spacing: .16em; text-transform: uppercase; color: var(--muted); }
 .say-k .led { grid-row: auto; flex: none; box-shadow: 0 0 0 4px rgba(79, 122, 58, .14); }
@@ -252,8 +252,10 @@ a { color: var(--ink); text-decoration-color: var(--line); text-underline-offset
 .show-say > * { transition: opacity .32s ease, translate .42s cubic-bezier(.2, .8, .3, 1); }
 .show-say.out > * { opacity: 0; translate: 0 -8px; transition-duration: .22s, .26s; }
 .show-say.out .say-h { transition-delay: .03s; } .show-say.out .say-p { transition-delay: .06s; }
+/* the box on the right, the line on the left (the cases alternate) */
+.show.flip { flex-direction: row-reverse; }
 @media (max-width: 860px) {
-  .show { flex-direction: column-reverse; justify-content: center; padding-top: 76px; }
+  .show, .show.flip { flex-direction: column-reverse; justify-content: center; padding-top: 76px; }
   .show-box { width: min(100%, calc((100svh - 300px) * 1.72)); min-width: min(100%, 22rem); }
   .show-say { flex: none; width: 100%; max-width: 32rem; padding: 0 4px; background: none; box-shadow: none; text-align: left; }
   .say-k { margin-bottom: 10px; }
@@ -728,26 +730,23 @@ a { color: var(--ink); text-decoration-color: var(--line); text-underline-offset
 .app.cam { transition: transform .95s cubic-bezier(.65, 0, .35, 1); }
 
 /* =====================================================================
-   THE GALLERY. Six looping cards, one at a time in the showcase box, each
-   with its line beside it; the bar under the box shows how far through its
-   loop it is, and picks another. Each card is designed at 480x272 and scaled to its
+   THE CASES. Six looping cards, each a view of its own as the page scrolls,
+   in a showcase box with its line beside it, the box on alternate sides.
+   Each card is designed at 480x272 and scaled to its
    frame; each loop is pure CSS, and its resting style is its finished
    frame, so with motion reduced every card simply shows its result.
    ===================================================================== */
 .deck { position: relative; width: 100%; aspect-ratio: 480 / 272; }
 .gc { position: absolute; inset: 0; border-radius: 22px; overflow: hidden; isolation: isolate; background: #fff;
-  box-shadow: 0 0 0 1px rgba(22, 20, 15, .08), 0 34px 64px -38px rgba(22, 20, 15, .55);
-  opacity: 0; visibility: hidden; scale: .965; translate: 0 14px;
-  transition: opacity .55s ease, scale .8s cubic-bezier(.2, .8, .25, 1), translate .8s cubic-bezier(.2, .8, .25, 1), visibility 0s .8s; }
-.gc.on { opacity: 1; visibility: visible; scale: 1; translate: 0 0; z-index: 1; transition: opacity .55s ease .12s, scale .8s cubic-bezier(.2, .8, .25, 1) .12s, translate .8s cubic-bezier(.2, .8, .25, 1) .12s, visibility 0s; }
-.gc.was { scale: 1.02; translate: 0 -10px; }
-.g-dots { display: flex; justify-content: center; gap: 4px; margin-top: clamp(12px, 1.8vw, 22px); }
-.g-dot { position: relative; width: 34px; height: 24px; padding: 0; border: 0; background: none; cursor: pointer; }
-.g-dot::before { content: ""; position: absolute; left: 4px; right: 4px; top: 11px; height: 3px; border-radius: 2px; background: rgba(22, 20, 15, .14); }
-.g-dot::after { content: ""; position: absolute; left: 4px; top: 11px; height: 3px; width: calc((100% - 8px) * var(--p, 0)); border-radius: 2px; background: var(--ink); }
-.g-dot:focus-visible { outline: 2px solid #4F7A3A; outline-offset: 2px; border-radius: 6px; }
+  box-shadow: 0 0 0 1px rgba(22, 20, 15, .08), 0 34px 64px -38px rgba(22, 20, 15, .55); }
+/* a case comes up as it scrolls in */
+.case .show-box, .case .show-say { transition: opacity .7s ease, translate .9s cubic-bezier(.2, .8, .25, 1); }
+.case:not(.seen) .show-box { opacity: 0; translate: 0 36px; }
+.case:not(.seen) .show-say { opacity: 0; translate: 0 24px; }
+.case.seen .show-say { transition-delay: .12s; }
+@media (prefers-reduced-motion: reduce) { .case .show-box, .case .show-say { transition: none; opacity: 1; translate: none; } }
 .gcx { position: absolute; left: 0; top: 0; width: 480px; height: 272px; overflow: hidden; border-radius: inherit; transform-origin: 0 0; transform: scale(var(--k, 1)); font-family: var(--sans); color: #141414; }
-.gc:not(.on) .gcx *, .gifs.off .gcx *, .gifs.held .gcx * { animation-play-state: paused !important; }
+.case:not(.on) .gcx * { animation-play-state: paused !important; }
 
 /* ---- 1. Xode in the terminal: typed fast, zoom in, hold, out, then code written fast, line by line (9s) ---- */
 .g-term { background: #121212; color: #D4D4CF; border-radius: 24px; }

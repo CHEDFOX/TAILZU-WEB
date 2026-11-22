@@ -1103,71 +1103,40 @@ function sayer(aside) {
 }
 
 // ---------------------------------------------------------------------------
-// THE GALLERY. Six looping cards, one at a time, in place: each plays its loop
-// once from the top while its line sits beside it, then the next comes in. The
-// bar under the box shows how far through it is, and picks another. It pauses
-// under the pointer and while the gallery is off screen.
+// THE CASES. Six looping cards, each a view of its own. A case rises in the
+// first time it scrolls into sight, starts its loop from the top whenever it
+// comes back into view, and stands still while it is off screen.
 // ---------------------------------------------------------------------------
 {
-  const gifs = document.getElementById("gifs"), deck = document.getElementById("deck");
-  if (deck) {
-    const cards = [...deck.querySelectorAll(".gc")];
-    const dots = [...gifs.querySelectorAll(".g-dot")];
-    const tell = sayer(gifs.querySelector(".show-say"));
-
+  const cases = [...document.querySelectorAll(".case")];
+  if (cases.length) {
     // Blip's face in the meeting, and as the icon of each reminder
     const icon = document.getElementById("icon");
     if (icon) {
-      const face = deck.querySelector(".m-face");
+      const face = document.querySelector(".case .m-face");
       if (face) { const c = icon.cloneNode(true); c.removeAttribute("id"); face.appendChild(c); }
       const src = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(
         icon.outerHTML.replace("<svg ", '<svg xmlns="http://www.w3.org/2000/svg" ').replace(' id="icon"', ""));
-      deck.querySelectorAll(".r-ico").forEach((img) => { img.src = src; });
+      document.querySelectorAll(".case .r-ico").forEach((img) => { img.src = src; });
     }
 
-    // each card is designed at 480x272 and scaled to the box
-    const fit = () => { const k = (deck.clientWidth / 480).toFixed(4); cards.forEach((c) => c.firstElementChild.style.setProperty("--k", k)); };
-    new ResizeObserver(fit).observe(deck);
-    fit();
+    // each card is designed at 480x272 and scaled to its box
+    const ro = new ResizeObserver((es) => es.forEach((e) => {
+      e.target.querySelector(".gcx").style.setProperty("--k", (e.target.clientWidth / 480).toFixed(4));
+    }));
+    cases.forEach((c) => ro.observe(c.querySelector(".deck")));
 
-    let cur = -1, left = 0, total = 1, last = 0, visible = false, held = false;
     function restart(c) {
-      const inner = c.firstElementChild;
+      const inner = c.querySelector(".gcx");
       inner.style.display = "none"; void inner.offsetWidth; inner.style.display = "";
       inner.querySelectorAll("video").forEach((v) => { try { v.currentTime = 0; v.play().catch(() => {}); } catch (e) {} });
     }
-    function show(n) {
-      const prev = cards[cur];
-      cur = (n + cards.length) % cards.length;
-      const c = cards[cur];
-      cards.forEach((o) => o.classList.remove("was"));
-      if (prev && prev !== c) { prev.classList.remove("on"); prev.classList.add("was"); }
-      c.classList.add("on");
-      restart(c);
-      tell([c.dataset.k, c.dataset.h, c.dataset.p], prev === undefined);
-      left = total = (+c.dataset.s || 10) * 1000;
-      dots.forEach((d, i) => { d.setAttribute("aria-current", String(i === cur)); d.style.setProperty("--p", "0"); });
-    }
-    show(0);
-
-    function tick(t) {
-      requestAnimationFrame(tick);
-      const dt = last ? t - last : 0; last = t;
-      if (!visible || held || reduced) return;
-      left -= dt;
-      dots[cur].style.setProperty("--p", Math.min(1, 1 - left / total).toFixed(4));
-      if (left <= 0) show(cur + 1);
-    }
-    requestAnimationFrame(tick);
-    dots.forEach((d, i) => d.addEventListener("click", () => show(i)));
-    const box = gifs.querySelector(".show-box");
-    box.addEventListener("pointerenter", () => { held = true; gifs.classList.add("held"); });
-    box.addEventListener("pointerleave", () => { held = false; gifs.classList.remove("held"); });
-    new IntersectionObserver((es) => {
-      const was = visible;
-      visible = es.some((e) => e.isIntersecting);
-      gifs.classList.toggle("off", !visible);
-      if (visible && !was) show(cur);
-    }, { threshold: .35 }).observe(gifs);
+    const io = new IntersectionObserver((es) => es.forEach((e) => {
+      const c = e.target, on = e.isIntersecting;
+      if (on && !c.classList.contains("on")) restart(c);
+      c.classList.toggle("on", on);
+      if (on) c.classList.add("seen");
+    }), { threshold: .45 });
+    cases.forEach((c) => { if (reduced) c.classList.add("seen"); io.observe(c); });
   }
 }

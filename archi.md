@@ -33,7 +33,7 @@ step, no framework, no dependencies. Served by nginx on the VPS, deployed on eve
 index.html              the page: markup for the film, the views and the bands, the tag manager inline, a <noscript> fallback; loads js/main.js
 js/                     the page's script, one ES module per part (no build step; the CSP allows scripts from this origin)
   main.js               the opening film ("hey X0", the reply, the face), the work view's three stories, its finale and the line beside it,
-                        and the gallery's cards one at a time; `sayer` swaps a showcase's line; imports stage.js first
+                        and the six cases (each plays while in view); `sayer` swaps the work view's line; imports stage.js first
   stage.js              the fabric's frame loop and resize, the pointer and the scroll on the water (`scroll.quiet` while the page
                         scrolls itself), the bots' list, the key's per-device target and its lean
   util.js               small helpers, and the window's size and pixel ratio (`view`)
@@ -71,7 +71,7 @@ README.md               how the page behaves, what to run after a change, how pu
 | The film: the typing, the reply, the face assembling, the hand-over scroll | `js/main.js` (THE OPENING FILM; `LINE`), markup `#stage`, styles `css/site.css` |
 | The face (the app icon as vector) | the `<svg id="icon">` inside `#endmark` in `index.html`; reused as a picture by `js/main.js` (`faceSrc`) |
 | The work view: mail setup, inbox, the phone's replies, food, Xode, the finale | `js/main.js` (THE WORK VIEW: the setup card, the inbox rows, the second story, the third story, the finale), markup `#work` |
-| The gallery's six cards, their lines and how long each plays | markup `#gifs` (each `.gc`'s `data-k`/`data-h`/`data-p`/`data-s`), `js/main.js` (THE GALLERY) |
+| The six cases, their cards and their lines | markup `#gifs` (one `section.show.case` each, `.flip` puts the box on the right), `js/main.js` (THE CASES) |
 | The second view's lines, one per story | `js/main.js` (`LINES` in THE WORK VIEW); the showcase layout is `.show` in `css/site.css` |
 | The people in the meeting card (real clips) and swapping them | `media/meet/call-{1,2,3}.mp4` (Mixkit free stock video); `media-src 'self'` in `vercel.json` |
 | The bots' list, the two promises, plans, the close | markup `#team`, `.band.two`, `.band.plans`, `.band.close` in `index.html` |
@@ -88,7 +88,7 @@ README.md               how the page behaves, what to run after a change, how pu
 
 - The browser loads `index.html`; `js/main.js` imports `js/stage.js`, which starts the fabric (grain, water, words, glitch)
   and its one frame loop, then plays the film in the white card, scrolls once to the work view, plays its three stories when
-  it comes into sight, and plays the gallery's cards one at a time, each showcase with its changing line beside it. The rest is an ordinary page.
+  it comes into sight, and plays each of the six cases as it scrolls into view. The rest is an ordinary page.
 - Everything dynamic belongs to the backend: nginx (from `vercel.json`'s rewrites) sends `/v1/...`, `/download`, the installers and the
   backend's pages to `api.x0bot.com`, so the site never handles accounts, payments or large files itself.
 - Meta's pixel and its Conversions API copy are the backend's too (`META_PIXEL_ID`, `META_CAPI_TOKEN` in its `.env`).

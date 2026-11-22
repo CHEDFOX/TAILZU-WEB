@@ -43,20 +43,18 @@ moves, and the page's own words flickering into 0/1 under the pointer
    plan approved, the work done in sight, a flaky test re-run from the phone,
    shipped, and a daily 8:00 mail set up. Then the desktop fades, the phone
    takes the middle, "Your food has arrived", and the face again.
-3. **The gallery** (`#gifs`), the same showcase: one looping card at a time,
-   swapped in place, with its line beside it (each card's `data-k`, `data-h`,
-   `data-p`, and `data-s` for how long its loop runs): Xode installed in a
-   terminal, a bot flow, slash commands in a chat, the keyboard put together
-   from the backend's keyboard config, Blip in a meeting with real people (the
-   clips in `media/meet/`), reminders arriving. The bar under the box shows
-   how far through its loop a card is and picks another; it pauses under the
-   pointer and off screen.
+3. **The cases** (`#gifs`): six views of their own, one per scroll, each a
+   showcase with its box on alternate sides (the first on the right): Xode
+   installed in a terminal, a bot flow, slash commands in a chat, the
+   keyboard put together from the backend's keyboard config, Blip in a
+   meeting with real people (the clips in `media/meet/`), reminders arriving.
+   A case rises in the first time it scrolls into sight, plays its loop from
+   the top each time it comes back, and stands still off screen.
 4. **The team, the two promises, the plans and the close**: the bots' list
    (a row opens where it stands), phone and computer, staying in charge, free
    to start, and the key again with every device under it.
 
-With reduced motion the film and the stories show their last frame and the
-gallery stays on its card until another is picked.
+With reduced motion the film, the stories and the cases show their last frame.
 
 ## The download is always a link
 
