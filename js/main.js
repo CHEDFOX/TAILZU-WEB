@@ -3,6 +3,7 @@ import { easeIO, reduced, view } from "./util.js";
 import { splash } from "./paper/water.js";
 import { scroll } from "./stage.js";
 import "./minis.js";
+import { blip } from "./blip/kit.js";
 
 // ---------------------------------------------------------------------------
 // THE OPENING FILM. One white card, three acts, and a camera.
@@ -501,19 +502,69 @@ function sayer(aside) {
       + '<div class="small">Hot and as you like.</div>'
       + '<div class="track"><b></b><i></i></div><div class="ends"><span>Corner Kitchen</span><span>You</span></div></div>';
     let s2 = {};
+    // ---- Blip in the food story, the real one (js/blip/kit.js): he peeks round the screen's right edge, comes in to
+    // the middle to listen, then goes up out of the way, small, looking about while the food comes. Drawn on a canvas
+    // in the scene, in the mail screen's own 1040x650 design pixels.
+    function foodBlip(host) {
+      const B = blip();
+      if (!B) return null;
+      const cv = document.createElement("canvas");
+      cv.className = "s2-cv"; cv.setAttribute("aria-hidden", "true");
+      host.prepend(cv);       // under the words and the cards
+      const g = cv.getContext("2d");
+      const PEEK_H = 210, edge = B.createBlip({ height: PEEK_H });
+      const me = B.createPerformer({ dpr: 2 });
+      // where he stands in each part: feet (x, y), height H
+      const SPOT = { off: [1150, 400, 180], mid: [520, 398, 180], up: [520, 150, 92] };
+      let mode = "off", from = SPOT.off, to = SPOT.off, t0 = 0, T = 1, fx = -1, raf = 0, k = 0;
+      const io = (u) => u * u * (3 - 2 * u);
+      const want = () => Math.min(3, (mailScreen.clientWidth / 1040) * Math.min(2, devicePixelRatio || 1));
+      function fit() { k = want(); cv.width = Math.round(1040 * k); cv.height = Math.round(650 * k); }
+      function frame(now) {
+        raf = requestAnimationFrame(frame);
+        if (Math.abs(want() - k) > .01) fit();           // the screen was resized
+        g.setTransform(k, 0, 0, k, 0, 0); g.clearRect(0, 0, 1040, 650);
+        // round the edge: his "up" is to the left, into the screen
+        g.save(); g.translate(1040, 318); g.rotate(-Math.PI / 2);
+        edge.draw(g, 0, 0, now / 1000, k);
+        g.restore();
+        if (mode === "off") { if (!edge.shown()) stop(); return; }
+        const u = io(Math.min(1, (now - t0) / T));
+        const x = from[0] + (to[0] - from[0]) * u, y = from[1] + (to[1] - from[1]) * u, H = from[2] + (to[2] - from[2]) * u;
+        if (u >= 1 && mode === "walk") { mode = "listen"; me.play("listen"); }
+        fx += ((mode === "walk" ? -1 : 1) - fx) * .18;          // he walks in facing left, then turns to face you
+        g.save(); g.translate(x, y); g.scale(fx, 1); me.draw(g, 0, 0, H, now); g.restore();
+      }
+      function start() { if (!raf) { fit(); raf = requestAnimationFrame(frame); } }
+      function stop() { cancelAnimationFrame(raf); raf = 0; g.setTransform(1, 0, 0, 1, 0, 0); g.clearRect(0, 0, cv.width, cv.height); }
+      function go(m, a, b, ms) { mode = m; from = a; to = b; t0 = performance.now(); T = ms; start(); }
+      return {
+        peek() { edge.pose("peek"); start(); },
+        heard() { edge.pose("listening"); },                    // "Hey X0": he lifts up, all attention
+        comeIn() {                                              // round the edge and in, to the middle, to listen
+          edge.pose("hidden");
+          me.play("stroll");
+          go("walk", SPOT.off, SPOT.mid, reduced ? 1 : 900);
+        },
+        up() { me.play("look"); go("up", SPOT.mid, SPOT.up, reduced ? 1 : 750); },
+        clear() { edge.pose("hidden"); edge.snap(); mode = "off"; stop(); },
+      };
+    }
+
     function drawScene2() {
       scene2El.classList.remove("on", "listening");
-      scene2El.innerHTML = '<div class="s2-rings"><i></i><i></i><i></i></div><div class="s2-blip"></div>'
+      if (s2 && s2.blip) s2.blip.clear();
+      scene2El.innerHTML = '<div class="s2-rings"><i></i><i></i><i></i></div>'
         + '<p class="s2-said hey"><span>Hey</span><span>X0</span></p>'
         + '<p class="s2-said hungry"><span>I\'m</span><span>hungry.</span></p>'
         + '<div class="s2-cards"></div>'
         + '<div class="s2-pill"><span class="wave"><i></i><i></i><i></i><i></i><i></i></span><span>Listening</span><kbd>Ctrl</kbd><kbd>Ctrl</kbd></div>'
         + `<i class="cursor hide">${CURSOR}</i>`;
       s2 = {
-        blip: scene2El.querySelector(".s2-blip"), hey: scene2El.querySelector(".hey"), hungry: scene2El.querySelector(".hungry"),
+        blip: null, hey: scene2El.querySelector(".hey"), hungry: scene2El.querySelector(".hungry"),
         cards: scene2El.querySelector(".s2-cards"), pill: scene2El.querySelector(".s2-pill"), cursor: scene2El.querySelector(".cursor"),
       };
-      if (iconSvg) { const c = iconSvg.cloneNode(true); c.removeAttribute("id"); s2.blip.appendChild(c); }
+      s2.blip = foodBlip(scene2El) || { peek() {}, heard() {}, comeIn() {}, up() {}, clear() {} };
       FOOD.forEach(([emo, name, from]) => {
         const card = document.createElement("div");
         card.className = "fc";
@@ -554,14 +605,13 @@ function sayer(aside) {
       });
       // Blip peeks in at the desktop's edge
       wat(B + 600, () => { focusOn("desk"); tell(LINES.food); });
-      wat(B + 800, () => s2.blip.classList.add("peek", "bob"));
+      wat(B + 800, () => s2.blip.peek());
       // called
-      wat(B + 1900, () => { s2.pill.classList.add("on", "talking"); words(s2.hey, 260); });
+      wat(B + 1900, () => { s2.pill.classList.add("on", "talking"); words(s2.hey, 260); s2.blip.heard(); });
       // he comes to the middle to listen
       wat(B + 2800, () => {
         s2.hey.classList.add("out");
-        s2.blip.classList.remove("peek");
-        s2.blip.classList.add("listen");
+        s2.blip.comeIn();
         scene2El.classList.add("listening");
         say("Listening…");
       });
@@ -571,8 +621,7 @@ function sayer(aside) {
         s2.pill.classList.remove("talking", "on");
         s2.hungry.classList.add("out");
         scene2El.classList.remove("listening");
-        s2.blip.classList.remove("listen");
-        s2.blip.classList.add("up");
+        s2.blip.up();
         say("Finding food…");
       });
       wat(B + 5300, () => { deck(0, cards()); cards().forEach((c, i) => wat(i * 120, () => c.classList.add("in"))); });

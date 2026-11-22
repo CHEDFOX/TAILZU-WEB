@@ -4,7 +4,7 @@
 //   2. the visitor's hand on the water
 //   3. the page's own scroll on the water (quiet while the page scrolls itself)
 //   4. the bots' list, a row opening where it stands
-//   5. the key: what this device installs, and the cap leaning towards the pointer
+//   5. the key: "Take me home", to what this device installs, and the cap leaning towards the pointer
 import { reduced, view } from "./util.js";
 import { paintGrain } from "./paper/grain.js";
 import { makeField, stepField, splash } from "./paper/water.js";
@@ -93,20 +93,20 @@ document.querySelectorAll("[data-row]").forEach((b) => {
 });
 
 // ---- 5. the key ------------------------------------------------------------
-// /v1/site's own `stores` and `downloads`, and copy.download's own labels.
+// It always says "Take me home"; under it, the device it is for, and it goes to what that device installs
+// (/v1/site's own `stores` and `downloads`).
 const GET = [
-  [/iPhone|iPad|iPod/i, "Get it on iPhone", "https://apps.apple.com/app/id6784811357", "iOS"],
-  [/Android/i, "Get it on Android", "https://play.google.com/store/apps/details?id=com.tulmi.app", "Android"],
-  [/Macintosh|Mac OS X/i, "Download for Mac", "https://api.x0bot.com/downloads/Tailzu.dmg", "macOS"],
-  [/Windows/i, "Download for Windows", "https://get.microsoft.com/installer/download/9N3GX0XHQ7MX?referrer=appbadge&source=x0bot.com", "Windows"],
-  [/Linux|X11/i, "Download for Linux", "https://api.x0bot.com/downloads/Tailzu.AppImage", "Linux"],
+  [/iPhone|iPad|iPod/i, "X0 Bot for iPhone", "https://apps.apple.com/app/id6784811357"],
+  [/Android/i, "X0 Bot for Android", "https://play.google.com/store/apps/details?id=com.tulmi.app"],
+  [/Macintosh|Mac OS X/i, "X0 Bot for Mac", "https://api.x0bot.com/downloads/Tailzu.dmg"],
+  [/Windows/i, "X0 Bot for Windows", "https://get.microsoft.com/installer/download/9N3GX0XHQ7MX?referrer=appbadge&source=x0bot.com"],
+  [/Linux|X11/i, "X0 Bot for Linux", "https://api.x0bot.com/downloads/Tailzu.AppImage"],
 ];
 const ua = navigator.userAgent;
-const mine = GET.find(([re]) => re.test(ua)) || ["", "Get X0 Bot", "https://x0bot.com/download", "every device"];
+const mine = GET.find(([re]) => re.test(ua)) || ["", "X0 Bot for every device", "https://x0bot.com/download"];
 document.querySelectorAll("[data-get]").forEach((a) => {
   a.href = mine[2];
-  const l = a.querySelector("[data-get-label]"); if (l) l.textContent = mine[1];
-  const o = a.querySelector("[data-get-os]"); if (o) o.textContent = mine[3];
+  const o = a.querySelector("[data-get-os]"); if (o) o.textContent = mine[1];
 });
 
 // A keycap leans towards the pointer.

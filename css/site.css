@@ -31,11 +31,15 @@ main { position: relative; z-index: 2; overflow-x: clip; }
 .mast {
   position: fixed; z-index: 11; left: 0; right: 0; top: env(safe-area-inset-top, 0px);
   display: flex; align-items: center; justify-content: space-between;
-  padding: 15px max(16px, env(safe-area-inset-right, 0px)) 30px max(16px, env(safe-area-inset-left, 0px));
+  padding: clamp(18px, 3vh, 34px) max(clamp(20px, 4vw, 64px), env(safe-area-inset-right, 0px)) 30px max(clamp(20px, 4vw, 64px), env(safe-area-inset-left, 0px));
   pointer-events: none; background: linear-gradient(180deg, rgba(239, 237, 232, .96) 40%, rgba(239, 237, 232, 0));
 }
 .mast > * { pointer-events: auto; }
-.mark-word { font: 600 17px/1 var(--sans); letter-spacing: -.02em; }
+/* the mark: Blip's face (media/face.svg), home */
+.mark { display: block; line-height: 0; border-radius: 12px; transition: scale .3s cubic-bezier(.2, .9, .3, 1.3); }
+.mark img { display: block; width: clamp(36px, 3.2vw, 46px); height: auto; }
+.mark:hover { scale: 1.06; }
+.mark:focus-visible { outline: 1.5px solid var(--ink); outline-offset: 4px; }
 
 .key {
   display: inline-block; text-decoration: none; color: var(--ink); border-radius: 11px; padding-bottom: 3px;
@@ -493,17 +497,8 @@ a { color: var(--ink); text-decoration-color: var(--line); text-underline-offset
 .scene2 { position: absolute; inset: 0; z-index: 7; overflow: hidden; background: #fff; opacity: 0; visibility: hidden; transition: opacity .55s ease, visibility 0s .55s; }
 .scene2.on { opacity: 1; visibility: visible; transition: opacity .55s ease, visibility 0s; }
 
-.s2-blip { position: absolute; left: 50%; top: 50%; width: 118px; margin: -66px 0 0 -59px; z-index: 2;
-  transform: translate(660px, 40px) rotate(-24deg); transition: transform .95s cubic-bezier(.25, 1.15, .4, 1); will-change: transform; }
-.s2-blip.peek { transform: translate(498px, 40px) rotate(-24deg); }
-.s2-blip.listen { transform: translate(0, -46px) scale(1.22); }
-.s2-blip.up { transform: translate(0, -246px) scale(.6); }
-.s2-blip .icon { display: block; width: 100%; height: auto; overflow: visible; }
-.s2-blip.bob .icon { animation: bob 2.4s ease-in-out infinite; }
-@keyframes bob { 50% { translate: 0 -5px; } }
-.s2-blip .ant-l { animation: sway 3.2s ease-in-out infinite; }
-.s2-blip .ant-r { animation: sway 3.2s ease-in-out -1.6s infinite; }
-.s2-blip.peek .ant-l, .s2-blip.peek .ant-r { animation-duration: 1.1s; }
+/* Blip, the real one (js/main.js foodBlip): a canvas over the whole scene, in its design pixels */
+.s2-cv { position: absolute; left: 0; top: 0; width: 100%; height: 100%; pointer-events: none; }
 
 .s2-rings { position: absolute; left: 50%; top: 50%; width: 0; height: 0; transform: translateY(-46px); }
 .s2-rings i { position: absolute; left: -96px; top: -96px; width: 192px; height: 192px; border-radius: 50%; border: 1.5px solid rgba(20, 20, 20, .12); opacity: 0; will-change: transform, opacity; }
@@ -564,8 +559,8 @@ a { color: var(--ink); text-decoration-color: var(--line); text-underline-offset
 .p-feed.center { justify-content: center; }
 
 @media (prefers-reduced-motion: reduce) {
-  .scene2, .s2-blip, .s2-said span, .s2-pill, .fc { transition: none !important; }
-  .s2-blip .icon, .s2-blip .ant, .s2-rings i, .s2-pill .wave i, .fc .emo, .deliv .track b, .deliv .track i { animation: none !important; }
+  .scene2, .s2-said span, .s2-pill, .fc { transition: none !important; }
+  .s2-rings i, .s2-pill .wave i, .fc .emo, .deliv .track b, .deliv .track i { animation: none !important; }
 }
 
 /* =====================================================================

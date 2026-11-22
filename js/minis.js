@@ -9,39 +9,11 @@
 //
 // Only the one for the view mostly on screen runs. None of them catch the pointer, and with motion reduced there are none.
 import { reduced } from "./util.js";
-import { NUM, CARD, MOVES } from "./blip/moves.js";
+import { blip } from "./blip/kit.js";
 
-const B = window.TailzuBlip;
-
-// ---- his moves, put back into the renderer's tables (see scripts/gen-blip-moves.mjs) ----
-function install() {
-  Object.assign(B.POSES, CARD);
-  for (const [name, m] of Object.entries(MOVES)) {
-    const F = m.frames, n = F.length;
-    B.BLIP_GESTURES[name] = (t) => {
-      let u = Math.max(0, t);
-      if (m.play === "loop") u %= m.len;
-      else if (m.play === "bounce") { u %= 2 * m.len; if (u > m.len) u = 2 * m.len - u; }
-      else u = Math.min(u, m.len);
-      const k = u / m.len * (n - 1);
-      const i = Math.min(n - 2, Math.floor(k)), f = k - i, a = F[i], b = F[i + 1];
-      const v = (j) => a[j] + (b[j] - a[j]) * f;
-      const p = {};
-      NUM.forEach((key, j) => { p[key] = v(j); });
-      let j = NUM.length;
-      p.ra = [v(j), v(j + 1)]; p.la = [v(j + 2), v(j + 3)]; p.look = [v(j + 4), v(j + 5)];
-      p.legs = [{ th: v(j + 6), lift: v(j + 7) }, { th: v(j + 8), lift: v(j + 9) }];
-      j += 10;
-      p.mouth = (f < .5 ? a : b)[j] || "smile";
-      const eye = (f < .5 ? a : b)[j + 1]; if (eye) p.eye = eye;
-      return p;
-    };
-    if (m.play === "once") B.GESTURE_LENGTH[name] = m.len;
-  }
-}
+const B = blip();
 
 if (B && !reduced) {
-  install();
   const canvas = document.createElement("canvas");
   canvas.className = "minis";
   canvas.setAttribute("aria-hidden", "true");
