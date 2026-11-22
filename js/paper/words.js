@@ -42,8 +42,8 @@ function makeSprites() {
     for (const sp of sprites) {
       const tx = sp.ax + pad, ty = sp.ay + pad + sp.h / 2;
       if (green) {
-        g.shadowColor = "rgba(57,255,20,.95)"; g.shadowBlur = 5 * DPR; g.fillStyle = "#2EE84C"; g.fillText(sp.word, tx, ty);
-        g.shadowBlur = 0; g.fillStyle = "#26D943"; g.fillText(sp.word, tx, ty);
+        g.shadowColor = "rgba(28,26,23,.30)"; g.shadowBlur = 3 * DPR; g.fillStyle = "#2A2621"; g.fillText(sp.word, tx, ty);
+        g.shadowBlur = 0; g.fillStyle = "#1C1A17"; g.fillText(sp.word, tx, ty);
       } else { g.fillStyle = "#1C1A17"; g.fillText(sp.word, tx, ty); }
     }
     return c;

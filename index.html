@@ -50,111 +50,22 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <link rel="manifest" href="/site.webmanifest">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="/css/screens.css">
-<link rel="stylesheet" id="fonts" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,800&amp;display=swap" media="print">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&amp;family=Newsreader:opsz,wght@6..72,300;6..72,400&amp;family=IBM+Plex+Mono:wght@400&amp;display=swap">
+<link rel="stylesheet" href="/css/site.css">
 <noscript>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,800&amp;display=swap">
 <style>
-  /* Without JavaScript nothing can play: the page says what Tailzu is and
-     gives every device its download, above the links. */
-  #words, #hero, #spot, #mast, #screens { display: none; }
-  .nojs { position: relative; z-index: 2; box-sizing: border-box; min-height: 72vh; padding: 96px 16px 8px;
+  /* Without JavaScript nothing can play: the page says what X0 Bot is and
+     gives every device its download. */
+  #stage, #plane, #words, .mast, main { display: none; }
+  .nojs { position: relative; box-sizing: border-box; min-height: 72vh; padding: 96px 16px 8px;
     display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 18px; text-align: center; }
-  .nojs h1 { margin: 0; font: 800 clamp(40px, 7vw, 92px)/.95 var(--grot); letter-spacing: -.045em; color: var(--ink); text-wrap: balance; }
-  .nojs p { margin: 0; max-width: 40ch; font: 400 16px/1.45 var(--sys); color: var(--ink-2); text-wrap: pretty; }
+  .nojs h1 { margin: 0; font: 400 clamp(40px, 7vw, 84px)/1 "Newsreader", Georgia, serif; letter-spacing: -.02em; color: #1C1A17; text-wrap: balance; }
+  .nojs p { margin: 0; max-width: 42ch; font: 400 16px/1.45 "Instrument Sans", system-ui, sans-serif; color: rgba(28, 26, 23, .64); text-wrap: pretty; }
   .nojs .get { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; max-width: none; }
-  .nojs .get a { padding: 10px 16px; border-radius: 12px; background: var(--card); box-shadow: 0 0 0 1px rgba(28, 26, 23, .14), 0 1px 0 rgba(28, 26, 23, .22);
-    color: var(--ink); font: 800 15px/1 var(--grot); letter-spacing: -.015em; text-decoration: none; }
-  .nojs .get a:focus-visible { outline: 2px solid var(--neon); outline-offset: 3px; }
+  .nojs .get a { padding: 10px 16px; border-radius: 12px; background: #fff; box-shadow: 0 0 0 1px rgba(28, 26, 23, .14), 0 1px 0 rgba(28, 26, 23, .22);
+    color: #1C1A17; font: 600 15px/1 "Instrument Sans", system-ui, sans-serif; text-decoration: none; }
 </style>
 </noscript>
-<style>
-  /* One plane: textured off-white paper, a field of tiny words in the
-     world's scripts, one ink character, one faint neon green for the waves. */
-  :root {
-    --paper: #EFEDE8;
-    --card: #F6F5F1;
-    --ink: #1C1A17;
-    --ink-2: rgba(28, 26, 23, .64);
-    --muted: rgba(28, 26, 23, .42);
-    --neon: #39FF14;
-    --grot: "Bricolage Grotesque", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-    --sys: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-    color-scheme: light;
-  }
-  html { background: var(--paper); }
-  /* The page never scrolls (a scroll moves it a step), so nothing should bounce. */
-  html, body { overscroll-behavior: none; }
-  .glb { display: inline-block; white-space: nowrap; vertical-align: baseline; text-align: left; }
-  .glb.held { clip-path: inset(0 -0.05em 0 0); }
-  body {
-    margin: 0;
-    background: var(--paper);
-    color: var(--ink);
-    font: 400 12px/1.4 var(--sys);
-    -webkit-tap-highlight-color: transparent;
-  }
-  #plane {
-    position: fixed; inset: 0;
-    background-color: var(--paper);
-    background-size: 220px 220px;
-  }
-  #words { position: fixed; inset: 0; width: 100%; height: 100%; display: block; z-index: 1; }
-  #hero { position: relative; z-index: 2; height: 100vh; }
-  #bot { position: absolute; inset: 0; width: 100%; height: 100%; display: block; pointer-events: none; }
-  /* THE MAST, after the wave: the download on the left ("Take me home", to
-     whatever this visitor's device installs), the name on the right. */
-  .mast {
-    position: fixed; z-index: 11; left: 0; right: 0; top: env(safe-area-inset-top, 0px);
-    display: flex; justify-content: space-between; align-items: center; gap: 12px;
-    padding-top: 18px; padding-left: max(20px, env(safe-area-inset-left, 0px)); padding-right: max(22px, env(safe-area-inset-right, 0px));
-    pointer-events: none;
-  }
-  .mast > * { visibility: hidden; }
-  .mast.show .home { visibility: visible; pointer-events: auto; }
-  .mast .name { opacity: 0; transform: translateX(28px); transition: opacity .5s ease, transform .8s cubic-bezier(.2, .9, .25, 1.12), visibility 0s .8s; }
-  .mast.named .name { visibility: visible; opacity: 1; transform: none; pointer-events: auto; transition: opacity .5s ease, transform .8s cubic-bezier(.2, .9, .25, 1.12), visibility 0s; }
-  /* The button is a key (Tailzu is a keyboard): a paper keycap on its
-     skirt, a green LED in its corner, the device it is for as the small
-     legend. Hover lifts the LED's glow; a press pushes the cap down onto
-     its skirt; it leans a little towards the pointer. */
-  .home {
-    display: inline-block; text-decoration: none; color: var(--ink); border-radius: 13px; padding-bottom: 4px;
-    background: linear-gradient(180deg, #D8D4CA, #C3BEB2);
-    box-shadow: 0 0 0 1px rgba(28, 26, 23, .12), 0 1px 0 rgba(28, 26, 23, .22), 0 12px 24px -12px rgba(28, 26, 23, .5);
-    translate: var(--mx, 0px) var(--my, 0px);
-    transition: translate .3s cubic-bezier(.2, .9, .3, 1.3), box-shadow .35s ease;
-  }
-  .key-face {
-    display: grid; grid-template-columns: auto auto; grid-template-rows: auto auto; align-items: center; column-gap: 10px; row-gap: 4px;
-    padding: 10px 17px 9px 13px; border-radius: 12px;
-    background: linear-gradient(180deg, #FFFEFB 0%, #F4F2EC 70%, #ECE9E2 100%);
-    box-shadow: inset 0 1px 0 #fff, inset 0 -2px 0 rgba(28, 26, 23, .05), 0 0 0 1px rgba(28, 26, 23, .14);
-    transition: transform .09s ease, background .3s ease;
-  }
-  .key-led { grid-row: 1 / 3; width: 7px; height: 7px; border-radius: 50%; background: var(--neon); box-shadow: 0 0 5px 1px rgba(57, 255, 20, .7); animation: led 2.8s ease-in-out infinite; }
-  .home-label { font: 800 15px/1 var(--grot); letter-spacing: -.015em; }
-  .home-os { grid-column: 2; font: 500 10px/1 var(--sys); letter-spacing: .05em; color: var(--muted); }
-  .home:hover { box-shadow: 0 0 0 1px rgba(28, 26, 23, .12), 0 1px 0 rgba(28, 26, 23, .22), 0 12px 26px -10px rgba(28, 26, 23, .45), 0 6px 28px -6px rgba(57, 255, 20, .38); }
-  .home:hover .key-face { background: linear-gradient(180deg, #FFFFFF 0%, #F7F5F0 70%, #EFECE5 100%); }
-  .home:hover .key-led { box-shadow: 0 0 8px 2px rgba(57, 255, 20, .9); }
-  .home:active .key-face { transform: translateY(3px); }
-  .home:focus-visible { outline: 2px solid var(--neon); outline-offset: 4px; }
-  @keyframes led { 0%, 100% { opacity: 1; } 50% { opacity: .55; } }
-  /* While it arrives the page is soft and the key is lit. */
-  .mast.lit .home { box-shadow: 0 0 0 1px rgba(28, 26, 23, .12), 0 1px 0 rgba(28, 26, 23, .22), 0 12px 26px -10px rgba(28, 26, 23, .45), 0 0 0 7px rgba(57, 255, 20, .1), 0 0 46px rgba(57, 255, 20, .42); }
-  .mast .name { font: 800 23px/1 var(--grot); letter-spacing: -.035em; color: var(--ink); }
-  /* The moment it arrives: everything else goes soft, the button alone is sharp. */
-  .spot {
-    position: fixed; inset: 0; z-index: 10; pointer-events: none; opacity: 0; visibility: hidden;
-    background: rgba(239, 237, 232, .3);
-    -webkit-backdrop-filter: blur(14px) saturate(.85); backdrop-filter: blur(14px) saturate(.85);
-    transition: opacity .5s ease, visibility 0s .5s;
-  }
-  .spot.on { opacity: 1; visibility: visible; transition: opacity .45s ease, visibility 0s; }
-  @media (prefers-reduced-motion: reduce) { .mast .name, .mast.named .name { transition: none; transform: none; } .key-led { animation: none; } .home, .key-face { transition: none; } }
-
-</style>
 </head>
 <body>
 <!-- Google Tag Manager (noscript) -->
@@ -162,9 +73,9 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <!-- End Google Tag Manager (noscript) -->
 <noscript>
-<main class="nojs">
-  <h1>Talk. X0 Bot writes.</h1>
-  <p>An AI keyboard for iPhone, Android, Windows, Mac and Linux: talk in Hindi, Hinglish, English or any of 70+ languages, and clean text lands in any app.</p>
+<div class="nojs">
+  <h1>A team of bots, each great at one thing.</h1>
+  <p>X0 Bot answers your mail, orders your food, ships your code, sits in your meetings and writes as you, on iPhone, Android, Windows, Mac and Linux.</p>
   <p class="get">
     <a href="https://apps.apple.com/app/id6784811357" data-place="noscript">iPhone</a>
     <a href="https://play.google.com/store/apps/details?id=com.tulmi.app" data-place="noscript">Android</a>
@@ -172,23 +83,709 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <a href="https://api.x0bot.com/downloads/Tailzu.dmg" data-place="noscript">Mac</a>
     <a href="https://api.x0bot.com/downloads/Tailzu.AppImage" data-place="noscript">Linux</a>
   </p>
-</main>
+</div>
 </noscript>
 
-<!-- First in the page, though it is pinned to the window: the key is the first thing a Tab reaches. -->
-<header class="mast" id="mast">
-  <a class="home" id="home" href="/download" data-place="mast" rel="noopener"><span class="key-face"><span class="key-led" aria-hidden="true"></span><b class="home-label">Take me home</b><small class="home-os" id="homeOs">Get X0 Bot</small></span></a>
-  <span class="name">X0 Bot</span>
+<header class="mast">
+  <span class="mark-word">X0 Bot</span>
+  <a class="key" data-get data-lean href="/download" data-place="mast">
+    <span class="cap"><i class="led" aria-hidden="true"></i><b data-get-label>Get X0 Bot</b><small data-get-os>every device</small></span>
+  </a>
 </header>
-<div id="plane" aria-hidden="true"></div>
-<canvas id="words" aria-hidden="true"></canvas>
-<header id="hero">
-  <canvas id="bot" role="img" aria-label="X0 Bot's dotted character walks in from the right, stops in the middle and waves. Its steps send faint green ripples through a field of tiny words in many languages."></canvas>
-</header>
-<div id="screens" aria-hidden="true"></div>
-<p class="sr" id="say" aria-live="polite"></p>
-<div class="spot" id="spot" aria-hidden="true"></div>
 
+<div id="plane" data-fabric aria-hidden="true"></div>
+<canvas id="words" data-fabric aria-hidden="true"></canvas>
+
+<main data-fabric>
+<div class="wrap">
+
+<section id="stage" class="stage">
+  <h1 class="sr">X0 Bot: a team of bots, each great at one thing</h1>
+
+  <div class="card" id="card" data-noglitch>
+    <div class="cam" id="cam">
+
+      <svg class="board blank" id="board" viewBox="0 0 300 300" aria-hidden="true">
+        <g class="grid" stroke-linecap="round">
+          <line class="gl" x1="100" y1="14" x2="100" y2="286"/>
+          <line class="gl" x1="200" y1="14" x2="200" y2="286"/>
+          <line class="gl" x1="14" y1="100" x2="286" y2="100"/>
+          <line class="gl" x1="14" y1="200" x2="286" y2="200"/>
+        </g>
+        <circle class="rip" data-i="0" cx="50" cy="50" r="26"/>
+        <circle class="rip" data-i="1" cx="50" cy="150" r="26"/>
+        <circle class="rip" data-i="2" cx="150" cy="50" r="26"/>
+        <circle class="rip" data-i="3" cx="150" cy="150" r="26"/>
+        <g class="threat tx" stroke-linecap="round"><line x1="22" y1="50" x2="278" y2="50"/></g>
+        <g class="threat to" stroke-linecap="round"><line x1="22" y1="150" x2="278" y2="150"/></g>
+        <g class="pc x" data-i="0" data-mark stroke-linecap="round"><line class="s" x1="26" y1="26" x2="74" y2="74"/><line class="s" x1="74" y1="26" x2="26" y2="74"/></g>
+        <g class="pc o" data-i="1" data-mark><circle class="c" cx="50" cy="150" r="25"/></g>
+        <g class="pc x" data-i="2" data-mark stroke-linecap="round"><line class="s" x1="126" y1="26" x2="174" y2="74"/><line class="s" x1="174" y1="26" x2="126" y2="74"/></g>
+        <g class="pc o" data-i="3" data-mark><circle class="c" cx="150" cy="150" r="25"/></g>
+      </svg>
+
+      <div class="typebox" id="typebox">
+        <span class="plus" aria-hidden="true">+</span>
+        <span class="ty"><span id="ty"></span><i class="caret" aria-hidden="true"></i></span>
+        <span class="send" id="send" aria-hidden="true"><svg viewBox="0 0 16 16"><path d="M8 13V3M3.5 7.5 8 3l4.5 4.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+      </div>
+
+      <div class="reply" id="reply">
+        <div class="talk">
+          <span class="dots3" aria-hidden="true"><i></i><i></i><i></i></span>
+          <p class="bubble" id="bubble">Here, at your service.</p>
+        </div>
+      </div>
+
+      <div class="endmark" id="endmark"><svg class="icon" id="icon" viewBox="107 154 809 777" aria-hidden="true">
+<defs><linearGradient id="vg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#232323"/><stop offset=".55" stop-color="#0c0c0c"/><stop offset="1" stop-color="#000"/></linearGradient><linearGradient id="gloss" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset=".5" stop-color="#fff" stop-opacity=".16"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient><clipPath id="vclip"><path d="M286.5 500.5 L741.5 501.5 L748.5 506.5 L749.5 510.5 L749.5 626.5 L745.5 640.5 L735.5 654.5 L740.5 660.5 L739.5 666.5 L736.5 669.5 L732.5 670.5 L726.5 666.5 L725.5 662.5 L723.5 662.5 L717.5 666.5 L700.5 672.5 L667.5 677.5 L666.5 678.5 L671.5 683.5 L671.5 688.5 L667.5 693.5 L661.5 693.5 L657.5 690.5 L656.5 683.5 L660.5 679.5 L656.5 678.5 L643.5 680.5 L643.5 690.5 L636.5 694.5 L632.5 693.5 L629.5 690.5 L627.5 682.5 L623.5 682.5 L617.5 683.5 L615.5 691.5 L610.5 694.5 L604.5 693.5 L599.5 685.5 L590.5 685.5 L588.5 691.5 L583.5 695.5 L576.5 694.5 L571.5 686.5 L562.5 687.5 L561.5 690.5 L556.5 694.5 L550.5 694.5 L544.5 688.5 L535.5 688.5 L529.5 694.5 L522.5 694.5 L516.5 688.5 L507.5 688.5 L502.5 694.5 L498.5 695.5 L492.5 693.5 L488.5 688.5 L480.5 688.5 L476.5 693.5 L469.5 695.5 L463.5 692.5 L460.5 687.5 L453.5 686.5 L448.5 693.5 L442.5 695.5 L438.5 694.5 L434.5 690.5 L434.5 687.5 L432.5 685.5 L425.5 685.5 L421.5 694.5 L412.5 696.5 L406.5 691.5 L405.5 683.5 L397.5 682.5 L395.5 692.5 L392.5 695.5 L385.5 696.5 L382.5 695.5 L378.5 690.5 L379.5 681.5 L375.5 679.5 L368.5 679.5 L368.5 690.5 L364.5 694.5 L359.5 695.5 L355.5 694.5 L351.5 690.5 L350.5 685.5 L354.5 678.5 L351.5 676.5 L323.5 672.5 L301.5 663.5 L295.5 671.5 L288.5 672.5 L284.5 670.5 L281.5 665.5 L281.5 658.5 L286.5 652.5 L278.5 640.5 L274.5 626.5 L274.5 509.5 L278.5 503.5 Z"/></clipPath></defs>
+<g class="dots">
+<circle cx="512.0" cy="710.0" r="9.0" data-d="118"/>
+<circle cx="484.4" cy="710.1" r="9.2" data-d="121"/>
+<circle cx="539.6" cy="710.2" r="9.5" data-d="121"/>
+<circle cx="512.0" cy="470.8" r="10.4" data-d="121"/>
+<circle cx="484.4" cy="470.7" r="10.6" data-d="125"/>
+<circle cx="539.6" cy="470.7" r="11.0" data-d="125"/>
+<circle cx="456.7" cy="710.1" r="9.3" data-d="130"/>
+<circle cx="567.3" cy="710.2" r="8.7" data-d="130"/>
+<circle cx="456.6" cy="470.7" r="10.6" data-d="133"/>
+<circle cx="567.2" cy="470.8" r="10.1" data-d="134"/>
+<circle cx="525.7" cy="734.1" r="9.3" data-d="143"/>
+<circle cx="498.2" cy="734.2" r="8.8" data-d="143"/>
+<circle cx="429.0" cy="710.2" r="9.2" data-d="144"/>
+<circle cx="594.9" cy="710.2" r="8.5" data-d="144"/>
+<circle cx="525.9" cy="446.9" r="10.3" data-d="146"/>
+<circle cx="498.2" cy="446.6" r="11.2" data-d="146"/>
+<circle cx="429.1" cy="470.6" r="10.9" data-d="147"/>
+<circle cx="594.9" cy="470.7" r="10.6" data-d="147"/>
+<circle cx="470.5" cy="734.1" r="8.8" data-d="148"/>
+<circle cx="553.5" cy="734.2" r="8.5" data-d="148"/>
+<circle cx="470.5" cy="446.8" r="11.3" data-d="151"/>
+<circle cx="553.4" cy="446.8" r="10.9" data-d="151"/>
+<circle cx="442.9" cy="734.1" r="9.7" data-d="158"/>
+<circle cx="581.1" cy="734.0" r="8.2" data-d="158"/>
+<circle cx="442.9" cy="446.7" r="10.8" data-d="161"/>
+<circle cx="401.4" cy="710.0" r="9.3" data-d="161"/>
+<circle cx="581.1" cy="446.8" r="10.7" data-d="161"/>
+<circle cx="622.5" cy="710.1" r="8.9" data-d="162"/>
+<circle cx="401.4" cy="470.7" r="10.8" data-d="164"/>
+<circle cx="622.5" cy="470.6" r="9.6" data-d="165"/>
+<circle cx="512.0" cy="758.0" r="8.3" data-d="166"/>
+<circle cx="484.4" cy="758.2" r="8.5" data-d="168"/>
+<circle cx="539.6" cy="758.0" r="8.9" data-d="168"/>
+<circle cx="512.0" cy="422.9" r="10.4" data-d="169"/>
+<circle cx="415.2" cy="734.1" r="9.0" data-d="171"/>
+<circle cx="484.4" cy="422.8" r="10.5" data-d="172"/>
+<circle cx="539.6" cy="422.8" r="10.9" data-d="172"/>
+<circle cx="608.8" cy="734.1" r="8.1" data-d="172"/>
+<circle cx="415.2" cy="446.7" r="11.4" data-d="175"/>
+<circle cx="456.6" cy="758.1" r="8.6" data-d="175"/>
+<circle cx="567.3" cy="758.0" r="8.1" data-d="175"/>
+<circle cx="608.7" cy="446.7" r="9.7" data-d="175"/>
+<circle cx="456.6" cy="422.7" r="10.6" data-d="178"/>
+<circle cx="567.3" cy="422.9" r="10.0" data-d="178"/>
+<circle cx="373.8" cy="710.1" r="9.3" data-d="181"/>
+<circle cx="650.2" cy="710.0" r="8.0" data-d="182"/>
+<circle cx="373.8" cy="470.6" r="10.8" data-d="184"/>
+<circle cx="650.2" cy="470.8" r="9.4" data-d="184"/>
+<circle cx="429.0" cy="758.1" r="9.4" data-d="185"/>
+<circle cx="594.9" cy="758.1" r="7.9" data-d="186"/>
+<circle cx="387.7" cy="734.1" r="9.0" data-d="188"/>
+<circle cx="429.0" cy="422.7" r="11.3" data-d="189"/>
+<circle cx="594.9" cy="422.7" r="10.6" data-d="189"/>
+<circle cx="636.5" cy="734.1" r="7.8" data-d="189"/>
+<circle cx="498.1" cy="781.9" r="8.1" data-d="190"/>
+<circle cx="525.8" cy="782.0" r="8.0" data-d="190"/>
+<circle cx="387.5" cy="446.8" r="10.7" data-d="191"/>
+<circle cx="636.4" cy="446.7" r="9.4" data-d="192"/>
+<circle cx="498.1" cy="399.0" r="10.9" data-d="194"/>
+<circle cx="525.9" cy="399.0" r="10.2" data-d="194"/>
+<circle cx="470.6" cy="782.1" r="8.2" data-d="194"/>
+<circle cx="553.5" cy="782.0" r="7.9" data-d="194"/>
+<circle cx="470.5" cy="398.9" r="11.2" data-d="198"/>
+<circle cx="553.4" cy="399.0" r="10.7" data-d="198"/>
+<circle cx="401.4" cy="758.1" r="8.7" data-d="199"/>
+<circle cx="622.6" cy="758.0" r="7.7" data-d="200"/>
+<circle cx="442.9" cy="782.0" r="8.2" data-d="202"/>
+<circle cx="401.4" cy="422.7" r="11.3" data-d="202"/>
+<circle cx="581.2" cy="782.0" r="7.7" data-d="202"/>
+<circle cx="332.3" cy="686.2" r="9.5" data-d="202"/>
+<circle cx="622.6" cy="422.7" r="9.5" data-d="203"/>
+<circle cx="346.1" cy="710.1" r="9.2" data-d="203"/>
+<circle cx="691.7" cy="686.2" r="7.8" data-d="203"/>
+<circle cx="677.9" cy="710.2" r="7.7" data-d="204"/>
+<circle cx="442.9" cy="399.0" r="10.4" data-d="205"/>
+<circle cx="346.1" cy="470.6" r="10.7" data-d="205"/>
+<circle cx="581.1" cy="398.9" r="10.5" data-d="206"/>
+<circle cx="677.8" cy="470.7" r="9.0" data-d="206"/>
+<circle cx="360.0" cy="734.1" r="9.7" data-d="208"/>
+<circle cx="664.1" cy="734.1" r="7.5" data-d="208"/>
+<circle cx="359.9" cy="446.6" r="10.7" data-d="210"/>
+<circle cx="664.1" cy="446.8" r="9.1" data-d="211"/>
+<circle cx="415.2" cy="782.0" r="8.3" data-d="213"/>
+<circle cx="608.8" cy="782.0" r="7.4" data-d="213"/>
+<circle cx="512.0" cy="806.0" r="8.3" data-d="214"/>
+<circle cx="484.4" cy="805.9" r="7.8" data-d="215"/>
+<circle cx="539.7" cy="806.0" r="7.4" data-d="216"/>
+<circle cx="373.6" cy="758.1" r="9.3" data-d="216"/>
+<circle cx="415.2" cy="398.8" r="10.5" data-d="216"/>
+<circle cx="650.3" cy="758.1" r="7.9" data-d="216"/>
+<circle cx="608.7" cy="398.9" r="9.4" data-d="216"/>
+<circle cx="512.1" cy="375.0" r="10.1" data-d="217"/>
+<circle cx="373.7" cy="422.7" r="10.7" data-d="218"/>
+<circle cx="650.2" cy="422.9" r="9.2" data-d="219"/>
+<circle cx="484.4" cy="375.0" r="10.1" data-d="219"/>
+<circle cx="539.7" cy="375.0" r="10.6" data-d="219"/>
+<circle cx="456.7" cy="806.0" r="8.5" data-d="221"/>
+<circle cx="567.3" cy="806.0" r="7.3" data-d="221"/>
+<circle cx="456.8" cy="375.0" r="10.2" data-d="224"/>
+<circle cx="567.2" cy="375.0" r="10.4" data-d="224"/>
+<circle cx="318.4" cy="710.0" r="9.8" data-d="226"/>
+<circle cx="387.6" cy="782.0" r="8.3" data-d="227"/>
+<circle cx="705.6" cy="710.1" r="7.3" data-d="227"/>
+<circle cx="304.6" cy="686.2" r="9.4" data-d="227"/>
+<circle cx="636.5" cy="782.0" r="7.2" data-d="227"/>
+<circle cx="318.5" cy="470.7" r="10.6" data-d="228"/>
+<circle cx="719.4" cy="686.3" r="7.4" data-d="228"/>
+<circle cx="332.2" cy="734.1" r="8.9" data-d="229"/>
+<circle cx="705.6" cy="470.7" r="8.6" data-d="229"/>
+<circle cx="429.1" cy="806.0" r="8.0" data-d="229"/>
+<circle cx="691.8" cy="734.0" r="7.1" data-d="229"/>
+<circle cx="595.0" cy="806.0" r="7.0" data-d="229"/>
+<circle cx="387.5" cy="399.0" r="10.4" data-d="230"/>
+<circle cx="636.4" cy="399.0" r="9.2" data-d="230"/>
+<circle cx="332.3" cy="446.7" r="10.6" data-d="231"/>
+<circle cx="691.7" cy="446.8" r="9.4" data-d="232"/>
+<circle cx="429.1" cy="375.0" r="10.2" data-d="232"/>
+<circle cx="595.0" cy="375.0" r="9.4" data-d="233"/>
+<circle cx="346.2" cy="758.1" r="8.6" data-d="234"/>
+<circle cx="677.9" cy="758.0" r="7.6" data-d="235"/>
+<circle cx="346.2" cy="422.8" r="10.5" data-d="237"/>
+<circle cx="678.0" cy="422.9" r="8.9" data-d="238"/>
+<circle cx="498.2" cy="829.9" r="7.2" data-d="238"/>
+<circle cx="525.8" cy="829.9" r="7.6" data-d="238"/>
+<circle cx="401.5" cy="806.0" r="7.9" data-d="240"/>
+<circle cx="622.6" cy="806.0" r="7.0" data-d="241"/>
+<circle cx="470.5" cy="829.8" r="7.4" data-d="241"/>
+<circle cx="553.5" cy="829.7" r="6.9" data-d="241"/>
+<circle cx="525.9" cy="351.1" r="9.7" data-d="242"/>
+<circle cx="498.2" cy="351.0" r="9.8" data-d="242"/>
+<circle cx="359.9" cy="782.0" r="8.8" data-d="243"/>
+<circle cx="401.4" cy="375.0" r="10.2" data-d="244"/>
+<circle cx="664.2" cy="782.0" r="6.9" data-d="244"/>
+<circle cx="622.7" cy="375.0" r="9.1" data-d="244"/>
+<circle cx="470.5" cy="351.0" r="9.8" data-d="245"/>
+<circle cx="553.5" cy="351.1" r="9.4" data-d="245"/>
+<circle cx="360.0" cy="399.0" r="10.3" data-d="246"/>
+<circle cx="664.1" cy="399.0" r="8.8" data-d="246"/>
+<circle cx="442.9" cy="829.9" r="7.4" data-d="247"/>
+<circle cx="581.1" cy="829.8" r="6.8" data-d="248"/>
+<circle cx="290.8" cy="710.2" r="9.0" data-d="250"/>
+<circle cx="442.9" cy="351.0" r="9.9" data-d="251"/>
+<circle cx="304.6" cy="734.0" r="9.3" data-d="251"/>
+<circle cx="733.1" cy="710.2" r="6.9" data-d="251"/>
+<circle cx="581.1" cy="351.0" r="9.9" data-d="251"/>
+<circle cx="719.4" cy="734.2" r="6.8" data-d="252"/>
+<circle cx="290.9" cy="470.8" r="10.4" data-d="252"/>
+<circle cx="277.0" cy="686.1" r="9.2" data-d="253"/>
+<circle cx="733.1" cy="470.7" r="8.1" data-d="253"/>
+<circle cx="304.7" cy="446.8" r="10.4" data-d="253"/>
+<circle cx="747.0" cy="686.2" r="7.0" data-d="254"/>
+<circle cx="719.4" cy="446.7" r="8.3" data-d="254"/>
+<circle cx="373.7" cy="806.0" r="8.5" data-d="254"/>
+<circle cx="318.5" cy="758.2" r="8.5" data-d="254"/>
+<circle cx="650.3" cy="806.0" r="6.6" data-d="255"/>
+<circle cx="705.5" cy="758.0" r="6.6" data-d="255"/>
+<circle cx="415.2" cy="829.8" r="7.5" data-d="256"/>
+<circle cx="608.6" cy="829.8" r="7.1" data-d="257"/>
+<circle cx="318.4" cy="422.7" r="11.0" data-d="257"/>
+<circle cx="705.5" cy="422.7" r="8.4" data-d="258"/>
+<circle cx="263.2" cy="662.4" r="10.1" data-d="258"/>
+<circle cx="760.9" cy="662.3" r="7.0" data-d="259"/>
+<circle cx="415.2" cy="351.0" r="9.9" data-d="260"/>
+<circle cx="608.8" cy="351.0" r="9.5" data-d="260"/>
+<circle cx="332.1" cy="782.0" r="8.8" data-d="261"/>
+<circle cx="512.1" cy="853.7" r="6.7" data-d="261"/>
+<circle cx="691.6" cy="782.0" r="6.4" data-d="262"/>
+<circle cx="249.3" cy="590.5" r="9.8" data-d="262"/>
+<circle cx="484.4" cy="853.8" r="6.8" data-d="263"/>
+<circle cx="539.6" cy="853.8" r="6.6" data-d="263"/>
+<circle cx="774.7" cy="590.4" r="7.4" data-d="263"/>
+<circle cx="332.3" cy="399.0" r="10.1" data-d="264"/>
+<circle cx="691.7" cy="398.9" r="8.3" data-d="264"/>
+<circle cx="512.0" cy="327.1" r="9.3" data-d="265"/>
+<circle cx="249.3" cy="638.4" r="10.1" data-d="266"/>
+<circle cx="484.4" cy="327.0" r="9.4" data-d="267"/>
+<circle cx="539.6" cy="327.0" r="9.9" data-d="267"/>
+<circle cx="249.3" cy="542.6" r="10.0" data-d="267"/>
+<circle cx="456.6" cy="853.7" r="6.9" data-d="267"/>
+<circle cx="774.7" cy="638.3" r="6.9" data-d="267"/>
+<circle cx="567.3" cy="853.7" r="6.3" data-d="267"/>
+<circle cx="774.6" cy="542.6" r="7.6" data-d="268"/>
+<circle cx="387.6" cy="829.8" r="7.4" data-d="268"/>
+<circle cx="636.4" cy="829.9" r="6.3" data-d="268"/>
+<circle cx="346.1" cy="806.0" r="8.3" data-d="270"/>
+<circle cx="456.7" cy="327.1" r="9.4" data-d="271"/>
+<circle cx="677.9" cy="806.0" r="6.7" data-d="271"/>
+<circle cx="567.3" cy="327.1" r="8.9" data-d="271"/>
+<circle cx="277.0" cy="734.2" r="8.5" data-d="274"/>
+<circle cx="429.1" cy="853.7" r="6.9" data-d="274"/>
+<circle cx="595.0" cy="853.9" r="6.1" data-d="275"/>
+<circle cx="747.0" cy="734.1" r="6.2" data-d="275"/>
+<circle cx="263.1" cy="710.2" r="8.8" data-d="275"/>
+<circle cx="760.7" cy="710.2" r="6.4" data-d="276"/>
+<circle cx="276.9" cy="446.9" r="10.8" data-d="276"/>
+<circle cx="290.8" cy="758.0" r="8.3" data-d="276"/>
+<circle cx="263.2" cy="470.8" r="10.1" data-d="276"/>
+<circle cx="733.1" cy="758.0" r="6.2" data-d="277"/>
+<circle cx="747.0" cy="446.8" r="7.8" data-d="277"/>
+<circle cx="235.5" cy="614.3" r="9.6" data-d="277"/>
+<circle cx="235.4" cy="566.5" r="10.5" data-d="277"/>
+<circle cx="760.7" cy="470.7" r="7.7" data-d="277"/>
+<circle cx="429.0" cy="327.0" r="9.4" data-d="278"/>
+<circle cx="788.5" cy="614.5" r="6.8" data-d="278"/>
+<circle cx="594.9" cy="327.1" r="8.6" data-d="278"/>
+<circle cx="788.4" cy="566.3" r="7.7" data-d="278"/>
+<circle cx="290.8" cy="422.8" r="10.0" data-d="278"/>
+<circle cx="249.2" cy="686.1" r="9.6" data-d="279"/>
+<circle cx="733.2" cy="422.8" r="7.9" data-d="279"/>
+<circle cx="774.6" cy="686.1" r="6.5" data-d="279"/>
+<circle cx="249.2" cy="494.8" r="10.6" data-d="280"/>
+<circle cx="774.6" cy="494.6" r="7.6" data-d="281"/>
+<circle cx="304.6" cy="782.0" r="8.0" data-d="281"/>
+<circle cx="719.3" cy="782.0" r="6.0" data-d="281"/>
+<circle cx="360.0" cy="829.9" r="7.3" data-d="282"/>
+<circle cx="664.0" cy="829.7" r="6.4" data-d="282"/>
+<circle cx="304.7" cy="399.0" r="10.6" data-d="283"/>
+<circle cx="401.4" cy="853.7" r="6.8" data-d="284"/>
+<circle cx="719.4" cy="398.9" r="7.9" data-d="284"/>
+<circle cx="622.5" cy="853.8" r="5.8" data-d="284"/>
+<circle cx="235.5" cy="662.2" r="9.1" data-d="285"/>
+<circle cx="235.5" cy="518.7" r="9.9" data-d="286"/>
+<circle cx="788.5" cy="662.4" r="6.5" data-d="286"/>
+<circle cx="525.8" cy="877.8" r="6.0" data-d="286"/>
+<circle cx="498.1" cy="877.9" r="6.2" data-d="286"/>
+<circle cx="788.5" cy="518.7" r="7.1" data-d="287"/>
+<circle cx="401.4" cy="327.0" r="9.3" data-d="287"/>
+<circle cx="622.6" cy="327.1" r="8.2" data-d="288"/>
+<circle cx="318.5" cy="806.0" r="7.7" data-d="288"/>
+<circle cx="470.5" cy="877.8" r="6.3" data-d="288"/>
+<circle cx="553.5" cy="877.8" r="5.9" data-d="289"/>
+<circle cx="705.5" cy="806.0" r="6.3" data-d="289"/>
+<circle cx="221.6" cy="590.4" r="9.6" data-d="290"/>
+<circle cx="318.4" cy="374.9" r="9.6" data-d="291"/>
+<circle cx="802.3" cy="590.4" r="7.3" data-d="291"/>
+<circle cx="705.5" cy="374.9" r="7.8" data-d="291"/>
+<circle cx="221.8" cy="638.4" r="9.2" data-d="293"/>
+<circle cx="443.0" cy="877.8" r="6.3" data-d="294"/>
+<circle cx="581.2" cy="877.6" r="5.6" data-d="294"/>
+<circle cx="221.7" cy="542.6" r="9.6" data-d="294"/>
+<circle cx="802.3" cy="638.4" r="6.5" data-d="295"/>
+<circle cx="802.3" cy="542.5" r="6.7" data-d="295"/>
+<circle cx="373.7" cy="853.8" r="6.7" data-d="296"/>
+<circle cx="650.3" cy="853.8" r="5.5" data-d="296"/>
+<circle cx="332.2" cy="829.9" r="7.6" data-d="298"/>
+<circle cx="249.2" cy="734.0" r="8.3" data-d="298"/>
+<circle cx="691.6" cy="830.0" r="5.9" data-d="298"/>
+<circle cx="263.2" cy="758.0" r="8.0" data-d="299"/>
+<circle cx="774.5" cy="734.1" r="5.8" data-d="299"/>
+<circle cx="760.8" cy="758.1" r="5.8" data-d="299"/>
+<circle cx="249.3" cy="446.7" r="10.3" data-d="300"/>
+<circle cx="235.5" cy="710.2" r="8.5" data-d="300"/>
+<circle cx="774.6" cy="446.9" r="7.2" data-d="301"/>
+<circle cx="263.2" cy="422.8" r="9.6" data-d="301"/>
+<circle cx="788.4" cy="710.1" r="6.5" data-d="301"/>
+<circle cx="415.1" cy="877.9" r="6.2" data-d="301"/>
+<circle cx="235.6" cy="470.7" r="9.7" data-d="302"/>
+<circle cx="760.9" cy="422.9" r="7.2" data-d="302"/>
+<circle cx="277.1" cy="782.0" r="7.6" data-d="302"/>
+<circle cx="608.6" cy="877.9" r="6.0" data-d="302"/>
+<circle cx="747.0" cy="782.1" r="5.5" data-d="303"/>
+<circle cx="788.5" cy="470.7" r="7.0" data-d="303"/>
+<circle cx="277.0" cy="399.0" r="9.4" data-d="304"/>
+<circle cx="208.0" cy="614.5" r="9.1" data-d="304"/>
+<circle cx="221.7" cy="686.3" r="8.6" data-d="305"/>
+<circle cx="747.0" cy="398.9" r="7.2" data-d="305"/>
+<circle cx="207.7" cy="566.4" r="10.1" data-d="305"/>
+<circle cx="816.1" cy="614.5" r="6.3" data-d="305"/>
+<circle cx="802.2" cy="686.3" r="6.5" data-d="306"/>
+<circle cx="816.1" cy="566.5" r="6.4" data-d="306"/>
+<circle cx="221.6" cy="494.6" r="9.6" data-d="306"/>
+<circle cx="802.4" cy="494.5" r="6.7" data-d="307"/>
+<circle cx="290.6" cy="806.0" r="7.9" data-d="307"/>
+<circle cx="733.2" cy="806.0" r="6.0" data-d="308"/>
+<circle cx="346.2" cy="853.6" r="6.6" data-d="309"/>
+<circle cx="290.9" cy="375.1" r="9.0" data-d="310"/>
+<circle cx="511.9" cy="901.9" r="6.1" data-d="310"/>
+<circle cx="677.7" cy="853.9" r="6.0" data-d="310"/>
+<circle cx="733.3" cy="375.0" r="7.0" data-d="310"/>
+<circle cx="539.5" cy="901.6" r="6.1" data-d="311"/>
+<circle cx="484.4" cy="901.7" r="6.1" data-d="311"/>
+<circle cx="387.6" cy="877.8" r="6.2" data-d="311"/>
+<circle cx="207.9" cy="662.4" r="8.7" data-d="312"/>
+<circle cx="636.4" cy="877.9" r="6.0" data-d="312"/>
+<circle cx="208.0" cy="518.6" r="9.2" data-d="312"/>
+<circle cx="816.1" cy="662.5" r="5.8" data-d="313"/>
+<circle cx="816.1" cy="518.6" r="6.5" data-d="313"/>
+<circle cx="456.7" cy="901.7" r="5.6" data-d="314"/>
+<circle cx="567.3" cy="901.7" r="6.0" data-d="314"/>
+<circle cx="304.6" cy="829.8" r="6.8" data-d="315"/>
+<circle cx="719.4" cy="829.9" r="6.0" data-d="316"/>
+<circle cx="194.0" cy="590.4" r="9.0" data-d="317"/>
+<circle cx="829.9" cy="590.4" r="6.5" data-d="318"/>
+<circle cx="429.0" cy="901.9" r="6.1" data-d="320"/>
+<circle cx="594.8" cy="901.8" r="6.0" data-d="321"/>
+<circle cx="194.0" cy="638.4" r="9.3" data-d="321"/>
+<circle cx="194.0" cy="542.7" r="9.6" data-d="321"/>
+<circle cx="829.9" cy="638.4" r="6.3" data-d="322"/>
+<circle cx="235.5" cy="758.0" r="7.7" data-d="322"/>
+<circle cx="830.0" cy="542.8" r="6.0" data-d="322"/>
+<circle cx="221.7" cy="734.1" r="8.4" data-d="323"/>
+<circle cx="788.5" cy="758.0" r="6.0" data-d="323"/>
+<circle cx="359.9" cy="877.7" r="6.0" data-d="323"/>
+<circle cx="802.3" cy="734.1" r="5.9" data-d="324"/>
+<circle cx="249.4" cy="782.0" r="7.9" data-d="324"/>
+<circle cx="235.5" cy="422.8" r="8.7" data-d="324"/>
+<circle cx="664.0" cy="878.0" r="6.0" data-d="324"/>
+<circle cx="221.7" cy="446.8" r="8.9" data-d="324"/>
+<circle cx="774.6" cy="782.1" r="6.0" data-d="324"/>
+<circle cx="788.4" cy="422.8" r="6.7" data-d="325"/>
+<circle cx="802.2" cy="446.8" r="6.1" data-d="325"/>
+<circle cx="318.5" cy="854.0" r="7.0" data-d="325"/>
+<circle cx="705.5" cy="853.8" r="6.0" data-d="326"/>
+<circle cx="207.8" cy="710.0" r="8.0" data-d="326"/>
+<circle cx="816.1" cy="710.0" r="6.0" data-d="327"/>
+<circle cx="207.8" cy="470.7" r="9.5" data-d="327"/>
+<circle cx="263.1" cy="805.9" r="7.6" data-d="328"/>
+<circle cx="816.1" cy="470.7" r="6.5" data-d="328"/>
+<circle cx="760.7" cy="806.0" r="6.0" data-d="328"/>
+<circle cx="401.4" cy="901.7" r="6.1" data-d="328"/>
+<circle cx="622.5" cy="901.6" r="6.1" data-d="329"/>
+<circle cx="194.0" cy="686.1" r="8.1" data-d="331"/>
+<circle cx="829.8" cy="686.0" r="6.0" data-d="332"/>
+<circle cx="180.2" cy="614.5" r="8.5" data-d="332"/>
+<circle cx="194.1" cy="494.7" r="8.6" data-d="332"/>
+<circle cx="180.2" cy="566.5" r="8.7" data-d="332"/>
+<circle cx="843.6" cy="614.4" r="6.0" data-d="333"/>
+<circle cx="829.9" cy="494.5" r="5.8" data-d="333"/>
+<circle cx="843.8" cy="566.5" r="5.6" data-d="333"/>
+<circle cx="277.0" cy="829.8" r="6.4" data-d="334"/>
+<circle cx="746.9" cy="830.0" r="6.0" data-d="335"/>
+<circle cx="332.3" cy="877.8" r="5.5" data-d="337"/>
+<circle cx="691.6" cy="877.9" r="6.0" data-d="338"/>
+<circle cx="180.2" cy="662.2" r="8.0" data-d="339"/>
+<circle cx="373.6" cy="901.7" r="6.1" data-d="339"/>
+<circle cx="650.3" cy="901.7" r="6.0" data-d="339"/>
+<circle cx="843.6" cy="662.3" r="6.1" data-d="339"/>
+<circle cx="290.7" cy="853.8" r="5.8" data-d="342"/>
+<circle cx="733.2" cy="854.0" r="5.9" data-d="343"/>
+<circle cx="207.9" cy="758.0" r="7.0" data-d="346"/>
+<circle cx="221.7" cy="782.0" r="6.6" data-d="346"/>
+<circle cx="816.1" cy="758.0" r="6.0" data-d="347"/>
+<circle cx="802.3" cy="782.0" r="6.0" data-d="347"/>
+<circle cx="194.0" cy="734.0" r="7.7" data-d="348"/>
+<circle cx="829.8" cy="734.0" r="6.0" data-d="348"/>
+<circle cx="235.5" cy="805.9" r="6.1" data-d="349"/>
+<circle cx="788.4" cy="806.0" r="6.0" data-d="350"/>
+<circle cx="139.2" cy="585.8" r="8.0" data-d="372"/>
+<circle cx="139.2" cy="612.3" r="8.0" data-d="373"/>
+<circle cx="884.7" cy="585.7" r="8.0" data-d="373"/>
+<circle cx="884.7" cy="612.4" r="7.9" data-d="374"/>
+<circle cx="139.2" cy="638.9" r="8.1" data-d="375"/>
+<circle cx="884.8" cy="639.0" r="8.0" data-d="376"/>
+</g>
+<path class="ant ant-l" data-bx="362.0" data-by="365.5" d="M300.5 183.5 L307.5 183.5 L311.5 185.5 L314.5 188.5 L318.5 199.5 L318.5 204.5 L314.5 215.5 L306.5 222.5 L306.5 232.5 L310.5 245.5 L319.5 260.5 L358.5 303.5 L364.5 312.5 L371.5 327.5 L376.5 344.5 L376.5 354.5 L372.5 361.5 L367.5 364.5 L364.5 365.5 L356.5 364.5 L351.5 361.5 L348.5 357.5 L346.5 350.5 L347.5 349.5 L347.5 332.5 L342.5 314.5 L332.5 296.5 L311.5 267.5 L301.5 247.5 L298.5 235.5 L297.5 221.5 L293.5 218.5 L288.5 208.5 L289.5 195.5 L292.5 189.5 Z"/>
+<path class="ant ant-r" data-bx="662.0" data-by="366.5" d="M792.5 178.5 L808.5 179.5 L814.5 181.5 L824.5 187.5 L832.5 197.5 L838.5 198.5 L845.5 203.5 L851.5 215.5 L851.5 226.5 L847.5 234.5 L842.5 237.5 L836.5 238.5 L825.5 232.5 L821.5 226.5 L818.5 215.5 L820.5 205.5 L824.5 199.5 L818.5 192.5 L813.5 189.5 L807.5 187.5 L790.5 187.5 L776.5 191.5 L760.5 199.5 L743.5 211.5 L726.5 227.5 L712.5 244.5 L696.5 270.5 L689.5 286.5 L681.5 313.5 L678.5 333.5 L678.5 353.5 L676.5 358.5 L673.5 362.5 L665.5 366.5 L658.5 366.5 L652.5 363.5 L647.5 356.5 L646.5 346.5 L653.5 314.5 L661.5 292.5 L669.5 275.5 L690.5 243.5 L714.5 217.5 L737.5 199.5 L766.5 184.5 L779.5 180.5 Z"/>
+<g class="visor"><path d="M286.5 500.5 L741.5 501.5 L748.5 506.5 L749.5 510.5 L749.5 626.5 L745.5 640.5 L735.5 654.5 L740.5 660.5 L739.5 666.5 L736.5 669.5 L732.5 670.5 L726.5 666.5 L725.5 662.5 L723.5 662.5 L717.5 666.5 L700.5 672.5 L667.5 677.5 L666.5 678.5 L671.5 683.5 L671.5 688.5 L667.5 693.5 L661.5 693.5 L657.5 690.5 L656.5 683.5 L660.5 679.5 L656.5 678.5 L643.5 680.5 L643.5 690.5 L636.5 694.5 L632.5 693.5 L629.5 690.5 L627.5 682.5 L623.5 682.5 L617.5 683.5 L615.5 691.5 L610.5 694.5 L604.5 693.5 L599.5 685.5 L590.5 685.5 L588.5 691.5 L583.5 695.5 L576.5 694.5 L571.5 686.5 L562.5 687.5 L561.5 690.5 L556.5 694.5 L550.5 694.5 L544.5 688.5 L535.5 688.5 L529.5 694.5 L522.5 694.5 L516.5 688.5 L507.5 688.5 L502.5 694.5 L498.5 695.5 L492.5 693.5 L488.5 688.5 L480.5 688.5 L476.5 693.5 L469.5 695.5 L463.5 692.5 L460.5 687.5 L453.5 686.5 L448.5 693.5 L442.5 695.5 L438.5 694.5 L434.5 690.5 L434.5 687.5 L432.5 685.5 L425.5 685.5 L421.5 694.5 L412.5 696.5 L406.5 691.5 L405.5 683.5 L397.5 682.5 L395.5 692.5 L392.5 695.5 L385.5 696.5 L382.5 695.5 L378.5 690.5 L379.5 681.5 L375.5 679.5 L368.5 679.5 L368.5 690.5 L364.5 694.5 L359.5 695.5 L355.5 694.5 L351.5 690.5 L350.5 685.5 L354.5 678.5 L351.5 676.5 L323.5 672.5 L301.5 663.5 L295.5 671.5 L288.5 672.5 L284.5 670.5 L281.5 665.5 L281.5 658.5 L286.5 652.5 L278.5 640.5 L274.5 626.5 L274.5 509.5 L278.5 503.5 Z" fill="url(#vg)"/><g clip-path="url(#vclip)"><rect class="gloss" x="14" y="460" width="150" height="276" fill="url(#gloss)" transform="skewX(-22)"/></g></g>
+</svg></div>
+
+    </div>
+    <button class="replay" id="replay" type="button">Replay</button>
+  </div>
+  <p class="sr" id="filmsay" aria-live="polite"></p>
+</section>
+
+<section id="work" class="work" aria-label="X0 Bot working through an inbox">
+  <div class="devices" data-noglitch>
+
+    <div class="monitor">
+      <div class="bezel"><div class="screen mail-screen" id="mailScreen">
+        <div class="mail" id="mail">
+          <div class="m-title"><i></i><i></i><i></i><span>Inbox · hello@leafandco.in</span></div>
+          <div class="m-tool"><span class="m-search">Search mail</span><span class="m-me">L</span></div>
+          <div class="m-body">
+            <nav class="m-side">
+              <span class="m-compose">Compose</span>
+              <span class="m-acct">leafandco.in</span>
+              <span class="m-nav on">Inbox <b class="m-count" id="mailCountSide">45</b></span>
+              <span class="m-nav">Starred</span><span class="m-nav">Snoozed</span><span class="m-nav">Sent</span>
+              <span class="m-nav">Drafts</span><span class="m-nav">Archive</span>
+              <span class="m-label">Labels</span>
+              <span class="m-nav"><i class="dot needs"></i>Needs you</span>
+              <span class="m-nav"><i class="dot reply"></i>Replied</span>
+            </nav>
+            <div class="m-list">
+              <div class="m-head"><b>Inbox</b><span><b id="mailCount">45</b> unread</span></div>
+              <div class="m-rows" id="mailRows"></div>
+            </div>
+          </div>
+          <div class="setup" id="setup"></div>
+          <div class="scene2" id="scene2"></div>
+          <div class="scene3" id="scene3"></div>
+        </div>
+      </div></div>
+      <div class="neck"></div><div class="foot"></div>
+    </div>
+
+    <div class="phone">
+      <div class="phone-shell"><div class="screen app-screen" id="appScreen">
+        <div class="app" id="app">
+          <div class="p-status"><b>9:58</b><span class="p-island"></span><span class="p-icons"><i></i><i></i><i></i></span></div>
+          <div class="p-who">
+            <span class="p-face" id="pFace"></span>
+            <div class="p-pill"><b>X0 Bot</b><span class="p-state"><i class="p-pulse"></i><span id="pState">Reading your inbox…</span></span></div>
+          </div>
+          <div class="p-feed" id="pFeed"></div>
+        </div>
+      </div></div>
+    </div>
+
+  </div>
+  <button class="replay work-replay" id="workReplay" type="button">Replay</button>
+</section>
+
+<section id="gifs" class="gifs" aria-label="More of what X0 Bot does">
+  <div class="orbit" id="orbit" data-noglitch>
+
+    <div class="gc"><div class="gcx g-term">
+      <div class="t-bar"><i></i><i></i><i></i><span>~ · zsh</span></div>
+      <div class="t-cam">
+        <div class="t-cmd"><span class="t-ps">~ $</span> <span class="t-type">curl -fsSL https://x0bot.com/install.sh | bash</span><i class="t-cur"></i></div>
+        <div class="t-o t-o1">Installing xode…</div>
+        <div class="t-o t-o2"><span class="t-ok">xode is installed.</span> Sign in with <b>xode login</b>.</div>
+        <div class="t-o t-o3"><span class="t-ps">~/store $</span> xode "notify people when plants are back"</div>
+        <div class="t-stream"><div class="t-code">
+          <div><span class="tk-k">export async function</span> <span class="tk-f">notifyWaiting</span>(productId: <span class="tk-t">string</span>) {</div>
+          <div>  <span class="tk-k">const</span> waiting = <span class="tk-k">await</span> db.notify.findMany({ productId });</div>
+          <div>  <span class="tk-k">for</span> (<span class="tk-k">const</span> w <span class="tk-k">of</span> waiting) {</div>
+          <div>    <span class="tk-k">await</span> mail.send(w.email, backInStock(productId));</div>
+          <div>  }</div>
+          <div>  <span class="tk-k">await</span> db.notify.deleteMany({ productId });</div>
+          <div>}</div>
+          <div><span class="tk-f">test</span>(<span class="tk-s">"mails each person once"</span>, <span class="tk-k">async</span> () =&gt; {</div>
+          <div>  <span class="tk-k">const</span> sent = <span class="tk-k">await</span> run(notifyWaiting, <span class="tk-s">"monstera"</span>);</div>
+          <div>  expect(sent).toHaveLength(<span class="tk-n">3</span>);</div>
+          <div>});</div>
+          <div><span class="tk-k">export async function</span> <span class="tk-f">notifyWaiting</span>(productId: <span class="tk-t">string</span>) {</div>
+          <div>  <span class="tk-k">const</span> waiting = <span class="tk-k">await</span> db.notify.findMany({ productId });</div>
+          <div>  <span class="tk-k">for</span> (<span class="tk-k">const</span> w <span class="tk-k">of</span> waiting) {</div>
+          <div>    <span class="tk-k">await</span> mail.send(w.email, backInStock(productId));</div>
+          <div>  }</div>
+          <div>  <span class="tk-k">await</span> db.notify.deleteMany({ productId });</div>
+          <div>}</div>
+          <div><span class="tk-f">test</span>(<span class="tk-s">"mails each person once"</span>, <span class="tk-k">async</span> () =&gt; {</div>
+          <div>  <span class="tk-k">const</span> sent = <span class="tk-k">await</span> run(notifyWaiting, <span class="tk-s">"monstera"</span>);</div>
+          <div>  expect(sent).toHaveLength(<span class="tk-n">3</span>);</div>
+          <div>});</div>
+        </div></div>
+      </div>
+      <span class="g-lab">Xode in your terminal</span>
+    </div></div>
+
+    <div class="gc"><div class="gcx g-flow">
+      <svg class="fl-wires" viewBox="0 0 480 272"><path class="w1" d="M138 104 C156 104 156 104 174 104"/><path class="w2" d="M294 104 C312 104 312 104 330 104"/></svg>
+      <div class="fl-node n1"><i class="ic c-moss"></i><div><small>When</small><b>A new order comes in</b></div></div>
+      <div class="fl-node n2"><i class="ic c-ochre"></i><div><small>Then</small><b>Check the stock</b></div></div>
+      <div class="fl-node n3"><i class="ic c-sea"></i><div><small>Then</small><b>Mail the customer</b></div></div>
+      <span class="fl-plus p1">+</span><span class="fl-plus p2">+</span>
+      <span class="fl-dot"></span>
+      <div class="fl-auto"><span class="fl-sw"><i></i></span><span>Runs on every new order</span></div>
+      <span class="fl-next">Next</span>
+      <span class="g-lab">Build a bot flow</span>
+    </div></div>
+
+    <div class="gc"><div class="gcx g-cmd">
+      <div class="c-head"><span class="c-av c-clay">L</span><b>Leaf &amp; Co. team</b><span>4 people</span></div>
+      <div class="c-case"><div class="c-sent"><b class="sl">/travel</b> find two stays near Baga for Friday, send to <b class="at">@Priya</b></div>
+        <div class="c-reply"><span>X0 Bot</span>Sent Priya two stays near Baga, both under ₹6,000.</div>
+        <div class="c-typing"><b class="sl">/travel</b> find two stays near Baga for Friday, send to <b class="at">@Priya</b></div></div>
+      <div class="c-case"><div class="c-sent"><b class="sl">/mail</b> sum up today's orders and send to <b class="at">@team</b></div>
+        <div class="c-reply"><span>X0 Bot</span>Sent the team: 23 orders, ₹31,450, 2 returns.</div>
+        <div class="c-typing"><b class="sl">/mail</b> sum up today's orders and send to <b class="at">@team</b></div></div>
+      <div class="c-case"><div class="c-sent"><b class="sl">/plan</b> my Saturday around the dentist, share with <b class="at">@Amma</b></div>
+        <div class="c-reply"><span>X0 Bot</span>Shared with Amma: dentist at 11, lunch at 1, market at 4.</div>
+        <div class="c-typing"><b class="sl">/plan</b> my Saturday around the dentist, share with <b class="at">@Amma</b></div></div>
+      <div class="c-case"><div class="c-sent"><b class="sl">/xode</b> fix the checkout bug, tell <b class="at">@Rahul</b> when it's live</div>
+        <div class="c-reply"><span>X0 Bot</span>On it. I'll tell Rahul the moment it ships.</div>
+        <div class="c-typing"><b class="sl">/xode</b> fix the checkout bug, tell <b class="at">@Rahul</b> when it's live</div></div>
+      <div class="c-box"></div>
+      <span class="g-lab">Commands in any chat</span>
+    </div></div>
+
+    <div class="gc"><div class="gcx g-kbd">
+      <div class="k-head"><span class="c-av c-sea">R</span><b>Riya</b></div>
+      <div class="k-field"><span class="k-out">Haan Riya, aa raha hoon. Khana rakh dena mere liye.</span></div>
+      <div class="kb">
+        <div class="kb-tools">
+          <span class="kb-mic"><svg viewBox="0 0 16 16"><rect x="5.6" y="1.6" width="4.8" height="8.2" rx="2.4" fill="currentColor"/><path d="M3.2 7.8a4.8 4.8 0 0 0 9.6 0M8 12.6v1.9" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></span>
+          <span class="kb-sugg">
+            <span class="kb-s0"><i>I</i><i>The</i><i>I'm</i></span>
+            <span class="kb-live"><span class="kb-wave"><i></i><i></i><i></i><i></i><i></i></span><span class="kb-said">tell Riya I'm on my way, keep dinner for me</span></span>
+          </span>
+          <span class="kb-tone">Casual</span>
+        </div>
+        <div class="kb-row"><i>q</i><i>w</i><i>e</i><i>r</i><i>t</i><i>y</i><i>u</i><i>i</i><i>o</i><i>p</i></div>
+        <div class="kb-row kr2"><i>a</i><i>s</i><i>d</i><i>f</i><i>g</i><i>h</i><i>j</i><i>k</i><i>l</i></div>
+        <div class="kb-row kr3"><i class="kb-fn kb-sh"><svg viewBox="0 0 16 16"><path d="M8 2.5 2.8 8.2H5.6V13h4.8V8.2h2.8z" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg></i><b class="kb-gap"></b><i>z</i><i>x</i><i>c</i><i>v</i><i>b</i><i>n</i><i>m</i><b class="kb-gap"></b><i class="kb-fn kb-bk"><svg viewBox="0 0 18 16"><path d="M6 3h9.5a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H6L1.5 8z" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><path d="m8.5 5.8 4.4 4.4m0-4.4-4.4 4.4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg></i></div>
+        <div class="kb-row kr4"><i class="kb-fn kb-123">123</i><i class="kb-fn kb-gl"><svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="6.2" fill="none" stroke="currentColor" stroke-width="1.3"/><path d="M1.8 8h12.4M8 1.8c2 2 2 10.4 0 12.4M8 1.8c-2 2-2 10.4 0 12.4" fill="none" stroke="currentColor" stroke-width="1.3"/></svg></i><i class="kb-pt">,</i><i class="kb-sp">X0 Bot</i><i class="kb-pt">.</i><i class="kb-fn kb-ret">return</i></div>
+      </div>
+      <span class="k-tap"></span>
+      <span class="g-lab">The keyboard, by voice</span>
+    </div></div>
+
+    <div class="gc"><div class="gcx g-meet">
+      <div class="m-grid">
+        <div class="m-tile"><video src="/media/meet/call-1.mp4" muted autoplay loop playsinline></video><span class="m-name">Rahul</span></div>
+        <div class="m-tile"><video src="/media/meet/call-2.mp4" muted autoplay loop playsinline></video><span class="m-name">Arjun</span></div>
+        <div class="m-tile"><video src="/media/meet/call-3.mp4" muted autoplay loop playsinline></video><span class="m-name">Kavya</span></div>
+        <div class="m-tile m-bot"><span class="m-ring"></span><span class="m-face"></span><span class="m-name">X0 Bot · notes</span></div>
+      </div>
+      <div class="m-cap">Decided: launch on Friday. Rahul owns the mailer, Arjun the stock.</div>
+      <div class="m-notes"><b>Notes · 3 to-dos</b><p><span>Rahul</span>Festive mailer by Thursday</p><p><span>Arjun</span>Restock monstera</p><p><span>Kavya</span>Send the revised invoice</p></div>
+      <span class="g-lab">In your meetings</span>
+    </div></div>
+
+    <div class="gc"><div class="gcx g-rem">
+      <div class="r-time"><b>10:42</b><span>Friday, 21 November</span></div>
+      <div class="r-stack">
+        <div class="r-n r1"><img class="r-ico" alt=""><div><small>X0 Bot · in 15 min</small><b>Supplier call with Kavya</b><span>Her revised invoice is in your mail.</span></div></div>
+        <div class="r-n r2"><img class="r-ico" alt=""><div><small>X0 Bot · for Priya</small><b>Festive mailer goes out today</b><span>Sent to Priya, with the draft attached.</span></div></div>
+        <div class="r-n r3"><img class="r-ico" alt=""><div><small>X0 Bot · tomorrow, 9:00</small><b>Pay the courier invoice</b><span>₹6,400 · due Friday</span></div></div>
+        <div class="r-n r4"><img class="r-ico" alt=""><div><small>X0 Bot · for Arjun</small><b>Restock monstera before Friday</b><span>Sent to Arjun · 12 left in stock</span></div></div>
+      </div>
+      <span class="g-lab">Reminders, for you and your team</span>
+    </div></div>
+
+  </div>
+</section>
+
+<section id="team" class="band">
+  <h2>The team</h2>
+  <ul class="roster">
+    <li class="b-keybot open">
+      <button class="row" type="button" data-row aria-expanded="true">
+        <span class="mk"><svg class="mark mark-keybot" viewBox="0 0 7 7" aria-hidden="true" fill="currentColor"><circle cx="1.5" cy="1.5" r=".42"/><circle cx="2.5" cy="1.5" r=".42"/><circle cx="3.5" cy="1.5" r=".42"/><circle cx="4.5" cy="1.5" r=".42"/><circle cx="5.5" cy="1.5" r=".42"/><circle cx="1.5" cy="2.5" r=".42"/><circle cx="5.5" cy="2.5" r=".42"/><circle cx="1.5" cy="3.5" r=".42"/><circle cx="5.5" cy="3.5" r=".42"/><circle cx="1.5" cy="4.5" r=".42"/><circle cx="5.5" cy="4.5" r=".42"/><circle cx="1.5" cy="5.5" r=".42"/><circle cx="2.5" cy="5.5" r=".42"/><circle cx="3.5" cy="5.5" r=".42"/><circle cx="4.5" cy="5.5" r=".42"/><circle cx="5.5" cy="5.5" r=".42"/></svg></span>
+        <span class="nm">Keybot</span>
+        <span class="ln">Writes for you, in any app.</span>
+      </button>
+      <div class="more"><div>
+        <p>A voice keyboard that turns what you say into clean, ready-to-send text, wherever you type. Filler goes, punctuation comes in, and names stay the way you said them. It writes a little differently for each app: easy in chats, clear and polite in mail, short at work.</p>
+        <p class="eg"><span class="said">bolo priya ko deploy ho gaya hai testing abhi baaki hai</span><span class="wrote">Priya, deploy ho gaya hai. Testing abhi baaki hai.</span></p>
+      </div></div>
+    </li>
+    <li class="b-plan">
+      <button class="row" type="button" data-row aria-expanded="false">
+        <span class="mk"><svg class="mark mark-plan" viewBox="0 0 7 7" aria-hidden="true" fill="currentColor"><circle cx="1.5" cy="1.5" r=".42"/><circle cx="2.5" cy="1.5" r=".42"/><circle cx="3.5" cy="1.5" r=".42"/><circle cx="4.5" cy="1.5" r=".42"/><circle cx="5.5" cy="1.5" r=".42"/><circle cx="1.5" cy="3.5" r=".42"/><circle cx="3.5" cy="3.5" r=".42"/><circle cx="5.5" cy="3.5" r=".42"/><circle cx="1.5" cy="5.5" r=".42"/><circle cx="3.5" cy="5.5" r=".42"/><circle cx="5.5" cy="5.5" r=".42"/></svg></span>
+        <span class="nm">Plan</span>
+        <span class="ln">Your day, planned.</span>
+      </button>
+      <div class="more"><div>
+        <p>Your own calendar and to-do list, inside the app. It shows how long it takes to get from one place to the next, tells you when to leave, and reminds you before it matters.</p>
+        <p class="eg"><span class="said">gym tomorrow at 7</span><span class="wrote">On your day. Tomorrow, 7:00 am. 12 minutes from home.</span></p>
+      </div></div>
+    </li>
+    <li class="b-travel">
+      <button class="row" type="button" data-row aria-expanded="false">
+        <span class="mk"><svg class="mark mark-travel" viewBox="0 0 7 7" aria-hidden="true" fill="currentColor"><circle cx="5.5" cy="1.5" r=".42"/><circle cx="4.5" cy="2.5" r=".42"/><circle cx="3.5" cy="3.5" r=".42"/><circle cx="2.5" cy="4.5" r=".42"/><circle cx="1.5" cy="5.5" r=".42"/></svg></span>
+        <span class="nm">Travel</span>
+        <span class="ln">Trips, sorted.</span>
+      </button>
+      <div class="more"><div>
+        <p>One place for a trip: the dates, the tickets, the weather on your days, stays compared by how far they are from where you will be, and a packing list. It finds the options and opens them for you to book. You always press pay.</p>
+        <p class="eg"><span class="said">goa in march, four days</span><span class="wrote">Three routes, two stays near the beach you named, and 31°C on your days.</span></p>
+      </div></div>
+    </li>
+    <li class="b-notes">
+      <button class="row" type="button" data-row aria-expanded="false">
+        <span class="mk"><svg class="mark mark-notes" viewBox="0 0 7 7" aria-hidden="true" fill="currentColor"><circle cx="1.5" cy="0.5" r=".42"/><circle cx="2.5" cy="0.5" r=".42"/><circle cx="3.5" cy="0.5" r=".42"/><circle cx="4.5" cy="0.5" r=".42"/><circle cx="5.5" cy="0.5" r=".42"/><circle cx="1.5" cy="2.5" r=".42"/><circle cx="2.5" cy="2.5" r=".42"/><circle cx="3.5" cy="2.5" r=".42"/><circle cx="4.5" cy="2.5" r=".42"/><circle cx="5.5" cy="2.5" r=".42"/><circle cx="1.5" cy="4.5" r=".42"/><circle cx="2.5" cy="4.5" r=".42"/><circle cx="3.5" cy="4.5" r=".42"/><circle cx="4.5" cy="4.5" r=".42"/><circle cx="5.5" cy="4.5" r=".42"/><circle cx="1.5" cy="6.5" r=".42"/><circle cx="2.5" cy="6.5" r=".42"/><circle cx="3.5" cy="6.5" r=".42"/></svg></span>
+        <span class="nm">Notes</span>
+        <span class="ln">Every meeting, written up.</span>
+      </button>
+      <div class="more"><div>
+        <p>With X0 Bot taking notes on your computer, every meeting comes back as a summary, the decisions, and the to-dos with who owns each one. Tick them off on your phone, or add them to your own list.</p>
+        <p class="eg"><span class="said">a 40-minute call</span><span class="wrote">Four decisions, nine to-dos, each with a name on it.</span></p>
+      </div></div>
+    </li>
+    <li class="b-code">
+      <button class="row" type="button" data-row aria-expanded="false">
+        <span class="mk"><svg class="mark mark-code" viewBox="0 0 7 7" aria-hidden="true" fill="currentColor"><circle cx="1.5" cy="1.5" r=".42"/><circle cx="5.5" cy="1.5" r=".42"/><circle cx="2.5" cy="2.5" r=".42"/><circle cx="4.5" cy="2.5" r=".42"/><circle cx="3.5" cy="3.5" r=".42"/><circle cx="2.5" cy="4.5" r=".42"/><circle cx="4.5" cy="4.5" r=".42"/><circle cx="1.5" cy="5.5" r=".42"/><circle cx="5.5" cy="5.5" r=".42"/></svg></span>
+        <span class="nm">Code bot</span>
+        <span class="ln">Ship code by asking.</span>
+      </button>
+      <div class="more"><div>
+        <p>Tell it what to build or fix. It reads your project, works on a safe copy, tests every change and asks when it needs you. Nothing goes live until you say yes.</p>
+        <p class="eg"><span class="said">find the auth bug, keep the API the same</span><span class="wrote">A pull request, with the failing test that proves it.</span></p>
+      </div></div>
+    </li>
+    <li class="b-spaces">
+      <button class="row" type="button" data-row aria-expanded="false">
+        <span class="mk"><svg class="mark mark-spaces" viewBox="0 0 7 7" aria-hidden="true" fill="currentColor"><circle cx="2.5" cy="1.5" r=".42"/><circle cx="3.5" cy="1.5" r=".42"/><circle cx="4.5" cy="1.5" r=".42"/><circle cx="1.5" cy="2.5" r=".42"/><circle cx="5.5" cy="2.5" r=".42"/><circle cx="1.5" cy="3.5" r=".42"/><circle cx="3.5" cy="3.5" r=".42"/><circle cx="5.5" cy="3.5" r=".42"/><circle cx="1.5" cy="4.5" r=".42"/><circle cx="5.5" cy="4.5" r=".42"/><circle cx="2.5" cy="5.5" r=".42"/><circle cx="3.5" cy="5.5" r=".42"/><circle cx="4.5" cy="5.5" r=".42"/></svg></span>
+        <span class="nm">Spaces</span>
+        <span class="ln">Family, friends, a team.</span>
+      </button>
+      <div class="more"><div>
+        <p>Make a space for home, for friends or for a team. Share lists, trips, plans and files, chat one-to-one or in groups, and give someone a task that lands on their day. You choose what each person can do.</p>
+        <p class="eg"><span class="said">share the packing list with amma</span><span class="wrote">Shared. She can add to it, and nothing else.</span></p>
+      </div></div>
+    </li>
+    <li class="b-own">
+      <button class="row" type="button" data-row aria-expanded="false">
+        <span class="mk"><svg class="mark mark-own" viewBox="0 0 7 7" aria-hidden="true" fill="currentColor"><circle cx="3.5" cy="1.5" r=".42"/><circle cx="1.5" cy="3.5" r=".42"/><circle cx="3.5" cy="3.5" r=".42"/><circle cx="5.5" cy="3.5" r=".42"/><circle cx="3.5" cy="5.5" r=".42"/></svg></span>
+        <span class="nm">Your own bots</span>
+        <span class="ln">Describe one in a sentence.</span>
+      </button>
+      <div class="more"><div>
+        <p>X0 Bot drafts it with a name, its rules and what it may use. Try it, change it, and it joins your team. You can also add bots other people have made.</p>
+        <p class="eg"><span class="said">a bot that plans my workouts around my calendar and reminds me the night before</span><span class="wrote">Drafted, named, and on your team.</span></p>
+      </div></div>
+    </li>
+  </ul>
+</section>
+
+<section class="band two">
+  <div>
+    <h2>On your phone. On your computer.</h2>
+    <p>Sign in on your computer by scanning a code with your phone, and your bots, notes and chats are on both. The keyboard is in every app. The widget and the Lock Screen show what your bots are working on.</p>
+  </div>
+  <div>
+    <h2>You stay in charge.</h2>
+    <p>Your bots ask before they book, pay or message anyone. We never sell your data and never use it to train AI models. Download or delete it whenever you like.</p>
+  </div>
+</section>
+
+<section class="band plans">
+  <h2>Free to start.</h2>
+  <p class="lede">A monthly allowance for all your bots, on the free plan. Lite gives you eleven times it. Elite, a hundred and fifty times. The app shows each plan with its price before you buy.</p>
+</section>
+
+<section class="band close">
+  <h2>Put the team to work.</h2>
+  <a class="key key-big" data-get data-lean href="/download" data-place="close">
+    <span class="cap"><i class="led" aria-hidden="true"></i><b data-get-label>Get X0 Bot</b><small data-get-os>every device</small></span>
+  </a>
+  <ul class="plats">
+    <li><a href="https://apps.apple.com/app/id6784811357" data-place="close">iPhone</a></li>
+    <li><a href="https://play.google.com/store/apps/details?id=com.tulmi.app" data-place="close">Android</a></li>
+    <li><a href="https://apps.microsoft.com/detail/9n3gx0xhq7mx" data-place="close">Windows</a></li>
+    <li><a href="https://api.x0bot.com/downloads/Tailzu.dmg" data-place="close">Mac</a></li>
+    <li><a href="https://api.x0bot.com/downloads/Tailzu.AppImage" data-place="close">Linux</a></li>
+  </ul>
+  <p class="made">Made by Xooteq Lab.</p>
+</section>
+
+</div>
+</main>
+<p class="sr" id="say" aria-live="polite"></p>
 <script type="module" src="/js/main.js"></script>
 </body>
 </html>

@@ -30,35 +30,19 @@ step, no framework, no dependencies. Served by nginx on the VPS, deployed on eve
 ## Layout
 
 ```
-index.html              the page: markup, one <style>, the tag manager inline, a <noscript> fallback; loads js/main.js
+index.html              the page: markup for the film, the views and the bands, the tag manager inline, a <noscript> fallback; loads js/main.js
 js/                     the page's script, one ES module per part (no build step; the CSP allows scripts from this origin)
-  main.js               wires the parts together: sizes, the one frame loop, resize
+  main.js               the opening film (the X and 0 game, "hey X0", the reply, the face), the work view's three stories and its finale,
+                        and the gallery's wheel; imports stage.js first
+  stage.js              the fabric's frame loop and resize, the pointer and the scroll on the water (`scroll.quiet` while the page
+                        scrolls itself), the bots' list, the key's per-device target and its lean
   util.js               small helpers, and the window's size and pixel ratio (`view`)
   paper/grain.js        the paper's grain and light
   paper/water.js        the plane as water: a 2-D wave equation, splash() and sample()
   paper/words.js        the plane of tiny words in the world's scripts, moved by the water; their 0/1 flicker
-  paper/glitch.js       the page's own words flicker into 0/1 under the pointer
-  blip/figure.js        Blip's figure, drawn in greys (pose in, hand and antenna ball out)
-  blip/dots.js          the one renderer that turns the figure into his ink sticker and dots
-  blip/walker.js        his bouncy walk (any scene: its height, ground, speed and water)
-  blip/antenna.js       into his antenna and back out: every dot of him a particle on springs; the antenna a springy stalk with a glowing ball
-  blip/pour.js          the small one's version of it: a figure's dots into its own ball, which then pops (the bots leaving the screens)
-  page/opening.js       the opening: he walks in from the right and waves, then watches the pointer; hands him to the antenna and back
-  page/key.js           the "Take me home" key and the name, arriving after the wave
-  page/steps.js         the page never scrolls: a scroll, swipe or key moves it one step, and a step that has arrived brings the next on by itself
-                        (0 opening, 1 antenna + screens + the bots, 2 out again and the bots pour away, 3 the terminal, 4 the Live Activity, 5 back to the middle)
-  page/screens.js       the phone and the laptop either side of him (above and below on a tall window), on springs
-  page/screen.js        what is in them: the laptop's empty white screen, the phone's wallpaper, lock screen (the visitor's own clock),
-                        status bar and home bar, the bots on both, and then that device's beat
-  page/arrivals.js      the walk between the paper and the glass, on a canvas under the devices (so the last of it is behind the frame):
-                        the bots in off the page, and Blip both ways — out of the gap into a screen, shrinking as he goes, and back
-  page/crowd.js         the milling about once on the glass: random spots, random paces, eighteen things they do (flips, cartwheels, handstands and the rest), one colour each;
-                        then settling to a stop, and pouring away; and Blip himself as a guest on the glass when he comes in
-  page/content.js       the five beats the screens show: the laptop's terminal and its video call (the meeting bot wearing Blip's face),
-                        the phone's "Bots at work" Live Activity, the plan that call came to, and the mail bot's notice two days on
-css/screens.css         the devices' frames, the screen in them, and the four beats they show
-media/meet/             three muted five-second clips of people on a video call, for the call on the laptop (Mixkit, free stock video)
-media/phone/            the phone's wallpaper, a photograph blurred into an abstract (Unsplash through Lorem Picsum)
+  paper/glitch.js       the page's own words flicker into 0/1 under the pointer (not inside `[data-noglitch]`, i.e. the film's card)
+css/site.css            the whole page's look: the card, the devices and every screen in them, the gallery, the bands
+media/meet/             three muted five-second clips of people on a video call, for the meeting card (Mixkit, free stock video)
 api/                    the serverless functions Vercel ran (unused on the VPS: the API serves both routes; to delete once the move is settled)
   _meta.js              shared Meta pixel / Conversions API helpers (reads the dataset id and token from Vercel env)
   site-event.js         POST /v1/site/event: a page event (e.g. a download press) sent to Meta's Conversions API
@@ -84,23 +68,13 @@ README.md               how the page behaves, what to run after a change, how pu
 
 | Looking for | Where |
 |---|---|
-| The first screen: the plane of words, the bot's walk and wave, the key's arrival | `js/paper/words.js`, `js/blip/figure.js`, `js/page/opening.js`, `js/page/key.js` |
-| The steps (what a scroll does, how long each holds before the next comes by itself) | `js/page/steps.js` (`AUTO`, `ROAM`) |
-| Into the antenna and out (the springs, the order, the stalk) | `js/blip/antenna.js` (its constants at the top) |
-| The bots pouring away the same way | `js/blip/pour.js`, started by `js/page/crowd.js` (`vanish`) |
-| Them settling to a stop before the page moves on | `js/page/crowd.js` (`settle`, `callIn`, `toHome`, `rest`), gated in `js/page/steps.js` |
-| The beats' words: the terminal, the call, the Live Activity, the plan, the mail notice | `js/page/content.js` (`TERM`, `SAID_IN`, `PEOPLE`, `activity`, `TODO`, `mailCard`), styled in `css/screens.css` |
-| The running order: what is on each screen at each step | `js/page/steps.js` (`SCENE`, `AUTO`) |
-| The people on the call (real clips) and swapping them | `media/meet/call-{1,2,3}.mp4` (Mixkit free stock video), named in `js/page/content.js` (`PEOPLE`); `media-src 'self'` in `vercel.json` |
-| The bot's face in its tile on the call | `js/page/content.js` (`botFace`), drawn with `js/blip/dots.js` |
-| The phone's wallpaper, clock and status bar | `media/phone/wall.webp`, `js/page/screen.js` (`lockFace`, `statusBar`, `clockNow`), `css/screens.css` (`.wl-phone`, `.wl-lock`) |
-| Blip walking off into a screen and back | `js/page/arrivals.js` (`guestTo`, `plan`), `js/page/crowd.js` (`admitGuest`, `leaveGuest`, `takeGuest`), `js/page/opening.js` (`lendBlip`, `returnBlip`) |
-| The phone and laptop: sizes, places, their springs | `js/page/screens.js` (`layoutScreens`), `css/screens.css` |
-| The bots: who they are, how they walk, the eighteen things they do | `js/page/crowd.js` (`BOTS`, `WALKS`, `GEST`; `GEST_BAG` weights the showy ones) |
-| Turning a figure over for a flip, and its ground shadow | `js/blip/dots.js` (`o.roll`, `o.rollAt`, `o.shade`, `o.hop`) |
-| How many fit a screen, how big they are, how they roam it | `js/page/crowd.js` (`capacity`, `sizeAt`, `roam`) |
-| Their walk across the page, and where the door into each screen is | `js/page/arrivals.js`; the glass's place on the page is `js/page/screens.js` (`layoutScreens`, `arrivals.setRect`) |
-| The download button's per-device target | `js/page/key.js` (`homeLink`) |
+| The film: the game, the typing, the reply, the face assembling, the hand-over scroll | `js/main.js` (THE OPENING FILM; `LINE`), markup `#stage`, styles `css/site.css` |
+| The face (the app icon as vector) | the `<svg id="icon">` inside `#endmark` in `index.html`; reused as a picture by `js/main.js` (`faceSrc`) |
+| The work view: mail setup, inbox, the phone's replies, food, Xode, the finale | `js/main.js` (THE WORK VIEW: the setup card, the inbox rows, the second story, the third story, the finale), markup `#work` |
+| The gallery's six cards and the wheel's timing | markup `#gifs`, `js/main.js` (THE GALLERY; `HOLD`, `MOVE`) |
+| The people in the meeting card (real clips) and swapping them | `media/meet/call-{1,2,3}.mp4` (Mixkit free stock video); `media-src 'self'` in `vercel.json` |
+| The bots' list, the two promises, plans, the close | markup `#team`, `.band.two`, `.band.plans`, `.band.close` in `index.html` |
+| The download keys' per-device target | `js/stage.js` (`GET`) |
 | The `<head>` (title, canonical, structured data) | between `SEO:HEAD` markers in `index.html`, written by the backend's `tulmi/scripts/sync-site.mts`; never edit by hand |
 | Pricing, privacy, terms, support, delete-account, FAQ, language and SEO pages, and `/device` (signing in to Xode in the terminal) | served by the backend (`api.x0bot.com`), mapped here in `vercel.json` `rewrites` |
 | Desktop installers (`Tailzu-Setup.exe`, `Tailzu.dmg`, `Tailzu.AppImage`) | proxied from `api.x0bot.com/downloads/` by `vercel.json` |
@@ -111,14 +85,9 @@ README.md               how the page behaves, what to run after a change, how pu
 
 ## How it fits together
 
-- The browser loads `index.html`; `js/main.js` runs one frame loop for every part: the plane of words, the bot walking in
-  and waving, the "Take me home" key and the name; then, step by step (a scroll pushes it along, and if nobody scrolls it
-  plays itself), Blip into his antenna and the phone and the laptop, the bots walking in off the page onto their screens,
-  roaming and then settling, Blip back out while they pour away, and the two beats on the blank screens — the terminal and
-  the Live Activity — that he walks away into, small, one screen and then the other, before he comes back to the middle and
-  they clear; then a second pair he watches from where he stands, because he is in them — a video call with the meeting bot
-  wearing his face in it, the plan that call came to, and two days on the mail bot's notice: forty-five answered, and the one
-  thing in them it hands back.
+- The browser loads `index.html`; `js/main.js` imports `js/stage.js`, which starts the fabric (grain, water, words, glitch)
+  and its one frame loop, then plays the film in the white card, scrolls once to the work view, plays its three stories when
+  it comes into sight, and turns the gallery's wheel. The rest is an ordinary page.
 - Everything dynamic belongs to the backend: nginx (from `vercel.json`'s rewrites) sends `/v1/...`, `/download`, the installers and the
   backend's pages to `api.x0bot.com`, so the site never handles accounts, payments or large files itself.
 - Meta's pixel and its Conversions API copy are the backend's too (`META_PIXEL_ID`, `META_CAPI_TOKEN` in its `.env`).

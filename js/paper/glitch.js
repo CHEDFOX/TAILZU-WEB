@@ -20,7 +20,7 @@ function wordAt(x, y) {
   else return null;
   if (!node || node.nodeType !== 3) return null;
   const pe = node.parentElement;
-  if (!pe || pe.classList.contains("glb") || pe.closest("svg, script, style")) return null;
+  if (!pe || pe.classList.contains("glb") || pe.closest("svg, script, style, [data-noglitch]")) return null;
   const elm = pe.closest(GLITCH_AT); if (!elm) return null;
   const t = node.nodeValue;
   if (!/\S/.test(t.charAt(off))) { if (off > 0 && /\S/.test(t.charAt(off - 1))) off--; else return null; }
@@ -76,7 +76,7 @@ export function initGlitch() {
       const w = wordAt(mx, my);
       if (w) return glitchWord(w);
       const top = document.elementFromPoint(mx, my);
-      if (!top || top.id === "words" || top.id === "bot" || top.id === "plane" || top.id === "hero" || top === document.body || top === document.documentElement) glitchPlane(mx, my);
+      if (!top || top.id === "words" || top.id === "plane" || top.closest?.("[data-fabric]") || top === document.body || top === document.documentElement) glitchPlane(mx, my);
     });
   };
   document.addEventListener("mousemove", (e) => aim(e.clientX, e.clientY), { passive: true });
