@@ -54,9 +54,9 @@ moves, and the page's own words flickering into 0/1 under the pointer
    from the window's edges, with its line beside it; a click (or Enter)
    keeps it there after the pointer leaves, and another click, a click
    elsewhere or Escape puts it back. On touch screens a tap does it.
-4. **The team, the two promises, the plans and the close**: the bots' list
-   (a row opens where it stands), phone and computer, staying in charge, free
-   to start, and the key again with every device under it.
+4. **The two promises, the plans and the close**: phone and computer,
+   staying in charge, free to start, and the key again with every device
+   under it.
 
 With reduced motion the film, the stories and the cases show their last frame.
 

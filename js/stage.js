@@ -3,8 +3,7 @@
 //   1. the fabric's own frame loop (grain, water, words, glitch)
 //   2. the visitor's hand on the water
 //   3. the page's own scroll on the water (quiet while the page scrolls itself)
-//   4. the bots' list, a row opening where it stands
-//   5. the key: "Take me home", to what this device installs, and the cap leaning towards the pointer
+//   4. the key: "Take me home", to what this device installs, and the cap leaning towards the pointer
 import { reduced, view } from "./util.js";
 import { paintGrain } from "./paper/grain.js";
 import { makeField, stepField, splash } from "./paper/water.js";
@@ -79,20 +78,7 @@ addEventListener("scroll", () => {
   splash(view.w - x * .6, y, .3 * k, 4.2);
 }, { passive: true });
 
-// ---- 4. the bots' list: a bot opens where it stands --------------------------
-document.querySelectorAll("[data-row]").forEach((b) => {
-  b.addEventListener("click", () => {
-    const li = b.closest("li");
-    const open = li.classList.toggle("open");
-    b.setAttribute("aria-expanded", String(open));
-    if (open && !reduced) {
-      const r = b.getBoundingClientRect();
-      splash(r.left + 40, r.top + r.height * .5, .8, 3);
-    }
-  });
-});
-
-// ---- 5. the key ------------------------------------------------------------
+// ---- 4. the key ------------------------------------------------------------
 // It always says "Take me home"; under it, the device it is for, and it goes to what that device installs
 // (/v1/site's own `stores` and `downloads`).
 const GET = [

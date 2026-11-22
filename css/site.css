@@ -14,9 +14,6 @@
   --mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
   color-scheme: light;
 }
-.b-keybot { --bot: #A9573A; } .b-plan { --bot: #8F6A1F; } .b-travel { --bot: #3E6E8E; }
-.b-notes { --bot: #2F5D50; } .b-code { --bot: #4F7A3A; } .b-spaces { --bot: #4A535C; }
-.b-own { --bot: #6E4A6B; }
 
 * { box-sizing: border-box; }
 body { margin: 0; background: var(--paper); color: var(--ink); font: 400 16px/1.6 var(--sans); -webkit-tap-highlight-color: transparent; }
@@ -90,31 +87,6 @@ h2 { margin: 0 0 8px; font: 600 clamp(22px, 2.8vw, 30px)/1.15 var(--sans); lette
 .band > p, .two p { margin: 0; max-width: 54ch; color: var(--ink-2); font-size: 15.5px; }
 a { color: var(--ink); text-decoration-color: var(--line); text-underline-offset: 3px; }
 
-/* ---- the roster ---- */
-.roster { list-style: none; margin: 34px 0 0; padding: 0; border-top: 1px solid var(--line); }
-.roster li { border-bottom: 1px solid var(--line); }
-.row {
-  width: 100%; display: grid; grid-template-columns: 26px 9.5rem 1fr; align-items: center; gap: 0 18px;
-  padding: 19px 0; background: none; border: 0; cursor: pointer; text-align: left; color: inherit; font: inherit;
-}
-.mk { display: flex; color: var(--bot); transition: transform .35s cubic-bezier(.2, .9, .3, 1.3); }
-.mark { width: 26px; height: 26px; }
-.nm { font: 600 16px/1.2 var(--sans); letter-spacing: -.02em; }
-.ln { font-size: 15.5px; color: var(--ink-2); }
-.row:hover .mk { transform: scale(1.18); }
-.row:hover .nm { color: var(--bot); }
-.row:focus-visible { outline: 1.5px solid var(--bot); outline-offset: -2px; }
-.open .nm { color: var(--bot); }
-.more { display: grid; grid-template-rows: 0fr; transition: grid-template-rows .45s cubic-bezier(.3, .8, .3, 1); }
-.more > div { overflow: hidden; }
-.open .more { grid-template-rows: 1fr; }
-.more p { margin: 0 0 0 0; max-width: 56ch; font-size: 15.5px; color: var(--ink-2); padding-left: 40px; }
-.more > div > p:first-child { padding-bottom: 14px; }
-.more > div > :last-child { padding-bottom: 24px; }
-.eg { display: grid; gap: 5px; }
-.said { font: 400 13.5px/1.5 var(--mono); color: var(--muted); }
-.said::before { content: "“"; } .said::after { content: "”"; }
-.wrote { font: 400 17px/1.4 var(--serif); color: var(--ink); }
 
 .two { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; }
 .plans .lede { margin-top: 10px; }
@@ -124,13 +96,10 @@ a { color: var(--ink); text-decoration-color: var(--line); text-underline-offset
 .made { margin: 0; font-size: 13px; color: var(--muted); }
 
 @media (max-width: 620px) {
-  .row { grid-template-columns: 24px 1fr; gap: 0 14px; row-gap: 3px; }
-  .ln { grid-column: 2; }
-  .more p { padding-left: 34px; }
   .two { grid-template-columns: 1fr; gap: 44px; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .beat, .more, .mk, .key, .cap { transition: none; }
+  .beat, .key, .cap { transition: none; }
 }
 
 /* =====================================================================

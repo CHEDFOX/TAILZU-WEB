@@ -35,7 +35,7 @@ js/                     the page's script, one ES module per part (no build step
   main.js               the opening film ("hey X0", the reply, the face), the work view's three stories, its finale and the line beside it,
                         and the six cases' grid (hover or click to enlarge); `sayer` swaps the work view's line; imports stage.js first
   stage.js              the fabric's frame loop and resize, the pointer and the scroll on the water (`scroll.quiet` while the page
-                        scrolls itself), the bots' list, the key's per-device target and its lean
+                        scrolls itself), the key's per-device target and its lean
   minis.js              the small bots: a jetpack Blip over the film, a skateboarding one on the work view's boxes, one
                         peeking from behind the cases; one canvas over the page, only the view most on screen runs
   blip/blip.js          Blip's renderer, copied unchanged from TAILZU-DESKTOP src/shared/blip.js
@@ -79,7 +79,7 @@ README.md               how the page behaves, what to run after a change, how pu
 | The six cases, their cards and their lines | markup `#gifs` (one `.case` each in `.grid`, its line in `.case-say`), `js/main.js` (THE CASES), `css/site.css` (`.grid`, `.case.big`) |
 | The second view's lines, one per story | `js/main.js` (`LINES` in THE WORK VIEW); the showcase layout is `.show` in `css/site.css` |
 | The people in the meeting card (real clips) and swapping them | `media/meet/call-{1,2,3}.mp4` (Mixkit free stock video); `media-src 'self'` in `vercel.json` |
-| The bots' list, the two promises, plans, the close | markup `#team`, `.band.two`, `.band.plans`, `.band.close` in `index.html` |
+| The two promises, plans, the close | markup `.band.two`, `.band.plans`, `.band.close` in `index.html` |
 | The download keys ("Take me home") and their per-device target | `js/stage.js` (`GET`) |
 | The mark in the mast (Blip's face) | `media/face.svg`, `.mark` in `css/site.css` |
 | Blip in the food story | `js/main.js` (`foodBlip`: the peek, walking in, listening, going up) |
