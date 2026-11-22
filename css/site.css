@@ -739,7 +739,7 @@ a { color: var(--ink); text-decoration-color: var(--line); text-underline-offset
 .grid { --gx: clamp(20px, 4.5vw, 84px); --gy: clamp(28px, 7svh, 84px);
   display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--gy) var(--gx);
   width: min(84rem, 100%, calc((100svh - 140px - var(--gy)) / 2 / .5667 * 3 + 2 * var(--gx))); }
-.case { position: relative; aspect-ratio: 480 / 272; cursor: zoom-in; outline: none; z-index: 1;
+.case { position: relative; aspect-ratio: 480 / 272; cursor: pointer; outline: none; z-index: 1;
   transition: scale .55s cubic-bezier(.2, .8, .25, 1), opacity .45s ease, z-index 0s .55s; }
 .gc { position: absolute; inset: 0; border-radius: 18px; overflow: hidden; isolation: isolate; background: #fff;
   box-shadow: 0 0 0 1px rgba(22, 20, 15, .08), 0 34px 64px -38px rgba(22, 20, 15, .55); transition: box-shadow .3s ease; }
@@ -748,7 +748,7 @@ a { color: var(--ink); text-decoration-color: var(--line); text-underline-offset
 /* clicked: a little larger where it stands (growing away from the window's edges), above the rest, with its line beside it */
 .case:nth-child(1) { transform-origin: 0 0; } .case:nth-child(2) { transform-origin: 50% 0; } .case:nth-child(3) { transform-origin: 100% 0; }
 .case:nth-child(4) { transform-origin: 0 100%; } .case:nth-child(5) { transform-origin: 50% 100%; } .case:nth-child(6) { transform-origin: 100% 100%; }
-.case.big { scale: 1.32; z-index: 5; cursor: zoom-out; transition: scale .55s cubic-bezier(.2, .8, .25, 1), opacity .45s ease, z-index 0s; }
+.case.big { scale: 1.32; z-index: 5; transition: scale .55s cubic-bezier(.2, .8, .25, 1), opacity .45s ease, z-index 0s; }
 .grid.has-big .case:not(.big) { opacity: .5; }
 .case-say { position: absolute; left: 0; right: 0; top: calc(100% + 8px); padding: 10px 12px; border-radius: 12px; background: #fff;
   box-shadow: 0 0 0 1px rgba(22, 20, 15, .08), 0 24px 44px -30px rgba(22, 20, 15, .5);

@@ -1104,9 +1104,9 @@ function sayer(aside) {
 
 // ---------------------------------------------------------------------------
 // THE CASES. Six looping cards, three by two, all playing while the grid is on
-// screen. A click (or Enter or Space) lifts one a little larger where it
-// stands, with its line by it; another click, a click elsewhere or Escape puts
-// it back.
+// screen. Hovering lifts one a little larger where it stands, with its line by
+// it; a click (or Enter or Space) keeps it there, and another click, a click
+// elsewhere or Escape puts it back.
 // ---------------------------------------------------------------------------
 {
   const sec = document.getElementById("gifs");
@@ -1129,19 +1129,35 @@ function sayer(aside) {
     new ResizeObserver(fit).observe(grid);
     fit();
 
-    let big = null;
-    function lift(c) {
+    // One card is large at a time. Hovering lifts one while the pointer is on
+    // it; a click keeps it lifted (pinned) after the pointer leaves, and a
+    // second click lets it go.
+    let big = null, pinned = false, hoverT = 0;
+    const canHover = matchMedia("(hover: hover) and (pointer: fine)");
+    function set(c) {
+      if (c === big) return;
       if (big) { big.classList.remove("big"); big.setAttribute("aria-expanded", "false"); }
-      big = c && c !== big ? c : null;
+      big = c;
       if (big) { big.classList.add("big"); big.setAttribute("aria-expanded", "true"); }
       grid.classList.toggle("has-big", !!big);
+    }
+    function lift(c) {                     // a click, Enter or Space
+      if (c && (c !== big || !pinned)) { set(c); pinned = true; } else { set(null); pinned = false; }
     }
     cases.forEach((c) => {
       c.addEventListener("click", (e) => { e.stopPropagation(); lift(c); });
       c.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); lift(c); } });
+      c.addEventListener("pointerenter", () => {
+        if (!canHover.matches || pinned) return;
+        clearTimeout(hoverT); hoverT = setTimeout(() => set(c), 90);
+      });
+      c.addEventListener("pointerleave", () => {
+        clearTimeout(hoverT);
+        if (canHover.matches && !pinned && big === c) set(null);
+      });
     });
-    document.addEventListener("click", () => { if (big) lift(null); });
-    addEventListener("keydown", (e) => { if (e.key === "Escape" && big) lift(null); });
+    document.addEventListener("click", () => { if (big) { set(null); pinned = false; } });
+    addEventListener("keydown", (e) => { if (e.key === "Escape" && big) { set(null); pinned = false; } });
 
     // all of them play while the grid can be seen, and stand still when it cannot
     let shown = false;
@@ -1149,7 +1165,7 @@ function sayer(aside) {
       const vis = es.some((e) => e.isIntersecting);
       sec.classList.toggle("off", !vis);
       if (vis && !shown) grid.querySelectorAll("video").forEach((v) => v.play().catch(() => {}));
-      if (!vis && big) lift(null);
+      if (!vis && big) { set(null); pinned = false; }
       shown = vis;
     }, { threshold: .2 }).observe(sec);
   }

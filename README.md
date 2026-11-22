@@ -48,9 +48,10 @@ moves, and the page's own words flickering into 0/1 under the pointer
    is in sight: Xode installed in a terminal, a bot flow, slash commands in a
    chat, the keyboard put together from the backend's keyboard config, Blip
    in a meeting with real people (the clips in `media/meet/`), reminders
-   arriving. A click (or Enter) lifts one a third larger where it stands,
-   growing away from the window's edges, with its line beside it; another
-   click, a click elsewhere or Escape puts it back.
+   arriving. Hovering lifts one a third larger where it stands, growing away
+   from the window's edges, with its line beside it; a click (or Enter)
+   keeps it there after the pointer leaves, and another click, a click
+   elsewhere or Escape puts it back. On touch screens a tap does it.
 4. **The team, the two promises, the plans and the close**: the bots' list
    (a row opens where it stands), phone and computer, staying in charge, free
    to start, and the key again with every device under it.

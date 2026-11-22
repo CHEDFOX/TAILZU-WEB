@@ -33,7 +33,7 @@ step, no framework, no dependencies. Served by nginx on the VPS, deployed on eve
 index.html              the page: markup for the film, the views and the bands, the tag manager inline, a <noscript> fallback; loads js/main.js
 js/                     the page's script, one ES module per part (no build step; the CSP allows scripts from this origin)
   main.js               the opening film ("hey X0", the reply, the face), the work view's three stories, its finale and the line beside it,
-                        and the six cases' grid (click to enlarge); `sayer` swaps the work view's line; imports stage.js first
+                        and the six cases' grid (hover or click to enlarge); `sayer` swaps the work view's line; imports stage.js first
   stage.js              the fabric's frame loop and resize, the pointer and the scroll on the water (`scroll.quiet` while the page
                         scrolls itself), the bots' list, the key's per-device target and its lean
   util.js               small helpers, and the window's size and pixel ratio (`view`)
