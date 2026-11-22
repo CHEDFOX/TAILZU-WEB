@@ -26,7 +26,6 @@ if (card) {
   const ty = document.getElementById("ty");
   const send = document.getElementById("send");
   const reply = document.getElementById("reply");
-  const bubble = document.getElementById("bubble");
   const endmark = document.getElementById("endmark");
   const icon = document.getElementById("icon");
   const pieces = [...board.querySelectorAll("[data-mark]")];   // X, 0, X, 0
@@ -48,7 +47,6 @@ if (card) {
     if (cut) { void cam.offsetWidth; cam.classList.remove("cut"); }
   }
   const pct = (x, y) => `${(x / cam.clientWidth * 100).toFixed(2)}% ${(y / cam.clientHeight * 100).toFixed(2)}%`;
-  const shoot = (el, scale) => camTo(pct(el.offsetLeft + el.offsetWidth / 2, el.offsetTop + el.offsetHeight / 2), scale);
   const shootAt = (x, y, scale) => camTo(pct(x, y), scale);
   const wide = (cut = false) => camTo(cam.style.transformOrigin || "50% 50%", 1, cut);
 
@@ -206,11 +204,13 @@ if (card) {
       at(250, () => typeOut(LINE));
     });
     at(7850, () => send.classList.add("press"));
-    at(8050, () => { box.classList.add("out"); wide(); });
+    at(8050, () => box.classList.add("out"));
 
-    // ACT 3: the answer
-    at(8400, () => reply.classList.add("in"));
-    at(8650, () => shoot(bubble, 1.75));
+    // ACT 3: the answer, in the middle of the card. Once the box has gone the
+    // camera cuts back to wide, centred, so the push in on the answer is a push
+    // straight down the middle and the answer never leaves the centre.
+    at(8420, () => { camTo("50% 50%", 1, true); reply.classList.add("in"); });
+    at(8650, () => camTo("50% 50%", 1.75));
     at(9300, () => {
       reply.classList.add("spoken");
       if (filmsay) filmsay.textContent = "X0 Bot: Here, at your service.";
@@ -255,6 +255,12 @@ if (card) {
     const feed = document.getElementById("pFeed"), stateEl = document.getElementById("pState");
     const setupEl = document.getElementById("setup");
     const replayW = document.getElementById("workReplay");
+
+    // ---- which screen is doing the work: it comes forward, the other steps back ----
+    const focusOn = (who) => {
+      work.classList.toggle("f-desk", who === "desk");
+      work.classList.toggle("f-phone", who === "phone");
+    };
 
     // ---- each designed screen scaled to its frame ----
     const fitScreens = () => {
@@ -536,6 +542,7 @@ if (card) {
         say("Here if you need me", false);
       });
       // Blip peeks in at the desktop's edge
+      wat(B + 600, () => focusOn("desk"));
       wat(B + 800, () => s2.blip.classList.add("peek", "bob"));
       // called
       wat(B + 1900, () => { s2.pill.classList.add("on", "talking"); words(s2.hey, 260); });
@@ -586,7 +593,7 @@ if (card) {
         say("Ordering…");
       });
       // and on the phone, it is on its way
-      wat(B + 10850, () => { feed.classList.add("center"); add(DELIV); say("On its way", false); });
+      wat(B + 10850, () => { focusOn("phone"); feed.classList.add("center"); add(DELIV); say("On its way", false); });
       // a moment with the meal on its way, then the third story
       act3(B + 13600);
     }
@@ -727,6 +734,7 @@ if (card) {
         say("Here if you need me", false);
       });
       // start a project: three repositories, each typed in and dropped into the list
+      T(300, () => focusOn("desk"));
       T(600, () => { x3.cursor.classList.remove("hide"); x3point(x3.add, .55, .5); });
       T(1000, () => { x3click(); x3.add.classList.add("focus"); });
       REPOS.forEach(([name, about], i) => {
@@ -809,6 +817,7 @@ if (card) {
         m.style.background = "#FBF3E4";
       });
       // from the phone: the order
+      T(15600, () => focusOn("phone"));
       T(15900, () => { pillName.textContent = "Xode"; say("Waiting for you", false); app.classList.add("composing"); });
       T(16300, () => typeText(pcT, ORDER, 27, () => pCompose.classList.add("ready")));
       T(16310, () => pCompose.classList.add("ready"));
@@ -820,6 +829,7 @@ if (card) {
       });
       // the test, again
       let tc = null;
+      T(19500, () => focusOn("desk"));
       T(19800, () => { term('<span class="cmd">$ npm test -- --only 854</span>'); tc = add(TEST_RUN); say("Running test #854…"); step(3, "working", "running"); });
       T(21000, () => {
         term('  #854 notify › sends one mail per signup ..... <span class="ok">passed (1.9s)</span>');
@@ -831,6 +841,7 @@ if (card) {
       // and ship
       T(21700, () => { step(3, "done", "done"); x3msg("All 1,212 pass. Shipping."); term('<span class="cmd">$ xode ship</span>'); say("Shipping…"); });
       T(22300, () => term('  <span class="ok">merged</span>   #128 into main'));
+      T(22700, () => focusOn("phone"));
       T(22900, () => { term('  <span class="ok">deployed</span> to leafandco.in'); add(SHIP); say("Shipped", false); });
       // every day at 8
       T(23900, () => { add(ROUTINE); x3msg("Every day at 8:00 I'll mail you the updated user list."); say("Every day at 8:00", false); });
@@ -901,7 +912,7 @@ if (card) {
     function act4(D) {
       const T = (ms, fn) => wat(D + ms, fn);
       // the desktop fades away; the phone takes the middle
-      T(0, () => { pNotif.classList.remove("in"); monitorEl.classList.add("away"); });
+      T(0, () => { focusOn(null); pNotif.classList.remove("in"); monitorEl.classList.add("away"); });
       T(300, () => phoneEl.classList.add("center"));
       // its screen empties as it moves; it is 10:29, thirty-one minutes after the order
       T(600, () => {
@@ -926,6 +937,7 @@ if (card) {
 
     function reset() {
       wstop();
+      focusOn(null);
       work.classList.remove("rest");
       feed.textContent = "";
       drawInbox(true);
@@ -972,6 +984,7 @@ if (card) {
       if (reduced) { endState(); return; }
 
       // ---------- SET UP, on the desktop ----------
+      focusOn("desk");
       say("Setting up mail…");
       wat(300, () => typingThen("Let's bring Leaf & Co.'s mail in.", 700));
       // 1. the business and its domain
@@ -1006,7 +1019,7 @@ if (card) {
 
       // ---------- THEN the phone works through it ----------
       const S = A + 1500;
-      wat(S, () => { say("Reading your inbox…"); typingThen("45 new for hello@leafandco.in. Sorting them.", 750); });
+      wat(S, () => { focusOn("phone"); say("Reading your inbox…"); typingThen("45 new for hello@leafandco.in. Sorting them.", 750); });
       wat(S + 1150, () => say("Sorting…"));
       rowsEl.querySelectorAll(".r").forEach((r, i) => wat(S + 1150 + i * 55, () => r.classList.add("tagged")));
       wat(S + 2550, () => { rowsOf("news").forEach((r, i) => wat(i * 90, () => r.closest(".mrow").classList.add("gone"))); count(31); });
@@ -1046,6 +1059,7 @@ if (card) {
         wat(760, () => fin.classList.remove("on"));
       });
       wat(S + 11300, () => {
+        focusOn("desk");   // the replies landing in the inbox
         say("Sending…");
         drop(askItem);
         add(`<div class="sent">11 replies sent</div>`);
@@ -1058,7 +1072,7 @@ if (card) {
         count(1, 900);
       });
 
-      wat(S + 12450, () => typingThen("That's 44 handled. One needs you.", 600));
+      wat(S + 12450, () => { focusOn("phone"); typingThen("That's 44 handled. One needs you.", 600); });
       wat(S + 13450, () => {
         add(handback());
         rowsOf("needs").forEach((r) => r.classList.add("flag"));
