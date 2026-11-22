@@ -2,6 +2,7 @@
 import { easeIO, reduced, view } from "./util.js";
 import { splash } from "./paper/water.js";
 import { scroll } from "./stage.js";
+import "./minis.js";
 
 // ---------------------------------------------------------------------------
 // THE OPENING FILM. One white card, three acts, and a camera.

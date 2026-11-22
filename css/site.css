@@ -24,6 +24,8 @@ body { margin: 0; background: var(--paper); color: var(--ink); font: 400 16px/1.
 #plane { position: fixed; inset: 0; background-color: var(--paper); background-size: 220px 220px; }
 #words { position: fixed; inset: 0; width: 100%; height: 100%; display: block; z-index: 1; }
 main { position: relative; z-index: 2; overflow-x: clip; }
+/* the small bots (js/minis.js): one canvas over the page, under the mast, never in the way of the pointer */
+.minis { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 9; pointer-events: none; }
 .wrap { max-width: 50rem; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
 
 .mast {

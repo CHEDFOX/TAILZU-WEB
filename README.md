@@ -5,7 +5,7 @@ it for the backend's pages and the downloads.
 
 ```
 index.html            the page: markup (the film, the views, the bots, the close), the tag manager inline, a <noscript> fallback; loads js/main.js
-js/                   the page's script: paper/ (grain, water, words, glitch: the fabric), stage.js (the fabric's loop, the hand and the scroll on the water, the key), main.js (the film and the views)
+js/                   the page's script: paper/ (grain, water, words, glitch: the fabric), stage.js (the fabric's loop, the hand and the scroll on the water, the key), main.js (the film and the views), minis.js and blip/ (the small bots)
 css/site.css          everything the page looks like
 media/meet/           three short muted clips of people on a video call, for the meeting card (Mixkit, free stock video)
 api/                  Meta's pixel as Vercel served it; unused on the VPS (see Meta's pixel)
@@ -57,6 +57,20 @@ moves, and the page's own words flickering into 0/1 under the pointer
    to start, and the key again with every device under it.
 
 With reduced motion the film, the stories and the cases show their last frame.
+
+**The small bots** (`js/minis.js`): a little Blip on each of the first three
+views, on one canvas over the page that never takes the pointer. Over the film
+he flies about on a jetpack, out of the screen and back in somewhere else;
+on the work view he rides a skateboard along the top edges of the two boxes,
+flips off their ends, turns round in the air and jumps the gap between them;
+over the cases he peeks out from behind a card (now and then on his long
+neck), hides, and peeks from another. Only the view mostly on screen has one
+running, and with reduced motion there are none. He is drawn by the desktop
+app's own renderer, `js/blip/blip.js`, copied unchanged from TAILZU-DESKTOP
+`src/shared/blip.js`; its moves, which the app compiles at run time from its
+catalog, are sampled once into `js/blip/moves.js` by
+`node scripts/gen-blip-moves.mjs` (run it again when the catalog or the
+renderer changes, after copying `blip.js` anew).
 
 ## The download is always a link
 
