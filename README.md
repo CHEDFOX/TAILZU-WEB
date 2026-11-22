@@ -26,34 +26,37 @@ moves, and the page's own words flickering into 0/1 under the pointer
 (`js/paper/`). The pointer and the scroll both disturb the water
 (`js/stage.js`). Nothing on it has a title: each view shows rather than says.
 
-1. **The film** (`#stage`). One white card and a camera. A game of X and 0,
-   two moves each, both one square from winning, and the board sinks into the
-   water piece by piece; a box rises and "hey X0" is typed while the camera
-   pushes in; the reply, "Here, at your service."; the card clears and the
-   bot's face puts itself together, small. Then, the first time only, the page
-   scrolls itself to the next view.
-2. **The work** (`#work`). A desktop and a phone, a little apart, playing
-   three stories once each as the view comes into sight (Replay runs them
-   again): a business's mail set up in the four steps of the backend's
-   docs/mail.md and its inbox filling, then the phone sorting, drafting,
-   asking "Send all" and handing back the one that needs a person; Blip
-   peeking in, "I'm hungry", a deck of food cards, one swiped away, the order
-   on its way; Xode with three repos added, a task, a plan approved, the work
-   done in sight, a flaky test re-run from the phone, shipped, and a daily
-   8:00 mail set up. Then the desktop fades, the phone takes the middle, "Your
-   food has arrived", and the face again.
-3. **The gallery** (`#gifs`). Six looping cards on a wheel turning
-   anticlockwise, the middle one larger: Xode installed in a terminal, a bot
-   flow, slash commands in a chat, the keyboard put together from the
-   backend's keyboard config, Blip in a meeting with real people (the clips in
-   `media/meet/`), reminders arriving. It pauses under the pointer and off
-   screen.
+1. **The film** (`#stage`). One white card and a camera. A box rises and
+   "hey X0" is typed while the camera pushes in; the reply, "Here, at your
+   service.", in the middle of the card; the card clears and the bot's face
+   puts itself together, small. Then, the first time only, the page scrolls
+   itself to the next view.
+2. **The work** (`#work`), a showcase: a box with a desktop and a phone in
+   it, and beside it a short line that changes with the story playing
+   (`LINES` in `js/main.js`). Three stories, once each as the view comes into
+   sight (Replay runs them again), and whichever screen is doing the work
+   comes forward while the other steps back: a business's mail set up in the
+   four steps of the backend's docs/mail.md and its inbox filling, then the
+   phone sorting, drafting, asking "Send all" and handing back the one that
+   needs a person; Blip peeking in, "I'm hungry", a deck of food cards, one
+   swiped away, the order on its way; Xode with three repos added, a task, a
+   plan approved, the work done in sight, a flaky test re-run from the phone,
+   shipped, and a daily 8:00 mail set up. Then the desktop fades, the phone
+   takes the middle, "Your food has arrived", and the face again.
+3. **The gallery** (`#gifs`), the same showcase: one looping card at a time,
+   swapped in place, with its line beside it (each card's `data-k`, `data-h`,
+   `data-p`, and `data-s` for how long its loop runs): Xode installed in a
+   terminal, a bot flow, slash commands in a chat, the keyboard put together
+   from the backend's keyboard config, Blip in a meeting with real people (the
+   clips in `media/meet/`), reminders arriving. The bar under the box shows
+   how far through its loop a card is and picks another; it pauses under the
+   pointer and off screen.
 4. **The team, the two promises, the plans and the close**: the bots' list
    (a row opens where it stands), phone and computer, staying in charge, free
    to start, and the key again with every device under it.
 
 With reduced motion the film and the stories show their last frame and the
-wheel stands still.
+gallery stays on its card until another is picked.
 
 ## The download is always a link
 

@@ -4,13 +4,11 @@ import { splash } from "./paper/water.js";
 import { scroll } from "./stage.js";
 
 // ---------------------------------------------------------------------------
-// THE OPENING FILM. One white card, four acts, and a camera.
+// THE OPENING FILM. One white card, three acts, and a camera.
 //
-//   1. a game of X and 0: two moves each, both left one square from winning,
-//      and the board goes under the water, piece by piece
-//   2. a box rises; the camera pushes in while "hey X0" is typed; it is sent
-//   3. the dots, then "Here, at your service.", close up, then wide
-//   4. the card clears and the icon puts itself together: its dots from the
+//   1. a box rises; the camera pushes in while "hey X0" is typed; it is sent
+//   2. the dots, then "Here, at your service.", in the middle, close up
+//   3. the card clears and the icon puts itself together: its dots from the
 //      middle out, the visor, a shine across it, the antennae springing up.
 //      Then, the first time only, the page moves on to the next view.
 //
@@ -21,15 +19,12 @@ const card = document.getElementById("card");
 
 if (card) {
   const cam = document.getElementById("cam");
-  const board = document.getElementById("board");
   const box = document.getElementById("typebox");
   const ty = document.getElementById("ty");
   const send = document.getElementById("send");
   const reply = document.getElementById("reply");
   const endmark = document.getElementById("endmark");
   const icon = document.getElementById("icon");
-  const pieces = [...board.querySelectorAll("[data-mark]")];   // X, 0, X, 0
-  const threats = [...board.querySelectorAll(".threat")];
   const replay = document.getElementById("replay");
   const filmsay = document.getElementById("filmsay");
   const next = card.closest("section")?.nextElementSibling;   // the view the film hands over to
@@ -154,10 +149,6 @@ if (card) {
     setRest(false);
     cam.style.transformOrigin = "50% 50%";
     wide(true);
-    board.classList.remove("sunk");
-    board.classList.add("blank");
-    pieces.forEach((p) => p.classList.remove("on"));
-    threats.forEach((t) => t.classList.remove("on"));
     box.classList.remove("in", "out", "ready");
     send.classList.remove("press");
     ty.textContent = "";
@@ -170,7 +161,6 @@ if (card) {
   // The last frame at once: for reduced motion, and for a tap that skips.
   function finale(thenMoveOn) {
     stopAll();
-    board.classList.add("sunk");
     box.classList.remove("in");
     reply.classList.add("gone");
     wide(true);
@@ -186,42 +176,32 @@ if (card) {
     window.__filmT0 = performance.now();   // for the timing probe
     if (reduced) { finale(false); return; }
 
-    // ACT 1: the game nobody wins, and the board going under
-    at(250, () => board.classList.remove("blank"));
-    [1000, 1650, 2300, 2950].forEach((ms, i) => at(ms, () => {
-      pieces[i].classList.add("on");
-      knock(.38 + (i % 2) * .24, .45, 2.6);
-    }));
-    at(3650, () => threats.forEach((t) => t.classList.add("on")));
-    at(4500, () => board.classList.add("sunk"));
-    [0, 100, 200, 300].forEach((d, i) => at(4500 + 380 + d, () => knock(.36 + (i % 2) * .28, .42, 2.8)));
-
-    // ACT 2: the box, the push, the line, the send
-    at(6050, () => box.classList.add("in"));
-    at(6350, () => {
+    // ACT 1: the box, the push, the line, the send
+    at(600, () => box.classList.add("in"));
+    at(900, () => {
       const t = box.querySelector(".ty");
       shootAt(box.offsetLeft + t.offsetLeft + 26, box.offsetTop + box.offsetHeight / 2, 2.05);
       at(250, () => typeOut(LINE));
     });
-    at(7850, () => send.classList.add("press"));
-    at(8050, () => box.classList.add("out"));
+    at(2400, () => send.classList.add("press"));
+    at(2600, () => box.classList.add("out"));
 
-    // ACT 3: the answer, in the middle of the card. Once the box has gone the
+    // ACT 2: the answer, in the middle of the card. Once the box has gone the
     // camera cuts back to wide, centred, so the push in on the answer is a push
     // straight down the middle and the answer never leaves the centre.
-    at(8420, () => { camTo("50% 50%", 1, true); reply.classList.add("in"); });
-    at(8650, () => camTo("50% 50%", 1.75));
-    at(9300, () => {
+    at(2970, () => { camTo("50% 50%", 1, true); reply.classList.add("in"); });
+    at(3200, () => camTo("50% 50%", 1.75));
+    at(3850, () => {
       reply.classList.add("spoken");
       if (filmsay) filmsay.textContent = "X0 Bot: Here, at your service.";
     });
 
-    // ACT 4: the answer sinks away from the close-up, the camera resets while
+    // ACT 3: the answer sinks away from the close-up, the camera resets while
     // the card is empty, the face arrives, and the page moves on
-    at(10500, () => { reply.classList.add("gone"); knock(.5, .35, 2.8); });
-    at(11080, () => wide(true));
-    at(11150, () => { assemble(); knock(.42, .35, 2.8); knock(.58, .35, 2.8); });
-    at(13050, () => { setRest(true); moveOn(); });
+    at(5050, () => { reply.classList.add("gone"); knock(.5, .35, 2.8); });
+    at(5630, () => wide(true));
+    at(5700, () => { assemble(); knock(.42, .35, 2.8); knock(.58, .35, 2.8); });
+    at(7600, () => { setRest(true); moveOn(); });
   }
 
   replay.addEventListener("click", (e) => { e.stopPropagation(); play(); });
@@ -230,6 +210,25 @@ if (card) {
   // Start once the fonts are in, so the first frames are set in the right face.
   const go = () => setTimeout(play, 500);
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(go); else go();
+}
+
+// ---------------------------------------------------------------------------
+// THE LINE BESIDE A SHOWCASE. One kicker, one line, one sentence, swapped as
+// what is playing changes: the old words lift away, the new ones rise in.
+// ---------------------------------------------------------------------------
+function sayer(aside) {
+  if (!aside) return () => {};
+  const k = aside.querySelector(".say-k span"), h = aside.querySelector(".say-h"), p = aside.querySelector(".say-p");
+  let timer = 0, now = h.textContent;
+  return ([kick, line, more], instant = false) => {
+    if (line === now) return;
+    now = line;
+    clearTimeout(timer);
+    const put = () => { k.textContent = kick; h.textContent = line; p.textContent = more; aside.classList.remove("out"); };
+    if (instant || reduced) { put(); return; }
+    aside.classList.add("out");
+    timer = setTimeout(put, 280);
+  };
 }
 
 // ---------------------------------------------------------------------------
@@ -255,6 +254,17 @@ if (card) {
     const feed = document.getElementById("pFeed"), stateEl = document.getElementById("pState");
     const setupEl = document.getElementById("setup");
     const replayW = document.getElementById("workReplay");
+
+    // ---- the line beside it, one per story ----
+    const tell = sayer(work.querySelector(".show-say"));
+    const LINES = {
+      setup: ["Mail", "Your business email, live in minutes.", "Bring your domain. X0 Bot makes hello@, checks every record and learns how you sound."],
+      inbox: ["Mail", "45 emails. 44 handled. One left for you.", "It sorts, drafts replies in your voice, and asks before anything is sent."],
+      food: ["Food", "Say you're hungry. Dinner's sorted.", "It knows what you like, picks it, orders it, and tells you when it's close."],
+      code: ["Code", "Ship from your phone.", "Xode reads your repos, plans the work, writes it and tests it. You approve."],
+      routine: ["Routines", "Ask once. It happens every day.", "Every morning at 8, the updated user list is in your mail."],
+      done: ["All day", "And dinner's at the door.", "While you shipped, it kept an eye on your order. One app, every part of your day."],
+    };
 
     // ---- which screen is doing the work: it comes forward, the other steps back ----
     const focusOn = (who) => {
@@ -542,7 +552,7 @@ if (card) {
         say("Here if you need me", false);
       });
       // Blip peeks in at the desktop's edge
-      wat(B + 600, () => focusOn("desk"));
+      wat(B + 600, () => { focusOn("desk"); tell(LINES.food); });
       wat(B + 800, () => s2.blip.classList.add("peek", "bob"));
       // called
       wat(B + 1900, () => { s2.pill.classList.add("on", "talking"); words(s2.hey, 260); });
@@ -734,7 +744,7 @@ if (card) {
         say("Here if you need me", false);
       });
       // start a project: three repositories, each typed in and dropped into the list
-      T(300, () => focusOn("desk"));
+      T(300, () => { focusOn("desk"); tell(LINES.code); });
       T(600, () => { x3.cursor.classList.remove("hide"); x3point(x3.add, .55, .5); });
       T(1000, () => { x3click(); x3.add.classList.add("focus"); });
       REPOS.forEach(([name, about], i) => {
@@ -844,7 +854,7 @@ if (card) {
       T(22700, () => focusOn("phone"));
       T(22900, () => { term('  <span class="ok">deployed</span> to leafandco.in'); add(SHIP); say("Shipped", false); });
       // every day at 8
-      T(23900, () => { add(ROUTINE); x3msg("Every day at 8:00 I'll mail you the updated user list."); say("Every day at 8:00", false); });
+      T(23900, () => { tell(LINES.routine); add(ROUTINE); x3msg("Every day at 8:00 I'll mail you the updated user list."); say("Every day at 8:00", false); });
       // the next morning, the mail arrives
       T(25300, () => { pDay.classList.add("in"); clock.style.opacity = "0"; wat(250, () => { clock.textContent = "8:00"; clock.style.opacity = "1"; }); });
       T(26300, () => { pDay.classList.remove("in"); pNotif.classList.add("in"); });
@@ -912,7 +922,7 @@ if (card) {
     function act4(D) {
       const T = (ms, fn) => wat(D + ms, fn);
       // the desktop fades away; the phone takes the middle
-      T(0, () => { focusOn(null); pNotif.classList.remove("in"); monitorEl.classList.add("away"); });
+      T(0, () => { focusOn(null); tell(LINES.done); pNotif.classList.remove("in"); monitorEl.classList.add("away"); });
       T(300, () => phoneEl.classList.add("center"));
       // its screen empties as it moves; it is 10:29, thirty-one minutes after the order
       T(600, () => {
@@ -938,6 +948,7 @@ if (card) {
     function reset() {
       wstop();
       focusOn(null);
+      tell(LINES.setup, true);
       work.classList.remove("rest");
       feed.textContent = "";
       drawInbox(true);
@@ -957,6 +968,7 @@ if (card) {
     }
 
     function endState() {
+      tell(LINES.done, true);
       setupEl.classList.add("gone");
       drawInbox(false);
       scene3El.classList.add("on");
@@ -1019,7 +1031,7 @@ if (card) {
 
       // ---------- THEN the phone works through it ----------
       const S = A + 1500;
-      wat(S, () => { focusOn("phone"); say("Reading your inbox…"); typingThen("45 new for hello@leafandco.in. Sorting them.", 750); });
+      wat(S, () => { focusOn("phone"); tell(LINES.inbox); say("Reading your inbox…"); typingThen("45 new for hello@leafandco.in. Sorting them.", 750); });
       wat(S + 1150, () => say("Sorting…"));
       rowsEl.querySelectorAll(".r").forEach((r, i) => wat(S + 1150 + i * 55, () => r.classList.add("tagged")));
       wat(S + 2550, () => { rowsOf("news").forEach((r, i) => wat(i * 90, () => r.closest(".mrow").classList.add("gone"))); count(31); });
@@ -1091,80 +1103,71 @@ if (card) {
 }
 
 // ---------------------------------------------------------------------------
-// THE GALLERY. Six looping cards on a wheel that turns anticlockwise: the
-// card on the right rises to the middle, the middle one drops to the left,
-// the left one goes round the back. It holds on each card long enough to
-// watch its loop, which starts again from the top as a card reaches the
-// middle; it pauses under the pointer and while the gallery is off screen.
+// THE GALLERY. Six looping cards, one at a time, in place: each plays its loop
+// once from the top while its line sits beside it, then the next comes in. The
+// bar under the box shows how far through it is, and picks another. It pauses
+// under the pointer and while the gallery is off screen.
 // ---------------------------------------------------------------------------
 {
-  const gifs = document.getElementById("gifs"), orbit = document.getElementById("orbit");
-  if (orbit) {
-    const cards = [...orbit.querySelectorAll(".gc")];
-    const N = cards.length, STEP = 360 / N, HOLD = 4600, MOVE = 1400;
+  const gifs = document.getElementById("gifs"), deck = document.getElementById("deck");
+  if (deck) {
+    const cards = [...deck.querySelectorAll(".gc")];
+    const dots = [...gifs.querySelectorAll(".g-dot")];
+    const tell = sayer(gifs.querySelector(".show-say"));
 
     // Blip's face in the meeting, and as the icon of each reminder
     const icon = document.getElementById("icon");
     if (icon) {
-      const face = orbit.querySelector(".m-face");
+      const face = deck.querySelector(".m-face");
       if (face) { const c = icon.cloneNode(true); c.removeAttribute("id"); face.appendChild(c); }
       const src = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(
         icon.outerHTML.replace("<svg ", '<svg xmlns="http://www.w3.org/2000/svg" ').replace(' id="icon"', ""));
-      orbit.querySelectorAll(".r-ico").forEach((img) => { img.src = src; });
+      deck.querySelectorAll(".r-ico").forEach((img) => { img.src = src; });
     }
 
-    let off = 0, base = 0, phase = "hold", since = 0, visible = false, hovered = false;
-    // each card's place on the wheel, from its angle (0 is the middle; positive is to the right)
-    function place() {
-      const W = cards[0].offsetWidth, H = W * 272 / 480;
-      cards.forEach((c, i) => {
-        const th = (((i * STEP - off) % 360) + 540) % 360 - 180;
-        const r = th * Math.PI / 180, a = Math.abs(th);
-        const x = 1.108 * W * Math.sin(r), y = 1.9 * H * (1 - Math.cos(r)), s = 1 - .4 * (1 - Math.cos(r));
-        const o = a <= 62 ? 1 : Math.max(0, 1 - (a - 62) / 28);
-        c.style.transform = `translate(${x.toFixed(1)}px, ${y.toFixed(1)}px) scale(${s.toFixed(3)})`;
-        c.style.opacity = o.toFixed(3);
-        c.style.zIndex = String(Math.round(50 + 40 * Math.cos(r)));
-        c.style.visibility = o < .01 ? "hidden" : "visible";
-        // a card plays while it can be seen
-        c.classList.toggle("play", o > 0);
-      });
-    }
-    // a card reaching the middle starts its loop from the top
-    function restartFront() {
-      const front = cards.find((c, i) => Math.abs((((i * STEP - off) % 360) + 540) % 360 - 180) < 1);
-      if (!front) return;
-      const inner = front.firstElementChild;
+    // each card is designed at 480x272 and scaled to the box
+    const fit = () => { const k = (deck.clientWidth / 480).toFixed(4); cards.forEach((c) => c.firstElementChild.style.setProperty("--k", k)); };
+    new ResizeObserver(fit).observe(deck);
+    fit();
+
+    let cur = -1, left = 0, total = 1, last = 0, visible = false, held = false;
+    function restart(c) {
+      const inner = c.firstElementChild;
       inner.style.display = "none"; void inner.offsetWidth; inner.style.display = "";
       inner.querySelectorAll("video").forEach((v) => { try { v.currentTime = 0; v.play().catch(() => {}); } catch (e) {} });
     }
-    function fit() {
-      const w = cards[0].offsetWidth;
-      cards.forEach((c) => c.firstElementChild.style.setProperty("--k", (w / 480).toFixed(4)));
-      place();
+    function show(n) {
+      const prev = cards[cur];
+      cur = (n + cards.length) % cards.length;
+      const c = cards[cur];
+      cards.forEach((o) => o.classList.remove("was"));
+      if (prev && prev !== c) { prev.classList.remove("on"); prev.classList.add("was"); }
+      c.classList.add("on");
+      restart(c);
+      tell([c.dataset.k, c.dataset.h, c.dataset.p], prev === undefined);
+      left = total = (+c.dataset.s || 10) * 1000;
+      dots.forEach((d, i) => { d.setAttribute("aria-current", String(i === cur)); d.style.setProperty("--p", "0"); });
     }
-    new ResizeObserver(fit).observe(orbit);
-    fit();
+    show(0);
 
     function tick(t) {
       requestAnimationFrame(tick);
-      if (!visible || reduced) { since = t; return; }
-      if (phase === "hold") {
-        if (hovered || t - since < HOLD) { if (hovered) since = t; return; }
-        phase = "move"; since = t;
-      }
-      const k = Math.min(1, (t - since) / MOVE);
-      off = base + STEP * easeIO(k);
-      place();
-      if (k >= 1) { base += STEP; off = base; place(); restartFront(); phase = "hold"; since = t; }
+      const dt = last ? t - last : 0; last = t;
+      if (!visible || held || reduced) return;
+      left -= dt;
+      dots[cur].style.setProperty("--p", Math.min(1, 1 - left / total).toFixed(4));
+      if (left <= 0) show(cur + 1);
     }
     requestAnimationFrame(tick);
-    orbit.addEventListener("pointerenter", () => { hovered = true; });
-    orbit.addEventListener("pointerleave", () => { hovered = false; });
+    dots.forEach((d, i) => d.addEventListener("click", () => show(i)));
+    const box = gifs.querySelector(".show-box");
+    box.addEventListener("pointerenter", () => { held = true; gifs.classList.add("held"); });
+    box.addEventListener("pointerleave", () => { held = false; gifs.classList.remove("held"); });
     new IntersectionObserver((es) => {
+      const was = visible;
       visible = es.some((e) => e.isIntersecting);
       gifs.classList.toggle("off", !visible);
-      if (visible) restartFront();
+      if (visible && !was) show(cur);
     }, { threshold: .35 }).observe(gifs);
   }
 }

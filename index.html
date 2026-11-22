@@ -105,25 +105,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   <div class="card" id="card" data-noglitch>
     <div class="cam" id="cam">
 
-      <svg class="board blank" id="board" viewBox="0 0 300 300" aria-hidden="true">
-        <g class="grid" stroke-linecap="round">
-          <line class="gl" x1="100" y1="14" x2="100" y2="286"/>
-          <line class="gl" x1="200" y1="14" x2="200" y2="286"/>
-          <line class="gl" x1="14" y1="100" x2="286" y2="100"/>
-          <line class="gl" x1="14" y1="200" x2="286" y2="200"/>
-        </g>
-        <circle class="rip" data-i="0" cx="50" cy="50" r="26"/>
-        <circle class="rip" data-i="1" cx="50" cy="150" r="26"/>
-        <circle class="rip" data-i="2" cx="150" cy="50" r="26"/>
-        <circle class="rip" data-i="3" cx="150" cy="150" r="26"/>
-        <g class="threat tx" stroke-linecap="round"><line x1="22" y1="50" x2="278" y2="50"/></g>
-        <g class="threat to" stroke-linecap="round"><line x1="22" y1="150" x2="278" y2="150"/></g>
-        <g class="pc x" data-i="0" data-mark stroke-linecap="round"><line class="s" x1="26" y1="26" x2="74" y2="74"/><line class="s" x1="74" y1="26" x2="26" y2="74"/></g>
-        <g class="pc o" data-i="1" data-mark><circle class="c" cx="50" cy="150" r="25"/></g>
-        <g class="pc x" data-i="2" data-mark stroke-linecap="round"><line class="s" x1="126" y1="26" x2="174" y2="74"/><line class="s" x1="174" y1="26" x2="126" y2="74"/></g>
-        <g class="pc o" data-i="3" data-mark><circle class="c" cx="150" cy="150" r="25"/></g>
-      </svg>
-
       <div class="typebox" id="typebox">
         <span class="plus" aria-hidden="true">+</span>
         <span class="ty"><span id="ty"></span><i class="caret" aria-hidden="true"></i></span>
@@ -505,7 +486,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   <p class="sr" id="filmsay" aria-live="polite"></p>
 </section>
 
-<section id="work" class="work" aria-label="X0 Bot working through an inbox">
+<section id="work" class="show work" aria-label="X0 Bot at work: mail, food and code">
+  <div class="show-box">
   <div class="devices" data-noglitch>
 
     <div class="monitor">
@@ -552,12 +534,19 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
   </div>
   <button class="replay work-replay" id="workReplay" type="button">Replay</button>
+  </div>
+  <aside class="show-say" aria-live="polite">
+    <p class="say-k"><i class="led" aria-hidden="true"></i><span>Mail</span></p>
+    <h2 class="say-h">Your business email, live in minutes.</h2>
+    <p class="say-p">Bring your domain. X0 Bot makes hello@, checks every record and learns how you sound.</p>
+  </aside>
 </section>
 
-<section id="gifs" class="gifs" aria-label="More of what X0 Bot does">
-  <div class="orbit" id="orbit" data-noglitch>
+<section id="gifs" class="show gifs" aria-label="More of what X0 Bot does">
+  <div class="show-box">
+  <div class="deck" id="deck" data-noglitch>
 
-    <div class="gc"><div class="gcx g-term">
+    <div class="gc" data-k="Xode" data-h="One line to install. Then just say what to build." data-p="Xode in your terminal writes the code, and the tests with it." data-s="9"><div class="gcx g-term">
       <div class="t-bar"><i></i><i></i><i></i><span>~ · zsh</span></div>
       <div class="t-cam">
         <div class="t-cmd"><span class="t-ps">~ $</span> <span class="t-type">curl -fsSL https://x0bot.com/install.sh | bash</span><i class="t-cur"></i></div>
@@ -589,10 +578,9 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
           <div>});</div>
         </div></div>
       </div>
-      <span class="g-lab">Xode in your terminal</span>
     </div></div>
 
-    <div class="gc"><div class="gcx g-flow">
+    <div class="gc" data-k="Bot flows" data-h="Build a bot without building anything." data-p="When this happens, do that. It runs by itself, every time." data-s="10"><div class="gcx g-flow">
       <svg class="fl-wires" viewBox="0 0 480 272"><path class="w1" d="M138 104 C156 104 156 104 174 104"/><path class="w2" d="M294 104 C312 104 312 104 330 104"/></svg>
       <div class="fl-node n1"><i class="ic c-moss"></i><div><small>When</small><b>A new order comes in</b></div></div>
       <div class="fl-node n2"><i class="ic c-ochre"></i><div><small>Then</small><b>Check the stock</b></div></div>
@@ -601,10 +589,9 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       <span class="fl-dot"></span>
       <div class="fl-auto"><span class="fl-sw"><i></i></span><span>Runs on every new order</span></div>
       <span class="fl-next">Next</span>
-      <span class="g-lab">Build a bot flow</span>
     </div></div>
 
-    <div class="gc"><div class="gcx g-cmd">
+    <div class="gc" data-k="Commands" data-h="A slash away, in any chat." data-p="/travel, /mail, /plan, /xode. Call a bot, @ a person, done." data-s="12"><div class="gcx g-cmd">
       <div class="c-head"><span class="c-av c-clay">L</span><b>Leaf &amp; Co. team</b><span>4 people</span></div>
       <div class="c-case"><div class="c-sent"><b class="sl">/travel</b> find two stays near Baga for Friday, send to <b class="at">@Priya</b></div>
         <div class="c-reply"><span>X0 Bot</span>Sent Priya two stays near Baga, both under ₹6,000.</div>
@@ -619,10 +606,9 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <div class="c-reply"><span>X0 Bot</span>On it. I'll tell Rahul the moment it ships.</div>
         <div class="c-typing"><b class="sl">/xode</b> fix the checkout bug, tell <b class="at">@Rahul</b> when it's live</div></div>
       <div class="c-box"></div>
-      <span class="g-lab">Commands in any chat</span>
     </div></div>
 
-    <div class="gc"><div class="gcx g-kbd">
+    <div class="gc" data-k="Keyboard" data-h="Talk. It types like you." data-p="Tap the mic in any app. Your words, your language, your tone." data-s="9"><div class="gcx g-kbd">
       <div class="k-head"><span class="c-av c-sea">R</span><b>Riya</b></div>
       <div class="k-field"><span class="k-out">Haan Riya, aa raha hoon. Khana rakh dena mere liye.</span></div>
       <div class="kb">
@@ -640,10 +626,9 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <div class="kb-row kr4"><i class="kb-fn kb-123">123</i><i class="kb-fn kb-gl"><svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="6.2" fill="none" stroke="currentColor" stroke-width="1.3"/><path d="M1.8 8h12.4M8 1.8c2 2 2 10.4 0 12.4M8 1.8c-2 2-2 10.4 0 12.4" fill="none" stroke="currentColor" stroke-width="1.3"/></svg></i><i class="kb-pt">,</i><i class="kb-sp">X0 Bot</i><i class="kb-pt">.</i><i class="kb-fn kb-ret">return</i></div>
       </div>
       <span class="k-tap"></span>
-      <span class="g-lab">The keyboard, by voice</span>
     </div></div>
 
-    <div class="gc"><div class="gcx g-meet">
+    <div class="gc" data-k="Meetings" data-h="It takes the notes. You make the calls." data-p="X0 Bot joins the call and hands everyone their to-dos." data-s="10"><div class="gcx g-meet">
       <div class="m-grid">
         <div class="m-tile"><video src="/media/meet/call-1.mp4" muted autoplay loop playsinline></video><span class="m-name">Rahul</span></div>
         <div class="m-tile"><video src="/media/meet/call-2.mp4" muted autoplay loop playsinline></video><span class="m-name">Arjun</span></div>
@@ -652,10 +637,9 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       </div>
       <div class="m-cap">Decided: launch on Friday. Rahul owns the mailer, Arjun the stock.</div>
       <div class="m-notes"><b>Notes · 3 to-dos</b><p><span>Rahul</span>Festive mailer by Thursday</p><p><span>Arjun</span>Restock monstera</p><p><span>Kavya</span>Send the revised invoice</p></div>
-      <span class="g-lab">In your meetings</span>
     </div></div>
 
-    <div class="gc"><div class="gcx g-rem">
+    <div class="gc" data-k="Reminders" data-h="Nothing slips. Not even for your team." data-p="Reminders for you, and for the people you work with." data-s="10"><div class="gcx g-rem">
       <div class="r-time"><b>10:42</b><span>Friday, 21 November</span></div>
       <div class="r-stack">
         <div class="r-n r1"><img class="r-ico" alt=""><div><small>X0 Bot · in 15 min</small><b>Supplier call with Kavya</b><span>Her revised invoice is in your mail.</span></div></div>
@@ -663,10 +647,23 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <div class="r-n r3"><img class="r-ico" alt=""><div><small>X0 Bot · tomorrow, 9:00</small><b>Pay the courier invoice</b><span>₹6,400 · due Friday</span></div></div>
         <div class="r-n r4"><img class="r-ico" alt=""><div><small>X0 Bot · for Arjun</small><b>Restock monstera before Friday</b><span>Sent to Arjun · 12 left in stock</span></div></div>
       </div>
-      <span class="g-lab">Reminders, for you and your team</span>
     </div></div>
 
   </div>
+  <div class="g-dots">
+    <button type="button" class="g-dot" aria-label="Xode"></button>
+    <button type="button" class="g-dot" aria-label="Bot flows"></button>
+    <button type="button" class="g-dot" aria-label="Commands"></button>
+    <button type="button" class="g-dot" aria-label="Keyboard"></button>
+    <button type="button" class="g-dot" aria-label="Meetings"></button>
+    <button type="button" class="g-dot" aria-label="Reminders"></button>
+  </div>
+  </div>
+  <aside class="show-say" aria-live="polite">
+    <p class="say-k"><i class="led" aria-hidden="true"></i><span>Xode</span></p>
+    <h2 class="say-h">One line to install. Then just say what to build.</h2>
+    <p class="say-p">Xode in your terminal writes the code, and the tests with it.</p>
+  </aside>
 </section>
 
 <section id="team" class="band">

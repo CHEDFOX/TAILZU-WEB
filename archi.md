@@ -32,8 +32,8 @@ step, no framework, no dependencies. Served by nginx on the VPS, deployed on eve
 ```
 index.html              the page: markup for the film, the views and the bands, the tag manager inline, a <noscript> fallback; loads js/main.js
 js/                     the page's script, one ES module per part (no build step; the CSP allows scripts from this origin)
-  main.js               the opening film (the X and 0 game, "hey X0", the reply, the face), the work view's three stories and its finale,
-                        and the gallery's wheel; imports stage.js first
+  main.js               the opening film ("hey X0", the reply, the face), the work view's three stories, its finale and the line beside it,
+                        and the gallery's cards one at a time; `sayer` swaps a showcase's line; imports stage.js first
   stage.js              the fabric's frame loop and resize, the pointer and the scroll on the water (`scroll.quiet` while the page
                         scrolls itself), the bots' list, the key's per-device target and its lean
   util.js               small helpers, and the window's size and pixel ratio (`view`)
@@ -41,7 +41,7 @@ js/                     the page's script, one ES module per part (no build step
   paper/water.js        the plane as water: a 2-D wave equation, splash() and sample()
   paper/words.js        the plane of tiny words in the world's scripts, moved by the water; their 0/1 flicker
   paper/glitch.js       the page's own words flicker into 0/1 under the pointer (not inside `[data-noglitch]`, i.e. the film's card)
-css/site.css            the whole page's look: the card, the devices and every screen in them, the gallery, the bands
+css/site.css            the whole page's look: the card, the showcases (box and line), the devices and every screen in them, the gallery, the bands
 media/meet/             three muted five-second clips of people on a video call, for the meeting card (Mixkit, free stock video)
 api/                    the serverless functions Vercel ran (unused on the VPS: the API serves both routes; to delete once the move is settled)
   _meta.js              shared Meta pixel / Conversions API helpers (reads the dataset id and token from Vercel env)
@@ -68,10 +68,11 @@ README.md               how the page behaves, what to run after a change, how pu
 
 | Looking for | Where |
 |---|---|
-| The film: the game, the typing, the reply, the face assembling, the hand-over scroll | `js/main.js` (THE OPENING FILM; `LINE`), markup `#stage`, styles `css/site.css` |
+| The film: the typing, the reply, the face assembling, the hand-over scroll | `js/main.js` (THE OPENING FILM; `LINE`), markup `#stage`, styles `css/site.css` |
 | The face (the app icon as vector) | the `<svg id="icon">` inside `#endmark` in `index.html`; reused as a picture by `js/main.js` (`faceSrc`) |
 | The work view: mail setup, inbox, the phone's replies, food, Xode, the finale | `js/main.js` (THE WORK VIEW: the setup card, the inbox rows, the second story, the third story, the finale), markup `#work` |
-| The gallery's six cards and the wheel's timing | markup `#gifs`, `js/main.js` (THE GALLERY; `HOLD`, `MOVE`) |
+| The gallery's six cards, their lines and how long each plays | markup `#gifs` (each `.gc`'s `data-k`/`data-h`/`data-p`/`data-s`), `js/main.js` (THE GALLERY) |
+| The second view's lines, one per story | `js/main.js` (`LINES` in THE WORK VIEW); the showcase layout is `.show` in `css/site.css` |
 | The people in the meeting card (real clips) and swapping them | `media/meet/call-{1,2,3}.mp4` (Mixkit free stock video); `media-src 'self'` in `vercel.json` |
 | The bots' list, the two promises, plans, the close | markup `#team`, `.band.two`, `.band.plans`, `.band.close` in `index.html` |
 | The download keys' per-device target | `js/stage.js` (`GET`) |
@@ -87,7 +88,7 @@ README.md               how the page behaves, what to run after a change, how pu
 
 - The browser loads `index.html`; `js/main.js` imports `js/stage.js`, which starts the fabric (grain, water, words, glitch)
   and its one frame loop, then plays the film in the white card, scrolls once to the work view, plays its three stories when
-  it comes into sight, and turns the gallery's wheel. The rest is an ordinary page.
+  it comes into sight, and plays the gallery's cards one at a time, each showcase with its changing line beside it. The rest is an ordinary page.
 - Everything dynamic belongs to the backend: nginx (from `vercel.json`'s rewrites) sends `/v1/...`, `/download`, the installers and the
   backend's pages to `api.x0bot.com`, so the site never handles accounts, payments or large files itself.
 - Meta's pixel and its Conversions API copy are the backend's too (`META_PIXEL_ID`, `META_CAPI_TOKEN` in its `.env`).
