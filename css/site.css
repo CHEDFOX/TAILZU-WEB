@@ -252,10 +252,8 @@ a { color: var(--ink); text-decoration-color: var(--line); text-underline-offset
 .show-say > * { transition: opacity .32s ease, translate .42s cubic-bezier(.2, .8, .3, 1); }
 .show-say.out > * { opacity: 0; translate: 0 -8px; transition-duration: .22s, .26s; }
 .show-say.out .say-h { transition-delay: .03s; } .show-say.out .say-p { transition-delay: .06s; }
-/* the box on the right, the line on the left (the cases alternate) */
-.show.flip { flex-direction: row-reverse; }
 @media (max-width: 860px) {
-  .show, .show.flip { flex-direction: column-reverse; justify-content: center; padding-top: 76px; }
+  .show { flex-direction: column-reverse; justify-content: center; padding-top: 76px; }
   .show-box { width: min(100%, calc((100svh - 300px) * 1.72)); min-width: min(100%, 22rem); }
   .show-say { flex: none; width: 100%; max-width: 32rem; padding: 0 4px; background: none; box-shadow: none; text-align: left; }
   .say-k { margin-bottom: 10px; }
@@ -730,23 +728,45 @@ a { color: var(--ink); text-decoration-color: var(--line); text-underline-offset
 .app.cam { transition: transform .95s cubic-bezier(.65, 0, .35, 1); }
 
 /* =====================================================================
-   THE CASES. Six looping cards, each a view of its own as the page scrolls,
-   in a showcase box with its line beside it, the box on alternate sides.
-   Each card is designed at 480x272 and scaled to its
+   THE CASES. Six looping cards, three by two, all playing; a click lifts
+   one a little larger where it stands, with its line by it. Each card is designed at 480x272 and scaled to its
    frame; each loop is pure CSS, and its resting style is its finished
    frame, so with motion reduced every card simply shows its result.
    ===================================================================== */
-.deck { position: relative; width: 100%; aspect-ratio: 480 / 272; }
-.gc { position: absolute; inset: 0; border-radius: 22px; overflow: hidden; isolation: isolate; background: #fff;
-  box-shadow: 0 0 0 1px rgba(22, 20, 15, .08), 0 34px 64px -38px rgba(22, 20, 15, .55); }
-/* a case comes up as it scrolls in */
-.case .show-box, .case .show-say { transition: opacity .7s ease, translate .9s cubic-bezier(.2, .8, .25, 1); }
-.case:not(.seen) .show-box { opacity: 0; translate: 0 36px; }
-.case:not(.seen) .show-say { opacity: 0; translate: 0 24px; }
-.case.seen .show-say { transition-delay: .12s; }
-@media (prefers-reduced-motion: reduce) { .case .show-box, .case .show-say { transition: none; opacity: 1; translate: none; } }
+.cases { position: relative; min-height: 100svh; box-sizing: border-box; width: 100vw; margin-inline: calc(50% - 50vw);
+  display: flex; align-items: center; justify-content: center; padding: 84px max(16px, 4vw) 56px; }
+/* three by two, all playing; as wide as the window allows while two rows still fit its height */
+.grid { --gx: clamp(20px, 4.5vw, 84px); --gy: clamp(28px, 7svh, 84px);
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--gy) var(--gx);
+  width: min(84rem, 100%, calc((100svh - 140px - var(--gy)) / 2 / .5667 * 3 + 2 * var(--gx))); }
+.case { position: relative; aspect-ratio: 480 / 272; cursor: zoom-in; outline: none; z-index: 1;
+  transition: scale .55s cubic-bezier(.2, .8, .25, 1), opacity .45s ease, z-index 0s .55s; }
+.gc { position: absolute; inset: 0; border-radius: 18px; overflow: hidden; isolation: isolate; background: #fff;
+  box-shadow: 0 0 0 1px rgba(22, 20, 15, .08), 0 34px 64px -38px rgba(22, 20, 15, .55); transition: box-shadow .3s ease; }
+.case:hover .gc { box-shadow: 0 0 0 1px rgba(22, 20, 15, .14), 0 40px 70px -34px rgba(22, 20, 15, .6); }
+.case:focus-visible .gc { outline: 2px solid #4F7A3A; outline-offset: 4px; }
+/* clicked: a little larger where it stands (growing away from the window's edges), above the rest, with its line beside it */
+.case:nth-child(1) { transform-origin: 0 0; } .case:nth-child(2) { transform-origin: 50% 0; } .case:nth-child(3) { transform-origin: 100% 0; }
+.case:nth-child(4) { transform-origin: 0 100%; } .case:nth-child(5) { transform-origin: 50% 100%; } .case:nth-child(6) { transform-origin: 100% 100%; }
+.case.big { scale: 1.32; z-index: 5; cursor: zoom-out; transition: scale .55s cubic-bezier(.2, .8, .25, 1), opacity .45s ease, z-index 0s; }
+.grid.has-big .case:not(.big) { opacity: .5; }
+.case-say { position: absolute; left: 0; right: 0; top: calc(100% + 8px); padding: 10px 12px; border-radius: 12px; background: #fff;
+  box-shadow: 0 0 0 1px rgba(22, 20, 15, .08), 0 24px 44px -30px rgba(22, 20, 15, .5);
+  opacity: 0; visibility: hidden; translate: 0 -6px; transition: opacity .3s ease, translate .4s cubic-bezier(.2, .8, .3, 1), visibility 0s .4s; }
+.case:nth-child(n + 4) .case-say { top: auto; bottom: calc(100% + 8px); translate: 0 6px; }
+.case.big .case-say { opacity: 1; visibility: visible; translate: 0 0; transition: opacity .35s ease .2s, translate .45s cubic-bezier(.2, .8, .3, 1) .2s, visibility 0s; }
+.case-say .say-k { margin-bottom: 5px; font-size: 8px; } .case-say .say-k .led { width: 4px; height: 4px; box-shadow: 0 0 0 3px rgba(79, 122, 58, .14); }
+.case-say h3 { margin: 0 0 3px; font: 400 14px/1.15 var(--serif); letter-spacing: -.015em; }
+.case-say p:last-child { margin: 0; font: 400 9px/1.45 var(--sans); color: var(--ink-2); }
+@media (max-width: 960px) {
+  .grid { grid-template-columns: repeat(2, 1fr); width: 100%; }
+  .case:nth-child(n) { transform-origin: 50% 50%; } .case.big { scale: 1.14; }
+  .case:nth-child(n + 4) .case-say { top: calc(100% + 8px); bottom: auto; translate: 0 -6px; }
+}
+@media (max-width: 620px) { .grid { grid-template-columns: 1fr; } .case.big { scale: 1.04; } }
+@media (prefers-reduced-motion: reduce) { .case, .case-say { transition: none !important; } }
 .gcx { position: absolute; left: 0; top: 0; width: 480px; height: 272px; overflow: hidden; border-radius: inherit; transform-origin: 0 0; transform: scale(var(--k, 1)); font-family: var(--sans); color: #141414; }
-.case:not(.on) .gcx * { animation-play-state: paused !important; }
+.cases.off .gcx * { animation-play-state: paused !important; }
 
 /* ---- 1. Xode in the terminal: typed fast, zoom in, hold, out, then code written fast, line by line (9s) ---- */
 .g-term { background: #121212; color: #D4D4CF; border-radius: 24px; }

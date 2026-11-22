@@ -1103,40 +1103,54 @@ function sayer(aside) {
 }
 
 // ---------------------------------------------------------------------------
-// THE CASES. Six looping cards, each a view of its own. A case rises in the
-// first time it scrolls into sight, starts its loop from the top whenever it
-// comes back into view, and stands still while it is off screen.
+// THE CASES. Six looping cards, three by two, all playing while the grid is on
+// screen. A click (or Enter or Space) lifts one a little larger where it
+// stands, with its line by it; another click, a click elsewhere or Escape puts
+// it back.
 // ---------------------------------------------------------------------------
 {
-  const cases = [...document.querySelectorAll(".case")];
-  if (cases.length) {
+  const sec = document.getElementById("gifs");
+  const grid = sec && sec.querySelector(".grid");
+  if (grid) {
+    const cases = [...grid.querySelectorAll(".case")];
+
     // Blip's face in the meeting, and as the icon of each reminder
     const icon = document.getElementById("icon");
     if (icon) {
-      const face = document.querySelector(".case .m-face");
+      const face = grid.querySelector(".m-face");
       if (face) { const c = icon.cloneNode(true); c.removeAttribute("id"); face.appendChild(c); }
       const src = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(
         icon.outerHTML.replace("<svg ", '<svg xmlns="http://www.w3.org/2000/svg" ').replace(' id="icon"', ""));
-      document.querySelectorAll(".case .r-ico").forEach((img) => { img.src = src; });
+      grid.querySelectorAll(".r-ico").forEach((img) => { img.src = src; });
     }
 
-    // each card is designed at 480x272 and scaled to its box
-    const ro = new ResizeObserver((es) => es.forEach((e) => {
-      e.target.querySelector(".gcx").style.setProperty("--k", (e.target.clientWidth / 480).toFixed(4));
-    }));
-    cases.forEach((c) => ro.observe(c.querySelector(".deck")));
+    // each card is designed at 480x272 and scaled to its cell
+    const fit = () => { const k = (cases[0].clientWidth / 480).toFixed(4); cases.forEach((c) => c.querySelector(".gcx").style.setProperty("--k", k)); };
+    new ResizeObserver(fit).observe(grid);
+    fit();
 
-    function restart(c) {
-      const inner = c.querySelector(".gcx");
-      inner.style.display = "none"; void inner.offsetWidth; inner.style.display = "";
-      inner.querySelectorAll("video").forEach((v) => { try { v.currentTime = 0; v.play().catch(() => {}); } catch (e) {} });
+    let big = null;
+    function lift(c) {
+      if (big) { big.classList.remove("big"); big.setAttribute("aria-expanded", "false"); }
+      big = c && c !== big ? c : null;
+      if (big) { big.classList.add("big"); big.setAttribute("aria-expanded", "true"); }
+      grid.classList.toggle("has-big", !!big);
     }
-    const io = new IntersectionObserver((es) => es.forEach((e) => {
-      const c = e.target, on = e.isIntersecting;
-      if (on && !c.classList.contains("on")) restart(c);
-      c.classList.toggle("on", on);
-      if (on) c.classList.add("seen");
-    }), { threshold: .45 });
-    cases.forEach((c) => { if (reduced) c.classList.add("seen"); io.observe(c); });
+    cases.forEach((c) => {
+      c.addEventListener("click", (e) => { e.stopPropagation(); lift(c); });
+      c.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); lift(c); } });
+    });
+    document.addEventListener("click", () => { if (big) lift(null); });
+    addEventListener("keydown", (e) => { if (e.key === "Escape" && big) lift(null); });
+
+    // all of them play while the grid can be seen, and stand still when it cannot
+    let shown = false;
+    new IntersectionObserver((es) => {
+      const vis = es.some((e) => e.isIntersecting);
+      sec.classList.toggle("off", !vis);
+      if (vis && !shown) grid.querySelectorAll("video").forEach((v) => v.play().catch(() => {}));
+      if (!vis && big) lift(null);
+      shown = vis;
+    }, { threshold: .2 }).observe(sec);
   }
 }
