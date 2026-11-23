@@ -763,9 +763,12 @@ a { color: var(--ink); text-decoration-color: var(--line); text-underline-offset
 .cases { position: relative; min-height: 100svh; box-sizing: border-box; width: 100vw; margin-inline: calc(50% - 50vw);
   display: flex; align-items: center; justify-content: center; padding: 84px max(16px, 4vw) 56px; }
 /* three by two, all playing; as wide as the window allows while two rows still fit its height */
-.grid { --gx: clamp(20px, 4.5vw, 84px); --gy: clamp(28px, 7svh, 84px);
+/* the scene in a box, like the work view's */
+.cases-box { --pad: clamp(18px, 3.4vw, 60px); box-sizing: border-box; padding: var(--pad); border-radius: 30px; background: rgba(255, 255, 255, .5);
+  box-shadow: 0 0 0 1px rgba(22, 20, 15, .09), 0 40px 80px -58px rgba(22, 20, 15, .5); max-width: 100%; }
+.grid { --gx: clamp(20px, 4.2vw, 76px); --gy: clamp(26px, 6svh, 72px);
   display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--gy) var(--gx);
-  width: min(84rem, 100%, calc((100svh - 140px - var(--gy)) / 2 / .5667 * 3 + 2 * var(--gx))); }
+  width: min(80rem, calc(100vw - max(32px, 8vw) - 2 * var(--pad)), calc((100svh - 140px - var(--gy) - 2 * var(--pad)) / 2 / .5667 * 3 + 2 * var(--gx))); }
 .case { position: relative; aspect-ratio: 480 / 272; cursor: pointer; outline: none; z-index: 1;
   transition: scale .55s cubic-bezier(.2, .8, .25, 1), opacity .45s ease, z-index 0s .55s; }
 .gc { position: absolute; inset: 0; border-radius: 18px; overflow: hidden; isolation: isolate; background: #fff;
@@ -786,6 +789,7 @@ a { color: var(--ink); text-decoration-color: var(--line); text-underline-offset
 .case-say h3 { margin: 0 0 3px; font: 400 14px/1.15 var(--serif); letter-spacing: -.015em; }
 .case-say p:last-child { margin: 0; font: 400 9px/1.45 var(--sans); color: var(--ink-2); }
 @media (max-width: 960px) {
+  .cases-box { width: 100%; }
   .grid { grid-template-columns: repeat(2, 1fr); width: 100%; }
   .case:nth-child(n) { transform-origin: 50% 50%; } .case.big { scale: 1.14; }
   .case:nth-child(n + 4) .case-say { top: calc(100% + 8px); bottom: auto; translate: 0 -6px; }
