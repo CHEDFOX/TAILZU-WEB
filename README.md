@@ -34,7 +34,8 @@ moves, and the page's own words flickering into 0/1 under the pointer
    itself to the next view.
 2. **The work** (`#work`), a showcase: a box with a desktop and a phone in
    it, and beside it a short line that changes with the story playing
-   (`LINES` in `js/main.js`). Three stories, once each as the view comes into
+   (`LINES` in `js/main.js`), and under it the stories as tabs (Mail, Food,
+   Code) that show how far each has got and jump to one. Three stories, once each as the view comes into
    sight (Replay runs them again), and whichever screen is doing the work
    comes forward while the other steps back: a business's mail set up in the
    four steps of the backend's docs/mail.md and its inbox filling, then the
@@ -46,22 +47,28 @@ moves, and the page's own words flickering into 0/1 under the pointer
    shipped, and a daily 8:00 mail set up. Then the desktop fades, the phone
    takes the middle, "Your food has arrived", and the face again.
 3. **The cases** (`#gifs`): six looping cards on one screen, three by two
-   (two across, then one, on narrower windows), all playing while the grid
-   is in sight: Xode installed in a terminal, a bot flow, slash commands in a
-   chat, the keyboard put together from the backend's keyboard config, Blip
-   in a meeting with real people (the clips in `media/meet/`), reminders
-   arriving. Hovering lifts one a third larger where it stands, growing away
-   from the window's edges, with its line beside it; a click (or Enter)
-   keeps it there after the pointer leaves, and another click, a click
+   (two across, then one, on narrower windows): Xode installed in a terminal,
+   a bot flow, slash commands in a chat, the keyboard put together from the
+   backend's keyboard config, Blip in a meeting with real people (the clips
+   in `media/meet/`), reminders arriving (on the visitor's own clock). One
+   plays at a time, in turn, for the length of its loop; the rest hold their
+   finished frame. Hovering lifts one a third larger where it stands, and it
+   plays; a click (or Enter) keeps it there, and another click, a click
    elsewhere or Escape puts it back. On touch screens a tap does it.
 4. **The two promises, the plans and the close**: phone and computer,
    staying in charge, free to start, and the key again with every device
-   under it.
+   under it and three plain facts. Beside it, **X and 0 against Blip**
+   (`js/game.js`): the visitor is X, Blip the green 0 (a zero, not an O); he
+   greets them by their time of day, plays well but can be beaten, keeps the
+   score, and each finished round sinks into the water.
 
 With reduced motion the film, the stories and the cases show their last frame.
 
-**The small bots** (`js/minis.js`): a little Blip on each of the first three
-views, on one canvas over the page that never takes the pointer. Over the film
+**The small Blip** (`js/minis.js`): one little Blip who goes down the page:
+when the view changes he flies to the next on his jetpack, from where he was,
+and lands on the boxes or dives behind a card; the flier dodges the pointer,
+the skater ollies over it and the peeker ducks from it. In each of the first
+three views, on one canvas over the page that never takes the pointer. Over the film
 he flies about on a jetpack, out of the screen and back in somewhere else;
 on the work view he rides a skateboard along the top edges of the two boxes,
 flips off their ends, turns round in the air and jumps the gap between them;

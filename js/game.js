@@ -18,6 +18,9 @@ if (root) {
     draw: ["A draw. Again?", "Nobody wins. Again?", "Even. One more?"],
   };
   let b = Array(9).fill(""), turn = "x", starts = "x", over = false, score = [0, 0], timers = [];
+  // he greets the visitor by their own time of day
+  const hr = new Date().getHours();
+  sayEl.textContent = `${hr < 5 ? "Up late?" : hr < 12 ? "Good morning." : hr < 17 ? "Good afternoon." : "Good evening."} A game? You're X.`;
   const later = (ms, fn) => { timers.push(setTimeout(fn, reduced ? Math.min(ms, 60) : ms)); };
 
   function say(text) {

@@ -1040,11 +1040,33 @@ function sayer(aside) {
       work.classList.add("rest");
     }
 
-    function run() {
+    // ---- the stories as tabs: where each starts on the whole run's clock, for their bars and for jumping in ----
+    const STORY = { mail: 0, food: 29300, code: 42900 }, RUN_END = 84700;
+    const tabs = [...work.querySelectorAll(".tab")];
+    let clock0 = 0, clockOn = false;
+    function tabsTick(now) {
+      requestAnimationFrame(tabsTick);
+      if (!clockOn) return;
+      const t = now - clock0, keys = Object.keys(STORY);
+      tabs.forEach((b, i) => {
+        const a = STORY[keys[i]], z = i + 1 < keys.length ? STORY[keys[i + 1]] : RUN_END;
+        b.style.setProperty("--p", Math.max(0, Math.min(1, (t - a) / (z - a))).toFixed(4));
+        b.classList.toggle("on", t >= a && t < z);
+      });
+      if (t > RUN_END) clockOn = false;
+    }
+    requestAnimationFrame(tabsTick);
+    tabs.forEach((b) => b.addEventListener("click", () => { ran = true; run(b.dataset.story); }));
+
+    function run(from) {
+      const story = typeof from === "string" && STORY[from] !== undefined ? from : "mail";
       runs++;
       reset();
       window.__workT0 = performance.now();   // for the timing probe
       if (reduced) { endState(); return; }
+      clock0 = performance.now() - STORY[story]; clockOn = true;
+      if (story === "food") { act2(200); return; }
+      if (story === "code") { act3(200); return; }
 
       // ---------- SET UP, on the desktop ----------
       focusOn("desk");
@@ -1154,8 +1176,8 @@ function sayer(aside) {
 }
 
 // ---------------------------------------------------------------------------
-// THE CASES. Six looping cards, three by two, all playing while the grid is on
-// screen. Hovering lifts one a little larger where it stands, with its line by
+// THE CASES. Six looping cards, three by two; one plays at a time, in turn, and the
+// rest hold their finished frame. Hovering lifts one a little larger where it stands, with its line by
 // it; a click (or Enter or Space) keeps it there, and another click, a click
 // elsewhere or Escape puts it back.
 // ---------------------------------------------------------------------------
@@ -1175,6 +1197,14 @@ function sayer(aside) {
       grid.querySelectorAll(".r-ico").forEach((img) => { img.src = src; });
     }
 
+    // the reminders' lock screen shows the visitor's own day
+    const rt = document.getElementById("remTime");
+    if (rt) {
+      const d = new Date();
+      rt.querySelector("b").textContent = d.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" }).replace(/\s?[AP]M$/i, "");
+      rt.querySelector("span").textContent = d.toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "long" }).replace(",", "");
+    }
+
     // each card is designed at 480x272 and scaled to its cell
     const fit = () => { const k = (cases[0].clientWidth / 480).toFixed(4); cases.forEach((c) => c.querySelector(".gcx").style.setProperty("--k", k)); };
     new ResizeObserver(fit).observe(grid);
@@ -1189,7 +1219,7 @@ function sayer(aside) {
       if (c === big) return;
       if (big) { big.classList.remove("big"); big.setAttribute("aria-expanded", "false"); }
       big = c;
-      if (big) { big.classList.add("big"); big.setAttribute("aria-expanded", "true"); }
+      if (big) { big.classList.add("big"); big.setAttribute("aria-expanded", "true"); turn = cases.indexOf(big); }
       grid.classList.toggle("has-big", !!big);
     }
     function lift(c) {                     // a click, Enter or Space
@@ -1210,14 +1240,30 @@ function sayer(aside) {
     document.addEventListener("click", () => { if (big) { set(null); pinned = false; } });
     addEventListener("keydown", (e) => { if (e.key === "Escape" && big) { set(null); pinned = false; } });
 
-    // all of them play while the grid can be seen, and stand still when it cannot
-    let shown = false;
+    // ONE PLAYS AT A TIME, the rest hold their finished frame: each in turn for the length of its loop, or the one
+    // that is lifted, for as long as it is. A card starts from the top when its turn comes (its animations are off
+    // until then, and its resting style is its last frame).
+    const LOOP = [9, 10, 12, 9, 10, 10];
+    let turn = -1, left = 0, last = 0, vis = false, playing = null;
+    function play(c) {
+      if (c === playing) return;
+      if (playing) { playing.classList.remove("play"); playing.querySelectorAll("video").forEach((v) => v.pause()); }
+      playing = c;
+      if (c) { c.classList.add("play"); c.querySelectorAll("video").forEach((v) => { try { v.currentTime = 0; v.play().catch(() => {}); } catch (e) {} }); }
+    }
+    function tick(t) {
+      requestAnimationFrame(tick);
+      const dt = last ? t - last : 0; last = t;
+      if (!vis || reduced) return;
+      if (big) { play(big); left = 0; return; }             // the lifted one plays; its neighbour is next when it is let go
+      left -= dt;
+      if (left <= 0) { turn = (turn + 1) % cases.length; left = LOOP[turn] * 1000; play(cases[turn]); }
+    }
+    requestAnimationFrame(tick);
     new IntersectionObserver((es) => {
-      const vis = es.some((e) => e.isIntersecting);
+      vis = es.some((e) => e.isIntersecting);
       sec.classList.toggle("off", !vis);
-      if (vis && !shown) grid.querySelectorAll("video").forEach((v) => v.play().catch(() => {}));
-      if (!vis && big) { set(null); pinned = false; }
-      shown = vis;
+      if (!vis) { if (big) { set(null); pinned = false; } play(null); left = 0; turn = Math.max(-1, turn - 1); }
     }, { threshold: .2 }).observe(sec);
   }
 }

@@ -83,7 +83,8 @@ h1 em { font-style: normal; color: var(--muted); }
 .band { padding-block: clamp(64px, 9vh, 104px); position: relative; }
 .band::before { content: ""; position: absolute; inset: 0 -50vw; z-index: -1; pointer-events: none;
   background: linear-gradient(180deg, rgba(239, 237, 232, 0), rgba(239, 237, 232, .62) 7%, rgba(239, 237, 232, .62) 93%, rgba(239, 237, 232, 0)); }
-h2 { margin: 0 0 8px; font: 600 clamp(22px, 2.8vw, 30px)/1.15 var(--sans); letter-spacing: -.03em; text-wrap: balance; }
+/* one voice for every headline: the serif the showcases speak in */
+h2 { margin: 0 0 10px; font: 400 clamp(26px, 3.2vw, 38px)/1.1 var(--serif); letter-spacing: -.02em; text-wrap: balance; }
 .band > p, .two p { margin: 0; max-width: 54ch; color: var(--ink-2); font-size: 15.5px; }
 a { color: var(--ink); text-decoration-color: var(--line); text-underline-offset: 3px; }
 
@@ -93,7 +94,7 @@ a { color: var(--ink); text-decoration-color: var(--line); text-underline-offset
 .close { display: flex; align-items: center; justify-content: space-between; gap: 40px; flex-wrap: wrap; padding-bottom: clamp(80px, 12vh, 140px); }
 .close-main { display: flex; flex-direction: column; align-items: flex-start; gap: 22px; }
 
-/* ---- X and 0 against Blip (js/game.js): a small card by the last key. You are X, he is the green 0. Pieces draw
+/* ---- X and 0 against Blip (js/game.js): a small card by the last key. You are X, he is the green 0 (a zero, not an O). Pieces draw
    themselves in, the winning three are struck through, and the round sinks into the water before the next. ---- */
 .xo { --x: #141414; --o: #4F7A3A; flex: none; width: 232px; padding: 14px; border-radius: 22px; background: #fff;
   box-shadow: 0 0 0 1px rgba(22, 20, 15, .08), 0 34px 64px -38px rgba(22, 20, 15, .55);
@@ -115,9 +116,9 @@ a { color: var(--ink); text-decoration-color: var(--line); text-underline-offset
 .xo-grid .xo-win.on { stroke-dashoffset: 0; }
 .xo-c { position: relative; padding: 0; border: 0; background: none; cursor: pointer; border-radius: 12px; outline: none; -webkit-tap-highlight-color: transparent; }
 .xo-c svg { display: block; width: 100%; height: 100%; overflow: visible; transition: transform .5s cubic-bezier(.55, 0, .85, .3), opacity .3s ease-in .2s; }
-.xo-c line, .xo-c circle { fill: none; stroke-width: 9; stroke-linecap: round; }
+.xo-c line, .xo-c ellipse { fill: none; stroke-width: 9; stroke-linecap: round; }
 .xo-c .xa, .xo-c .xb { stroke: var(--x); stroke-dasharray: 68; stroke-dashoffset: 68; }
-.xo-c .oo { stroke: var(--o); stroke-dasharray: 158; stroke-dashoffset: 158; transform: rotate(-90deg); transform-origin: 50px 50px; }
+.xo-c .oo { stroke: var(--o); stroke-dasharray: 141; stroke-dashoffset: 141; transform: rotate(-90deg); transform-origin: 50px 50px; }
 .xo-c .rp { stroke-width: 1.5; stroke: currentColor; opacity: 0; transform-origin: 50px 50px; }
 .xo-c.x { color: var(--x); } .xo-c.o { color: var(--o); }
 .xo-c.x .xa, .xo-c.x .xb { stroke-dashoffset: 0; transition: stroke-dashoffset .2s cubic-bezier(.4, 0, .2, 1); } .xo-c.x .xb { transition-delay: .14s; }
@@ -138,6 +139,8 @@ a { color: var(--ink); text-decoration-color: var(--line); text-underline-offset
 .close h2 { margin: 0; }
 .plats { list-style: none; display: flex; flex-wrap: wrap; gap: 16px; margin: 0; padding: 0; font-size: 14px; color: var(--ink-2); }
 .made { margin: 0; font-size: 13px; color: var(--muted); }
+.proof { margin: 0; display: flex; flex-wrap: wrap; gap: 6px 14px; font: 500 12px/1.3 var(--sans); color: var(--ink-2); }
+.proof span { display: inline-flex; align-items: center; gap: 6px; } .proof span::before { content: ""; width: 4px; height: 4px; border-radius: 50%; background: #4F7A3A; }
 
 @media (max-width: 620px) {
   .two { grid-template-columns: 1fr; gap: 44px; }
@@ -268,8 +271,16 @@ a { color: var(--ink); text-decoration-color: var(--line); text-underline-offset
 .say-h { margin: 0 0 12px; font: 400 clamp(25px, 2.5vw, 36px)/1.1 var(--serif); letter-spacing: -.02em; color: var(--ink); text-wrap: balance; }
 .say-p { margin: 0; font: 400 14.5px/1.5 var(--sans); color: var(--ink-2); text-wrap: pretty; }
 /* a change of line: the old one lifts away, the new one rises in */
-.show-say > * { transition: opacity .32s ease, translate .42s cubic-bezier(.2, .8, .3, 1); }
-.show-say.out > * { opacity: 0; translate: 0 -8px; transition-duration: .22s, .26s; }
+.show-say > :not(.tabs) { transition: opacity .32s ease, translate .42s cubic-bezier(.2, .8, .3, 1); }
+.show-say.out > :not(.tabs) { opacity: 0; translate: 0 -8px; transition-duration: .22s, .26s; }
+/* the stories, as tabs: which is playing, how far through it is, and a way to jump to another */
+.tabs { display: flex; gap: 6px; margin-top: 22px; }
+.tab { flex: 1; min-width: 0; padding: 8px 0 0; border: 0; background: none; cursor: pointer; text-align: left; font: 500 11.5px/1 var(--sans); letter-spacing: .01em; color: var(--muted); transition: color .3s ease; }
+.tab span { display: block; margin-bottom: 7px; }
+.tab i { position: relative; display: block; height: 3px; border-radius: 2px; background: rgba(22, 20, 15, .12); overflow: hidden; }
+.tab i::after { content: ""; position: absolute; inset: 0; border-radius: 2px; background: var(--ink); transform-origin: 0 50%; transform: scaleX(var(--p, 0)); }
+.tab.on, .tab:hover { color: var(--ink); }
+.tab:focus-visible { outline: 1.5px solid var(--ink); outline-offset: 4px; border-radius: 4px; }
 .show-say.out .say-h { transition-delay: .03s; } .show-say.out .say-p { transition-delay: .06s; }
 @media (max-width: 860px) {
   .show { flex-direction: column-reverse; justify-content: center; padding-top: 76px; }
@@ -277,7 +288,7 @@ a { color: var(--ink); text-decoration-color: var(--line); text-underline-offset
   .show-say { flex: none; width: 100%; max-width: 32rem; padding: 0 4px; background: none; box-shadow: none; text-align: left; }
   .say-k { margin-bottom: 10px; }
 }
-@media (prefers-reduced-motion: reduce) { .show-say > * { transition: none; } }
+@media (prefers-reduced-motion: reduce) { .show-say > * { transition: none !important; } .tabs { display: none; } }
 
 /* =====================================================================
    THE WORK VIEW. Where the film hands over: a desktop on the left with a
@@ -721,6 +732,12 @@ a { color: var(--ink); text-decoration-color: var(--line); text-underline-offset
 .bezel, .phone-shell { transition: box-shadow .9s ease; }
 .phone.center { transform: translateX(var(--shift)) translateY(var(--lift)) scale(var(--grow)); }
 @media (max-width: 760px) { .phone { --shift: -97%; --lift: -14%; --grow: 1.3; } }
+/* on a phone the two overlap: only the one at work is shown, and the phone, when it is, comes to the middle, larger */
+@media (max-width: 760px) {
+  .work.f-phone .monitor:not(.away) { opacity: 0; scale: .96; filter: none; }
+  .work.f-desk .phone { opacity: 0; scale: .9; filter: none; }
+  .work.f-phone .phone:not(.center) { transform: translateX(var(--shift)) translateY(var(--lift)) scale(var(--grow)); scale: 1; }
+}
 .app .p-who { transition: opacity .45s ease; }
 .app.bare .p-who { opacity: 0; }
 .p-face-end { position: absolute; left: 50%; top: 47%; z-index: 3; width: 92px; translate: -50% -50%; visibility: hidden; pointer-events: none; will-change: transform, opacity; }
@@ -738,7 +755,7 @@ a { color: var(--ink); text-decoration-color: var(--line); text-underline-offset
 .app.cam { transition: transform .95s cubic-bezier(.65, 0, .35, 1); }
 
 /* =====================================================================
-   THE CASES. Six looping cards, three by two, all playing; a click lifts
+   THE CASES. Six looping cards, three by two, one playing at a time; a hover or click lifts
    one a little larger where it stands, with its line by it. Each card is designed at 480x272 and scaled to its
    frame; each loop is pure CSS, and its resting style is its finished
    frame, so with motion reduced every card simply shows its result.
@@ -776,7 +793,9 @@ a { color: var(--ink); text-decoration-color: var(--line); text-underline-offset
 @media (max-width: 620px) { .grid { grid-template-columns: 1fr; } .case.big { scale: 1.04; } }
 @media (prefers-reduced-motion: reduce) { .case, .case-say { transition: none !important; } }
 .gcx { position: absolute; left: 0; top: 0; width: 480px; height: 272px; overflow: hidden; border-radius: inherit; transform-origin: 0 0; transform: scale(var(--k, 1)); font-family: var(--sans); color: #141414; }
-.cases.off .gcx * { animation-play-state: paused !important; }
+/* one plays at a time (js/main.js): the rest have no animation, which is each card's finished frame */
+.case:not(.play) .gcx, .case:not(.play) .gcx * { animation: none !important; }
+.case .gc { transition: box-shadow .5s ease, opacity .5s ease; } .grid:not(.has-big) .case:not(.play) .gc { opacity: .86; }
 
 /* ---- 1. Xode in the terminal: typed fast, zoom in, hold, out, then code written fast, line by line (9s) ---- */
 .g-term { background: #121212; color: #D4D4CF; border-radius: 24px; }
