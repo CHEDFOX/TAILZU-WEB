@@ -90,7 +90,51 @@ a { color: var(--ink); text-decoration-color: var(--line); text-underline-offset
 
 .two { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; }
 .plans .lede { margin-top: 10px; }
-.close { display: flex; flex-direction: column; align-items: flex-start; gap: 22px; padding-bottom: clamp(80px, 12vh, 140px); }
+.close { display: flex; align-items: center; justify-content: space-between; gap: 40px; flex-wrap: wrap; padding-bottom: clamp(80px, 12vh, 140px); }
+.close-main { display: flex; flex-direction: column; align-items: flex-start; gap: 22px; }
+
+/* ---- X and 0 against Blip (js/game.js): a small card by the last key. You are X, he is the green 0. Pieces draw
+   themselves in, the winning three are struck through, and the round sinks into the water before the next. ---- */
+.xo { --x: #141414; --o: #4F7A3A; flex: none; width: 232px; padding: 14px; border-radius: 22px; background: #fff;
+  box-shadow: 0 0 0 1px rgba(22, 20, 15, .08), 0 34px 64px -38px rgba(22, 20, 15, .55);
+  transform: perspective(700px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)); transition: transform .35s cubic-bezier(.2, .8, .3, 1); }
+.xo-top { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; min-height: 30px; }
+.xo-face { width: 30px; height: auto; flex: none; transition: rotate .4s cubic-bezier(.2, .9, .3, 1.4), translate .4s cubic-bezier(.2, .9, .3, 1.4); }
+.xo.thinking .xo-face { animation: xothink .7s ease-in-out infinite; }
+.xo.lost .xo-face { rotate: -10deg; translate: 0 -3px; } .xo.won .xo-face { rotate: 8deg; translate: 0 2px; }
+@keyframes xothink { 50% { rotate: 7deg; translate: 0 -2px; } }
+.xo-say { flex: 1; min-width: 0; font: 500 12.5px/1.25 var(--sans); letter-spacing: -.01em; color: var(--ink); transition: opacity .2s ease; }
+.xo-say.swap { opacity: 0; }
+.xo-score { font: 500 11px/1 var(--mono); color: var(--muted); white-space: nowrap; }
+.xo-board { position: relative; display: grid; grid-template-columns: repeat(3, 1fr); aspect-ratio: 1; }
+.xo-grid { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; overflow: visible; }
+.xo-grid line { stroke: rgba(20, 20, 20, .14); stroke-width: 3; stroke-linecap: round; stroke-dasharray: 276; stroke-dashoffset: 0; transition: stroke-dashoffset .7s cubic-bezier(.3, .7, .3, 1); }
+.xo-grid line:nth-child(2) { transition-delay: .08s; } .xo-grid line:nth-child(3) { transition-delay: .16s; } .xo-grid line:nth-child(4) { transition-delay: .24s; }
+.xo.fresh .xo-grid line { stroke-dashoffset: 276; transition: none; }
+.xo-grid .xo-win { stroke: var(--wc, var(--x)); stroke-width: 5; opacity: .9; stroke-dasharray: 400; stroke-dashoffset: 400; transition: stroke-dashoffset .45s cubic-bezier(.4, 0, .2, 1); }
+.xo-grid .xo-win.on { stroke-dashoffset: 0; }
+.xo-c { position: relative; padding: 0; border: 0; background: none; cursor: pointer; border-radius: 12px; outline: none; -webkit-tap-highlight-color: transparent; }
+.xo-c svg { display: block; width: 100%; height: 100%; overflow: visible; transition: transform .5s cubic-bezier(.55, 0, .85, .3), opacity .3s ease-in .2s; }
+.xo-c line, .xo-c circle { fill: none; stroke-width: 9; stroke-linecap: round; }
+.xo-c .xa, .xo-c .xb { stroke: var(--x); stroke-dasharray: 68; stroke-dashoffset: 68; }
+.xo-c .oo { stroke: var(--o); stroke-dasharray: 158; stroke-dashoffset: 158; transform: rotate(-90deg); transform-origin: 50px 50px; }
+.xo-c .rp { stroke-width: 1.5; stroke: currentColor; opacity: 0; transform-origin: 50px 50px; }
+.xo-c.x { color: var(--x); } .xo-c.o { color: var(--o); }
+.xo-c.x .xa, .xo-c.x .xb { stroke-dashoffset: 0; transition: stroke-dashoffset .2s cubic-bezier(.4, 0, .2, 1); } .xo-c.x .xb { transition-delay: .14s; }
+.xo-c.o .oo { stroke-dashoffset: 0; transition: stroke-dashoffset .4s cubic-bezier(.4, 0, .2, 1); }
+.xo-c.x .rp, .xo-c.o .rp { animation: xorip .6s ease-out; }
+@keyframes xorip { 0% { opacity: .5; transform: scale(.5); } 100% { opacity: 0; transform: scale(1.8); } }
+/* an empty square shows a ghost of your X under the pointer, while it is your turn */
+.xo.yours .xo-c:not(.x):not(.o):hover .xa, .xo.yours .xo-c:not(.x):not(.o):hover .xb, .xo.yours .xo-c:not(.x):not(.o):focus-visible .xa, .xo.yours .xo-c:not(.x):not(.o):focus-visible .xb { stroke-dashoffset: 0; opacity: .16; }
+.xo-c:focus-visible { box-shadow: inset 0 0 0 1.5px rgba(20, 20, 20, .35); }
+.xo:not(.yours) .xo-c, .xo-c.x, .xo-c.o { cursor: default; }
+.xo.won:not(.sink) .xo-c:not(.hit) svg, .xo.lost:not(.sink) .xo-c:not(.hit) svg { opacity: .28; transition: opacity .35s ease; }
+.xo-c.hit svg { animation: xohit .5s cubic-bezier(.2, .9, .3, 1.5); }
+@keyframes xohit { 40% { transform: scale(1.16); } }
+/* the round goes under: each piece drops into the surface, one after another */
+.xo.sink .xo-c svg { transform: translateY(10px) scale(.08); opacity: 0; transition-delay: calc(var(--n, 0) * 55ms), calc(var(--n, 0) * 55ms + 200ms); }
+@media (max-width: 620px) { .close { flex-direction: column; align-items: flex-start; } .xo { width: min(100%, 260px); } }
+@media (prefers-reduced-motion: reduce) { .xo, .xo *, .xo-c svg { transition: none !important; animation: none !important; } }
 .close h2 { margin: 0; }
 .plats { list-style: none; display: flex; flex-wrap: wrap; gap: 16px; margin: 0; padding: 0; font-size: 14px; color: var(--ink-2); }
 .made { margin: 0; font-size: 13px; color: var(--muted); }
