@@ -3,7 +3,8 @@
 //
 //   1. the film      a jetpack on his back: he flies about the screen, out of it and back in from somewhere else
 //   2. the work      a skateboard: he rides along the top edges of the two boxes, flips off their ends, turns round in
-//                    the air, and jumps the gap from one box to the other
+//                    the air, and jumps the gap from one box to the other (and up onto the phone, when it stands up
+//                    out of the box at the end)
 //   3. the cases     he peeks out from behind a card, now and then on his long neck, hides, and peeks from another;
 //                    sometimes he is gone a while
 //
@@ -129,13 +130,23 @@ if (B && !reduced) {
     const sec = document.getElementById("work");
     const boxes = sec ? [sec.querySelector(".show-box"), sec.querySelector(".show-say")] : [];
     // the edges he can ride: each box's top, short of its rounded corners; the second only when it is beside the first
+    // Where the phone stands up out of the first box (at the end, centred and larger), the box's edge is cut there and
+    // the phone's own top is an edge too: he jumps up onto it and off it, never rides through it.
+    const phone = sec ? sec.querySelector(".phone-shell") : null;
     function edges() {
       const out = [];
       boxes.forEach((el, i) => {
         if (!el) return;
         const r = el.getBoundingClientRect(), cut = Math.min(28, r.width * .08);
-        if (i === 1 && out[0] && r.left < out[0].x2) return;
-        out.push({ x1: r.left + cut, x2: r.right - cut, y: r.top });
+        if (i === 1 && out[0] && r.left < out[out.length - 1].x2) return;
+        const e = { x1: r.left + cut, x2: r.right - cut, y: r.top };
+        const p = i === 0 && phone ? phone.getBoundingClientRect() : null;
+        if (p && p.width && p.top < r.top - 4 && p.right > e.x1 && p.left < e.x2) {
+          const pc = p.width * .16, room = 40;           // its rounded corners; and a bit of box either side to land on
+          if (p.left - room - 8 > e.x1) out.push({ x1: e.x1, x2: p.left - room, y: e.y });
+          out.push({ x1: p.left + pc, x2: p.right - pc, y: p.top, phone: true });
+          if (p.right + room + 8 < e.x2) out.push({ x1: p.right + room, x2: e.x2, y: e.y });
+        } else out.push(e);
       });
       return out;
     }
@@ -167,6 +178,22 @@ if (B && !reduced) {
       const E = edges(); if (!E.length) return;
       const h = size(), lift = h * .14;                    // his feet stand on the board, the board on the edge
       if (s.seg >= E.length) { s.seg = 0; s.at = .3; }
+      // the edges changed under him (the phone came up, or went): stay where he is on the screen, on whichever edge is
+      // there, or jump up onto the nearest one when he is suddenly inside something
+      const sig = E.map((e) => `${Math.round(e.x1)},${Math.round(e.y)}`).join("|");
+      if (s.sig && sig !== s.sig && s.mode === "ride" && s.ax !== undefined) {
+        let hit = E.findIndex((e) => s.ax >= e.x1 && s.ax <= e.x2);
+        if (hit >= 0) { s.seg = hit; s.at = (s.ax - E[hit].x1) / Math.max(1, E[hit].x2 - E[hit].x1); }
+        else {
+          let best = 0, bd = 1e9;
+          E.forEach((e, i) => { const d = Math.abs(clamp(s.ax, e.x1, e.x2) - s.ax); if (d < bd) { bd = d; best = i; } });
+          const e = E[best], u = clamp((s.ax - e.x1) / Math.max(1, e.x2 - e.x1), .08, .92);
+          s.air = { a: s.seg < E.length ? s.seg : best, ua: 0, b: best, ub: u, t: 0, T: .7, high: 1.3, spin: 0, kick: 0, turn: false,
+            fx: s.ax, fy: s.ay };
+          s.mode = "air";
+        }
+      }
+      s.sig = sig;
       let x, y, tilt = 0, rot = 0, flip = 0;
       // flying in to land: on the jetpack from where he was to his spot on the edge, then onto the board
       if (s.mode === "land") {
@@ -216,7 +243,7 @@ if (B && !reduced) {
       if (s.mode === "air") {
         const A = s.air; A.t += dt;
         const k = Math.min(1, A.t / A.T), b = A.b < E.length ? A.b : A.a;
-        const [x0, y0] = at(E[A.a] || E[0], A.ua), [x1, y1] = at(E[b], A.ub);
+        const [x0, y0] = A.fx !== undefined ? [A.fx, A.fy] : at(E[A.a] || E[0], A.ua), [x1, y1] = at(E[b], A.ub);
         const e = k * k * (3 - 2 * k);
         x = x0 + (x1 - x0) * e; y = y0 + (y1 - y0) * k - Math.sin(Math.PI * k) * h * A.high;
         if (A.spin) rot = -s.dir * Math.PI * 2 * e;
@@ -229,7 +256,7 @@ if (B && !reduced) {
           if (r < .2) me.play("laugh", { then: "tiptoe", again: true }); else if (r < .32) me.play("done", { then: "tiptoe", again: true });
         }
       }
-      s.x = x; s.y = y;
+      s.x = x; s.y = y; s.ax = x; s.ay = y;
       g.save();
       g.translate(x, y);
       if (rot) { g.translate(0, -h * .55); g.rotate(rot); g.translate(0, h * .55); }
