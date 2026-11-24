@@ -70,6 +70,16 @@ moves, and the page's own words flickering into 0/1 under the pointer
 
 With reduced motion the film and the stories show their last frame.
 
+**The dark half** (`#shade`, drawn in `js/stage.js`): the fabric is light paper
+with dark words in some places and dark with light words in others, and the
+two merge softly. Each view says where its dark is (`SHADE`: the film along
+the bottom, under the card; the roam on the right, behind its film; the day at
+the top, under its light title; the plans going dark into the close; the close
+dark), the views are blended across their seams, and the result is drawn into
+a small canvas laid over the fabric as a difference with warm white, so paper,
+grain and words all turn over together. The mast goes dark when the top of
+the window is.
+
 **The small Blip** (`js/minis.js`): one little Blip who goes down the page:
 when the view changes he flies to the next on his jetpack, from where he was,
 and lands on the boxes; the flier dodges the pointer and the skater ollies

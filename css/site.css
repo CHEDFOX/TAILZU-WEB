@@ -20,6 +20,10 @@ body { margin: 0; background: var(--paper); color: var(--ink); font: 400 16px/1.
 .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
 #plane { position: fixed; inset: 0; background-color: var(--paper); background-size: 220px 220px; }
 #words { position: fixed; inset: 0; width: 100%; height: 100%; display: block; z-index: 1; }
+/* THE DARK HALF (js/stage.js shade): where this layer is opaque it turns the paper and its words over (a difference
+   with white), so the fabric goes dark with light words, grain and all; where it fades, the two merge. It is drawn small
+   and stretched, so its edges are soft. */
+#shade { position: fixed; inset: 0; width: 100%; height: 100%; display: block; z-index: 1; pointer-events: none; mix-blend-mode: difference; }
 main { position: relative; z-index: 2; overflow-x: clip; }
 /* the small bots (js/minis.js): one canvas over the page, under the mast, never in the way of the pointer */
 .minis { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 9; pointer-events: none; }
@@ -29,8 +33,10 @@ main { position: relative; z-index: 2; overflow-x: clip; }
   position: fixed; z-index: 11; left: 0; right: 0; top: env(safe-area-inset-top, 0px);
   display: flex; align-items: center; justify-content: space-between;
   padding: clamp(18px, 3vh, 34px) max(clamp(20px, 4vw, 64px), env(safe-area-inset-right, 0px)) 30px max(clamp(20px, 4vw, 64px), env(safe-area-inset-left, 0px));
-  pointer-events: none; background: linear-gradient(180deg, rgba(239, 237, 232, .96) 40%, rgba(239, 237, 232, 0));
+  pointer-events: none; background: linear-gradient(180deg, rgba(239, 237, 232, .96) 40%, rgba(239, 237, 232, 0)); transition: background .5s ease;
 }
+/* over the dark half, the mast goes dark with it */
+.mast.dark { background: linear-gradient(180deg, rgba(17, 16, 14, .9) 40%, rgba(17, 16, 14, 0)); }
 .mast > * { pointer-events: auto; }
 /* the mark: Blip's face (media/face.svg), home */
 .mark { display: block; line-height: 0; border-radius: 12px; transition: scale .3s cubic-bezier(.2, .9, .3, 1.3); }
@@ -83,6 +89,9 @@ h1 em { font-style: normal; color: var(--muted); }
 .band { padding-block: clamp(64px, 9vh, 104px); position: relative; }
 .band::before { content: ""; position: absolute; inset: 0 -50vw; z-index: -1; pointer-events: none;
   background: linear-gradient(180deg, rgba(239, 237, 232, 0), rgba(239, 237, 232, .62) 7%, rgba(239, 237, 232, .62) 93%, rgba(239, 237, 232, 0)); }
+/* on the dark half the wash is dark; the plans' fades out where the dark comes up under it */
+.band.plans::before { background: linear-gradient(180deg, rgba(239, 237, 232, 0), rgba(239, 237, 232, .62) 7%, rgba(239, 237, 232, .62) 52%, rgba(239, 237, 232, 0) 78%); }
+.band.close::before { background: linear-gradient(180deg, rgba(17, 16, 14, 0), rgba(17, 16, 14, .5) 14%, rgba(17, 16, 14, .5) 100%); }
 /* one voice for every headline: the serif the showcases speak in */
 h2 { margin: 0 0 10px; font: 400 clamp(26px, 3.2vw, 38px)/1.1 var(--serif); letter-spacing: -.02em; text-wrap: balance; }
 .band > p, .two p { margin: 0; max-width: 54ch; color: var(--ink-2); font-size: 15.5px; }
@@ -91,12 +100,15 @@ a { color: var(--ink); text-decoration-color: var(--line); text-underline-offset
 
 .two { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; }
 .plans .lede { margin-top: 10px; }
-.close { display: flex; align-items: center; justify-content: space-between; gap: 40px; flex-wrap: wrap; padding-bottom: clamp(80px, 12vh, 140px); }
+/* the close stands on the dark half: its words go light */
+.close { --ink: #F1EFEA; --ink-2: rgba(241, 239, 234, .74); --muted: rgba(241, 239, 234, .5); --line: rgba(241, 239, 234, .25); color: var(--ink);
+  display: flex; align-items: center; justify-content: space-between; gap: 40px; flex-wrap: wrap; padding-bottom: clamp(80px, 12vh, 140px); }
+.close .key { color: #141414; }   /* the key stays a light keycap with dark words */
 .close-main { display: flex; flex-direction: column; align-items: flex-start; gap: 22px; }
 
 /* ---- X and 0 against Blip (js/game.js): a small card by the last key. You are X, he is the green 0 (a zero, not an O). Pieces draw
    themselves in, the winning three are struck through, and the round sinks into the water before the next. ---- */
-.xo { --x: #141414; --o: #4F7A3A; flex: none; width: 232px; padding: 14px; border-radius: 22px; background: #fff;
+.xo { --ink: #141414; --muted: rgba(20, 20, 20, .45); color: #141414; --x: #141414; --o: #4F7A3A; flex: none; width: 232px; padding: 14px; border-radius: 22px; background: #fff;
   box-shadow: 0 0 0 1px rgba(22, 20, 15, .08), 0 34px 64px -38px rgba(22, 20, 15, .55);
   transform: perspective(700px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)); transition: transform .35s cubic-bezier(.2, .8, .3, 1); }
 .xo-top { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; min-height: 30px; }
@@ -308,6 +320,7 @@ a { color: var(--ink); text-decoration-color: var(--line); text-underline-offset
   display: flex; align-items: center; justify-content: center; gap: clamp(32px, 9vw, 180px); padding: 84px max(20px, 5vw) 40px; }
 .roam-text { flex: 0 1 36rem; }
 .roam-text h2 { margin: 0 0 clamp(28px, 6svh, 64px); font-size: clamp(34px, 4.4vw, 64px); line-height: 1.02; }
+.work-head .scrawl { color: #A6CF8A; }
 .scrawl { font: 700 1.12em/1 "Caveat", "Segoe Print", "Bradley Hand", cursive; color: #3E6B2E; display: inline-block; rotate: -4deg; translate: 0 .04em; }
 .roam-l { margin: 0; font: 700 clamp(28px, 3.1vw, 48px)/1.15 "Caveat", "Segoe Print", "Bradley Hand", cursive; color: var(--ink);
   clip-path: inset(-20% 100% -30% -6%); }
@@ -330,9 +343,9 @@ a { color: var(--ink); text-decoration-color: var(--line); text-underline-offset
    and a way to jump to another */
 .work { flex-direction: column; justify-content: flex-end; gap: clamp(14px, 2.4svh, 26px); padding-bottom: clamp(24px, 5svh, 60px); }
 .work .show-box { width: min(54rem, calc(100vw - max(32px, 6vw)), calc((100svh - 360px) * 1.72)); }
-/* its title: the serif, its last word by hand, as the film's line is */
+/* its title: the serif, its last word by hand, as the film's line is; light, on the dark top of this view */
 .work-head { max-width: 40rem; text-align: center; margin-bottom: clamp(36px, 8svh, 84px); }   /* headroom for Blip, who skates the box's top */
-.work-head h2 { margin: 0; font-size: clamp(32px, 3.8vw, 54px); line-height: 1.02; }
+.work-head h2 { margin: 0; color: #F1EFEA; font-size: clamp(32px, 3.8vw, 54px); line-height: 1.02; }
 .work .tabs { width: min(30rem, 80%); }
 .tabs { display: flex; gap: 10px; margin: 0; }
 .tab { flex: 1; min-width: 0; padding: 8px 0 0; border: 0; background: none; cursor: pointer; text-align: center; font: 500 12px/1 var(--sans); letter-spacing: .01em; color: var(--muted); transition: color .3s ease; }
