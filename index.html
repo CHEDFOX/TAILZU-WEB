@@ -493,7 +493,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   <p class="sr" id="filmsay" aria-live="polite"></p>
 </section>
 
-<section id="work" class="show work" aria-label="X0 Bot at work: mail, food and code">
+<section id="work" class="show work" aria-label="X0 Bot at work: mail, food, code and meetings">
   <div class="show-box">
   <div class="devices" data-noglitch>
 
@@ -521,6 +521,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
           <div class="setup" id="setup"></div>
           <div class="scene2" id="scene2"></div>
           <div class="scene3" id="scene3"></div>
+          <div class="scene4" id="scene4"></div>
         </div>
       </div></div>
       <div class="neck"></div><div class="foot"></div>
@@ -550,130 +551,9 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       <button type="button" class="tab" data-story="mail"><span>Mail</span><i></i></button>
       <button type="button" class="tab" data-story="food"><span>Food</span><i></i></button>
       <button type="button" class="tab" data-story="code"><span>Code</span><i></i></button>
+      <button type="button" class="tab" data-story="meet"><span>Meet</span><i></i></button>
     </div>
   </aside>
-</section>
-
-<section id="gifs" class="cases" aria-label="More of what X0 Bot does">
-  <div class="cases-box">
-  <div class="grid" data-noglitch>
-    <div class="case" role="button" tabindex="0" aria-expanded="false" aria-label="Xode: One line to install. Then just say what to build.">
-      <div class="gc"><div class="gcx g-term">
-      <div class="t-bar"><i></i><i></i><i></i><span>~ · zsh</span></div>
-      <div class="t-cam">
-        <div class="t-cmd"><span class="t-ps">~ $</span> <span class="t-type">curl -fsSL https://x0bot.com/install.sh | bash</span><i class="t-cur"></i></div>
-        <div class="t-o t-o1">Installing xode…</div>
-        <div class="t-o t-o2"><span class="t-ok">xode is installed.</span> Sign in with <b>xode login</b>.</div>
-        <div class="t-o t-o3"><span class="t-ps">~/store $</span> xode "notify people when plants are back"</div>
-        <div class="t-stream"><div class="t-code">
-          <div><span class="tk-k">export async function</span> <span class="tk-f">notifyWaiting</span>(productId: <span class="tk-t">string</span>) {</div>
-          <div>  <span class="tk-k">const</span> waiting = <span class="tk-k">await</span> db.notify.findMany({ productId });</div>
-          <div>  <span class="tk-k">for</span> (<span class="tk-k">const</span> w <span class="tk-k">of</span> waiting) {</div>
-          <div>    <span class="tk-k">await</span> mail.send(w.email, backInStock(productId));</div>
-          <div>  }</div>
-          <div>  <span class="tk-k">await</span> db.notify.deleteMany({ productId });</div>
-          <div>}</div>
-          <div><span class="tk-f">test</span>(<span class="tk-s">"mails each person once"</span>, <span class="tk-k">async</span> () =&gt; {</div>
-          <div>  <span class="tk-k">const</span> sent = <span class="tk-k">await</span> run(notifyWaiting, <span class="tk-s">"monstera"</span>);</div>
-          <div>  expect(sent).toHaveLength(<span class="tk-n">3</span>);</div>
-          <div>});</div>
-          <div><span class="tk-k">export async function</span> <span class="tk-f">notifyWaiting</span>(productId: <span class="tk-t">string</span>) {</div>
-          <div>  <span class="tk-k">const</span> waiting = <span class="tk-k">await</span> db.notify.findMany({ productId });</div>
-          <div>  <span class="tk-k">for</span> (<span class="tk-k">const</span> w <span class="tk-k">of</span> waiting) {</div>
-          <div>    <span class="tk-k">await</span> mail.send(w.email, backInStock(productId));</div>
-          <div>  }</div>
-          <div>  <span class="tk-k">await</span> db.notify.deleteMany({ productId });</div>
-          <div>}</div>
-          <div><span class="tk-f">test</span>(<span class="tk-s">"mails each person once"</span>, <span class="tk-k">async</span> () =&gt; {</div>
-          <div>  <span class="tk-k">const</span> sent = <span class="tk-k">await</span> run(notifyWaiting, <span class="tk-s">"monstera"</span>);</div>
-          <div>  expect(sent).toHaveLength(<span class="tk-n">3</span>);</div>
-          <div>});</div>
-        </div></div>
-      </div>
-      </div></div>
-      <div class="case-say"><p class="say-k"><i class="led" aria-hidden="true"></i><span>Xode</span></p><h3>One line to install. Then just say what to build.</h3><p>Xode in your terminal writes the code, and the tests with it.</p></div>
-    </div>
-    <div class="case" role="button" tabindex="0" aria-expanded="false" aria-label="Bot flows: Build a bot without building anything.">
-      <div class="gc"><div class="gcx g-flow">
-      <svg class="fl-wires" viewBox="0 0 480 272"><path class="w1" d="M138 104 C156 104 156 104 174 104"/><path class="w2" d="M294 104 C312 104 312 104 330 104"/></svg>
-      <div class="fl-node n1"><i class="ic c-moss"></i><div><small>When</small><b>A new order comes in</b></div></div>
-      <div class="fl-node n2"><i class="ic c-ochre"></i><div><small>Then</small><b>Check the stock</b></div></div>
-      <div class="fl-node n3"><i class="ic c-sea"></i><div><small>Then</small><b>Mail the customer</b></div></div>
-      <span class="fl-plus p1">+</span><span class="fl-plus p2">+</span>
-      <span class="fl-dot"></span>
-      <div class="fl-auto"><span class="fl-sw"><i></i></span><span>Runs on every new order</span></div>
-      <span class="fl-next">Next</span>
-      </div></div>
-      <div class="case-say"><p class="say-k"><i class="led" aria-hidden="true"></i><span>Bot flows</span></p><h3>Build a bot without building anything.</h3><p>When this happens, do that. It runs by itself, every time.</p></div>
-    </div>
-    <div class="case" role="button" tabindex="0" aria-expanded="false" aria-label="Commands: A slash away, in any chat.">
-      <div class="gc"><div class="gcx g-cmd">
-      <div class="c-head"><span class="c-av c-clay">L</span><b>Leaf &amp; Co. team</b><span>4 people</span></div>
-      <div class="c-case"><div class="c-sent"><b class="sl">/travel</b> find two stays near Baga for Friday, send to <b class="at">@Priya</b></div>
-        <div class="c-reply"><span>X0 Bot</span>Sent Priya two stays near Baga, both under ₹6,000.</div>
-        <div class="c-typing"><b class="sl">/travel</b> find two stays near Baga for Friday, send to <b class="at">@Priya</b></div></div>
-      <div class="c-case"><div class="c-sent"><b class="sl">/mail</b> sum up today's orders and send to <b class="at">@team</b></div>
-        <div class="c-reply"><span>X0 Bot</span>Sent the team: 23 orders, ₹31,450, 2 returns.</div>
-        <div class="c-typing"><b class="sl">/mail</b> sum up today's orders and send to <b class="at">@team</b></div></div>
-      <div class="c-case"><div class="c-sent"><b class="sl">/plan</b> my Saturday around the dentist, share with <b class="at">@Amma</b></div>
-        <div class="c-reply"><span>X0 Bot</span>Shared with Amma: dentist at 11, lunch at 1, market at 4.</div>
-        <div class="c-typing"><b class="sl">/plan</b> my Saturday around the dentist, share with <b class="at">@Amma</b></div></div>
-      <div class="c-case"><div class="c-sent"><b class="sl">/xode</b> fix the checkout bug, tell <b class="at">@Rahul</b> when it's live</div>
-        <div class="c-reply"><span>X0 Bot</span>On it. I'll tell Rahul the moment it ships.</div>
-        <div class="c-typing"><b class="sl">/xode</b> fix the checkout bug, tell <b class="at">@Rahul</b> when it's live</div></div>
-      <div class="c-box"></div>
-      </div></div>
-      <div class="case-say"><p class="say-k"><i class="led" aria-hidden="true"></i><span>Commands</span></p><h3>A slash away, in any chat.</h3><p>/travel, /mail, /plan, /xode. Call a bot, @ a person, done.</p></div>
-    </div>
-    <div class="case" role="button" tabindex="0" aria-expanded="false" aria-label="Keyboard: Talk. It types like you.">
-      <div class="gc"><div class="gcx g-kbd">
-      <div class="k-head"><span class="c-av c-sea">R</span><b>Riya</b></div>
-      <div class="k-field"><span class="k-out">Haan Riya, aa raha hoon. Khana rakh dena mere liye.</span></div>
-      <div class="kb">
-        <div class="kb-tools">
-          <span class="kb-mic"><svg viewBox="0 0 16 16"><rect x="5.6" y="1.6" width="4.8" height="8.2" rx="2.4" fill="currentColor"/><path d="M3.2 7.8a4.8 4.8 0 0 0 9.6 0M8 12.6v1.9" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></span>
-          <span class="kb-sugg">
-            <span class="kb-s0"><i>I</i><i>The</i><i>I'm</i></span>
-            <span class="kb-live"><span class="kb-wave"><i></i><i></i><i></i><i></i><i></i></span><span class="kb-said">tell Riya I'm on my way, keep dinner for me</span></span>
-          </span>
-          <span class="kb-tone">Casual</span>
-        </div>
-        <div class="kb-row"><i>q</i><i>w</i><i>e</i><i>r</i><i>t</i><i>y</i><i>u</i><i>i</i><i>o</i><i>p</i></div>
-        <div class="kb-row kr2"><i>a</i><i>s</i><i>d</i><i>f</i><i>g</i><i>h</i><i>j</i><i>k</i><i>l</i></div>
-        <div class="kb-row kr3"><i class="kb-fn kb-sh"><svg viewBox="0 0 16 16"><path d="M8 2.5 2.8 8.2H5.6V13h4.8V8.2h2.8z" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg></i><b class="kb-gap"></b><i>z</i><i>x</i><i>c</i><i>v</i><i>b</i><i>n</i><i>m</i><b class="kb-gap"></b><i class="kb-fn kb-bk"><svg viewBox="0 0 18 16"><path d="M6 3h9.5a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H6L1.5 8z" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><path d="m8.5 5.8 4.4 4.4m0-4.4-4.4 4.4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg></i></div>
-        <div class="kb-row kr4"><i class="kb-fn kb-123">123</i><i class="kb-fn kb-gl"><svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="6.2" fill="none" stroke="currentColor" stroke-width="1.3"/><path d="M1.8 8h12.4M8 1.8c2 2 2 10.4 0 12.4M8 1.8c-2 2-2 10.4 0 12.4" fill="none" stroke="currentColor" stroke-width="1.3"/></svg></i><i class="kb-pt">,</i><i class="kb-sp">X0 Bot</i><i class="kb-pt">.</i><i class="kb-fn kb-ret">return</i></div>
-      </div>
-      <span class="k-tap"></span>
-      </div></div>
-      <div class="case-say"><p class="say-k"><i class="led" aria-hidden="true"></i><span>Keyboard</span></p><h3>Talk. It types like you.</h3><p>Tap the mic in any app. Your words, your language, your tone.</p></div>
-    </div>
-    <div class="case" role="button" tabindex="0" aria-expanded="false" aria-label="Meetings: It takes the notes. You make the calls.">
-      <div class="gc"><div class="gcx g-meet">
-      <div class="m-grid">
-        <div class="m-tile"><video src="/media/meet/call-1.mp4" muted loop playsinline preload="metadata"></video><span class="m-name">Rahul</span></div>
-        <div class="m-tile"><video src="/media/meet/call-2.mp4" muted loop playsinline preload="metadata"></video><span class="m-name">Arjun</span></div>
-        <div class="m-tile"><video src="/media/meet/call-3.mp4" muted loop playsinline preload="metadata"></video><span class="m-name">Kavya</span></div>
-        <div class="m-tile m-bot"><span class="m-ring"></span><span class="m-face"></span><span class="m-name">X0 Bot · notes</span></div>
-      </div>
-      <div class="m-cap">Decided: launch on Friday. Rahul owns the mailer, Arjun the stock.</div>
-      <div class="m-notes"><b>Notes · 3 to-dos</b><p><span>Rahul</span>Festive mailer by Thursday</p><p><span>Arjun</span>Restock monstera</p><p><span>Kavya</span>Send the revised invoice</p></div>
-      </div></div>
-      <div class="case-say"><p class="say-k"><i class="led" aria-hidden="true"></i><span>Meetings</span></p><h3>It takes the notes. You make the calls.</h3><p>X0 Bot joins the call and hands everyone their to-dos.</p></div>
-    </div>
-    <div class="case" role="button" tabindex="0" aria-expanded="false" aria-label="Reminders: Nothing slips. Not even for your team.">
-      <div class="gc"><div class="gcx g-rem">
-      <div class="r-time" id="remTime"><b>10:42</b><span>Friday, 21 November</span></div>
-      <div class="r-stack">
-        <div class="r-n r1"><img class="r-ico" alt=""><div><small>X0 Bot · in 15 min</small><b>Supplier call with Kavya</b><span>Her revised invoice is in your mail.</span></div></div>
-        <div class="r-n r2"><img class="r-ico" alt=""><div><small>X0 Bot · for Priya</small><b>Festive mailer goes out today</b><span>Sent to Priya, with the draft attached.</span></div></div>
-        <div class="r-n r3"><img class="r-ico" alt=""><div><small>X0 Bot · tomorrow, 9:00</small><b>Pay the courier invoice</b><span>₹6,400 · due Friday</span></div></div>
-        <div class="r-n r4"><img class="r-ico" alt=""><div><small>X0 Bot · for Arjun</small><b>Restock monstera before Friday</b><span>Sent to Arjun · 12 left in stock</span></div></div>
-      </div>
-      </div></div>
-      <div class="case-say"><p class="say-k"><i class="led" aria-hidden="true"></i><span>Reminders</span></p><h3>Nothing slips. Not even for your team.</h3><p>Reminders for you, and for the people you work with.</p></div>
-    </div>
-  </div>
-  </div>
 </section>
 
 <section class="band two">

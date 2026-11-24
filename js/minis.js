@@ -5,12 +5,9 @@
 //   2. the work      a skateboard: he rides along the top edges of the two boxes, flips off their ends, turns round in
 //                    the air, and jumps the gap from one box to the other (and up onto the phone, when it stands up
 //                    out of the box at the end)
-//   3. the cases     he peeks out from behind a card, now and then on his long neck, hides, and peeks from another;
-//                    sometimes he is gone a while
 //
-// He is one character: when the page moves on to another view he flies there on his jetpack from wherever he was, and
-// lands on the boxes, or dives behind a card. He minds the pointer: the flier dodges it, the skater ollies over it, and
-// the peeker ducks when it comes close. The canvas never takes the pointer, and with motion reduced there is no Blip.
+// He is one character: when the page moves on to the other view he flies there on his jetpack from wherever he was, and
+// lands on the boxes. He minds the pointer: the flier dodges it, and the skater ollies over it. The canvas never takes the pointer, and with motion reduced there is no Blip.
 import { reduced } from "./util.js";
 import { blip } from "./blip/kit.js";
 
@@ -281,81 +278,8 @@ if (B && !reduced) {
     };
   })();
 
-  // ======================================================================== 3. peeking from behind the cards
-  const peeker = (() => {
-    const sec = document.getElementById("gifs");
-    const grid = sec && sec.querySelector(".grid");
-    const cards = grid ? [...grid.querySelectorAll(".case")] : [];
-    let me = null, made = 0;
-    const s = { card: -1, side: "top", u: .5, phase: "wait", until: 0, crane: false, dive: null };
-    const pack = B.createPerformer({ dpr, glow: amber });   // himself, on the jetpack, while he flies in to hide
-    pack.play("rest");
-    function where() {
-      const c = cards[s.card]; if (!c) return null;
-      const r = c.getBoundingClientRect();
-      if (s.side === "top") return { x: r.left + r.width * s.u, y: r.top + 1, rot: 0 };
-      if (s.side === "left") return { x: r.left + 1, y: r.top + r.height * s.u, rot: -Math.PI / 2 };
-      return { x: r.right - 1, y: r.top + r.height * s.u, rot: Math.PI / 2 };
-    }
-    function choose() {
-      const cols = getComputedStyle(grid).gridTemplateColumns.split(" ").length;
-      let i; do { i = Math.floor(Math.random() * cards.length); } while (cards.length > 1 && i === s.card);
-      s.card = i;
-      const col = i % cols, sides = ["top", "top"];
-      if (col === 0) sides.push("left"); if (col === cols - 1) sides.push("right");
-      s.side = pick(sides); s.u = rnd(.22, .78);
-      s.crane = Math.random() < .34;
-    }
-    const sizeOf = () => clamp(cards[0].clientWidth * .2, 40, 76);
-    function draw(now) {
-      if (!cards.length) return;
-      const h = sizeOf();
-      if (!me || Math.abs(made - h) > 2) { me = B.createBlip({ height: h }); made = h; }
-      // flying in from the last view: to the edge of a card, and down behind it
-      if (s.phase === "dive") {
-        const q = where(); if (!q) return;
-        const D = s.dive; D.x1 = q.x; D.y1 = q.y - (s.side === "top" ? h * .1 : 0);
-        const f = flight(D, now), hp = clamp(h * .7, 34, 56);
-        jet(pack, f.x, f.y, hp * (1 - f.k * .25), .2 * f.fx * Math.sin(Math.PI * f.k), f.fx, 1 - f.k * .5, now);
-        if (f.k >= 1) { s.phase = "up"; s.until = now + rnd(1500, 2400); me.pose("peek"); me.snap(); }
-        return;
-      }
-      const busy = grid.classList.contains("has-big");
-      // the pointer comes close: he ducks, and comes up somewhere else soon after
-      const pq = where();
-      if (s.phase === "up" && pq && near(pq.x, pq.y, h * 1.4)) { s.phase = "hide"; me.pose("hidden"); s.shy = true; }
-      if (busy && s.phase !== "wait") { s.phase = "hide"; me.pose("hidden"); }
-      if (s.phase === "wait" && now > s.until && !busy) { choose(); s.phase = "up"; s.until = now + rnd(1800, 2800); me.pose("peek"); }
-      else if (s.phase === "up") {
-        if (s.crane && now > s.until - 1500 && now < s.until - 300) me.pose("crane"); else me.pose("peek");
-        if (now > s.until) { s.phase = "hide"; me.pose("hidden"); }
-      } else if (s.phase === "hide" && !me.shown()) {
-        s.phase = "wait"; s.until = now + (s.shy ? rnd(700, 1200) : Math.random() < .25 ? rnd(3500, 6000) : rnd(500, 1600));   // sometimes gone a while
-        s.shy = false;
-      }
-      const p = where();
-      if (!p) { me.step && me.step(now / 1000); return; }
-      g.save(); g.translate(p.x, p.y); g.rotate(p.rot);
-      me.draw(g, 0, 0, now / 1000, dpr);
-      g.restore();
-    }
-    return {
-      draw,
-      pos: () => { const q = where(); return q && (s.phase === "up" || s.phase === "dive") ? [q.x, q.y] : null; },
-      /** Here from another view: he flies to a card on the jetpack, from where he was, and drops behind it. */
-      enter(p, now) {
-        if (!cards.length) return;
-        choose(); s.side = "top";
-        const from = p || [W * .5, -60];
-        if (me) { me.pose("hidden"); me.snap(); }
-        s.dive = { x0: from[0], y0: from[1], x1: 0, y1: 0, t0: now, T: 950, arc: sizeOf() * .8 };
-        s.phase = "dive";
-      },
-    };
-  })();
-
   // ======================================================================== the one loop
-  const views = [["stage", flier], ["work", skater], ["gifs", peeker]].map(([id, m]) => [document.getElementById(id), m]).filter(([el]) => el);
+  const views = [["stage", flier], ["work", skater]].map(([id, m]) => [document.getElementById(id), m]).filter(([el]) => el);
   let last = 0, drew = false, cur = null, lastPos = null, lastScroll = 0;
   function frame(now) {
     requestAnimationFrame(frame);

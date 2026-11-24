@@ -271,6 +271,8 @@ function sayer(aside) {
       food: ["Food", "Say you're hungry. Dinner's sorted.", "It knows what you like, picks it, orders it, and tells you when it's close."],
       code: ["Code", "Ship from your phone.", "Xode reads your repos, plans the work, writes it and tests it. You approve."],
       routine: ["Routines", "Ask once. It happens every day.", "Every morning at 8, the updated user list is in your mail."],
+      meet: ["Meetings", "It takes the notes. You make the calls.", "X0 Bot sits in on the call, writes down what was decided, and hands everyone their to-dos."],
+      remind: ["Reminders", "Nothing slips. Not even for your team.", "Reminders for you, and for the people you work with, at the moment they need them."],
       done: ["All day", "And dinner's at the door.", "While you shipped, it kept an eye on your order. One app, every part of your day."],
     };
 
@@ -915,7 +917,90 @@ function sayer(aside) {
       T(25300, () => { pDay.classList.add("in"); clock.style.opacity = "0"; wat(250, () => { clock.textContent = "8:00"; clock.style.opacity = "1"; }); });
       T(26300, () => { pDay.classList.remove("in"); pNotif.classList.add("in"); });
       // a moment with the mail in, then the finale
-      act4(C + 29200);
+      act5(C + 29200);
+    }
+
+    // ---- the fourth story: a meeting on the desktop, its notes and the reminders on the phone ----
+    const scene4El = document.getElementById("scene4");
+    const PEOPLE = [["Rahul", "/media/meet/call-1.mp4"], ["Arjun", "/media/meet/call-2.mp4"], ["Kavya", "/media/meet/call-3.mp4"]];
+    // what is said, by whom (an index into PEOPLE), and the note it becomes
+    const SAID = [
+      [0, "Can we launch the festive range on Friday?"],
+      [2, "Yes, if the stock lands by Thursday.", "Decided: launch on Friday"],
+      [1, "I'll restock the monstera before then.", "Arjun · restock the monstera"],
+      [0, "Then I'll get the mailer out on Thursday.", "Rahul · festive mailer by Thursday"],
+      [2, "And I'll send the revised invoice.", "Kavya · send the revised invoice"],
+    ];
+    const REMS = [
+      ["You · in 15 min", "Supplier call with Kavya", "Her revised invoice is in your mail."],
+      ["For Rahul · Thursday", "Festive mailer goes out", "Sent to Rahul, with the draft attached."],
+      ["For Arjun · before Friday", "Restock the monstera", "Sent to Arjun · 12 left in stock."],
+    ];
+    const pRems = REMS.map(([top, b, sp], i) => {
+      const n = document.createElement("div");
+      n.className = "p-notif rem"; n.style.setProperty("--i", String(i));
+      n.innerHTML = `<span class="ico">${faceSrc ? `<img alt="" src="${faceSrc}">` : ""}</span><div><div class="top"><span></span><span>now</span></div><b></b><span></span></div>`;
+      n.querySelector(".top span").textContent = "X0 Bot · " + top; n.querySelector("b").textContent = b; n.querySelector("div > span:last-child").textContent = sp;
+      app.appendChild(n);
+      return n;
+    });
+    let x4 = {};
+    function drawScene4() {
+      scene4El.classList.remove("on", "ended");
+      scene4El.querySelectorAll("video").forEach((v) => v.pause());
+      scene4El.innerHTML = '<div class="x4-top"><i class="rec"></i><span>Leaf &amp; Co. · weekly</span><span class="x4-t">00:00</span><span class="x4-n">4 people</span></div>'
+        + '<div class="x4-body"><div class="x4-grid">'
+        + PEOPLE.map(([name, src]) => `<div class="x4-tile"><video src="${src}" muted loop playsinline preload="none"></video><span class="x4-name">${name}</span></div>`).join("")
+        + `<div class="x4-tile x4-bot"><span class="x4-ring"></span>${faceSrc ? `<img alt="" src="${faceSrc}">` : ""}<span class="x4-name">X0 Bot · notes</span></div>`
+        + '</div><div class="x4-notes"><b>Notes</b><small>Written as you talk</small><div class="x4-list"></div></div></div>'
+        + '<div class="x4-cap"><b></b><span></span></div>'
+        + '<div class="x4-end"><span>Call ended</span><b>Notes and to-dos sent to all four</b></div>';
+      x4 = { tiles: [...scene4El.querySelectorAll(".x4-tile")], list: scene4El.querySelector(".x4-list"), cap: scene4El.querySelector(".x4-cap"),
+        t: scene4El.querySelector(".x4-t"), bot: scene4El.querySelector(".x4-bot") };
+    }
+    function act5(M) {
+      const T = (ms, fn) => wat(M + ms, fn);
+      // the screens clear: the desktop is in a call
+      T(0, () => {
+        pNotif.classList.remove("in");
+        scene4El.classList.add("on");
+        scene4El.querySelectorAll("video").forEach((v) => { try { v.currentTime = 0; v.play().catch(() => {}); } catch (e) {} });
+        feed.querySelectorAll(".f").forEach((f) => drop(f));
+        clock.style.opacity = "0"; wat(250, () => { clock.textContent = "10:02"; clock.style.opacity = "1"; });
+        pillName.textContent = "X0 Bot"; say("In your meeting…");
+        focusOn("desk"); tell(LINES.meet);
+      });
+      // the call's clock
+      for (let k = 1; k <= 9; k++) T(k * 1000, () => { x4.t.textContent = "00:" + String(11 + k * 3).padStart(2, "0"); });
+      // what is said, in captions, the speaker lit; and the note it becomes, written by Blip
+      SAID.forEach(([who, line, note], i) => {
+        const at = 900 + i * 1650;
+        T(at, () => {
+          x4.tiles.forEach((t, j) => t.classList.toggle("talk", j === who));
+          x4.cap.classList.remove("in"); void x4.cap.offsetWidth;
+          x4.cap.querySelector("b").textContent = PEOPLE[who][0]; x4.cap.querySelector("span").textContent = line;
+          x4.cap.classList.add("in");
+        });
+        if (note) T(at + 900, () => {
+          x4.bot.classList.add("writing"); wat(700, () => x4.bot.classList.remove("writing"));
+          const n = document.createElement("p"); n.className = "x4-li" + (i === 1 ? " dec" : ""); n.textContent = note;
+          x4.list.appendChild(n); void n.offsetWidth; n.classList.add("in");
+        });
+      });
+      // the call ends; the notes go to everyone, and to the phone
+      T(9600, () => { x4.tiles.forEach((t) => t.classList.remove("talk")); x4.cap.classList.remove("in"); scene4El.classList.add("ended"); });
+      T(10200, () => {
+        focusOn("phone"); say("Sending the notes…");
+        add('<div class="tcard"><span>Notes · weekly</span><b>Launch on Friday</b>Rahul: festive mailer by Thursday<br>Arjun: restock the monstera<br>Kavya: send the revised invoice</div>');
+      });
+      T(11200, () => { say("Notes sent to all four", false); });
+      // and the reminders, for you and for them
+      T(12000, () => { tell(LINES.remind); pRems[0].classList.add("in"); });
+      T(12800, () => pRems[1].classList.add("in"));
+      T(13600, () => pRems[2].classList.add("in"));
+      T(16600, () => pRems.forEach((n, i) => wat(i * 120, () => n.classList.remove("in"))));
+      // then the finale
+      act4(M + 17400);
     }
 
     // ---- the finale: the desktop goes, the phone takes the middle ----
@@ -1012,6 +1097,7 @@ function sayer(aside) {
       drawScene2();
       feed.classList.remove("center");
       drawScene3();
+      drawScene4(); pRems.forEach((n) => n.classList.remove("in"));
       pillName.textContent = "X0 Bot"; clock.textContent = "9:58"; clock.style.opacity = "";
       app.classList.remove("composing"); pcT.textContent = ""; pCompose.classList.remove("ready");
       pNotif.classList.remove("in"); pDay.classList.remove("in");
@@ -1046,7 +1132,7 @@ function sayer(aside) {
     }
 
     // ---- the stories as tabs: where each starts on the whole run's clock, for their bars and for jumping in ----
-    const STORY = { mail: 0, food: 29300, code: 42900 }, RUN_END = 84700;
+    const STORY = { mail: 0, food: 29300, code: 42900, meet: 72100 }, RUN_END = 102100;
     const tabs = [...work.querySelectorAll(".tab")];
     let clock0 = 0, clockOn = false;
     function tabsTick(now) {
@@ -1072,6 +1158,7 @@ function sayer(aside) {
       clock0 = performance.now() - STORY[story]; clockOn = true;
       if (story === "food") { act2(200); return; }
       if (story === "code") { act3(200); return; }
+      if (story === "meet") { act5(200); return; }
 
       // ---------- SET UP, on the desktop ----------
       focusOn("desk");
@@ -1180,95 +1267,3 @@ function sayer(aside) {
   }
 }
 
-// ---------------------------------------------------------------------------
-// THE CASES. Six looping cards, three by two; one plays at a time, in turn, and the
-// rest hold their finished frame. Hovering lifts one a little larger where it stands, with its line by
-// it; a click (or Enter or Space) keeps it there, and another click, a click
-// elsewhere or Escape puts it back.
-// ---------------------------------------------------------------------------
-{
-  const sec = document.getElementById("gifs");
-  const grid = sec && sec.querySelector(".grid");
-  if (grid) {
-    const cases = [...grid.querySelectorAll(".case")];
-
-    // Blip's face in the meeting, and as the icon of each reminder
-    const icon = document.getElementById("icon");
-    if (icon) {
-      const face = grid.querySelector(".m-face");
-      if (face) { const c = icon.cloneNode(true); c.removeAttribute("id"); face.appendChild(c); }
-      const src = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(
-        icon.outerHTML.replace("<svg ", '<svg xmlns="http://www.w3.org/2000/svg" ').replace(' id="icon"', ""));
-      grid.querySelectorAll(".r-ico").forEach((img) => { img.src = src; });
-    }
-
-    // the reminders' lock screen shows the visitor's own day
-    const rt = document.getElementById("remTime");
-    if (rt) {
-      const d = new Date();
-      rt.querySelector("b").textContent = d.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" }).replace(/\s?[AP]M$/i, "");
-      rt.querySelector("span").textContent = d.toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "long" }).replace(",", "");
-    }
-
-    // each card is designed at 480x272 and scaled to its cell
-    const fit = () => { const k = (cases[0].clientWidth / 480).toFixed(4); cases.forEach((c) => c.querySelector(".gcx").style.setProperty("--k", k)); };
-    new ResizeObserver(fit).observe(grid);
-    fit();
-
-    // One card is large at a time. Hovering lifts one while the pointer is on
-    // it; a click keeps it lifted (pinned) after the pointer leaves, and a
-    // second click lets it go.
-    let big = null, pinned = false, hoverT = 0;
-    const canHover = matchMedia("(hover: hover) and (pointer: fine)");
-    function set(c) {
-      if (c === big) return;
-      if (big) { big.classList.remove("big"); big.setAttribute("aria-expanded", "false"); }
-      big = c;
-      if (big) { big.classList.add("big"); big.setAttribute("aria-expanded", "true"); turn = cases.indexOf(big); }
-      grid.classList.toggle("has-big", !!big);
-    }
-    function lift(c) {                     // a click, Enter or Space
-      if (c && (c !== big || !pinned)) { set(c); pinned = true; } else { set(null); pinned = false; }
-    }
-    cases.forEach((c) => {
-      c.addEventListener("click", (e) => { e.stopPropagation(); lift(c); });
-      c.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); lift(c); } });
-      c.addEventListener("pointerenter", () => {
-        if (!canHover.matches || pinned) return;
-        clearTimeout(hoverT); hoverT = setTimeout(() => set(c), 90);
-      });
-      c.addEventListener("pointerleave", () => {
-        clearTimeout(hoverT);
-        if (canHover.matches && !pinned && big === c) set(null);
-      });
-    });
-    document.addEventListener("click", () => { if (big) { set(null); pinned = false; } });
-    addEventListener("keydown", (e) => { if (e.key === "Escape" && big) { set(null); pinned = false; } });
-
-    // ONE PLAYS AT A TIME, the rest hold their finished frame: each in turn for the length of its loop, or the one
-    // that is lifted, for as long as it is. A card starts from the top when its turn comes (its animations are off
-    // until then, and its resting style is its last frame).
-    const LOOP = [9, 10, 12, 9, 10, 10];
-    let turn = -1, left = 0, last = 0, vis = false, playing = null;
-    function play(c) {
-      if (c === playing) return;
-      if (playing) { playing.classList.remove("play"); playing.querySelectorAll("video").forEach((v) => v.pause()); }
-      playing = c;
-      if (c) { c.classList.add("play"); c.querySelectorAll("video").forEach((v) => { try { v.currentTime = 0; v.play().catch(() => {}); } catch (e) {} }); }
-    }
-    function tick(t) {
-      requestAnimationFrame(tick);
-      const dt = last ? t - last : 0; last = t;
-      if (!vis || reduced) return;
-      if (big) { play(big); left = 0; return; }             // the lifted one plays; its neighbour is next when it is let go
-      left -= dt;
-      if (left <= 0) { turn = (turn + 1) % cases.length; left = LOOP[turn] * 1000; play(cases[turn]); }
-    }
-    requestAnimationFrame(tick);
-    new IntersectionObserver((es) => {
-      vis = es.some((e) => e.isIntersecting);
-      sec.classList.toggle("off", !vis);
-      if (!vis) { if (big) { set(null); pinned = false; } play(null); left = 0; turn = Math.max(-1, turn - 1); }
-    }, { threshold: .2 }).observe(sec);
-  }
-}
