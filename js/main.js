@@ -32,9 +32,93 @@ if (card) {
   const next = card.closest("section")?.nextElementSibling;   // the view the film hands over to
   const LINE = "hey X0";
 
-  let timers = [], played = 0;
-  const at = (ms, fn) => { timers.push(setTimeout(fn, ms)); };
-  const stopAll = () => { timers.forEach(clearTimeout); timers = []; };
+  let played = 0;
+
+  // ---- the film's own clock ----
+  // Every beat of the film is put on this clock, not on setTimeout, so the
+  // whole film can be run faster: on a first visit the page does not scroll,
+  // and scrolling down fast-forwards the film instead. The clock runs at
+  // 1 + boost; the boost comes from the scroll and dies away by itself. The
+  // card's CSS transitions and animations are run at the same rate.
+  let timers = [], vnow = 0, boost = 0, lastT = 0, raf = 0, sped = false;
+  const at = (ms, fn) => { timers.push({ t: vnow + ms, fn }); if (!raf) raf = requestAnimationFrame(tick); };
+  const stopAll = () => { timers = []; };
+  function tick(t) {
+    const dt = lastT ? Math.min(100, t - lastT) : 0;
+    lastT = t;
+    boost = boost * Math.exp(-dt / 420);
+    if (boost < .02) boost = 0;
+    const rate = 1 + boost;
+    vnow += dt * rate;
+    if (boost || sped) {
+      card.getAnimations({ subtree: true }).forEach((a) => { if (a.playbackRate !== rate) a.playbackRate = rate; });
+      sped = boost > 0;
+    }
+    for (;;) {                                  // one at a time: a beat may clear or add beats
+      let k = -1;
+      timers.forEach((x, i) => { if (x.t <= vnow && (k < 0 || x.t < timers[k].t)) k = i; });
+      if (k < 0) break;
+      const [x] = timers.splice(k, 1);
+      x.fn();
+    }
+    if (timers.length || boost) raf = requestAnimationFrame(tick);
+    else { raf = 0; lastT = 0; }
+  }
+  const hurry = (n) => {
+    boost = Math.min(7, boost + n);
+    if (!raf) raf = requestAnimationFrame(tick);
+  };
+
+  // ---- the first visit: the page waits for the film ----
+  // Until the film has played through once, the page stays on it, and a
+  // scroll down plays it faster. When it ends the page moves on by itself and
+  // is let go; from then on (and on every later visit) it scrolls as normal.
+  const SEEN = "x0.filmSeen";
+  const seenBefore = (() => { try { return localStorage.getItem(SEEN) === "1"; } catch { return true; } })();
+  let held = !seenBefore && !reduced && !!next && !location.hash && scrollY <= 40;
+  const typing = (e) => e.target instanceof Element && e.target.closest("input, textarea, select, [contenteditable]");
+  const SCROLL_KEYS = { ArrowDown: 1.2, PageDown: 2.2, " ": 2.2, Spacebar: 2.2, End: 3, ArrowUp: 0, PageUp: 0, Home: 0 };
+  let touchY = null;
+  const onWheel = (e) => { e.preventDefault(); if (held && e.deltaY > 0) hurry(Math.min(e.deltaY, 160) * (e.deltaMode ? .4 : .012)); };
+  const onTouchStart = (e) => { touchY = e.touches[0]?.clientY ?? null; };
+  const onTouchMove = (e) => {
+    e.preventDefault();
+    const y = e.touches[0]?.clientY;
+    if (held && touchY != null && y != null && touchY - y > 0) hurry((touchY - y) * .03);
+    touchY = y ?? null;
+  };
+  const onKey = (e) => {
+    if (typing(e) || !(e.key in SCROLL_KEYS)) return;
+    e.preventDefault();
+    if (held && SCROLL_KEYS[e.key]) hurry(SCROLL_KEYS[e.key]);
+  };
+  let pinned = false;
+  const pin = () => { if (pinned && scrollY !== 0) scrollTo(0, 0); };
+  function release() {
+    if (!held) return;
+    held = pinned = false;
+    removeEventListener("scroll", pin);
+    document.documentElement.classList.remove("film-held");
+    // a moment longer, so a scroll still going when the page lands does not carry it past the view it landed on
+    setTimeout(() => {
+      removeEventListener("wheel", onWheel);
+      removeEventListener("touchstart", onTouchStart);
+      removeEventListener("touchmove", onTouchMove);
+      removeEventListener("keydown", onKey);
+    }, 700);
+  }
+  if (held) {
+    if ("scrollRestoration" in history) history.scrollRestoration = "manual";
+    scrollTo(0, 0);
+    pinned = true;
+    addEventListener("wheel", onWheel, { passive: false });
+    addEventListener("touchstart", onTouchStart, { passive: true });
+    addEventListener("touchmove", onTouchMove, { passive: false });
+    addEventListener("keydown", onKey);
+    addEventListener("scroll", pin, { passive: true });
+    document.documentElement.classList.add("film-held");
+    setTimeout(release, 20000);                 // whatever happens, never keep someone for long
+  }
 
   // ---- the camera ----
   function camTo(origin, scale, cut = false) {
@@ -125,15 +209,21 @@ if (card) {
 
   // ---- handing over to the next view, once ----
   function moveOn() {
-    if (played > 1 || reduced || !next || scrollY > 40) return;   // never yank someone who has scrolled
+    // the first visit: the film has played through, so the page goes on, and
+    // the scroll it was holding is handed back once it gets there
+    const first = held;
+    if (first) { pinned = false; try { localStorage.setItem(SEEN, "1"); } catch {} }
+    if (!first && (played > 1 || reduced || !next || scrollY > 40)) return;   // never yank someone who has scrolled
     const from = scrollY, to = next.getBoundingClientRect().top + scrollY, dur = 1150;
     let t0 = 0, raf = 0;
     const stop = () => {
       cancelAnimationFrame(raf);
       ["wheel", "touchstart", "keydown"].forEach((e) => removeEventListener(e, stop));
+      if (first) release();
       setTimeout(() => { scroll.quiet = false; }, 150);
     };
-    ["wheel", "touchstart", "keydown"].forEach((e) => addEventListener(e, stop, { passive: true }));
+    // a scroll stops the glide, except the first time, when it is part of it
+    if (!first) ["wheel", "touchstart", "keydown"].forEach((e) => addEventListener(e, stop, { passive: true }));
     scroll.quiet = true;
     const step = (t) => {
       t0 ||= t;
