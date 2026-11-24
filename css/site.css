@@ -302,6 +302,38 @@ a { color: var(--ink); text-decoration-color: var(--line); text-underline-offset
 /* a change of line: the old one lifts away, the new one rises in */
 .show-say > :not(.tabs) { transition: opacity .32s ease, translate .42s cubic-bezier(.2, .8, .3, 1); }
 .show-say.out > :not(.tabs) { opacity: 0; translate: 0 -8px; transition-duration: .22s, .26s; }
+/* THE ROAMING VIEW (after the film): the line on the left, written over a few rows, and on the right a tall frame
+   playing four journeys in fast cuts, with what X0 Bot did for each laid over it (js/main.js THE ROAM) */
+.roam { position: relative; box-sizing: border-box; min-height: 100svh; width: 100vw; margin-inline: calc(50% - 50vw);
+  display: flex; align-items: center; justify-content: center; gap: clamp(32px, 9vw, 180px); padding: 84px max(20px, 5vw) 40px; }
+.roam-text { flex: 0 1 36rem; }
+.roam-text h2 { margin: 0 0 clamp(28px, 6svh, 64px); font-size: clamp(34px, 4.4vw, 64px); line-height: 1.02; }
+.scrawl { font: 700 1.12em/1 "Caveat", "Segoe Print", "Bradley Hand", cursive; color: #3E6B2E; display: inline-block; rotate: -4deg; translate: 0 .04em; }
+.roam-l { margin: 0; font: 700 clamp(28px, 3.1vw, 48px)/1.15 "Caveat", "Segoe Print", "Bradley Hand", cursive; color: var(--ink);
+  clip-path: inset(-20% 100% -30% -6%); }
+.roam-l.l1 { rotate: -2deg; } .roam-l.l2 { margin: .35em 0 .35em 22%; rotate: -3deg; color: #3E6B2E; } .roam-l.l3 { rotate: -1.5deg; }
+.roam.seen .roam-l { clip-path: inset(-20% -6% -30% -6%); transition: clip-path .9s cubic-bezier(.5, .1, .4, 1); }
+.roam.seen .roam-l.l2 { transition-delay: .75s; } .roam.seen .roam-l.l3 { transition-delay: 1.5s; }
+.roam-frame { position: relative; flex: none; margin: 0; height: min(76svh, 760px, calc((100vw - 40px) * 16 / 9)); aspect-ratio: 9 / 16; border-radius: 30px; overflow: hidden;
+  background: #1a1a1a url("/media/roam/roam.jpg") center / cover; box-shadow: 0 0 0 1px rgba(22, 20, 15, .1), 0 50px 90px -50px rgba(22, 20, 15, .65); }
+.roam-frame video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+/* what X0 Bot did for this place: a message laid over the bottom of the frame, changing with each cut */
+.roam-say { position: absolute; left: 14px; right: 14px; bottom: 14px; display: flex; gap: 10px; align-items: flex-start; padding: 11px 13px; border-radius: 18px;
+  background: rgba(250, 250, 249, .94); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); color: #141414;
+  box-shadow: 0 14px 30px -18px rgba(0, 0, 0, .6); font: 400 13px/1.35 var(--sans); }
+.roam-say img { flex: none; width: 26px; height: auto; margin-top: 1px; }
+.roam-say b { display: block; font-size: 11.5px; font-weight: 600; color: #6E6E6E; margin-bottom: 1px; }
+.roam-t { display: block; transition: opacity .18s ease, translate .25s ease; } .roam-say.swap .roam-t { opacity: 0; translate: 0 4px; }
+@media (max-width: 860px) {
+  .roam { flex-direction: column; justify-content: center; gap: 18px; padding: 84px 20px 24px; }
+  .roam-text { flex: none; width: min(100%, 30rem); }
+  .roam-text h2 { margin-bottom: 10px; font-size: clamp(28px, 7.4vw, 40px); }
+  .roam-l { font-size: clamp(22px, 6vw, 32px); }
+  .roam-frame { height: min(48svh, calc((100vw - 40px) * 16 / 9)); border-radius: 24px; }
+  .roam-say { font-size: 12px; padding: 9px 11px; }
+}
+@media (prefers-reduced-motion: reduce) { .roam-l { clip-path: none !important; transition: none !important; } .roam-t { transition: none; } }
+
 /* THE WORK VIEW: the box, smaller, and under it only the stories' names, as tabs: which is playing, how far through it is,
    and a way to jump to another */
 .work { flex-direction: column; justify-content: flex-end; gap: clamp(14px, 2.4svh, 26px); padding-bottom: clamp(24px, 5svh, 60px); }
@@ -309,7 +341,6 @@ a { color: var(--ink); text-decoration-color: var(--line); text-underline-offset
 /* its title: the serif, its last word by hand, as the film's line is */
 .work-head { max-width: 40rem; text-align: center; margin-bottom: clamp(36px, 8svh, 84px); }   /* headroom for Blip, who skates the box's top */
 .work-head h2 { margin: 0; font-size: clamp(32px, 3.8vw, 54px); line-height: 1.02; }
-.work-head .scrawl { font: 700 1.12em/1 "Caveat", "Segoe Print", "Bradley Hand", cursive; color: #3E6B2E; display: inline-block; rotate: -4deg; translate: 0 .04em; }
 .work .tabs { width: min(30rem, 80%); }
 .tabs { display: flex; gap: 10px; margin: 0; }
 .tab { flex: 1; min-width: 0; padding: 8px 0 0; border: 0; background: none; cursor: pointer; text-align: center; font: 500 12px/1 var(--sans); letter-spacing: .01em; color: var(--muted); transition: color .3s ease; }

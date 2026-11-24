@@ -1265,3 +1265,42 @@ function sayer(aside) {
   }
 }
 
+// ---------------------------------------------------------------------------
+// THE ROAM. Seven journeys cut fast into one loop (media/roam/roam.mp4: fourteen
+// one-second cuts, seven places twice round), and laid over it what
+// X0 Bot did for the place on screen. The line writes itself in the first time
+// the view is seen; the film plays only while it can be seen.
+// ---------------------------------------------------------------------------
+{
+  const sec = document.getElementById("roam"), film = document.getElementById("roamFilm");
+  if (sec && film) {
+    const sayEl = document.getElementById("roamSay"), line = sayEl.querySelector(".roam-t");
+    // one line per place, in the order the loop cuts through them (seven places, twice round: fourteen cuts)
+    const SAID = [
+      "Sunrise balloon over the black sand. Booked for 5:40.",
+      "Storm clears by noon. Your summit window is Thursday.",
+      "Big swell today. The safe viewpoint is 300 m north.",
+      "A quiet hillside, 2 km east. Picnic spot saved.",
+      "Low tide at 4:10. The shore is yours till 6.",
+      "Camp under the stars tonight. Camels at 6.",
+      "Clear skies at dawn. I'll wake you at 5 for the view.",
+    ];
+    const CUTS = 14;
+    let shown = 0;
+    // checked every frame while it plays (timeupdate comes only a few times a second, and the cuts are a second long)
+    function sync() {
+      if (!film.paused) requestAnimationFrame(sync);
+      const d = film.duration || 14, k = Math.floor((film.currentTime / d) * CUTS) % SAID.length;
+      if (k === shown) return;
+      shown = k;
+      sayEl.classList.add("swap");
+      setTimeout(() => { line.textContent = SAID[k]; sayEl.classList.remove("swap"); }, reduced ? 0 : 90);
+    }
+    film.addEventListener("play", () => requestAnimationFrame(sync));
+    new IntersectionObserver((es) => {
+      const vis = es.some((e) => e.isIntersecting);
+      if (vis) { sec.classList.add("seen"); if (!reduced) film.play().catch(() => {}); }
+      else film.pause();
+    }, { threshold: .3 }).observe(sec);
+  }
+}

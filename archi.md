@@ -48,7 +48,8 @@ js/                     the page's script, one ES module per part (no build step
   paper/words.js        the plane of tiny words in the world's scripts, moved by the water; their 0/1 flicker
   paper/glitch.js       the page's own words flicker into 0/1 under the pointer (not inside `[data-noglitch]`, i.e. the film's card)
 css/site.css            the whole page's look: the card, the showcases (box and line), the devices and every screen in them (the meeting too), the bands
-media/meet/             three muted five-second clips of people on a video call, for the meeting card (Mixkit, free stock video)
+media/meet/             three muted five-second clips of people on a video call, for the meeting story (Mixkit, free stock video)
+media/roam/             the roaming view's loop: seven journeys cut fast (roam.mp4, 14 s, 1.5 MB) and its first frame (roam.jpg)
 api/                    the serverless functions Vercel ran (unused on the VPS: the API serves both routes; to delete once the move is settled)
   _meta.js              shared Meta pixel / Conversions API helpers (reads the dataset id and token from Vercel env)
   site-event.js         POST /v1/site/event: a page event (e.g. a download press) sent to Meta's Conversions API
@@ -74,6 +75,7 @@ README.md               how the page behaves, what to run after a change, how pu
 
 | Looking for | Where |
 |---|---|
+| The roaming view: its loop, its lines, what X0 Bot says on each cut | `media/roam/roam.mp4`, markup `#roam`, `js/main.js` (THE ROAM: `SAID`, `CUTS`), `.roam*` in `css/site.css` |
 | The handwritten line beside the film | markup `.hand` in `#stage`, styles `.hand`, `.hw`, `.hand-mark` in `css/site.css` |
 | The film: the typing, the reply, the face assembling, the hand-over scroll | `js/main.js` (THE OPENING FILM; `LINE`), markup `#stage`, styles `css/site.css` |
 | The face (the app icon as vector) | the `<svg id="icon">` inside `#endmark` in `index.html`; reused as a picture by `js/main.js` (`faceSrc`) |

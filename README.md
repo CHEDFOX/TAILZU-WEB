@@ -6,6 +6,7 @@ it for the backend's pages and the downloads.
 ```
 index.html            the page: markup (the film, the views, the bots, the close), the tag manager inline, a <noscript> fallback; loads js/main.js
 media/face.svg        Blip's face, the mark in the mast (the film's vector icon, on its own)
+media/roam/           the roaming view's loop (roam.mp4, seven journeys in fast cuts) and its first frame (roam.jpg)
 js/                   the page's script: paper/ (grain, water, words, glitch: the fabric), stage.js (the fabric's loop, the hand and the scroll on the water, the key), main.js (the film and the views), minis.js and blip/ (the small bots)
 css/site.css          everything the page looks like
 media/meet/           three short muted clips of people on a video call, for the meeting card (Mixkit, free stock video)
@@ -37,7 +38,13 @@ moves, and the page's own words flickering into 0/1 under the pointer
    middle; the card clears and the bot's face puts itself together, small.
    The first time only, the page then scrolls itself to the next view; the
    film itself plays round again every eleven seconds, while it can be seen.
-2. **The work** (`#work`): "A day, handled." (the last word by hand), then a
+2. **The roam** (`#roam`): "The bot that loves *adventures*" and, written by
+   hand over three rows, "and exploring the world, / your best buddy, / always
+   by your side."; beside it a tall frame playing seven journeys cut fast into
+   one 14-second loop (`media/roam/roam.mp4`, fourteen one-second cuts, made
+   with ffmpeg from the owner's clips; `roam.jpg` is its first frame), with
+   what X0 Bot did for each place laid over it, changing on the cut.
+3. **The work** (`#work`): "A day, handled." (the last word by hand), then a
    box with a desktop and a phone in it, and under the
    box only the stories' names as tabs (Mail, Food, Code, Meet), which show
    how far each has got and jump to one. Four stories, once each as the view comes into
@@ -55,7 +62,7 @@ moves, and the page's own words flickering into 0/1 under the pointer
    notes sent to all four, and on the phone the notes and three reminders, for
    you and for the people you work with. Then the desktop fades, the phone
    takes the middle, "Your food has arrived", and the face again.
-3. **The two promises, the plans and the close**: phone and computer,
+4. **The two promises, the plans and the close**: phone and computer,
    staying in charge, free to start, and the key again with every device
    under it and three plain facts. Beside it, **X and 0 against Blip**
    (`js/game.js`): the visitor is X, Blip the green 0 (a zero, not an O); he
