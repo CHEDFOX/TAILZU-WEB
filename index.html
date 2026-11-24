@@ -50,7 +50,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <link rel="manifest" href="/site.webmanifest">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&amp;family=Newsreader:opsz,wght@6..72,300;6..72,400&amp;family=IBM+Plex+Mono:wght@400&amp;display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&amp;family=Newsreader:opsz,wght@6..72,300;6..72,400&amp;family=IBM+Plex+Mono:wght@400&amp;family=Caveat:wght@600;700&amp;display=swap">
 <link rel="stylesheet" href="/css/site.css">
 <noscript>
 <style>
@@ -100,8 +100,13 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <div class="wrap">
 
 <section id="stage" class="stage">
-  <h1 class="sr">X0 Bot: a team of bots, each great at one thing</h1>
+  <h1 class="sr">X0 Bot: a team of bots to do the hard things</h1>
 
+  <!-- the line, written by hand either side of the card (it writes itself in, once) -->
+  <p class="hand hand-l" aria-hidden="true">
+    <span class="hw">A team</span><span class="hw">of bots</span>
+    <svg class="hand-mark arrow" viewBox="0 0 140 70"><path d="M8 10 C 46 2, 98 14, 126 52"/><path d="M126 52 L 110 49 M126 52 L 124 36"/></svg>
+  </p>
   <div class="card" id="card" data-noglitch>
     <div class="cam" id="cam">
 
@@ -481,8 +486,10 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 </svg></div>
 
     </div>
-    <button class="replay" id="replay" type="button">Replay</button>
   </div>
+  <p class="hand hand-r" aria-hidden="true">
+    <span class="hw">to do the</span><span class="hw">hard things<svg class="hand-mark under" viewBox="0 0 200 24" preserveAspectRatio="none"><path d="M4 14 C 40 6, 80 20, 120 11 S 180 8, 196 13"/></svg></span>
+  </p>
   <p class="sr" id="filmsay" aria-live="polite"></p>
 </section>
 

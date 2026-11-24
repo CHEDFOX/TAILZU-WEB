@@ -74,6 +74,7 @@ README.md               how the page behaves, what to run after a change, how pu
 
 | Looking for | Where |
 |---|---|
+| The handwritten line beside the film | markup `.hand` in `#stage`, styles `.hand`, `.hw`, `.hand-mark` in `css/site.css` |
 | The film: the typing, the reply, the face assembling, the hand-over scroll | `js/main.js` (THE OPENING FILM; `LINE`), markup `#stage`, styles `css/site.css` |
 | The face (the app icon as vector) | the `<svg id="icon">` inside `#endmark` in `index.html`; reused as a picture by `js/main.js` (`faceSrc`) |
 | The work view: mail setup, inbox, the phone's replies, food, Xode, the finale | `js/main.js` (THE WORK VIEW: the setup card, the inbox rows, the second story, the third story, the finale), markup `#work` |

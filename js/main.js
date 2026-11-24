@@ -28,7 +28,6 @@ if (card) {
   const reply = document.getElementById("reply");
   const endmark = document.getElementById("endmark");
   const icon = document.getElementById("icon");
-  const replay = document.getElementById("replay");
   const filmsay = document.getElementById("filmsay");
   const next = card.closest("section")?.nextElementSibling;   // the view the film hands over to
   const LINE = "hey X0";
@@ -205,13 +204,19 @@ if (card) {
     at(5630, () => wide(true));
     at(5700, () => { assemble(); knock(.42, .35, 2.8); knock(.58, .35, 2.8); });
     at(7600, () => { setRest(true); moveOn(); });
+    // ...and round again: the face fades, and the film plays from the top (while the card can be seen)
+    at(10400, () => { anims.push(endmark.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 550, fill: "forwards", easing: "ease-in" })); });
+    at(11100, again);
   }
-
-  replay.addEventListener("click", (e) => { e.stopPropagation(); play(); });
-  card.addEventListener("click", () => { if (!card.classList.contains("rest")) finale(played === 1); });
+  let seen = true, waiting = false;
+  function again() { if (seen) play(); else waiting = true; }
+  new IntersectionObserver((es) => {
+    seen = es.some((e) => e.isIntersecting);
+    if (seen && waiting) { waiting = false; play(); }
+  }, { threshold: .3 }).observe(card);
 
   // Start once the fonts are in, so the first frames are set in the right face.
-  const go = () => setTimeout(play, 500);
+  const go = () => { setTimeout(play, 500); card.closest(".stage")?.classList.add("written"); };
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(go); else go();
 }
 

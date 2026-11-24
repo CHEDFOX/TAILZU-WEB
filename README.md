@@ -27,11 +27,14 @@ moves, and the page's own words flickering into 0/1 under the pointer
 (`js/paper/`). The pointer and the scroll both disturb the water
 (`js/stage.js`). Nothing on it has a title: each view shows rather than says.
 
-1. **The film** (`#stage`). One white card and a camera. A box rises and
-   "hey X0" is typed while the camera pushes in; the reply, "Here, at your
-   service.", in the middle of the card; the card clears and the bot's face
-   puts itself together, small. Then, the first time only, the page scrolls
-   itself to the next view.
+1. **The film** (`#stage`). One small white card and a camera, with the line
+   written by hand either side of it (Caveat, from Google Fonts): "A team of
+   bots", with an arrow to the card, and "to do the hard things", underlined;
+   it writes itself in once. In the card a box rises and "hey X0" is typed
+   while the camera pushes in; the reply, "Here, at your service.", in the
+   middle; the card clears and the bot's face puts itself together, small.
+   The first time only, the page then scrolls itself to the next view; the
+   film itself plays round again every eleven seconds, while it can be seen.
 2. **The work** (`#work`), a showcase: a box with a desktop and a phone in
    it, and beside it a short line that changes with the story playing
    (`LINES` in `js/main.js`), and under it the stories as tabs (Mail, Food,
