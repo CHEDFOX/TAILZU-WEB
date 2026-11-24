@@ -18,13 +18,13 @@
 * { box-sizing: border-box; }
 body { margin: 0; background: var(--paper); color: var(--ink); font: 400 16px/1.6 var(--sans); -webkit-tap-highlight-color: transparent; }
 .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
-#plane { position: fixed; inset: 0; background-color: var(--paper); background-size: 220px 220px; }
-#words { position: fixed; inset: 0; width: 100%; height: 100%; display: block; z-index: 1; }
+#plane { position: fixed; inset: 0; z-index: -3; background-color: var(--paper); background-size: 220px 220px; }
+#words { position: fixed; inset: 0; width: 100%; height: 100%; display: block; z-index: -2; }
 /* THE DARK HALF (js/stage.js shade): where this layer is opaque it turns the paper and its words over (a difference
    with white), so the fabric goes dark with light words, grain and all; where it fades, the two merge. It is drawn small
    and stretched, so its edges are soft. */
-#shade { position: fixed; inset: 0; width: 100%; height: 100%; display: block; z-index: 1; pointer-events: none; mix-blend-mode: difference; }
-main { position: relative; z-index: 2; overflow-x: clip; }
+#shade { position: fixed; inset: 0; width: 100%; height: 100%; display: block; z-index: -1; pointer-events: none; mix-blend-mode: difference; }
+main { position: relative; overflow-x: clip; }
 /* the small bots (js/minis.js): one canvas over the page, under the mast, never in the way of the pointer */
 .minis { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 9; pointer-events: none; }
 .wrap { max-width: 50rem; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
@@ -87,11 +87,6 @@ h1 em { font-style: normal; color: var(--muted); }
 
 /* ---- the bands ---- */
 .band { padding-block: clamp(64px, 9vh, 104px); position: relative; }
-.band::before { content: ""; position: absolute; inset: 0 -50vw; z-index: -1; pointer-events: none;
-  background: linear-gradient(180deg, rgba(239, 237, 232, 0), rgba(239, 237, 232, .62) 7%, rgba(239, 237, 232, .62) 93%, rgba(239, 237, 232, 0)); }
-/* on the dark half the wash is dark; the plans' fades out where the dark comes up under it */
-.band.plans::before { background: linear-gradient(180deg, rgba(239, 237, 232, 0), rgba(239, 237, 232, .62) 7%, rgba(239, 237, 232, .62) 52%, rgba(239, 237, 232, 0) 78%); }
-.band.close::before { background: linear-gradient(180deg, rgba(17, 16, 14, 0), rgba(17, 16, 14, .5) 14%, rgba(17, 16, 14, .5) 100%); }
 /* one voice for every headline: the serif the showcases speak in */
 h2 { margin: 0 0 10px; font: 400 clamp(26px, 3.2vw, 38px)/1.1 var(--serif); letter-spacing: -.02em; text-wrap: balance; }
 .band > p, .two p { margin: 0; max-width: 54ch; color: var(--ink-2); font-size: 15.5px; }
@@ -100,9 +95,7 @@ a { color: var(--ink); text-decoration-color: var(--line); text-underline-offset
 
 .two { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; }
 .plans .lede { margin-top: 10px; }
-/* the close stands on the dark half: its words go light */
-.close { --ink: #F1EFEA; --ink-2: rgba(241, 239, 234, .74); --muted: rgba(241, 239, 234, .5); --line: rgba(241, 239, 234, .25); color: var(--ink);
-  display: flex; align-items: center; justify-content: space-between; gap: 40px; flex-wrap: wrap; padding-bottom: clamp(80px, 12vh, 140px); }
+.close { display: flex; align-items: center; justify-content: space-between; gap: 40px; flex-wrap: wrap; padding-bottom: clamp(80px, 12vh, 140px); }
 .close .key { color: #141414; }   /* the key stays a light keycap with dark words */
 .close-main { display: flex; flex-direction: column; align-items: flex-start; gap: 22px; }
 
@@ -176,17 +169,17 @@ a { color: var(--ink); text-decoration-color: var(--line); text-underline-offset
 /* up in the space over the card: the first line over its left shoulder, its arrow down into the card; the second off its right */
 .hand { position: absolute; flex: none; margin: 0; display: flex; flex-direction: column;
   font: 700 clamp(30px, 3.4vw, 58px)/.95 "Caveat", "Segoe Print", "Bradley Hand", cursive; letter-spacing: .005em; color: var(--ink); }
-.hand-l { align-items: flex-start; text-align: left; rotate: -6deg; right: calc(50% + var(--cw) / 2 - 7.5rem); bottom: calc(var(--tabs) + var(--cw) * 9 / 16 + clamp(80px, 13svh, 150px)); }
-.hand-r { align-items: flex-start; text-align: left; rotate: -4deg; left: calc(50% + var(--cw) / 2 + clamp(24px, 4.5vw, 90px)); bottom: calc(var(--tabs) + var(--cw) * 9 / 16 + clamp(60px, 10svh, 110px)); }
+.hand-l { align-items: flex-start; text-align: left; right: calc(50% + var(--cw) / 2 - 7.5rem); bottom: calc(var(--tabs) + var(--cw) * 9 / 16 + clamp(80px, 13svh, 150px)); }
+.hand-r { align-items: flex-start; text-align: left; left: calc(50% + var(--cw) / 2 + clamp(24px, 4.5vw, 90px)); bottom: calc(var(--tabs) + var(--cw) * 9 / 16 + clamp(60px, 10svh, 110px)); }
 .hw { position: relative; display: inline-block; padding: .06em .08em .14em; white-space: nowrap; clip-path: inset(-20% 100% -30% -6%); }
-.hand-r .hw + .hw { color: #3E6B2E; }
+.hand-r .hw + .hw { color: #5E9145; }
 .stage.written .hw { clip-path: inset(-20% -6% -30% -6%); transition: clip-path .85s cubic-bezier(.5, .1, .4, 1); }
 .stage.written .hand-l .hw:nth-child(2) { transition-delay: .7s; }
 .stage.written .hand-r .hw:nth-child(1) { transition-delay: 1.9s; } .stage.written .hand-r .hw:nth-child(2) { transition-delay: 2.6s; }
 .hand-mark { position: absolute; overflow: visible; fill: none; stroke-linecap: round; stroke-linejoin: round; }
 .hand-mark path { stroke-dasharray: 220; stroke-dashoffset: 220; }
 .arrow { width: clamp(90px, 9vw, 170px); left: 42%; top: 100%; stroke: var(--ink); stroke-width: 3; }
-.under { left: 2%; right: 0; bottom: -.12em; width: 100%; height: .3em; stroke: #4F7A3A; stroke-width: 4; }
+.under { left: 2%; right: 0; bottom: -.12em; width: 100%; height: .3em; stroke: #5E9145; stroke-width: 4; }
 .stage.written .arrow path { stroke-dashoffset: 0; transition: stroke-dashoffset .6s ease 1.45s; } .stage.written .arrow path + path { transition-delay: 1.95s; }
 .stage.written .under path { stroke-dashoffset: 0; transition: stroke-dashoffset .6s ease 3.4s; }
 
@@ -261,8 +254,8 @@ a { color: var(--ink); text-decoration-color: var(--line); text-underline-offset
   .stage { flex-direction: column; justify-content: flex-end; align-items: center; gap: 10px; }
   .hand { position: static; flex: none; width: min(100%, 30rem); margin: 0; font-size: clamp(30px, 8vw, 44px); flex-direction: row; gap: .25em; }
   .hand-r { order: 1; margin-bottom: 8px; } .card { order: 2; }
-  .hand-l { justify-content: flex-start; text-align: left; translate: none; rotate: -3deg; }
-  .hand-r { justify-content: flex-end; text-align: right; translate: none; rotate: -3deg; }
+  .hand-l { justify-content: flex-start; text-align: left; translate: none; }
+  .hand-r { justify-content: flex-end; text-align: right; translate: none; }
   .arrow { display: none; }
   .stage { --cw: min(calc(100vw - 32px), calc((100svh - 320px) * 16 / 9)); }
 }
@@ -320,10 +313,10 @@ a { color: var(--ink); text-decoration-color: var(--line); text-underline-offset
   display: flex; align-items: center; justify-content: center; gap: clamp(32px, 9vw, 180px); padding: 84px max(20px, 5vw) 40px; }
 .roam-text { flex: 0 1 36rem; }
 .roam-text h2 { margin: 0 0 clamp(28px, 6svh, 64px); font-size: clamp(34px, 4.4vw, 64px); line-height: 1.02; }
-.scrawl { font: 700 1.12em/1 "Caveat", "Segoe Print", "Bradley Hand", cursive; color: #3E6B2E; display: inline-block; rotate: -4deg; translate: 0 .04em; }
+.scrawl { font: 700 1.12em/1 "Caveat", "Segoe Print", "Bradley Hand", cursive; color: #5E9145; display: inline-block; rotate: -4deg; translate: 0 .04em; }
 .roam-l { margin: 0; font: 700 clamp(28px, 3.1vw, 48px)/1.15 "Caveat", "Segoe Print", "Bradley Hand", cursive; color: var(--ink);
   clip-path: inset(-20% 100% -30% -6%); }
-.roam-l.l1 { rotate: -2deg; } .roam-l.l2 { margin: .35em 0 .35em 22%; rotate: -3deg; color: #3E6B2E; } .roam-l.l3 { rotate: -1.5deg; }
+.roam-l.l1 { rotate: -2deg; } .roam-l.l2 { margin: .35em 0 .35em 22%; rotate: -3deg; color: #5E9145; } .roam-l.l3 { rotate: -1.5deg; }
 .roam.seen .roam-l { clip-path: inset(-20% -6% -30% -6%); transition: clip-path .9s cubic-bezier(.5, .1, .4, 1); }
 .roam.seen .roam-l.l2 { transition-delay: .75s; } .roam.seen .roam-l.l3 { transition-delay: 1.5s; }
 .roam-frame { position: relative; flex: none; margin: 0; height: min(76svh, 760px, calc((100vw - 40px) * 16 / 9)); aspect-ratio: 9 / 16; border-radius: 30px; overflow: hidden;
@@ -342,7 +335,7 @@ a { color: var(--ink); text-decoration-color: var(--line); text-underline-offset
    foot), hidden until the card opens up into them (.stage.devices-on, js/main.js THE STAGE); under both, the stories'
    names as tabs, in the dark band at the bottom of the window. */
 .stage { --tabs: 58px; padding-bottom: var(--tabs); }
-.stage > .work { position: absolute; inset: 0; z-index: 2; display: flex; flex-direction: column; align-items: center; justify-content: flex-end;
+.stage > .work { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: flex-end;
   gap: 14px; padding-bottom: 12px; pointer-events: none; }
 .stage > .work > * { pointer-events: auto; }
 .work .show-box { width: min(60rem, calc(100vw - 32px), calc((100svh - 220px) * 1.66)); background: rgba(247, 246, 242, .94);
@@ -360,11 +353,9 @@ a { color: var(--ink); text-decoration-color: var(--line); text-underline-offset
 .stage.devices-on .card.morph { border-radius: 10px; }
 /* the handwriting steps aside while the screens are out */
 .hand { transition: opacity .5s ease; } .stage.devices-on .hand { opacity: 0; }
-/* the tabs, light, on the dark band */
+.stage .tab { opacity: .55; } .stage .tab.on, .stage .tab:hover { opacity: 1; }
+.stage .tab i { background: rgba(255, 255, 255, .25); } .stage .tab i::after { background: #fff; }
 .stage .tabs { width: min(30rem, 86%); }
-.stage .tab { color: rgba(241, 239, 234, .5); } .stage .tab.on, .stage .tab:hover { color: #F1EFEA; }
-.stage .tab i { background: rgba(241, 239, 234, .18); } .stage .tab i::after { background: #F1EFEA; }
-.stage .tab:focus-visible { outline-color: #F1EFEA; }
 .tabs { display: flex; gap: 10px; margin: 0; }
 .tab { flex: 1; min-width: 0; padding: 8px 0 0; border: 0; background: none; cursor: pointer; text-align: center; font: 500 12px/1 var(--sans); letter-spacing: .01em; color: var(--muted); transition: color .3s ease; }
 .tab span { display: block; margin-bottom: 7px; }
@@ -876,3 +867,19 @@ a { color: var(--ink); text-decoration-color: var(--line); text-underline-offset
 .app { --z: 1; --px: 118px; --py: 84px;
   transform: scale(var(--s, 1)) translate(var(--px), var(--py)) scale(var(--z)) translate(calc(var(--px) * -1), calc(var(--py) * -1)); }
 .app.cam { transition: transform .95s cubic-bezier(.65, 0, .35, 1); }
+
+/* =====================================================================
+   THE PAGE'S OWN WORDS ON THE FIELD turn with it: white, as a difference with what is under them, they come out near
+   black on the light and near white on the dark, even across the edge, mid-letter. For that the page is not a layer of
+   its own (the field is under it at negative z, and main has no z-index), and nothing between a word and the field may
+   make a layer (so the handwriting is tilted line by line, not as a whole). The green words keep a middle green that
+   reads on both. Last in the file, so they win.
+   ===================================================================== */
+.on-field, .hand-l .hw, .hand-r .hw:first-child, .roam-l.l1, .roam-l.l3, .band h2, .plats, .plats a, .proof, .stage .tab {
+  color: #fff !important; mix-blend-mode: difference; }
+.band > p, .two p, .plans .lede, .made { color: rgba(255, 255, 255, .74) !important; mix-blend-mode: difference; }
+.hand .arrow { stroke: #fff; mix-blend-mode: difference; }
+.proof span::before { background: #fff !important; }
+.hand-l .hw { rotate: -6deg; } .hand-l .arrow { rotate: -6deg; }
+.hand-r .hw { rotate: -4deg; }
+@media (max-width: 860px) { .hand-l .hw, .hand-r .hw, .hand-l .arrow { rotate: -3deg; } }

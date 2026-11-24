@@ -44,68 +44,45 @@ fit();
 requestAnimationFrame(frame);
 
 // ---- 1b. the dark half -------------------------------------------------------
-// Each view says where its dark is (u across the window, v down the view, 0..1); across the seam between two views the
-// two are blended, so the shade flows from one into the next as the page scrolls. Drawn into a small canvas (white,
-// as opaque as it is dark), stretched over the window and laid on the fabric as a difference: see #shade in site.css.
+// One composition on the window, not on the page: the page slides over it and it stays, breathing. Dark lies across
+// the lower right, light across the upper left, and the edge between them is read through a slow warp (a few sines
+// over the window and the clock), so it bends and travels like slow liquid and never sits still; where it sits
+// comes and goes a little too. Drawn into a small canvas (warm white, as opaque as it is dark), stretched over the
+// window and laid on the fabric as a difference: see #shade in site.css. The page's own words over it turn with it
+// (the same difference, .on-field in site.css).
 const sm = (a, b, x) => { const t = Math.max(0, Math.min(1, (x - a) / (b - a))); return t * t * (3 - 2 * t); };
-// Each also breathes with the clock t (seconds): its dark comes and goes a little, and its slant turns.
-const SHADE = [
-  ["#stage", (u, v, t) => sm(.5 + .05 * Math.sin(t * .31), .82 + .04 * Math.sin(t * .23 + 1), v)],         // the film: dark along the bottom
-  ["#roam", (u, v, t) => sm(.5, .74, u + (.5 - v) * (.14 + .07 * Math.sin(t * .19)) + .03 * Math.sin(t * .27))],   // the roam: the right, a slant
-  [".band.two", () => 0],
-  [".band.plans", (u, v, t) => sm(.62 + .04 * Math.sin(t * .29), 1.05, v)],   // the plans: going dark under its words, into the close
-  [".band.close", () => 1],                                              // the close: dark
-].map(([q, f]) => [document.querySelector(q), f]).filter(([el]) => el);
 const shadeCv = document.getElementById("shade"), sg = shadeCv && shadeCv.getContext("2d");
 const mast = document.querySelector(".mast");
-let shadeIm = null, shadeQueued = false;
-function darkAt(u, y, rects, M, t = 0) {
-  let d = 0, w = 0;
-  for (let i = 0; i < rects.length; i++) {
-    const [top, b, f] = rects[i];
-    // the first view runs on up past the top of the page, the last on down past its end
-    const k = (i === 0 ? 1 : sm(top - M, top + M, y)) * (i === rects.length - 1 ? 1 : 1 - sm(b - M, b + M, y));
-    if (k <= 0) continue;
-    d += k * f(u, Math.max(0, Math.min(1, (y - top) / (b - top))), t); w += k;
-  }
-  return w > 0 ? d / Math.max(1, w) : 0;
-}
-// THE FLOW: the field is read through a slow warp, a few sines over the window and the clock, so the edge between dark
-// and light never sits still: it bends and travels like slow liquid. (Held still with motion reduced.)
-function flow(u, y, t) {
-  const yn = y / view.h;
-  return [
-    u + .045 * Math.sin(yn * 5.1 + t * .35) + .028 * Math.sin(yn * 11.3 - t * .61 + u * 3.2),
-    y + view.h * (.045 * Math.sin(u * 4.3 - t * .28) + .026 * Math.sin(u * 9.7 + t * .52 + yn * 2.4)),
-  ];
+let shadeIm = null;
+function darkAt(u, yn, t) {
+  // the slow warp
+  const wu = u + .05 * Math.sin(yn * 4.6 + t * .33) + .03 * Math.sin(yn * 10.8 - t * .57 + u * 3.1);
+  const wy = yn + .05 * Math.sin(u * 4.1 - t * .27) + .028 * Math.sin(u * 9.4 + t * .49 + yn * 2.3);
+  // the diagonal, breathing
+  const s = .62 * wu + .8 * wy + .035 * Math.sin(t * .21);
+  // a narrowish edge: soft, but little of it is the mid-grey where words on it would be grey on grey
+  return sm(.67 + .03 * Math.sin(t * .17 + 2), .79 + .03 * Math.sin(t * .13), s);
 }
 function drawShade(now) {
-  shadeQueued = false;
   if (!sg) return;
   const t = reduced ? 0 : (now || performance.now()) / 1000;
   const W = 96, H = Math.max(24, Math.round(96 * view.h / Math.max(1, view.w)));
   if (shadeCv.width !== W || shadeCv.height !== H) { shadeCv.width = W; shadeCv.height = H; shadeIm = sg.createImageData(W, H); }
-  const rects = SHADE.map(([el, f]) => { const r = el.getBoundingClientRect(); return [r.top, r.bottom, f]; });
-  const M = view.h * .16, px = shadeIm.data;
+  const px = shadeIm.data;
   for (let y = 0; y < H; y++) {
-    const yy = (y + .5) / H * view.h;
+    const yn = (y + .5) / H;
     for (let x = 0; x < W; x++) {
-      const [fu, fy] = reduced ? [(x + .5) / W, yy] : flow((x + .5) / W, yy, t);
-      const a = darkAt(fu, fy, rects, M, t), i = (y * W + x) * 4;
+      const a = darkAt((x + .5) / W, yn, t), i = (y * W + x) * 4;
       px[i] = 255; px[i + 1] = 251; px[i + 2] = 245; px[i + 3] = Math.round(a * 255);   // a warm white: the dark comes out warm
     }
   }
   sg.putImageData(shadeIm, 0, 0);
-  if (mast) mast.classList.toggle("dark", darkAt(.5, 30, rects, M, t) > .5);
+  if (mast) mast.classList.toggle("dark", darkAt(.5, 30 / Math.max(1, view.h), t) > .5);
 }
-const queueShade = () => { if (!shadeQueued) { shadeQueued = true; requestAnimationFrame(drawShade); } };
+addEventListener("resize", () => drawShade());
+drawShade();
 // alive: redrawn all the time (every other frame is plenty for something this slow and this soft)
 if (!reduced) { let odd = false; (function flowing(now) { requestAnimationFrame(flowing); if ((odd = !odd)) drawShade(now); })(); }
-addEventListener("scroll", queueShade, { passive: true });
-addEventListener("resize", queueShade);
-queueShade();
-// the views change height as fonts and media arrive
-if (typeof ResizeObserver !== "undefined") { const ro = new ResizeObserver(queueShade); SHADE.forEach(([el]) => ro.observe(el)); }
 
 // ---- 1c. the water, never quite still: a soft ripple somewhere every couple of seconds ----
 if (!reduced) {
