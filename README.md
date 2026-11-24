@@ -28,8 +28,10 @@ moves, and the page's own words flickering into 0/1 under the pointer
 (`js/stage.js`). Nothing on it has a title: each view shows rather than says.
 
 1. **The film** (`#stage`). One small white card and a camera, with the line
-   written by hand either side of it (Caveat, from Google Fonts): "A team of
-   bots", with an arrow to the card, and "to do the hard things", underlined;
+   written by hand in the space over it (Caveat, from Google Fonts): "A team
+   of bots" over its left shoulder, with an arrow down into it, and "to do the
+   hard things", underlined, off its right; the card stands on the bottom of
+   the window;
    it writes itself in once. In the card a box rises and "hey X0" is typed
    while the camera pushes in; the reply, "Here, at your service.", in the
    middle; the card clears and the bot's face puts itself together, small.

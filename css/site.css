@@ -159,12 +159,13 @@ a { color: var(--ink); text-decoration-color: var(--line); text-underline-offset
 /* the card stands on the bottom of the window (its lower edge is the window's), the line by hand level with its middle */
 .stage { --side: clamp(8rem, 15vw, 17rem); --gap: clamp(16px, 2.6vw, 48px);
   --cw: min(46rem, calc(100vw - 2 * var(--side) - 2 * var(--gap) - 48px), calc((100svh - 200px) * 16 / 9));
-  box-sizing: border-box; min-height: 100svh; padding-block: 72px 0; display: flex; flex-direction: row; align-items: flex-end; justify-content: center; gap: var(--gap); }
+  position: relative; box-sizing: border-box; min-height: 100svh; padding-block: 72px 0; display: flex; flex-direction: row; align-items: flex-end; justify-content: center; gap: var(--gap); }
 /* ---- the line by hand, either side of the card: written in, a line at a time, then the arrow and the underline ---- */
-.hand { flex: 0 0 var(--side); margin: 0 0 calc(var(--cw) * 9 / 32 - .9em); position: relative; display: flex; flex-direction: column;
+/* up in the space over the card: the first line over its left shoulder, its arrow down into the card; the second off its right */
+.hand { position: absolute; flex: none; margin: 0; display: flex; flex-direction: column;
   font: 700 clamp(30px, 3.4vw, 58px)/.95 "Caveat", "Segoe Print", "Bradley Hand", cursive; letter-spacing: .005em; color: var(--ink); }
-.hand-l { align-items: flex-end; text-align: right; rotate: -6deg; translate: 0 -14%; }
-.hand-r { align-items: flex-start; text-align: left; rotate: -4deg; translate: 0 16%; }
+.hand-l { align-items: flex-start; text-align: left; rotate: -6deg; right: calc(50% + var(--cw) / 2 - 7.5rem); bottom: calc(var(--cw) * 9 / 16 + clamp(80px, 13svh, 150px)); }
+.hand-r { align-items: flex-start; text-align: left; rotate: -4deg; left: calc(50% + var(--cw) / 2 + clamp(24px, 4.5vw, 90px)); bottom: calc(var(--cw) * 9 / 16 + clamp(60px, 10svh, 110px)); }
 .hw { position: relative; display: inline-block; padding: .06em .08em .14em; white-space: nowrap; clip-path: inset(-20% 100% -30% -6%); }
 .hand-r .hw + .hw { color: #3E6B2E; }
 .stage.written .hw { clip-path: inset(-20% -6% -30% -6%); transition: clip-path .85s cubic-bezier(.5, .1, .4, 1); }
@@ -172,7 +173,7 @@ a { color: var(--ink); text-decoration-color: var(--line); text-underline-offset
 .stage.written .hand-r .hw:nth-child(1) { transition-delay: 1.9s; } .stage.written .hand-r .hw:nth-child(2) { transition-delay: 2.6s; }
 .hand-mark { position: absolute; overflow: visible; fill: none; stroke-linecap: round; stroke-linejoin: round; }
 .hand-mark path { stroke-dasharray: 220; stroke-dashoffset: 220; }
-.arrow { width: 62%; right: -10%; bottom: -46%; stroke: var(--ink); stroke-width: 3; }
+.arrow { width: clamp(90px, 9vw, 170px); left: 42%; top: 100%; stroke: var(--ink); stroke-width: 3; }
 .under { left: 2%; right: 0; bottom: -.12em; width: 100%; height: .3em; stroke: #4F7A3A; stroke-width: 4; }
 .stage.written .arrow path { stroke-dashoffset: 0; transition: stroke-dashoffset .6s ease 1.45s; } .stage.written .arrow path + path { transition-delay: 1.95s; }
 .stage.written .under path { stroke-dashoffset: 0; transition: stroke-dashoffset .6s ease 3.4s; }
@@ -246,7 +247,7 @@ a { color: var(--ink); text-decoration-color: var(--line); text-underline-offset
 
 @media (max-width: 860px) {
   .stage { flex-direction: column; justify-content: flex-end; align-items: center; gap: 10px; }
-  .hand { flex: none; width: min(100%, 30rem); margin: 0; font-size: clamp(30px, 8vw, 44px); flex-direction: row; gap: .25em; }
+  .hand { position: static; flex: none; width: min(100%, 30rem); margin: 0; font-size: clamp(30px, 8vw, 44px); flex-direction: row; gap: .25em; }
   .hand-r { order: 1; margin-bottom: 8px; } .card { order: 2; }
   .hand-l { justify-content: flex-start; text-align: left; translate: none; rotate: -3deg; }
   .hand-r { justify-content: flex-end; text-align: right; translate: none; rotate: -3deg; }
