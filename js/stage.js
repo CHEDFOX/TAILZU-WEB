@@ -51,7 +51,6 @@ const sm = (a, b, x) => { const t = Math.max(0, Math.min(1, (x - a) / (b - a)));
 const SHADE = [
   ["#stage", (u, v) => sm(.5, .82, v)],                                  // the film: dark along the bottom, under the card
   ["#roam", (u, v) => sm(.5, .74, u + (.5 - v) * .14)],                 // the roam: dark on the right, behind the film, a slant
-  ["#work", (u, v) => 1 - sm(.2, .46, v)],                               // the day: dark at the top, under its title
   [".band.two", () => 0],
   [".band.plans", (u, v) => sm(.62, 1.05, v)],                           // the plans: going dark under its words, into the close
   [".band.close", () => 1],                                              // the close: dark

@@ -170,14 +170,14 @@ a { color: var(--ink); text-decoration-color: var(--line); text-underline-offset
    ===================================================================== */
 /* the card stands on the bottom of the window (its lower edge is the window's), the line by hand level with its middle */
 .stage { --side: clamp(8rem, 15vw, 17rem); --gap: clamp(16px, 2.6vw, 48px);
-  --cw: min(46rem, calc(100vw - 2 * var(--side) - 2 * var(--gap) - 48px), calc((100svh - 200px) * 16 / 9));
-  position: relative; box-sizing: border-box; min-height: 100svh; padding-block: 72px 0; display: flex; flex-direction: row; align-items: flex-end; justify-content: center; gap: var(--gap); }
+  --cw: min(46rem, calc(100vw - 2 * var(--side) - 2 * var(--gap) - 48px), calc((100svh - 270px) * 16 / 9));
+  position: relative; box-sizing: border-box; min-height: 100svh; padding-top: 72px; display: flex; flex-direction: row; align-items: flex-end; justify-content: center; gap: var(--gap); }
 /* ---- the line by hand, either side of the card: written in, a line at a time, then the arrow and the underline ---- */
 /* up in the space over the card: the first line over its left shoulder, its arrow down into the card; the second off its right */
 .hand { position: absolute; flex: none; margin: 0; display: flex; flex-direction: column;
   font: 700 clamp(30px, 3.4vw, 58px)/.95 "Caveat", "Segoe Print", "Bradley Hand", cursive; letter-spacing: .005em; color: var(--ink); }
-.hand-l { align-items: flex-start; text-align: left; rotate: -6deg; right: calc(50% + var(--cw) / 2 - 7.5rem); bottom: calc(var(--cw) * 9 / 16 + clamp(80px, 13svh, 150px)); }
-.hand-r { align-items: flex-start; text-align: left; rotate: -4deg; left: calc(50% + var(--cw) / 2 + clamp(24px, 4.5vw, 90px)); bottom: calc(var(--cw) * 9 / 16 + clamp(60px, 10svh, 110px)); }
+.hand-l { align-items: flex-start; text-align: left; rotate: -6deg; right: calc(50% + var(--cw) / 2 - 7.5rem); bottom: calc(var(--tabs) + var(--cw) * 9 / 16 + clamp(80px, 13svh, 150px)); }
+.hand-r { align-items: flex-start; text-align: left; rotate: -4deg; left: calc(50% + var(--cw) / 2 + clamp(24px, 4.5vw, 90px)); bottom: calc(var(--tabs) + var(--cw) * 9 / 16 + clamp(60px, 10svh, 110px)); }
 .hw { position: relative; display: inline-block; padding: .06em .08em .14em; white-space: nowrap; clip-path: inset(-20% 100% -30% -6%); }
 .hand-r .hw + .hw { color: #3E6B2E; }
 .stage.written .hw { clip-path: inset(-20% -6% -30% -6%); transition: clip-path .85s cubic-bezier(.5, .1, .4, 1); }
@@ -264,10 +264,10 @@ a { color: var(--ink); text-decoration-color: var(--line); text-underline-offset
   .hand-l { justify-content: flex-start; text-align: left; translate: none; rotate: -3deg; }
   .hand-r { justify-content: flex-end; text-align: right; translate: none; rotate: -3deg; }
   .arrow { display: none; }
-  .stage { --cw: min(calc(100vw - 32px), calc((100svh - 260px) * 16 / 9)); }
+  .stage { --cw: min(calc(100vw - 32px), calc((100svh - 320px) * 16 / 9)); }
 }
 @media (max-width: 640px) {
-  .stage { padding-block: 68px 0; --cw: min(calc(100vw - 32px), calc((100svh - 250px) * 9 / 14)); }
+  .stage { padding-top: 68px; --cw: min(calc(100vw - 32px), calc((100svh - 310px) * 9 / 14)); }
   .card { aspect-ratio: 9 / 14; border-radius: 20px; }
   .typebox { width: 88%; }
   .bubble { white-space: normal; text-align: center; max-width: 82%; }
@@ -320,7 +320,6 @@ a { color: var(--ink); text-decoration-color: var(--line); text-underline-offset
   display: flex; align-items: center; justify-content: center; gap: clamp(32px, 9vw, 180px); padding: 84px max(20px, 5vw) 40px; }
 .roam-text { flex: 0 1 36rem; }
 .roam-text h2 { margin: 0 0 clamp(28px, 6svh, 64px); font-size: clamp(34px, 4.4vw, 64px); line-height: 1.02; }
-.work-head .scrawl { color: #A6CF8A; }
 .scrawl { font: 700 1.12em/1 "Caveat", "Segoe Print", "Bradley Hand", cursive; color: #3E6B2E; display: inline-block; rotate: -4deg; translate: 0 .04em; }
 .roam-l { margin: 0; font: 700 clamp(28px, 3.1vw, 48px)/1.15 "Caveat", "Segoe Print", "Bradley Hand", cursive; color: var(--ink);
   clip-path: inset(-20% 100% -30% -6%); }
@@ -339,14 +338,33 @@ a { color: var(--ink); text-decoration-color: var(--line); text-underline-offset
 }
 @media (prefers-reduced-motion: reduce) { .roam-l { clip-path: none !important; transition: none !important; } }
 
-/* THE WORK VIEW: the box, smaller, and under it only the stories' names, as tabs: which is playing, how far through it is,
-   and a way to jump to another */
-.work { flex-direction: column; justify-content: flex-end; gap: clamp(14px, 2.4svh, 26px); padding-bottom: clamp(24px, 5svh, 60px); }
-.work .show-box { width: min(54rem, calc(100vw - max(32px, 6vw)), calc((100svh - 360px) * 1.72)); }
-/* its title: the serif, its last word by hand, as the film's line is; light, on the dark top of this view */
-.work-head { max-width: 40rem; text-align: center; margin-bottom: clamp(36px, 8svh, 84px); }   /* headroom for Blip, who skates the box's top */
-.work-head h2 { margin: 0; color: #F1EFEA; font-size: clamp(32px, 3.8vw, 54px); line-height: 1.02; }
-.work .tabs { width: min(30rem, 80%); }
+/* THE WORK VIEW, inside the first: the desktop and phone stand where the card stands (their box's foot on the card's
+   foot), hidden until the card opens up into them (.stage.devices-on, js/main.js THE STAGE); under both, the stories'
+   names as tabs, in the dark band at the bottom of the window. */
+.stage { --tabs: 58px; padding-bottom: var(--tabs); }
+.stage > .work { position: absolute; inset: 0; z-index: 2; display: flex; flex-direction: column; align-items: center; justify-content: flex-end;
+  gap: 14px; padding-bottom: 12px; pointer-events: none; }
+.stage > .work > * { pointer-events: auto; }
+.work .show-box { width: min(60rem, calc(100vw - 32px), calc((100svh - 220px) * 1.66)); background: rgba(247, 246, 242, .94);
+  transition: opacity .55s ease .25s, translate .8s cubic-bezier(.2, .8, .25, 1) .2s, visibility 0s; }
+.stage:not(.devices-on) .work .show-box { opacity: 0; visibility: hidden; translate: 0 18px; pointer-events: none;
+  transition: opacity .45s ease, translate .6s ease, visibility 0s .6s; }
+/* the phone comes up from below as the card becomes the desktop, and goes back down */
+.stage .phone { transition: transform 1.25s cubic-bezier(.65, 0, .35, 1), scale .9s cubic-bezier(.22, .9, .3, 1), opacity .6s ease, filter .9s ease, translate .8s cubic-bezier(.2, .8, .25, 1) .35s; }
+.stage:not(.devices-on) .phone { translate: 0 60px; opacity: 0; transition-delay: 0s; }
+/* the card: above the screens while it turns into one, and back out */
+.card { z-index: 3; transform-origin: 0 0; transition: opacity .26s ease, visibility 0s; }
+.card.morph { transition: transform 1.05s cubic-bezier(.65, 0, .35, 1), border-radius 1.05s ease, opacity .26s ease, visibility 0s; }
+.card.cut { transition: none !important; }
+.card.hide { opacity: 0; visibility: hidden; transition: opacity .26s ease, visibility 0s .26s; }
+.stage.devices-on .card.morph { border-radius: 10px; }
+/* the handwriting steps aside while the screens are out */
+.hand { transition: opacity .5s ease; } .stage.devices-on .hand { opacity: 0; }
+/* the tabs, light, on the dark band */
+.stage .tabs { width: min(30rem, 86%); }
+.stage .tab { color: rgba(241, 239, 234, .5); } .stage .tab.on, .stage .tab:hover { color: #F1EFEA; }
+.stage .tab i { background: rgba(241, 239, 234, .18); } .stage .tab i::after { background: #F1EFEA; }
+.stage .tab:focus-visible { outline-color: #F1EFEA; }
 .tabs { display: flex; gap: 10px; margin: 0; }
 .tab { flex: 1; min-width: 0; padding: 8px 0 0; border: 0; background: none; cursor: pointer; text-align: center; font: 500 12px/1 var(--sans); letter-spacing: .01em; color: var(--muted); transition: color .3s ease; }
 .tab span { display: block; margin-bottom: 7px; }

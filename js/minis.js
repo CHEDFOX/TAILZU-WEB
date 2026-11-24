@@ -285,10 +285,13 @@ if (B && !reduced) {
     requestAnimationFrame(frame);
     const dt = Math.min(.05, last ? (now - last) / 1000 : .016); last = now;
     // the view most on screen, if it fills at least a third of it
-    let best = null, most = H * .34;
-    for (const [el, m] of views) {
-      const r = el.getBoundingClientRect(), seen = Math.min(r.bottom, H) - Math.max(r.top, 0);
-      if (seen > most) { most = seen; best = m; }
+    // the first view, when it is most of the window: he flies while the card is up, and skates while it is open as the
+    // desktop and the phone; elsewhere he is not drawn
+    let best = null;
+    const st = views[0] && views[0][0];
+    if (st) {
+      const r = st.getBoundingClientRect(), seen = Math.min(r.bottom, H) - Math.max(r.top, 0);
+      if (seen > H * .34) best = st.classList.contains("devices-on") ? skater : flier;
     }
     // a new view: he goes there from where he was last seen (on screen, or just above or below it)
     if (best && best !== cur) {
