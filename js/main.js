@@ -301,7 +301,7 @@ function sayer(aside) {
     // ---- the inbox: a small plant shop's, 22 of its 45, newest first. The
     // companies are made up, so the page borrows nobody's name.
     const MAIL = [
-      ["Kavya Iyer", "KI", "plum", "Invoice #2231", "Invoice for 120 ceramic pots, November", "9:58", "needs"],
+      ["Emma Clarke", "EC", "plum", "Invoice #2231", "Invoice for 120 ceramic pots, November", "9:58", "needs"],
       ["Priya Sharma", "PS", "clay", "Order #1042", "Mera order kab tak aayega?", "9:51", "reply"],
       ["ShipEasy", "SE", "ash", "New courier rates from Monday", "What changes for parcels under 2 kg", "9:47", "news"],
       ["Payments", "₹", "stone", "₹4,820 settled to your bank", "From 7 orders yesterday", "9:44", "fyi"],
@@ -318,7 +318,7 @@ function sayer(aside) {
       ["Store", "St", "stone", "New order #1047", "Snake plant, small · ₹650", "9:03", "fyi"],
       ["Sam Lee", "SL", "slate", "Plants for our café", "Would love to feature your plants", "9:01", "reply"],
       ["Launchpad Daily", "LD", "ash", "Today's top products", "A watering app that", "8:58", "news"],
-      ["Calendar", "Ca", "stone", "Supplier call moved to 3:30", "Kavya Iyer · 30 min", "8:55", "fyi"],
+      ["Calendar", "Ca", "stone", "Supplier call moved to 3:30", "Emma Clarke · 30 min", "8:55", "fyi"],
       ["Ananya Das", "AD", "clay", "Repotting tips?", "My fiddle leaf fig is drooping", "8:50", "reply"],
       ["Trade Weekly", "TW", "ash", "Planning the festive season", "Stock up before October", "8:47", "news"],
       ["Rahul Verma", "RV", "sea", "Order #1029", "Can I change the address?", "8:41", "reply"],
@@ -492,7 +492,7 @@ function sayer(aside) {
     const PLANE = '<svg viewBox="0 0 16 16"><path d="M14.5 1.5 7 9M14.5 1.5 10 14.5 7 9 1.5 6z" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>';
     function handback() {
       return '<div class="handback"><div class="h"><span>Needs you</span><span>9:58</span></div>'
-        + '<div class="t">Kavya Iyer · Invoice #2231</div>'
+        + '<div class="t">Emma Clarke · Invoice #2231</div>'
         + '<div class="b">The total is ₹48,000, but the PO says ₹42,000. I haven\'t replied.</div>'
         + '<span class="look">Open the mail</span></div>';
     }
@@ -922,17 +922,17 @@ function sayer(aside) {
 
     // ---- the fourth story: a meeting on the desktop, its notes and the reminders on the phone ----
     const scene4El = document.getElementById("scene4");
-    const PEOPLE = [["Rahul", "/media/meet/call-1.mp4"], ["Arjun", "/media/meet/call-2.mp4"], ["Kavya", "/media/meet/call-3.mp4"]];
+    const PEOPLE = [["Rahul", "/media/meet/call-1.mp4"], ["Arjun", "/media/meet/call-2.mp4"], ["Emma", "/media/meet/call-3.mp4"]];
     // what is said, by whom (an index into PEOPLE), and the note it becomes
     const SAID = [
       [0, "Can we launch the festive range on Friday?"],
       [2, "Yes, if the stock lands by Thursday.", "Decided: launch on Friday"],
       [1, "I'll restock the monstera before then.", "Arjun · restock the monstera"],
       [0, "Then I'll get the mailer out on Thursday.", "Rahul · festive mailer by Thursday"],
-      [2, "And I'll send the revised invoice.", "Kavya · send the revised invoice"],
+      [2, "And I'll send the revised invoice.", "Emma · send the revised invoice"],
     ];
     const REMS = [
-      ["You · in 15 min", "Supplier call with Kavya", "Her revised invoice is in your mail."],
+      ["You · in 15 min", "Supplier call with Emma", "Her revised invoice is in your mail."],
       ["For Rahul · Thursday", "Festive mailer goes out", "Sent to Rahul, with the draft attached."],
       ["For Arjun · before Friday", "Restock the monstera", "Sent to Arjun · 12 left in stock."],
     ];
@@ -991,7 +991,7 @@ function sayer(aside) {
       T(9600, () => { x4.tiles.forEach((t) => t.classList.remove("talk")); x4.cap.classList.remove("in"); scene4El.classList.add("ended"); });
       T(10200, () => {
         focusOn("phone"); say("Sending the notes…");
-        add('<div class="tcard"><span>Notes · weekly</span><b>Launch on Friday</b>Rahul: festive mailer by Thursday<br>Arjun: restock the monstera<br>Kavya: send the revised invoice</div>');
+        add('<div class="tcard"><span>Notes · weekly</span><b>Launch on Friday</b>Rahul: festive mailer by Thursday<br>Arjun: restock the monstera<br>Emma: send the revised invoice</div>');
       });
       T(11200, () => { say("Notes sent to all four", false); });
       // and the reminders, for you and for them
