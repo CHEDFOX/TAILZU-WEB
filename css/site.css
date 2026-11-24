@@ -145,7 +145,7 @@ a { color: var(--ink); text-decoration-color: var(--line); text-underline-offset
 .plats { list-style: none; display: flex; flex-wrap: wrap; gap: 16px; margin: 0; padding: 0; font-size: 14px; color: var(--ink-2); }
 .made { margin: 0; font-size: 13px; color: var(--muted); }
 .proof { margin: 0; display: flex; flex-wrap: wrap; gap: 6px 14px; font: 500 12px/1.3 var(--sans); color: var(--ink-2); }
-.proof span { display: inline-flex; align-items: center; gap: 6px; } .proof span::before { content: ""; width: 4px; height: 4px; border-radius: 50%; background: #4F7A3A; }
+.proof > span { display: inline-block; } .proof > span::before { content: ""; display: inline-block; vertical-align: middle; margin: -2px 6px 0 0; width: 4px; height: 4px; border-radius: 50%; background: #4F7A3A; }
 
 @media (max-width: 620px) {
   .two { grid-template-columns: 1fr; gap: 44px; }
@@ -314,9 +314,8 @@ a { color: var(--ink); text-decoration-color: var(--line); text-underline-offset
 .roam-text { flex: 0 1 36rem; }
 .roam-text h2 { margin: 0 0 clamp(28px, 6svh, 64px); font-size: clamp(34px, 4.4vw, 64px); line-height: 1.02; }
 .scrawl { font: 700 1.12em/1 "Caveat", "Segoe Print", "Bradley Hand", cursive; color: #5E9145; display: inline-block; rotate: -4deg; translate: 0 .04em; }
-.roam-l { margin: 0; font: 700 clamp(28px, 3.1vw, 48px)/1.15 "Caveat", "Segoe Print", "Bradley Hand", cursive; color: var(--ink);
+.roam-l { margin: 0; max-width: 26ch; font: 400 clamp(19px, 1.65vw, 25px)/1.42 var(--sans); letter-spacing: -.005em; color: var(--ink-2);
   clip-path: inset(-20% 100% -30% -6%); }
-.roam-l.l1 { rotate: -2deg; } .roam-l.l2 { margin: .35em 0 .35em 22%; rotate: -3deg; color: #5E9145; } .roam-l.l3 { rotate: -1.5deg; }
 .roam.seen .roam-l { clip-path: inset(-20% -6% -30% -6%); transition: clip-path .9s cubic-bezier(.5, .1, .4, 1); }
 .roam.seen .roam-l.l2 { transition-delay: .75s; } .roam.seen .roam-l.l3 { transition-delay: 1.5s; }
 .roam-frame { position: relative; flex: none; margin: 0; height: min(76svh, 760px, calc((100vw - 40px) * 16 / 9)); aspect-ratio: 9 / 16; border-radius: 30px; overflow: hidden;
@@ -326,7 +325,7 @@ a { color: var(--ink); text-decoration-color: var(--line); text-underline-offset
   .roam { flex-direction: column; justify-content: center; gap: 18px; padding: 84px 20px 24px; }
   .roam-text { flex: none; width: min(100%, 30rem); }
   .roam-text h2 { margin-bottom: 10px; font-size: clamp(28px, 7.4vw, 40px); }
-  .roam-l { font-size: clamp(22px, 6vw, 32px); }
+  .roam-l { font-size: clamp(17px, 4.6vw, 21px); }
   .roam-frame { height: min(48svh, calc((100vw - 40px) * 16 / 9)); border-radius: 24px; }
 }
 @media (prefers-reduced-motion: reduce) { .roam-l { clip-path: none !important; transition: none !important; } }
@@ -889,17 +888,19 @@ a { color: var(--ink); text-decoration-color: var(--line); text-underline-offset
 html.film-held { overscroll-behavior: none; }
 
 /* =====================================================================
-   THE PAGE'S OWN WORDS ON THE FIELD turn with it: white, as a difference with what is under them, they come out near
-   black on the light and near white on the dark, even across the edge, mid-letter. For that the page is not a layer of
-   its own (the field is under it at negative z, and main has no z-index), and nothing between a word and the field may
-   make a layer (so the handwriting is tilted line by line, not as a whole). The green words keep a middle green that
-   reads on both. Last in the file, so they win.
+   THE PAGE'S OWN WORDS ON THE FIELD turn with it, word by word (js/tone.js): each is a .tw, and is .dk while the
+   field under it is dark. On the light they keep their own colours; on the dark, --on-dark, which the quieter text and
+   the green words set for themselves. The handwriting is tilted line by line. Last in the file, so they win.
    ===================================================================== */
-.on-field, .hand-l .hw, .hand-r .hw:first-child, .roam-l.l1, .roam-l.l3, .band h2, .plats, .plats a, .proof, .stage .tab {
-  color: #fff !important; mix-blend-mode: difference; }
-.band > p, .two p, .plans .lede, .made { color: rgba(255, 255, 255, .74) !important; mix-blend-mode: difference; }
-.hand .arrow { stroke: #fff; mix-blend-mode: difference; }
-.proof span::before { background: #fff !important; }
+.tw { --on-dark: #F3EEE6; transition: color .45s ease, stroke .45s ease, opacity .3s ease; }
+.tw.dk { color: var(--on-dark); }
+.band > p, .two p, .plans .lede, .made, .plats, .proof, .roam-l { --dim: rgba(243, 238, 230, .74); }
+.band > p .tw, .two p .tw, .plans .lede .tw, .made .tw, .plats .tw, .proof .tw, .roam-l .tw { --on-dark: var(--dim); }
+.scrawl .tw, .hand-r .hw + .hw .tw { --on-dark: #9BCF7C; }
+.hand .arrow.dk { stroke: #F3EEE6; }
+.stage .tab { color: var(--ink); } .stage .tab.dk { color: #F3EEE6; }
+.stage .tab i { background: rgba(22, 20, 15, .16); } .stage .tab i::after { background: var(--ink); }
+.stage .tab.dk i { background: rgba(243, 238, 230, .26); } .stage .tab.dk i::after { background: #F3EEE6; }
 .hand-l .hw { rotate: -6deg; } .hand-l .arrow { rotate: -6deg; }
 .hand-r .hw { rotate: -4deg; }
 @media (max-width: 860px) { .hand-l .hw, .hand-r .hw, .hand-l .arrow { rotate: -3deg; } }

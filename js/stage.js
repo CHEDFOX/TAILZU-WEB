@@ -48,8 +48,8 @@ requestAnimationFrame(frame);
 // the lower right, light across the upper left, and the edge between them is read through a slow warp (a few sines
 // over the window and the clock), so it bends and travels like slow liquid and never sits still; where it sits
 // comes and goes a little too. Drawn into a small canvas (warm white, as opaque as it is dark), stretched over the
-// window and laid on the fabric as a difference: see #shade in site.css. The page's own words over it turn with it
-// (the same difference, .on-field in site.css).
+// window and laid on the fabric as a difference: see #shade in site.css. The page's own words over it turn with it,
+// each word by the field under it (tone.js).
 const sm = (a, b, x) => { const t = Math.max(0, Math.min(1, (x - a) / (b - a))); return t * t * (3 - 2 * t); };
 const shadeCv = document.getElementById("shade"), sg = shadeCv && shadeCv.getContext("2d");
 const mast = document.querySelector(".mast");
@@ -63,9 +63,13 @@ function darkAt(u, yn, t) {
   // a narrowish edge: soft, but little of it is the mid-grey where words on it would be grey on grey
   return sm(.67 + .03 * Math.sin(t * .17 + 2), .79 + .03 * Math.sin(t * .13), s);
 }
+let shadeT = 0;
+/** How dark the field is (0 light, 1 dark) at a point in the window, as last drawn: the page's words turn by it (tone.js). */
+export const fieldDark = (x, y) => darkAt(x / Math.max(1, view.w), y / Math.max(1, view.h), shadeT);
 function drawShade(now) {
   if (!sg) return;
   const t = reduced ? 0 : (now || performance.now()) / 1000;
+  shadeT = t;
   const W = 96, H = Math.max(24, Math.round(96 * view.h / Math.max(1, view.w)));
   if (shadeCv.width !== W || shadeCv.height !== H) { shadeCv.width = W; shadeCv.height = H; shadeIm = sg.createImageData(W, H); }
   const px = shadeIm.data;

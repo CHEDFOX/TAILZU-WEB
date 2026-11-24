@@ -2,6 +2,7 @@
 import { easeIO, reduced, view } from "./util.js";
 import { splash } from "./paper/water.js";
 import { scroll } from "./stage.js";
+import "./tone.js";
 import "./minis.js";
 import "./game.js";
 import { blip } from "./blip/kit.js";
