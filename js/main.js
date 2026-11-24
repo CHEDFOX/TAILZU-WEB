@@ -85,15 +85,13 @@ if (card) {
   const stopAll = () => { timers.forEach(stageClock.cancel); timers = []; };
   const hurry = stageClock.hurry;
 
-  // ---- the first visit: the page waits for the film ----
-  // Until the film has played through once, the page stays on it, and a
-  // scroll down plays it faster. When it ends the page moves on by itself and
-  // is let go; from then on (and on every later visit) it scrolls as normal.
-  // (renamed when the stage changes, so everyone sees the new one through once; ?intro always holds, for trying it)
-  const SEEN = "x0.stageSeen.2";
-  const forced = new URLSearchParams(location.search).has("intro");
-  const seenBefore = !forced && (() => { try { return localStorage.getItem(SEEN) === "1"; } catch { return true; } })();
-  let held = !seenBefore && !reduced && !!next && !location.hash && (forced || scrollY <= 40);
+  // ---- every visit: the page waits for the stage ----
+  // On every load (a visit or a refresh) the page starts at the top and stays
+  // on the stage until its first round has played through, and a scroll down
+  // plays it faster. When it ends the page moves on by itself and is let go;
+  // from then on, until the next load, it scrolls as normal. Not for a link
+  // to a part further down (#...), or for reduced motion.
+  let held = !reduced && !!next && !location.hash;
   const typing = (e) => e.target instanceof Element && e.target.closest("input, textarea, select, [contenteditable]");
   const SCROLL_KEYS = { ArrowDown: 1.2, PageDown: 2.2, " ": 2.2, Spacebar: 2.2, End: 3, ArrowUp: 0, PageUp: 0, Home: 0 };
   let touchY = null;
@@ -229,10 +227,10 @@ if (card) {
 
   // ---- handing over to the next view, once ----
   function moveOn() {
-    // the first visit: the film has played through, so the page goes on, and
+    // held on this load: the stage has played through, so the page goes on, and
     // the scroll it was holding is handed back once it gets there
     const first = held;
-    if (first) { pinned = false; try { localStorage.setItem(SEEN, "1"); } catch {} }
+    if (first) pinned = false;
     if (!first && (played > 1 || reduced || !next || scrollY > 40)) return;   // never yank someone who has scrolled
     const from = scrollY, to = next.getBoundingClientRect().top + scrollY, dur = 1150;
     let t0 = 0, raf = 0;
