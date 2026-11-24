@@ -47,6 +47,30 @@ const stageClock = (() => {
   const kick = () => { if (!raf) raf = requestAnimationFrame(tick); };
   return {
     at(ms, fn) { const x = { t: vnow + ms, fn }; q.push(x); kick(); return x; },
+    /** Jump ahead `ms` at once: every beat due in that time runs, in order, with the stage's transitions off (.seeking
+     *  in site.css), and the animations begun on the way are put at their ends. For seeking from the tabs. */
+    skip(ms) {
+      const end = vnow + ms, root = document.documentElement;
+      root.classList.add("seeking");
+      for (;;) {
+        let k = -1;
+        q.forEach((x, i) => { if (x.t <= end && (k < 0 || x.t < q[k].t)) k = i; });
+        if (k < 0) break;
+        const [x] = q.splice(k, 1);
+        vnow = Math.max(vnow, x.t);
+        x.fn();
+      }
+      vnow = end;
+      if (stageEl) {
+        void stageEl.offsetWidth; getComputedStyle(stageEl).opacity;   // every change so far, styled with no transition
+        stageEl.getAnimations({ subtree: true }).forEach((a) => {
+          if (a instanceof CSSAnimation || a instanceof CSSTransition) return;
+          const it = a.effect && a.effect.getTiming().iterations;
+          if (it !== Infinity) try { a.finish(); } catch {}
+        });
+      }
+      requestAnimationFrame(() => root.classList.remove("seeking"));
+    },
     cancel(x) { const i = q.indexOf(x); if (i >= 0) q.splice(i, 1); },
     hurry(n) { boost = Math.min(7, boost + n); kick(); },
     now: () => vnow,
@@ -325,32 +349,43 @@ if (card) {
     });
   }
 
-  // ---- the card into the desktop's screen, and back out of a screen into the card ----
+  // ---- the card into the desktop's screen, and back out of it ----
+  // The box the desktop and the phone stand in never moves (site.css .work .show-box); only what is in it changes.
+  // The card goes down onto the screen whole, at one scale, never stretched: its words go first, the screen comes up
+  // under it, and it lets the screen show through as it lands. Back, it rises off the screen the same way. On a
+  // narrow window, and out of the phone at the end, the card and the screens cross-fade where they stand.
   function flipOnto(r1) {
     card.style.transform = "none";
-    const r0 = card.getBoundingClientRect();
-    return `translate(${(r1.left - r0.left).toFixed(1)}px, ${(r1.top - r0.top).toFixed(1)}px) scale(${(r1.width / r0.width).toFixed(4)}, ${(r1.height / r0.height).toFixed(4)})`;
+    const r0 = card.getBoundingClientRect(), k = r1.width / r0.width;   // transform-origin is the card's top left
+    const dx = r1.left + r1.width / 2 - (r0.left + r0.width * k / 2), dy = r1.top + r1.height / 2 - (r0.top + r0.height * k / 2);
+    return `translate(${dx.toFixed(1)}px, ${dy.toFixed(1)}px) scale(${k.toFixed(4)})`;
   }
   function toDevices(then) {
-    stage.classList.add("devices-on");                     // the box, the bezel and the stand, and the phone sliding up (CSS)
-    if (narrow() || reduced) { card.classList.add("hide"); at(650, then); return; }
+    stage.classList.add("devices-on");                     // the desktop fades up in the box, the phone slides up (CSS)
+    if (narrow() || reduced) { card.classList.add("hide"); at(750, then); return; }
     const t = flipOnto(S().screen().getBoundingClientRect());
-    card.style.transform = "none"; card.classList.add("morph"); void card.offsetWidth;
+    card.style.transform = "none"; card.classList.add("morph", "leaving"); void card.offsetWidth;
     card.style.transform = t;
     knock(.3, .3, 2.6); knock(.7, .3, 2.6);
-    at(1080, () => card.classList.add("hide"));              // the card was the screen: it lets the real one show
-    at(1380, () => { card.classList.remove("morph"); card.style.transform = ""; then(); });
+    at(820, () => card.classList.add("hide"));               // landing: the screen shows through it
+    at(1250, () => { card.classList.remove("morph", "leaving"); card.style.transform = ""; then(); });
   }
   function toCard(from, then) {
-    if (narrow() || reduced) { card.classList.remove("hide"); stage.classList.remove("devices-on"); at(650, then); return; }
-    card.classList.add("cut"); card.style.transform = flipOnto(from.getBoundingClientRect()); void card.offsetWidth;
-    card.classList.remove("cut", "hide");                  // the card fades in over that screen...
-    at(280, () => {                                          // ...and grows back out of it, the screens folding away
+    const fade = narrow() || reduced || from !== S().screen();
+    if (fade) {
+      card.classList.add("cut"); card.style.transform = ""; void card.offsetWidth; card.classList.remove("cut");
+      stage.classList.remove("devices-on"); card.classList.remove("hide");
+      at(750, then); return;
+    }
+    card.classList.add("cut", "leaving"); card.style.transform = flipOnto(from.getBoundingClientRect()); void card.offsetWidth;
+    card.classList.remove("cut", "hide");                  // the card fades up over the screen...
+    at(300, () => {                                          // ...and rises off it, the screens fading away under it
       stage.classList.remove("devices-on");
       card.classList.add("morph"); void card.offsetWidth; card.style.transform = "";
       knock(.3, .3, 2.6); knock(.7, .3, 2.6);
     });
-    at(1420, () => { card.classList.remove("morph"); then(); });
+    at(950, () => card.classList.remove("leaving"));         // its words come back as it arrives
+    at(1400, () => { card.classList.remove("morph"); then(); });
   }
 
   // ---- the stories as tabs: which is on, how far it has got, and a way to jump to one ----
@@ -386,13 +421,17 @@ if (card) {
       S().prep(story);
       toDevices(() => S().play(story, () => {
         const last = story === "meet";
-        if (last) iconAtRest();                              // the face on the phone comes back out as the card's
-        toCard(last ? S().phone() : S().screen(), () => {
-          if (!last) { whenSeen(() => beat(i + 1)); return; }
-          if (held) moveOn();                                // the first time through: the page moves on, and is let go
-          at(2600, () => anims.push(endmark.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 550, fill: "forwards", easing: "ease-in" })));
-          at(3300, () => whenSeen(() => beat(0)));
-        });
+        if (!last) { toCard(S().screen(), () => whenSeen(() => beat(i + 1))); return; }
+        // the end: the phone in the middle with the face on it. The first time through, the page moves on from here;
+        // then, a little later, the card comes back over the box with the same face, and it all goes round again
+        if (held) moveOn();
+        at(1800, () => whenSeen(() => {
+          iconAtRest();
+          toCard(S().phone(), () => {
+            at(1800, () => anims.push(endmark.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 550, fill: "forwards", easing: "ease-in" })));
+            at(2500, () => whenSeen(() => beat(0)));
+          });
+        }));
       }));
     });
   }
@@ -403,7 +442,16 @@ if (card) {
     if (reduced) { stage.classList.add("devices-on"); card.classList.add("hide"); S().play(BEATS[i][0]); setTab(i - 1, 1); return; }
     beat(i);
   }
-  tabs.forEach((b) => b.addEventListener("click", () => jump(BEATS.findIndex((x) => x[0] === b.dataset.story))));
+  // a tab: the first click goes to that story; on the story playing, a click on its bar goes to that point of it,
+  // as on a video's
+  tabs.forEach((b, k) => b.addEventListener("click", (e) => {
+    const i = BEATS.findIndex((x) => x[0] === b.dataset.story);
+    if (k !== tabOn || reduced || !e.clientX) { jump(i); return; }
+    const r = b.getBoundingClientRect(), f = Math.min(.985, Math.max(0, (e.clientX - r.left) / r.width));
+    const len = tabLen;
+    jump(i);
+    if (f > .01) stageClock.skip(f * len);
+  }));
 
   function play() {
     if (reduced) { reset(); finale(false); return; }
