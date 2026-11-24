@@ -261,7 +261,6 @@ function sayer(aside) {
     const counts = [document.getElementById("mailCount"), document.getElementById("mailCountSide")];
     const feed = document.getElementById("pFeed"), stateEl = document.getElementById("pState");
     const setupEl = document.getElementById("setup");
-    const replayW = document.getElementById("workReplay");
 
     // ---- the line beside it, one per story ----
     const tell = sayer(work.querySelector(".show-say"));
@@ -1260,7 +1259,6 @@ function sayer(aside) {
     }
 
     reset();
-    replayW.addEventListener("click", run);
     new IntersectionObserver((es, ob) => {
       if (es.some((e) => e.isIntersecting) && !ran) { ran = true; ob.disconnect(); run(); }
     }, { threshold: .55 }).observe(work);

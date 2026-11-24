@@ -37,11 +37,11 @@ moves, and the page's own words flickering into 0/1 under the pointer
    middle; the card clears and the bot's face puts itself together, small.
    The first time only, the page then scrolls itself to the next view; the
    film itself plays round again every eleven seconds, while it can be seen.
-2. **The work** (`#work`), a showcase: a box with a desktop and a phone in
-   it, and beside it a short line that changes with the story playing
-   (`LINES` in `js/main.js`), and under it the stories as tabs (Mail, Food,
-   Code, Meet) that show how far each has got and jump to one. Four stories, once each as the view comes into
-   sight (Replay runs them again), and whichever screen is doing the work
+2. **The work** (`#work`): "A day, handled." (the last word by hand), then a
+   box with a desktop and a phone in it, and under the
+   box only the stories' names as tabs (Mail, Food, Code, Meet), which show
+   how far each has got and jump to one. Four stories, once each as the view comes into
+   sight, and whichever screen is doing the work
    comes forward while the other steps back: a business's mail set up in the
    four steps of the backend's docs/mail.md and its inbox filling, then the
    phone sorting, drafting, asking "Send all" and handing back the one that

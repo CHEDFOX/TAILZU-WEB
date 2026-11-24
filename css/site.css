@@ -302,9 +302,17 @@ a { color: var(--ink); text-decoration-color: var(--line); text-underline-offset
 /* a change of line: the old one lifts away, the new one rises in */
 .show-say > :not(.tabs) { transition: opacity .32s ease, translate .42s cubic-bezier(.2, .8, .3, 1); }
 .show-say.out > :not(.tabs) { opacity: 0; translate: 0 -8px; transition-duration: .22s, .26s; }
-/* the stories, as tabs: which is playing, how far through it is, and a way to jump to another */
-.tabs { display: flex; gap: 6px; margin-top: 22px; }
-.tab { flex: 1; min-width: 0; padding: 8px 0 0; border: 0; background: none; cursor: pointer; text-align: left; font: 500 11.5px/1 var(--sans); letter-spacing: .01em; color: var(--muted); transition: color .3s ease; }
+/* THE WORK VIEW: the box, smaller, and under it only the stories' names, as tabs: which is playing, how far through it is,
+   and a way to jump to another */
+.work { flex-direction: column; justify-content: flex-end; gap: clamp(14px, 2.4svh, 26px); padding-bottom: clamp(24px, 5svh, 60px); }
+.work .show-box { width: min(54rem, calc(100vw - max(32px, 6vw)), calc((100svh - 360px) * 1.72)); }
+/* its title: the serif, its last word by hand, as the film's line is */
+.work-head { max-width: 40rem; text-align: center; margin-bottom: clamp(36px, 8svh, 84px); }   /* headroom for Blip, who skates the box's top */
+.work-head h2 { margin: 0; font-size: clamp(32px, 3.8vw, 54px); line-height: 1.02; }
+.work-head .scrawl { font: 700 1.12em/1 "Caveat", "Segoe Print", "Bradley Hand", cursive; color: #3E6B2E; display: inline-block; rotate: -4deg; translate: 0 .04em; }
+.work .tabs { width: min(30rem, 80%); }
+.tabs { display: flex; gap: 10px; margin: 0; }
+.tab { flex: 1; min-width: 0; padding: 8px 0 0; border: 0; background: none; cursor: pointer; text-align: center; font: 500 12px/1 var(--sans); letter-spacing: .01em; color: var(--muted); transition: color .3s ease; }
 .tab span { display: block; margin-bottom: 7px; }
 .tab i { position: relative; display: block; height: 3px; border-radius: 2px; background: rgba(22, 20, 15, .12); overflow: hidden; }
 .tab i::after { content: ""; position: absolute; inset: 0; border-radius: 2px; background: var(--ink); transform-origin: 0 50%; transform: scaleX(var(--p, 0)); }
@@ -312,7 +320,7 @@ a { color: var(--ink); text-decoration-color: var(--line); text-underline-offset
 .tab:focus-visible { outline: 1.5px solid var(--ink); outline-offset: 4px; border-radius: 4px; }
 .show-say.out .say-h { transition-delay: .03s; } .show-say.out .say-p { transition-delay: .06s; }
 @media (max-width: 860px) {
-  .show { flex-direction: column-reverse; justify-content: center; padding-top: 76px; }
+  .show:not(.work) { flex-direction: column-reverse; justify-content: center; padding-top: 76px; }
   .show-box { width: min(100%, calc((100svh - 300px) * 1.72)); min-width: min(100%, 22rem); }
   .show-say { flex: none; width: 100%; max-width: 32rem; padding: 0 4px; background: none; box-shadow: none; text-align: left; }
   .say-k { margin-bottom: 10px; }
@@ -459,9 +467,6 @@ a { color: var(--ink); text-decoration-color: var(--line); text-underline-offset
 .handback .b { margin-top: 3px; font-size: 12.5px; line-height: 1.38; color: #4A4A4A; }
 .handback .look { display: inline-block; margin-top: 9px; padding: 7px 12px; border-radius: 10px; background: #141414; color: #fff; font-size: 12px; font-weight: 600; }
 
-.work-replay { position: absolute; right: 14px; bottom: 14px; }
-.work.rest .work-replay { opacity: 1; pointer-events: auto; }
-.work .work-replay { color: var(--muted); background: #fff; box-shadow: 0 0 0 1px rgba(22, 20, 15, .1); }
 
 @media (max-width: 760px) {
   .devices { padding-bottom: 28%; }
