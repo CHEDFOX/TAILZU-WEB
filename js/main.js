@@ -89,9 +89,11 @@ if (card) {
   // Until the film has played through once, the page stays on it, and a
   // scroll down plays it faster. When it ends the page moves on by itself and
   // is let go; from then on (and on every later visit) it scrolls as normal.
-  const SEEN = "x0.filmSeen";
-  const seenBefore = (() => { try { return localStorage.getItem(SEEN) === "1"; } catch { return true; } })();
-  let held = !seenBefore && !reduced && !!next && !location.hash && scrollY <= 40;
+  // (renamed when the stage changes, so everyone sees the new one through once; ?intro always holds, for trying it)
+  const SEEN = "x0.stageSeen.2";
+  const forced = new URLSearchParams(location.search).has("intro");
+  const seenBefore = !forced && (() => { try { return localStorage.getItem(SEEN) === "1"; } catch { return true; } })();
+  let held = !seenBefore && (forced || !reduced) && !!next && !location.hash && (forced || scrollY <= 40);
   const typing = (e) => e.target instanceof Element && e.target.closest("input, textarea, select, [contenteditable]");
   const SCROLL_KEYS = { ArrowDown: 1.2, PageDown: 2.2, " ": 2.2, Spacebar: 2.2, End: 3, ArrowUp: 0, PageUp: 0, Home: 0 };
   let touchY = null;
