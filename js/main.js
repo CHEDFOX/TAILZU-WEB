@@ -93,7 +93,7 @@ if (card) {
   const SEEN = "x0.stageSeen.2";
   const forced = new URLSearchParams(location.search).has("intro");
   const seenBefore = !forced && (() => { try { return localStorage.getItem(SEEN) === "1"; } catch { return true; } })();
-  let held = !seenBefore && (forced || !reduced) && !!next && !location.hash && (forced || scrollY <= 40);
+  let held = !seenBefore && !reduced && !!next && !location.hash && (forced || scrollY <= 40);
   const typing = (e) => e.target instanceof Element && e.target.closest("input, textarea, select, [contenteditable]");
   const SCROLL_KEYS = { ArrowDown: 1.2, PageDown: 2.2, " ": 2.2, Spacebar: 2.2, End: 3, ArrowUp: 0, PageUp: 0, Home: 0 };
   let touchY = null;
