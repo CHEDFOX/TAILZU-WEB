@@ -1474,3 +1474,112 @@ function sayer(aside) {
     }, { threshold: .3 }).observe(sec);
   }
 }
+
+// ---------------------------------------------------------------------------
+// THE MINDS. Three films (media/minds: a night at the desk, a face lit by its
+// thoughts, an observatory under the Milky Way) cut fast into shots, each its own framing of one of them with a
+// slow push, and drawn as an orange dither: each frame is sampled down to a
+// grid, levelled, and every cell is lit or not by a 4x4 ordered threshold, so
+// the mid-tones come out as checkerboards. A cut flashes inverted for a frame.
+// It runs only while the view can be seen.
+// ---------------------------------------------------------------------------
+{
+  const sec = document.getElementById("minds");
+  const frame = sec?.querySelector(".minds-frame");
+  if (sec && frame) {
+    const vids = [...frame.querySelectorAll("video")];
+    const out = frame.querySelector("canvas"), octx = out.getContext("2d");
+    const tcEl = frame.querySelector(".mf-tc"), nameEl = frame.querySelector(".mf-name");
+    const NAMES = ["NIGHT SHIFT", "DEEP THOUGHT", "STARGAZER"];
+    // [film, width of the framing as a part of the film's, its centre x, y, ms]
+    const SHOTS = [
+      [0, 1, .5, .5, 900], [1, .72, .5, .42, 520], [2, 1, .5, .5, 760], [0, .44, .62, .64, 420],
+      [1, .48, .64, .4, 640], [2, .42, .64, .66, 460], [0, .4, .5, .47, 480], [2, .4, .6, .2, 520],
+      [1, 1, .5, .5, 700], [0, .34, .84, .55, 380], [2, .5, .38, .5, 560], [1, .56, .48, .62, 480],
+      [0, .62, .4, .45, 620], [2, .36, .6, .76, 400], [1, .38, .56, .34, 440],
+    ];
+    const B = [0, 8, 2, 10, 12, 4, 14, 6, 3, 11, 1, 9, 15, 7, 13, 5].map((v) => (v + .5) / 16);
+    const COLS = 64, ROWS = 106;               // the picture's grid: 9:16 less the strip under it
+    const grab = document.createElement("canvas"); grab.width = COLS; grab.height = ROWS;
+    const gctx = grab.getContext("2d", { willReadFrequently: true });
+    const tiny = document.createElement("canvas"); tiny.width = COLS; tiny.height = ROWS;
+    const tctx = tiny.getContext("2d");
+    const img = tctx.createImageData(COLS, ROWS);
+    const lum = new Float32Array(COLS * ROWS), hist = new Uint32Array(64);
+    const FIRE = [255, 90, 31], DARK = [7, 6, 5];
+
+    let shot = 0, shotT = 0, t0 = 0, last = 0, raf = 0, on = false, flash = 0;
+    const fit = () => { const r = Math.min(2, devicePixelRatio || 1); out.width = Math.round(out.clientWidth * r); out.height = Math.round(out.clientHeight * r); };
+    new ResizeObserver(fit).observe(out);
+
+    function draw(k) {                          // k: how far through the shot, for the push
+      const [f, w0, cx, cy] = SHOTS[shot], v = vids[f];
+      if (v.readyState < 2) return false;
+      const W = v.videoWidth, H = v.videoHeight;
+      const sw = W * w0 * (1 - .08 * k), sh = sw * ROWS / COLS;
+      const sx = Math.max(0, Math.min(W - sw, W * cx - sw / 2)), sy = Math.max(0, Math.min(H - sh, H * cy - sh / 2));
+      gctx.drawImage(v, sx, sy, sw, sh, 0, 0, COLS, ROWS);
+      const px = gctx.getImageData(0, 0, COLS, ROWS).data;
+      hist.fill(0);
+      for (let i = 0, j = 0; i < lum.length; i++, j += 4) {
+        const l = (px[j] * .3 + px[j + 1] * .59 + px[j + 2] * .11) / 255;
+        lum[i] = l; hist[Math.min(63, l * 64 | 0)]++;
+      }
+      // levelled between its 3rd and 97th percentiles, so a dark film still uses the whole range
+      let lo = 0, hi = 63, acc = 0;
+      for (; lo < 63 && (acc += hist[lo]) < lum.length * .03; lo++);
+      acc = 0; for (; hi > 0 && (acc += hist[hi]) < lum.length * .03; hi--);
+      const a = lo / 64, span = Math.max(.08, (hi + 1) / 64 - a);
+      const inv = flash > 0;
+      const d = img.data;
+      for (let y = 0, i = 0; y < ROWS; y++) for (let x = 0; x < COLS; x++, i++) {
+        // a floor, so the dark round a figure stays black, and a steep S, so shapes come out as solid fields
+        const u = Math.min(1, Math.max(0, ((lum[i] - a) / span - .2) / .66)), l = u * u * (3 - 2 * u);
+        const lit = (l > B[(y & 3) * 4 + (x & 3)]) !== inv;
+        const c = lit ? FIRE : DARK, o = i * 4;
+        d[o] = c[0]; d[o + 1] = c[1]; d[o + 2] = c[2]; d[o + 3] = 255;
+      }
+      tctx.putImageData(img, 0, 0);
+      octx.imageSmoothingEnabled = false;
+      octx.drawImage(tiny, 0, 0, out.width, out.height);
+      return true;
+    }
+
+    const pad = (n) => String(n).padStart(2, "0");
+    function frameLoop(t) {
+      raf = requestAnimationFrame(frameLoop);
+      if (t - last < 1000 / 24) return;           // the films' own 24 a second
+      last = t; t0 ||= t; shotT ||= t;
+      if (t - shotT >= SHOTS[shot][4]) {
+        shot = (shot + 1) % SHOTS.length; shotT = t; flash = 1;
+        nameEl.textContent = NAMES[SHOTS[shot][0]];
+      }
+      if (draw((t - shotT) / SHOTS[shot][4])) flash = Math.max(0, flash - 1);
+      const e = (t - t0) / 1000, fr = Math.floor(e * 24);
+      tcEl.textContent = `${pad(Math.floor(e / 3600))}:${pad(Math.floor(e / 60) % 60)}:${pad(Math.floor(e) % 60)}:${pad(fr % 24)}`;
+    }
+
+    function start() {
+      if (on) return; on = true;
+      vids.forEach((v) => { v.preload = "auto"; v.play().catch(() => {}); });
+      if (reduced) {                               // one still, drawn once the first film has a frame
+        const still = () => { vids.forEach((v) => v.pause()); draw(0); };
+        if (vids[0].readyState >= 2) still(); else vids[0].addEventListener("loadeddata", still, { once: true });
+        return;
+      }
+      raf = requestAnimationFrame(frameLoop);
+    }
+    function stop() {
+      if (!on) return; on = false;
+      cancelAnimationFrame(raf); raf = 0; last = 0;
+      vids.forEach((v) => v.pause());
+    }
+    new IntersectionObserver((es) => {
+      const vis = es.some((e) => e.isIntersecting);
+      if (vis) { sec.classList.add("seen"); start(); } else stop();
+    }, { threshold: .2 }).observe(sec);
+    new IntersectionObserver((es) => {           // fetch the films a little before they are needed
+      if (es.some((e) => e.isIntersecting)) vids.forEach((v) => { if (v.preload === "none") v.preload = "auto"; });
+    }, { rootMargin: "100% 0px" }).observe(sec);
+  }
+}
