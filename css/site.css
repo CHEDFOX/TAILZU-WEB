@@ -303,7 +303,7 @@ a { color: var(--ink); text-decoration-color: var(--line); text-underline-offset
 .show-say > :not(.tabs) { transition: opacity .32s ease, translate .42s cubic-bezier(.2, .8, .3, 1); }
 .show-say.out > :not(.tabs) { opacity: 0; translate: 0 -8px; transition-duration: .22s, .26s; }
 /* THE ROAMING VIEW (after the film): the line on the left, written over a few rows, and on the right a tall frame
-   playing four journeys in fast cuts, with what X0 Bot did for each laid over it (js/main.js THE ROAM) */
+   playing seven journeys in fast cuts (js/main.js THE ROAM) */
 .roam { position: relative; box-sizing: border-box; min-height: 100svh; width: 100vw; margin-inline: calc(50% - 50vw);
   display: flex; align-items: center; justify-content: center; gap: clamp(32px, 9vw, 180px); padding: 84px max(20px, 5vw) 40px; }
 .roam-text { flex: 0 1 36rem; }
@@ -317,22 +317,14 @@ a { color: var(--ink); text-decoration-color: var(--line); text-underline-offset
 .roam-frame { position: relative; flex: none; margin: 0; height: min(76svh, 760px, calc((100vw - 40px) * 16 / 9)); aspect-ratio: 9 / 16; border-radius: 30px; overflow: hidden;
   background: #1a1a1a url("/media/roam/roam.jpg") center / cover; box-shadow: 0 0 0 1px rgba(22, 20, 15, .1), 0 50px 90px -50px rgba(22, 20, 15, .65); }
 .roam-frame video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
-/* what X0 Bot did for this place: a message laid over the bottom of the frame, changing with each cut */
-.roam-say { position: absolute; left: 14px; right: 14px; bottom: 14px; display: flex; gap: 10px; align-items: flex-start; padding: 11px 13px; border-radius: 18px;
-  background: rgba(250, 250, 249, .94); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); color: #141414;
-  box-shadow: 0 14px 30px -18px rgba(0, 0, 0, .6); font: 400 13px/1.35 var(--sans); }
-.roam-say img { flex: none; width: 26px; height: auto; margin-top: 1px; }
-.roam-say b { display: block; font-size: 11.5px; font-weight: 600; color: #6E6E6E; margin-bottom: 1px; }
-.roam-t { display: block; transition: opacity .18s ease, translate .25s ease; } .roam-say.swap .roam-t { opacity: 0; translate: 0 4px; }
 @media (max-width: 860px) {
   .roam { flex-direction: column; justify-content: center; gap: 18px; padding: 84px 20px 24px; }
   .roam-text { flex: none; width: min(100%, 30rem); }
   .roam-text h2 { margin-bottom: 10px; font-size: clamp(28px, 7.4vw, 40px); }
   .roam-l { font-size: clamp(22px, 6vw, 32px); }
   .roam-frame { height: min(48svh, calc((100vw - 40px) * 16 / 9)); border-radius: 24px; }
-  .roam-say { font-size: 12px; padding: 9px 11px; }
 }
-@media (prefers-reduced-motion: reduce) { .roam-l { clip-path: none !important; transition: none !important; } .roam-t { transition: none; } }
+@media (prefers-reduced-motion: reduce) { .roam-l { clip-path: none !important; transition: none !important; } }
 
 /* THE WORK VIEW: the box, smaller, and under it only the stories' names, as tabs: which is playing, how far through it is,
    and a way to jump to another */

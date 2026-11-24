@@ -42,8 +42,7 @@ moves, and the page's own words flickering into 0/1 under the pointer
    hand over three rows, "and exploring the world, / your best buddy, / always
    by your side."; beside it a tall frame playing seven journeys cut fast into
    one 14-second loop (`media/roam/roam.mp4`, fourteen one-second cuts, made
-   with ffmpeg from the owner's clips; `roam.jpg` is its first frame), with
-   what X0 Bot did for each place laid over it, changing on the cut.
+   with ffmpeg from the owner's clips; `roam.jpg` is its first frame).
 3. **The work** (`#work`): "A day, handled." (the last word by hand), then a
    box with a desktop and a phone in it, and under the
    box only the stories' names as tabs (Mail, Food, Code, Meet), which show

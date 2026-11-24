@@ -75,7 +75,7 @@ README.md               how the page behaves, what to run after a change, how pu
 
 | Looking for | Where |
 |---|---|
-| The roaming view: its loop, its lines, what X0 Bot says on each cut | `media/roam/roam.mp4`, markup `#roam`, `js/main.js` (THE ROAM: `SAID`, `CUTS`), `.roam*` in `css/site.css` |
+| The roaming view: its loop and its lines | `media/roam/roam.mp4`, markup `#roam`, `js/main.js` (THE ROAM), `.roam*` in `css/site.css` |
 | The handwritten line beside the film | markup `.hand` in `#stage`, styles `.hand`, `.hw`, `.hand-mark` in `css/site.css` |
 | The film: the typing, the reply, the face assembling, the hand-over scroll | `js/main.js` (THE OPENING FILM; `LINE`), markup `#stage`, styles `css/site.css` |
 | The face (the app icon as vector) | the `<svg id="icon">` inside `#endmark` in `index.html`; reused as a picture by `js/main.js` (`faceSrc`) |
