@@ -7,6 +7,52 @@ import "./game.js";
 import { blip } from "./blip/kit.js";
 
 // ---------------------------------------------------------------------------
+// THE STAGE'S CLOCK. Every beat of the stage (the conversation in the card and
+// the stories it opens into) is put on this clock, not on setTimeout, so the
+// whole of it can be run faster: on a first visit the page does not scroll,
+// and scrolling down fast-forwards the stage instead. The clock runs at
+// 1 + boost; the boost comes from the scroll and dies away by itself. The
+// stage's CSS transitions and animations are run at the same rate.
+// ---------------------------------------------------------------------------
+const stageClock = (() => {
+  let q = [], vnow = 0, boost = 0, lastT = 0, raf = 0, sped = false;
+  const stageEl = document.getElementById("stage");
+  function tick(t) {
+    const dt = lastT ? Math.min(100, t - lastT) : 0;
+    lastT = t;
+    boost = boost * Math.exp(-dt / 420);
+    if (boost < .02) boost = 0;
+    const rate = 1 + boost;
+    vnow += dt * rate;
+    // the animations follow in steps of a half, and one not yet started is left until it has (changing an animation's
+    // rate every frame, or before it starts, keeps it on its first frame)
+    if (stageEl && (boost || sped)) {
+      const r = Math.round(rate * 2) / 2;
+      stageEl.getAnimations({ subtree: true }).forEach((a) => {
+        if (!a.pending && a.playbackRate !== r) a.updatePlaybackRate ? a.updatePlaybackRate(r) : (a.playbackRate = r);
+      });
+      sped = r !== 1;
+    }
+    for (;;) {                                  // one at a time, soonest first: a beat may cancel or add beats
+      let k = -1;
+      q.forEach((x, i) => { if (x.t <= vnow && (k < 0 || x.t < q[k].t)) k = i; });
+      if (k < 0) break;
+      const [x] = q.splice(k, 1);
+      x.fn();
+    }
+    if (q.length || boost) raf = requestAnimationFrame(tick);
+    else { raf = 0; lastT = 0; }
+  }
+  const kick = () => { if (!raf) raf = requestAnimationFrame(tick); };
+  return {
+    at(ms, fn) { const x = { t: vnow + ms, fn }; q.push(x); kick(); return x; },
+    cancel(x) { const i = q.indexOf(x); if (i >= 0) q.splice(i, 1); },
+    hurry(n) { boost = Math.min(7, boost + n); kick(); },
+    now: () => vnow,
+  };
+})();
+
+// ---------------------------------------------------------------------------
 // THE OPENING FILM. One white card, three acts, and a camera.
 //
 //   1. a box rises; the camera pushes in while "hey X0" is typed; it is sent
@@ -25,7 +71,7 @@ if (card) {
   const box = document.getElementById("typebox");
   const ty = document.getElementById("ty");
   const send = document.getElementById("send");
-  const reply = document.getElementById("reply");
+  const reply = document.getElementById("reply"), bubble = document.getElementById("bubble");
   const endmark = document.getElementById("endmark");
   const icon = document.getElementById("icon");
   const filmsay = document.getElementById("filmsay");
@@ -34,40 +80,10 @@ if (card) {
 
   let played = 0;
 
-  // ---- the film's own clock ----
-  // Every beat of the film is put on this clock, not on setTimeout, so the
-  // whole film can be run faster: on a first visit the page does not scroll,
-  // and scrolling down fast-forwards the film instead. The clock runs at
-  // 1 + boost; the boost comes from the scroll and dies away by itself. The
-  // card's CSS transitions and animations are run at the same rate.
-  let timers = [], vnow = 0, boost = 0, lastT = 0, raf = 0, sped = false;
-  const at = (ms, fn) => { timers.push({ t: vnow + ms, fn }); if (!raf) raf = requestAnimationFrame(tick); };
-  const stopAll = () => { timers = []; };
-  function tick(t) {
-    const dt = lastT ? Math.min(100, t - lastT) : 0;
-    lastT = t;
-    boost = boost * Math.exp(-dt / 420);
-    if (boost < .02) boost = 0;
-    const rate = 1 + boost;
-    vnow += dt * rate;
-    if (boost || sped) {
-      card.getAnimations({ subtree: true }).forEach((a) => { if (a.playbackRate !== rate) a.playbackRate = rate; });
-      sped = boost > 0;
-    }
-    for (;;) {                                  // one at a time: a beat may clear or add beats
-      let k = -1;
-      timers.forEach((x, i) => { if (x.t <= vnow && (k < 0 || x.t < timers[k].t)) k = i; });
-      if (k < 0) break;
-      const [x] = timers.splice(k, 1);
-      x.fn();
-    }
-    if (timers.length || boost) raf = requestAnimationFrame(tick);
-    else { raf = 0; lastT = 0; }
-  }
-  const hurry = (n) => {
-    boost = Math.min(7, boost + n);
-    if (!raf) raf = requestAnimationFrame(tick);
-  };
+  let timers = [];
+  const at = (ms, fn) => { timers.push(stageClock.at(ms, fn)); };
+  const stopAll = () => { timers.forEach(stageClock.cancel); timers = []; };
+  const hurry = stageClock.hurry;
 
   // ---- the first visit: the page waits for the film ----
   // Until the film has played through once, the page stays on it, and a
@@ -117,7 +133,7 @@ if (card) {
     addEventListener("keydown", onKey);
     addEventListener("scroll", pin, { passive: true });
     document.documentElement.classList.add("film-held");
-    setTimeout(release, 20000);                 // whatever happens, never keep someone for long
+    setTimeout(release, 240000);                // whatever happens, never keep someone for good
   }
 
   // ---- the camera ----
@@ -140,13 +156,15 @@ if (card) {
   }
 
   // ---- typing, with a person's unevenness ----
-  function typeOut(text) {
+  function typeOut(text, done) {
     let i = 0;
+    const each = text.length > 12 ? .62 : 1;     // a longer ask is typed a little quicker
     const step = () => {
       i++;
       ty.textContent = text.slice(0, i);
       if (i === 1) box.classList.add("ready");
-      if (i < text.length) at(85 + Math.random() * 90 + (text[i] === " " ? 60 : 0), step);
+      if (i < text.length) at((85 + Math.random() * 90 + (text[i] === " " ? 60 : 0)) * each, step);
+      else if (done) done();
     };
     step();
   }
@@ -262,51 +280,137 @@ if (card) {
     if (thenMoveOn) at(900, moveOn);
   }
 
-  function play() {
-    reset();
-    played++;
-    window.__filmT0 = performance.now();   // for the timing probe
-    if (reduced) { finale(false); return; }
+  // ===========================================================================
+  // THE STAGE: one conversation, in the card. Something is asked in the box and
+  // X0 answers; then the card opens up into a desktop and a phone (it is the
+  // desktop's screen, pulled back from) and the thing is done, there, in front
+  // of you (the stories, THE WORK VIEW below); then they fold back into the card
+  // for the next. After the last, the phone, in the middle, comes back out to
+  // be the card, the face on it, and it all goes round again.
+  // ===========================================================================
+  const stage = card.closest(".stage");
+  const BEATS = [
+    [null, "hey X0", "Here, at your service."],
+    ["mail", "Set up mail for leafandco.in", "On it. Your mail, in minutes."],
+    ["food", "Dinner tonight? Surprise me.", "On it. Something you'll love."],
+    ["code", "Ship the Notify me button.", "On it. Tested before it ships."],
+    ["meet", "Sit in on my 10:00, take notes.", "On it. Notes to everyone after."],
+  ];
+  // how long each story runs once the screens are up (its own clock, THE WORK VIEW), for the tabs' bars
+  const LEN = { mail: 29300, food: 13600, code: 29200, meet: 28700 };
+  const S = () => window.__stories;
+  const narrow = () => matchMedia("(max-width: 760px)").matches;
 
-    // ACT 1: the box, the push, the line, the send
-    at(600, () => box.classList.add("in"));
-    at(900, () => {
+  // ---- one exchange: the ask typed in the box, sent, and X0's answer, close up ----
+  function exchange(ask, answer, then) {
+    box.classList.remove("in", "out", "ready"); send.classList.remove("press"); ty.textContent = "";
+    reply.classList.remove("in", "spoken", "gone"); bubble.textContent = answer;
+    camTo("50% 50%", 1, true);
+    at(300, () => box.classList.add("in"));
+    at(600, () => {
       const t = box.querySelector(".ty");
-      shootAt(box.offsetLeft + t.offsetLeft + 26, box.offsetTop + box.offsetHeight / 2, 2.05);
-      at(250, () => typeOut(LINE));
+      // a short ask, a close push on its first letters; a longer one, a gentle push on the middle, so it all stays in
+      if (ask.length < 10) shootAt(box.offsetLeft + t.offsetLeft + 26, box.offsetTop + box.offsetHeight / 2, 2.05);
+      else camTo("50% 50%", narrow() ? 1 : 1.12);
+      at(250, () => typeOut(ask, () => {
+        at(260, () => send.classList.add("press"));
+        at(460, () => box.classList.add("out"));
+        at(830, () => { camTo("50% 50%", 1, true); reply.classList.add("in"); });
+        at(1060, () => camTo("50% 50%", answer.length > 24 ? 1.3 : 1.75));
+        at(1700, () => { reply.classList.add("spoken"); if (filmsay) filmsay.textContent = "X0 Bot: " + answer; });
+        at(2950, () => { reply.classList.add("gone"); knock(.5, .35, 2.8); });
+        at(3520, () => { wide(true); then(); });
+      }));
     });
-    at(2400, () => send.classList.add("press"));
-    at(2600, () => box.classList.add("out"));
-
-    // ACT 2: the answer, in the middle of the card. Once the box has gone the
-    // camera cuts back to wide, centred, so the push in on the answer is a push
-    // straight down the middle and the answer never leaves the centre.
-    at(2970, () => { camTo("50% 50%", 1, true); reply.classList.add("in"); });
-    at(3200, () => camTo("50% 50%", 1.75));
-    at(3850, () => {
-      reply.classList.add("spoken");
-      if (filmsay) filmsay.textContent = "X0 Bot: Here, at your service.";
-    });
-
-    // ACT 3: the answer sinks away from the close-up, the camera resets while
-    // the card is empty, the face arrives, and the page moves on
-    at(5050, () => { reply.classList.add("gone"); knock(.5, .35, 2.8); });
-    at(5630, () => wide(true));
-    at(5700, () => { assemble(); knock(.42, .35, 2.8); knock(.58, .35, 2.8); });
-    at(7600, () => { setRest(true); moveOn(); });
-    // ...and round again: the face fades, and the film plays from the top (while the card can be seen)
-    at(10400, () => { anims.push(endmark.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 550, fill: "forwards", easing: "ease-in" })); });
-    at(11100, again);
   }
-  let seen = true, waiting = false;
-  function again() { if (seen) play(); else waiting = true; }
+
+  // ---- the card into the desktop's screen, and back out of a screen into the card ----
+  function flipOnto(r1) {
+    card.style.transform = "none";
+    const r0 = card.getBoundingClientRect();
+    return `translate(${(r1.left - r0.left).toFixed(1)}px, ${(r1.top - r0.top).toFixed(1)}px) scale(${(r1.width / r0.width).toFixed(4)}, ${(r1.height / r0.height).toFixed(4)})`;
+  }
+  function toDevices(then) {
+    stage.classList.add("devices-on");                     // the box, the bezel and the stand, and the phone sliding up (CSS)
+    if (narrow() || reduced) { card.classList.add("hide"); at(650, then); return; }
+    const t = flipOnto(S().screen().getBoundingClientRect());
+    card.style.transform = "none"; card.classList.add("morph"); void card.offsetWidth;
+    card.style.transform = t;
+    knock(.3, .3, 2.6); knock(.7, .3, 2.6);
+    at(1080, () => card.classList.add("hide"));              // the card was the screen: it lets the real one show
+    at(1380, () => { card.classList.remove("morph"); card.style.transform = ""; then(); });
+  }
+  function toCard(from, then) {
+    if (narrow() || reduced) { card.classList.remove("hide"); stage.classList.remove("devices-on"); at(650, then); return; }
+    card.classList.add("cut"); card.style.transform = flipOnto(from.getBoundingClientRect()); void card.offsetWidth;
+    card.classList.remove("cut", "hide");                  // the card fades in over that screen...
+    at(280, () => {                                          // ...and grows back out of it, the screens folding away
+      stage.classList.remove("devices-on");
+      card.classList.add("morph"); void card.offsetWidth; card.style.transform = "";
+      knock(.3, .3, 2.6); knock(.7, .3, 2.6);
+    });
+    at(1420, () => { card.classList.remove("morph"); then(); });
+  }
+
+  // ---- the stories as tabs: which is on, how far it has got, and a way to jump to one ----
+  const tabs = [...document.querySelectorAll("#workTabs .tab")];
+  let tabOn = -1, tabT0 = 0, tabLen = 1;
+  function setTab(i, len) {
+    tabOn = i; tabT0 = stageClock.now(); tabLen = len;
+    tabs.forEach((b, k) => { b.classList.toggle("on", k === i); if (k !== i) b.style.setProperty("--p", k < i ? "1" : "0"); });
+  }
+  (function tabsTick() {
+    requestAnimationFrame(tabsTick);
+    if (tabOn >= 0) tabs[tabOn].style.setProperty("--p", Math.min(1, (stageClock.now() - tabT0) / tabLen).toFixed(4));
+  })();
+
+  // ---- the conversation, beat by beat ----
+  let seen = true, waiting = null;
+  const whenSeen = (fn) => { if (seen) fn(); else waiting = fn; };
   new IntersectionObserver((es) => {
     seen = es.some((e) => e.isIntersecting);
-    if (seen && waiting) { waiting = false; play(); }
+    if (seen && waiting) { const fn = waiting; waiting = null; fn(); }
   }, { threshold: .3 }).observe(card);
 
+  function beat(i) {
+    const [story, ask, answer] = BEATS[i];
+    if (i === 0) {
+      reset(); played++;
+      window.__filmT0 = performance.now();
+      tabOn = -1; tabs.forEach((b) => { b.classList.remove("on"); b.style.setProperty("--p", "0"); });
+    }
+    if (story) setTab(tabs.findIndex((b) => b.dataset.story === story), 5600 + 2800 + LEN[story]);
+    exchange(ask, answer, () => {
+      if (!story) { beat(1); return; }
+      S().prep(story);
+      toDevices(() => S().play(story, () => {
+        const last = story === "meet";
+        if (last) iconAtRest();                              // the face on the phone comes back out as the card's
+        toCard(last ? S().phone() : S().screen(), () => {
+          if (!last) { whenSeen(() => beat(i + 1)); return; }
+          if (held) moveOn();                                // the first time through: the page moves on, and is let go
+          at(2600, () => anims.push(endmark.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 550, fill: "forwards", easing: "ease-in" })));
+          at(3300, () => whenSeen(() => beat(0)));
+        });
+      }));
+    });
+  }
+  function jump(i) {                                         // a tab: straight to that story's ask
+    reset(); waiting = null;
+    S().stop(); S().reset();
+    stage.classList.remove("devices-on"); card.classList.remove("hide", "morph", "cut"); card.style.transform = "";
+    if (reduced) { stage.classList.add("devices-on"); card.classList.add("hide"); S().play(BEATS[i][0]); setTab(i - 1, 1); return; }
+    beat(i);
+  }
+  tabs.forEach((b) => b.addEventListener("click", () => jump(BEATS.findIndex((x) => x[0] === b.dataset.story))));
+
+  function play() {
+    if (reduced) { reset(); finale(false); return; }
+    beat(0);
+  }
+
   // Start once the fonts are in, so the first frames are set in the right face.
-  const go = () => { setTimeout(play, 500); card.closest(".stage")?.classList.add("written"); };
+  const go = () => { setTimeout(play, 500); stage.classList.add("written"); };
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(go); else go();
 }
 
@@ -525,8 +629,8 @@ function sayer(aside) {
 
     // ---- small machinery ----
     let wt = [], shown = 0, ran = false, runs = 0;
-    const wat = (ms, fn) => { wt.push(setTimeout(fn, ms)); };
-    const wstop = () => { wt.forEach(clearTimeout); wt = []; };
+    const wat = (ms, fn) => { wt.push(stageClock.at(ms, fn)); };      // on the stage's clock (THE STAGE'S CLOCK, above)
+    const wstop = () => { wt.forEach(stageClock.cancel); wt = []; };
     function count(to, dur = 700) {
       const from = shown; shown = to;
       if (reduced) { counts.forEach((e) => { e.textContent = to; }); return; }
@@ -752,7 +856,7 @@ function sayer(aside) {
       // and on the phone, it is on its way
       wat(B + 10850, () => { focusOn("phone"); feed.classList.add("center"); add(DELIV); say("On its way", false); });
       // a moment with the meal on its way, then the third story
-      act3(B + 13600);
+      chain(act3, B + 13600);
     }
 
     // ---- the third story: Xode on the desktop, orders from the phone ----
@@ -1006,7 +1110,7 @@ function sayer(aside) {
       T(25300, () => { pDay.classList.add("in"); clock.style.opacity = "0"; wat(250, () => { clock.textContent = "8:00"; clock.style.opacity = "1"; }); });
       T(26300, () => { pDay.classList.remove("in"); pNotif.classList.add("in"); });
       // a moment with the mail in, then the finale
-      act5(C + 29200);
+      chain(act5, C + 29200);
     }
 
     // ---- the fourth story: a meeting on the desktop, its notes and the reminders on the phone ----
@@ -1171,7 +1275,7 @@ function sayer(aside) {
       // then the face, smoothly
       T(8000, () => faceIn());
       // a hold, then on to the next view
-      T(11300, () => glideOn());
+      T(11300, () => (onDone ? finish() : glideOn()));
       T(12600, () => work.classList.add("rest"));
     }
 
@@ -1220,31 +1324,34 @@ function sayer(aside) {
       work.classList.add("rest");
     }
 
-    // ---- the stories as tabs: where each starts on the whole run's clock, for their bars and for jumping in ----
-    const STORY = { mail: 0, food: 29300, code: 42900, meet: 72100 }, RUN_END = 102100;
-    const tabs = [...work.querySelectorAll(".tab")];
-    let clock0 = 0, clockOn = false;
-    function tabsTick(now) {
-      requestAnimationFrame(tabsTick);
-      if (!clockOn) return;
-      const t = now - clock0, keys = Object.keys(STORY);
-      tabs.forEach((b, i) => {
-        const a = STORY[keys[i]], z = i + 1 < keys.length ? STORY[keys[i + 1]] : RUN_END;
-        b.style.setProperty("--p", Math.max(0, Math.min(1, (t - a) / (z - a))).toFixed(4));
-        b.classList.toggle("on", t >= a && t < z);
-      });
-      if (t > RUN_END) clockOn = false;
-    }
-    requestAnimationFrame(tabsTick);
-    tabs.forEach((b) => b.addEventListener("click", () => { ran = true; run(b.dataset.story); }));
+    // ---- one story at a time, for the stage's conductor (THE STAGE, above): it asks X0 for something in the card,
+    // opens the card up into these screens, plays the story, and is told when it is over. Played that way, a story
+    // does not run on into the next; played on its own (onDone unset), the four run on as one.
+    const STORY = { mail: 1, food: 1, code: 1, meet: 1 };
+    let onDone = null, prepped = false;       // prepped: the screens are already set for the story about to play
+    function finish() { const d = onDone; onDone = null; if (d) d(); }
+    function chain(next, at) { if (onDone) wat(at, finish); else next(at); }
+    window.__stories = {
+      play(name, done) { onDone = done || null; run(name); },
+      stop() { onDone = null; wstop(); },
+      reset() { onDone = null; reset(); },
+      /** The screens as the story `name` opens on, before the card opens up into them. */
+      prep(name) {
+        onDone = null; reset(); prepped = true;
+        const sc = { food: scene2El, code: scene3El, meet: scene4El }[name];
+        if (sc) { sc.style.transition = "none"; sc.classList.add("on"); void sc.offsetWidth; sc.style.transition = ""; }
+      },
+      screen: () => mailScreen,
+      phone: () => appScreen,
+    };
 
     function run(from) {
       const story = typeof from === "string" && STORY[from] !== undefined ? from : "mail";
       runs++;
-      reset();
+      if (!prepped) reset();
+      prepped = false;
       window.__workT0 = performance.now();   // for the timing probe
       if (reduced) { endState(); return; }
-      clock0 = performance.now() - STORY[story]; clockOn = true;
       if (story === "food") { act2(200); return; }
       if (story === "code") { act3(200); return; }
       if (story === "meet") { act5(200); return; }
@@ -1345,13 +1452,10 @@ function sayer(aside) {
         say("1 thing needs you", false);
       });
       // a moment to read the hand-back, then the second story
-      act2(S + 16000);
+      chain(act2, S + 16000);
     }
 
     reset();
-    new IntersectionObserver((es, ob) => {
-      if (es.some((e) => e.isIntersecting) && !ran) { ran = true; ob.disconnect(); run(); }
-    }, { threshold: .55 }).observe(work);
   }
 }
 

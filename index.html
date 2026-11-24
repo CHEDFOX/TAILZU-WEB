@@ -491,25 +491,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   <p class="hand hand-r" aria-hidden="true">
     <span class="hw">to do the</span><span class="hw">hard things<svg class="hand-mark under" viewBox="0 0 200 24" preserveAspectRatio="none"><path d="M4 14 C 40 6, 80 20, 120 11 S 180 8, 196 13"/></svg></span>
   </p>
-  <p class="sr" id="filmsay" aria-live="polite"></p>
-</section>
-
-<section id="roam" class="roam" aria-label="X0 Bot when you travel">
-  <div class="roam-text">
-    <h2>The bot that loves <span class="scrawl">adventures</span></h2>
-    <p class="roam-l l1">and exploring the world,</p>
-    <p class="roam-l l2">your best buddy,</p>
-    <p class="roam-l l3">always by your side.</p>
-  </div>
-  <figure class="roam-frame" data-noglitch>
-    <video id="roamFilm" src="/media/roam/roam.mp4" poster="/media/roam/roam.jpg" muted loop playsinline preload="none" aria-hidden="true"></video>
-  </figure>
-</section>
-
-<section id="work" class="show work" aria-label="X0 Bot at work: mail, food, code and meetings">
-  <header class="work-head">
-    <h2>A day, <span class="scrawl">handled.</span></h2>
-  </header>
+  <!-- the card opens up into these: a desktop and a phone, and the stories they play (js/main.js THE STAGE) -->
+  <div class="work" id="work" aria-label="X0 Bot at work: mail, food, code and meetings">
   <div class="show-box">
   <div class="devices" data-noglitch>
 
@@ -564,6 +547,20 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       <button type="button" class="tab" data-story="code"><span>Code</span><i></i></button>
       <button type="button" class="tab" data-story="meet"><span>Meet</span><i></i></button>
     </div>
+  </div>
+  <p class="sr" id="filmsay" aria-live="polite"></p>
+</section>
+
+<section id="roam" class="roam" aria-label="X0 Bot when you travel">
+  <div class="roam-text">
+    <h2><span class="on-field">The bot that loves</span> <span class="scrawl">adventures</span></h2>
+    <p class="roam-l l1">and exploring the world,</p>
+    <p class="roam-l l2">your best buddy,</p>
+    <p class="roam-l l3">always by your side.</p>
+  </div>
+  <figure class="roam-frame" data-noglitch>
+    <video id="roamFilm" src="/media/roam/roam.mp4" poster="/media/roam/roam.jpg" muted loop playsinline preload="none" aria-hidden="true"></video>
+  </figure>
 </section>
 
 <section class="band two">
