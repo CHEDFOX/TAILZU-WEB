@@ -907,7 +907,7 @@ html.film-held { overscroll-behavior: none; }
 .stage .tab { color: var(--ink); } .stage .tab.dk { color: #F3EEE6; }
 .stage .tab i { background: rgba(22, 20, 15, .16); } .stage .tab i::after { background: var(--ink); }
 .stage .tab.dk i { background: rgba(243, 238, 230, .26); } .stage .tab.dk i::after { background: #F3EEE6; }
-.hand-l .hw { rotate: -6deg; } .hand-l .arrow { rotate: -6deg; }
+.hand-l .hw { rotate: -6deg; } .hand-l .arrow { rotate: -6deg; scale: var(--fit, 1); transform-origin: 0 0; }   /* --fit: down to the box's edge (js/main.js) */
 .hand-r .hw { rotate: -4deg; }
 @media (max-width: 860px) { .hand-l .hw, .hand-r .hw, .hand-l .arrow { rotate: -3deg; } }
 

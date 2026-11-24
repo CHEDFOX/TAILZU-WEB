@@ -458,6 +458,24 @@ if (card) {
     beat(0);
   }
 
+  // ---- the arrow from "A team of bots" ends just over the box's edge, never behind it ----
+  // The line is lifted into the room over it first (as far as the header allows), and only what that cannot make
+  // up is taken off the arrow's size.
+  const handL = stage.querySelector(".hand-l"), arrow = handL?.querySelector(".arrow"), boxEl = stage.querySelector(".work .show-box");
+  function fitArrow() {
+    if (!arrow || !boxEl) return;
+    handL.style.translate = ""; arrow.style.setProperty("--fit", "1");
+    const a = arrow.getBoundingClientRect(), top = boxEl.getBoundingClientRect().top - 10;
+    if (!a.height || a.bottom <= top) return;
+    const st = stage.getBoundingClientRect().top;
+    const up = Math.max(0, Math.min(a.bottom - top, handL.getBoundingClientRect().top - st - 96));
+    if (up) handL.style.translate = `0 ${-up.toFixed(1)}px`;
+    const over = a.bottom - up - top;
+    if (over > 0) arrow.style.setProperty("--fit", Math.max(.5, (a.height - over) / a.height).toFixed(3));
+  }
+  addEventListener("resize", fitArrow);
+  new ResizeObserver(fitArrow).observe(stage);
+
   // Start once the fonts are in, so the first frames are set in the right face.
   const go = () => { setTimeout(play, 500); stage.classList.add("written"); };
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(go); else go();
