@@ -6,7 +6,7 @@
 import { fieldDark } from "./stage.js";
 
 // what is laid straight on the field: words split into spans, and a few things that turn as one
-const WORDS = ["main h2", ".hand .hw", ".roam-l", ".band > p", ".two p", ".plans .lede", ".plats a", ".proof > span", ".made"];
+const WORDS = ["main h2", ".hand .hw", ".roam-kick", ".roam-lede", ".band > p", ".two p", ".plans .lede", ".plats a", ".proof > span", ".made"];
 const UNITS = [".hand .arrow", ".stage .tab"];
 const onCard = (el) => el.closest("[data-noglitch], .card, .work");
 
