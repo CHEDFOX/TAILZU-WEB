@@ -139,10 +139,12 @@ if (B && !reduced) {
         const e = { x1: r.left + cut, x2: r.right - cut, y: r.top };
         const p = i === 0 && phone ? phone.getBoundingClientRect() : null;
         if (p && p.width && p.top < r.top - 4 && p.right > e.x1 && p.left < e.x2) {
-          const pc = p.width * .16, room = 40;           // its rounded corners; and a bit of box either side to land on
-          if (p.left - room - 8 > e.x1) out.push({ x1: e.x1, x2: p.left - room, y: e.y });
+          // its rounded corners; and a bit of box either side to land on, if there is room for him on it (on a narrow
+          // window there is not, and the phone's top is the one edge: he rides it end to end)
+          const pc = p.width * .16, room = 40, fits = size() * 1.6;
+          if (p.left - room - e.x1 > fits) out.push({ x1: e.x1, x2: p.left - room, y: e.y });
           out.push({ x1: p.left + pc, x2: p.right - pc, y: p.top, phone: true });
-          if (p.right + room + 8 < e.x2) out.push({ x1: p.right + room, x2: e.x2, y: e.y });
+          if (e.x2 - (p.right + room) > fits) out.push({ x1: p.right + room, x2: e.x2, y: e.y });
         } else out.push(e);
       });
       return out;
