@@ -1035,6 +1035,9 @@ html.key-handoff .mast .key { opacity: 0; pointer-events: none; }
 .sheet-body img, .sheet-body svg { max-width: 100%; height: auto; }
 .sheet-body nav, .sheet-body header, .sheet-body footer, .sheet-body button, .sheet-body form { display: none; }
 .sheet-body details { border-bottom: 1px solid rgba(22, 20, 15, .1); padding: 12px 0; }
+.sheet-body > h3:first-child { margin-top: .4em; }
+.sheet-body h3 + details { border-top: 1px solid rgba(22, 20, 15, .1); }
+.sheet-body h3 { font: 500 11px/1 var(--sans); letter-spacing: .2em; text-transform: uppercase; color: #4F7A3A; margin: 1.8em 0 .2em; }
 .sheet-body summary { cursor: pointer; font: 500 16px/1.4 var(--sans); color: var(--ink); list-style: none; }
 .sheet-body summary::after { content: "+"; float: right; color: #4F7A3A; }
 .sheet-body details[open] summary::after { content: "–"; }
