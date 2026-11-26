@@ -553,8 +553,20 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
 <section id="roam" class="roam" aria-label="X0 Bot when you travel">
   <div class="roam-text">
-    <!-- the box the view's words go in (css/site.css .roam-box): empty until they are written -->
-    <div class="roam-box roam-box-empty"></div>
+    <!-- Nomaz, X0 Bot's travel bot, in its own words (css/site.css THE NOMAZ BOX): who it is, then what it does as one
+         trip, three stops on a route; the route runs on out of the box into the film. -->
+    <div class="roam-box nomaz" data-noglitch>
+      <div class="nz-head">
+        <p class="nz-hey"><img class="nz-face" src="/media/face.svg" alt="" width="34" height="33">Hey, I&rsquo;m</p>
+        <h2 class="nz-name">NOMAZ</h2>
+        <p class="nz-love">I love to explore and experience, with interesting people.</p>
+      </div>
+      <ol class="nz-trip">
+        <li><span class="nz-when">Before</span><b>I plan for you</b><span class="nz-what">The right hour, the right table, the tour worth taking. Held till you say yes.</span></li>
+        <li class="nz-out"><span class="nz-when">On the way</span><b>I do the boring part</b><span class="nz-what">Tickets, transfers, check-ins, the small print. Sorted.</span><i class="nz-run" aria-hidden="true"></i></li>
+        <li><span class="nz-when">Out there</span><b>Just promise me company</b><span class="nz-what">I&rsquo;ll watch the weather and the way back. You enjoy the view.</span></li>
+      </ol>
+    </div>
   </div>
   <figure class="roam-frame" data-noglitch>
     <video id="roamFilm" src="/media/roam/journeys.mp4" poster="/media/roam/journeys.jpg" muted loop playsinline preload="none" aria-hidden="true"></video>
