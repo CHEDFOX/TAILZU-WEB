@@ -317,7 +317,10 @@ a { color: var(--ink); text-decoration-color: var(--line); text-underline-offset
 .stage > .work { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: flex-end;
   gap: 14px; padding-bottom: 12px; pointer-events: none; }
 .stage > .work > * { pointer-events: auto; }
-.work .show-box { width: min(60rem, calc(100vw - 32px), calc((100svh - 220px) * 1.66)); background: rgba(247, 246, 242, .94);
+/* the box: a little wider, and just touched with the brand's green: a faint green paper, a green hairline, a green glow under it */
+.work .show-box { width: min(68rem, calc(100vw - 32px), calc((100svh - 210px) * 1.82));
+  background: linear-gradient(180deg, rgba(240, 245, 234, .95), rgba(232, 240, 225, .95));
+  box-shadow: 0 0 0 1px rgba(79, 122, 58, .22), 0 40px 80px -58px rgba(47, 83, 33, .55), 0 0 90px -30px rgba(111, 163, 82, .28);
   transition: opacity .55s ease .25s, translate .8s cubic-bezier(.2, .8, .25, 1) .2s, visibility 0s; }
 /* the box stays put; while the card is up, what stands in it is down: the desktop faded, the phone below its edge */
 .stage:not(.devices-on) .work .monitor.monitor { opacity: 0; scale: .985; filter: none; transition-delay: 0s; }   /* over the focus states (.f-desk / .f-phone) */
