@@ -1,9 +1,14 @@
 // THE OPENING'S PICTURE (#hero .hero-team). X0 itself, rising over the horizon: the bot's head, huge, coming up from
 // the bottom of the window like a sun, drawn by the desktop app's own renderer (js/blip/blip.js) in its own dithered
 // dots, its one eye on the visitor's pointer. On a visit only its antennae are up at first, over the horizon; after two
-// seconds it comes up, very slowly (seven seconds), into the sky. Across the horizon in front of it the team goes by without end, small bots
-// each at its own pace, now and then hopping, stopping to wave, or looking up at X0. A thin halo of dots fades out
-// round it all.
+// seconds it comes up, very slowly (seven seconds), into the sky. Its antenna is lit like a real light.
+//
+// On the horizon in front of it, the crew, each its own kind and never in step: walkers going either way at their own
+// pace, who stop to wave, cheer, laugh or look up at X0, now and then a quirk (dizzy, jelly); skaters, faster, on their
+// boards, popping ollies and kickflips and spinning round in the air; and jetpacks, who stand, fire up with a sputter,
+// lift off and climb away out of the window (X0 watches them go, when the pointer is still), and some time later walk
+// back in. The canvas covers the whole opening, so a flight can go up past the title and off the top; the scene itself
+// stands on the bottom.
 //
 // It turns with the field as the words do (stage.js, tone.js): it is drawn twice, ink on the paper and light on the
 // dark, and the two are laid together through a map of how dark the field is under each part of it, taken every
@@ -24,34 +29,36 @@ if (cv && B) {
     light: { dot: [22, 20, 15], edge: "#F4F2EC", line: "rgb(22, 20, 15)", halo: "rgba(22, 20, 15, .55)" },
   };
   const hex = (c) => `rgb(${c[0]}, ${c[1]}, ${c[2]})`;
-  let W = 0, H = 0, dpr = 1;
+  const rnd = (a, b) => a + Math.random() * (b - a), pick = (l) => l[Math.floor(Math.random() * l.length)];
+  let W = 0, H = 0, SH = 0, dpr = 1;                       // SH: the scene's height, standing on the canvas's bottom
   const layer = { dark: document.createElement("canvas"), light: document.createElement("canvas") };
   const halo = { dark: document.createElement("canvas"), light: document.createElement("canvas") };
   const mask = document.createElement("canvas"), mg = mask.getContext("2d");
-  const MW = 48, MH = 16; mask.width = MW; mask.height = MH;
+  const MW = 48, MH = 30; mask.width = MW; mask.height = MH;
   const mimg = mg.createImageData(MW, MH);
 
-  // ---- X0 rising, and the team going by: one of each per look, played alike, so the two drawings match ----
-  let ptr = null;
-  addEventListener("pointermove", (e) => { const r = cv.getBoundingClientRect(); ptr = [e.clientX - r.left, e.clientY - r.top]; }, { passive: true });
+  let ptr = null, ptrAt = -1e9;
+  addEventListener("pointermove", (e) => { const r = cv.getBoundingClientRect(); ptr = [e.clientX - r.left, e.clientY - r.top]; ptrAt = performance.now(); }, { passive: true });
   addEventListener("pointerleave", () => { ptr = null; });
-  const N = 8;
-  // the team's own state, shared by both drawings: where each is, its pace and size, and what it is doing
-  const crew = Array.from({ length: N }, (_, i) => ({
-    i, x: 0, speed: 34 + Math.random() * 26, scale: .82 + Math.random() * .36, phase: Math.random() * 6,
-    trick: null, until: 0, next: 1500 + i * 900 + Math.random() * 3000, air: 0,
+
+  // ---- the crew: who each is, and its state, shared by both drawings ----
+  const ROLES = ["walk", "skate", "jet", "walk", "skate", "walk", "jet", "walk"];
+  const crew = ROLES.map((role, i) => ({
+    i, role, x: 0, y: 0, dir: Math.random() < .5 ? 1 : -1, scale: rnd(.82, 1.14), phase: rnd(0, 6),
+    speed: role === "skate" ? rnd(92, 128) : role === "jet" ? rnd(26, 36) : rnd(28, 52),
+    state: "go", t0: 0, next: 1800 + i * 700 + rnd(0, 3000), air: 0, rot: 0, flip: 0, tilt: 0, wheel: 0, thrust: 0, gone: false,
   }));
   const cast = {};
   for (const k of ["dark", "light"]) {
     const L = LOOK[k];
     const sun = B.createBlip({ height: 600, ink: L.edge, pale: L.dot, live: hex(L.dot) });
     sun.pose("peek");   // not live: the opening lights the antenna itself (glow, below)
-    const team = crew.map(() => {
+    if (reduced) sun.still(true);
+    const team = crew.map((c) => {
       const me = B.createPerformer({ dpr: 2, dot: hex(L.dot), sticker: L.edge, glow: hex(L.dot) });
-      me.play(reduced ? "rest" : "stroll");
+      me.play(reduced ? "rest" : c.role === "skate" ? "tiptoe" : "stroll");
       return me;
     });
-    if (reduced) sun.still(true);
     cast[k] = { sun, team };
   }
   const play = (i, name, opts) => { cast.dark.team[i].play(name, opts); cast.light.team[i].play(name, opts); };
@@ -60,41 +67,72 @@ if (cv && B) {
     const r = cv.getBoundingClientRect();
     dpr = Math.min(2, devicePixelRatio || 1);
     W = Math.max(1, Math.round(r.width)); H = Math.max(1, Math.round(r.height));
+    SH = Math.min(H * .5, innerWidth < 760 ? 340 : 540);
     cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
     for (const k of ["dark", "light"]) {
       layer[k].width = cv.width; layer[k].height = cv.height;
-      cast[k].sun.size(Math.min(H * 1.48, W * .9));
-      // the halo, once per size: a rise of light from the horizon, dithered into thinning dots
+      cast[k].sun.size(Math.min(SH * 1.48, W * .9));
+      // the halo, once per size: a rise of light from the horizon, dithered into thinning dots, in the scene's part
       const c = halo[k]; c.width = cv.width; c.height = cv.height;
-      const h = c.getContext("2d"), cell = 4 * dpr, cols = Math.ceil(c.width / cell), rows = Math.ceil(c.height / cell);
+      const h = c.getContext("2d"), cell = 4 * dpr, cols = Math.ceil(c.width / cell), rows = Math.ceil(c.height / cell), top = (H - SH) * dpr / cell;
       h.fillStyle = LOOK[k].halo;
-      for (let y = 0; y < rows; y++) for (let x = 0; x < cols; x++) {
-        const dx = (x / cols - .5) * 1.6, dy = 1 - y / rows;
-        const v = Math.max(0, .5 - Math.hypot(dx, dy * 1.15) * .62) * Math.min(1, (y / rows) * 1.6);
+      for (let y = Math.floor(top); y < rows; y++) for (let x = 0; x < cols; x++) {
+        const yy = (y - top) / (rows - top), dx = (x / cols - .5) * 1.6, dy = 1 - yy;
+        const v = Math.max(0, .5 - Math.hypot(dx, dy * 1.15) * .62) * Math.min(1, yy * 1.6);
         if (v > BAYER[(y & 3) * 4 + (x & 3)]) h.fillRect(x * cell, y * cell, cell * .55, cell * .55);
       }
     }
   }
+  const ground = () => H - 3;
+  const botH = (c) => Math.max(40, Math.min(72, SH * .16)) * c.scale;
 
-  // ---- the team, a step at a time: walking, and now and then a trick ----
+  // ---- the crew, a step at a time ----
   let placed = false, lastT = 0;
-  function stepTeam(now) {
+  function back(c, now) {                                   // round again: in from the side it is walking towards from
+    c.x = c.dir > 0 ? -60 : W + 60; c.y = 0; c.state = "go"; c.air = c.rot = c.flip = c.tilt = c.thrust = 0; c.gone = false;
+    c.next = now + rnd(2500, 6000); play(c.i, c.role === "skate" ? "tiptoe" : "stroll");
+  }
+  function stepCrew(now) {
     const dt = Math.min(.1, lastT ? (now - lastT) / 1000 : 0); lastT = now;
-    const span = W + 200;
-    if (!placed) { crew.forEach((c) => { c.x = (c.i + Math.random() * .5) * span / N - 100; }); placed = true; }
+    if (!placed) { crew.forEach((c, i) => { c.x = (i + rnd(.1, .7)) * (W / crew.length); }); placed = true; }
     for (const c of crew) {
-      if (c.trick && now > c.until) { c.trick = null; c.air = 0; play(c.i, "stroll"); c.next = now + 2500 + Math.random() * 5000; }
-      if (!c.trick && !reduced && now > c.next) {
-        c.trick = ["hop", "wave", "look", "hop"][Math.floor(Math.random() * 4)];
-        c.from = now;
-        if (c.trick === "hop") { c.until = now + 650; play(c.i, "celebrate"); }
-        if (c.trick === "wave") { c.until = now + 1600; play(c.i, "yourTurn"); }
-        if (c.trick === "look") { c.until = now + 1400; play(c.i, "look"); }
+      const h = botH(c), since = (now - c.t0) / 1000;
+      if (c.role === "jet") {
+        // stand, fire up, lift off, climb away; then, a while later, walk back in
+        if (c.state === "go" && now > c.next) { c.state = "ignite"; c.t0 = now; play(c.i, "look"); }
+        else if (c.state === "ignite") { c.thrust = .25 + Math.random() * .35; if (since > 1.1) { c.state = "fly"; c.t0 = now; c.vx = c.dir * rnd(40, 90); play(c.i, "celebrate", { then: "rest", again: true }); } }
+        else if (c.state === "fly") {
+          c.thrust = 1; c.y = -(180 * since * since + 30 * since); c.x += c.vx * dt * (1 + since); c.tilt = c.dir * Math.min(.35, since * .25);
+          if (ground() + c.y < -h * 1.6 || c.x < -120 || c.x > W + 120) { c.state = "away"; c.gone = true; c.t0 = now; }
+        } else if (c.state === "away") { if (since > rnd(3, 6)) back(c, now); }
+        else c.thrust = 0;
+      } else if (c.role === "skate") {
+        c.wheel += c.dir * c.speed * dt / (h * .055);
+        if (c.state === "go" && now > c.next) {
+          c.state = pick(["ollie", "kickflip", "spin", "ollie", "manual"]); c.t0 = now;
+          play(c.i, c.state === "manual" ? "balance" : pick(["laugh", "celebrate", "done"]), { then: "tiptoe", again: true });
+        }
+        const T = c.state === "spin" ? .9 : c.state === "manual" ? 1.2 : .7, k = Math.min(1, since / T), e = k * k * (3 - 2 * k);
+        if (c.state === "ollie" || c.state === "kickflip" || c.state === "spin") {
+          c.air = Math.sin(Math.PI * k) * h * (c.state === "spin" ? 1.25 : .9);
+          c.flip = c.state === "kickflip" ? Math.PI * 2 * e : 0; c.rot = c.state === "spin" ? -c.dir * Math.PI * 2 * e : 0;
+          c.tilt = Math.sin(Math.PI * k) * -.22 * c.dir;
+        } else if (c.state === "manual") c.tilt = -.24 * c.dir * Math.sin(Math.PI * k);
+        if (c.state !== "go" && k >= 1) { c.state = "go"; c.air = c.flip = c.rot = c.tilt = 0; c.next = now + rnd(1400, 3600); }
+        c.x += c.dir * c.speed * dt;
+      } else {
+        // walkers: and now and then a pause for something
+        if (c.state === "go" && now > c.next) {
+          c.state = pick(["wave", "cheer", "look", "laugh", "quirk", "cheer", "turn"]); c.t0 = now;
+          const g2 = { wave: "yourTurn", cheer: "celebrate", look: "look", laugh: "laugh", quirk: pick(["dizzy", "jelly", "float", "melt"]), turn: "oops" }[c.state];
+          play(c.i, g2, { then: "rest", again: true });
+          c.len = c.state === "cheer" ? .75 : c.state === "turn" ? .9 : rnd(1.3, 2);
+        }
+        if (c.state === "cheer") c.air = Math.sin(Math.PI * Math.min(1, since / .75)) * h * .45;
+        if (c.state !== "go" && since > c.len) { if (c.state === "turn") c.dir *= -1; c.state = "go"; c.air = 0; play(c.i, "stroll"); c.next = now + rnd(2500, 6500); }
+        if (c.state === "go" || c.state === "cheer") c.x += c.dir * c.speed * dt * (c.state === "cheer" ? 1.4 : 1);
       }
-      const walking = !c.trick || c.trick === "hop";
-      if (walking && !reduced) c.x += c.speed * (c.trick === "hop" ? 1.6 : 1) * dt;
-      if (c.trick === "hop") { const k = (now - c.from) / 650; c.air = Math.sin(Math.PI * Math.min(1, k)) * 26 * c.scale; }
-      if (c.x > W + 100) c.x -= span;
+      if (c.role !== "jet" || c.state === "go") { if (c.x > W + 90 && c.dir > 0) c.x = -90; if (c.x < -90 && c.dir < 0) c.x = W + 90; }
     }
   }
 
@@ -102,28 +140,68 @@ if (cv && B) {
   let seenAt = 0;
   function sunDrop(now) {
     if (reduced) return 0;
-    const full = cast.dark.sun ? Math.min(H * 1.48, W * .9) * .5 : 0;       // how far up it stands when it is all there
-    const ant = full * .78;                                                  // all but the antennae under the horizon
+    const full = Math.min(SH * 1.48, W * .9) * .5, ant = full * .78;   // all but the antennae under the horizon, at first
     // the antennae alone for two seconds, then seven to come all the way up, easing in and out: a slow sunrise
     const u = Math.min(1, Math.max(0, (now - seenAt - 2000) / 7000)), k = u * u * u * (u * (6 * u - 15) + 10);
     return ant * (1 - k);
   }
 
+  // ---- the props: a jetpack and its flame; a board ----
+  function pack(c, L, h, k, now) {
+    const px = -h * .3, py = -h * .66, pw = h * .2, ph = h * .34;
+    if (k > 0) {
+      const thrust = .5 + k * .9 + Math.sin(now / 33 + c.i) * .14 * k, fl = h * .3 * thrust, gx = px + pw / 2, gy = py + ph;
+      const gr = c2.createLinearGradient(0, gy, 0, gy + fl);
+      gr.addColorStop(0, "rgba(255,244,214,.97)"); gr.addColorStop(.35, "rgba(240,170,70,.92)"); gr.addColorStop(1, "rgba(232,140,50,0)");
+      c2.fillStyle = gr; c2.beginPath(); c2.moveTo(gx - pw * .38, gy); c2.quadraticCurveTo(gx, gy + fl * 1.2, gx + pw * .38, gy); c2.fill();
+    }
+    c2.fillStyle = L.edge; c2.beginPath(); c2.roundRect(px - 1.5, py - 1.5, pw + 3, ph + 3, pw * .4); c2.fill();
+    c2.fillStyle = hex(L.dot); c2.beginPath(); c2.roundRect(px + 1, py + 1, pw - 2, ph - 2, pw * .32); c2.fill();
+    c2.fillStyle = L.edge; c2.fillRect(px + 1, py + ph * .3, pw - 2, 1.4);
+  }
+  function board(c, L, h) {
+    c2.save(); c2.translate(0, -h * .07); c2.rotate(c.tilt); c2.scale(1, Math.cos(c.flip) || .001);
+    const Ln = h * .74, T = h * .075, wy = h * .07, wr = h * .055;
+    c2.fillStyle = L.edge;
+    c2.beginPath(); c2.roundRect(-Ln / 2 - 1.5, -T - 1.5, Ln + 3, T + 3, T); c2.fill();
+    [-1, 1].forEach((sd) => { c2.beginPath(); c2.arc(sd * Ln * .3, wy, wr + 1.4, 0, Math.PI * 2); c2.fill(); });
+    c2.fillStyle = hex(L.dot);
+    c2.beginPath(); c2.roundRect(-Ln / 2, -T, Ln, T, T * .6); c2.fill();
+    [-1, 1].forEach((sd) => {
+      c2.beginPath(); c2.arc(sd * Ln * .3, wy, wr, 0, Math.PI * 2); c2.fill();
+      c2.strokeStyle = L.edge; c2.lineWidth = 1; c2.beginPath();
+      c2.moveTo(sd * Ln * .3, wy); c2.lineTo(sd * Ln * .3 + Math.cos(c.wheel) * wr, wy + Math.sin(c.wheel) * wr); c2.stroke();
+    });
+    c2.restore();
+  }
+  let c2 = null;   // the drawing it is being drawn into, for the props
+
   function drawLook(k, now) {
     const t = now / 1000, c = layer[k].getContext("2d"), L = LOOK[k], { sun, team } = cast[k];
+    c2 = c;
     c.setTransform(1, 0, 0, 1, 0, 0); c.clearRect(0, 0, layer[k].width, layer[k].height);
     c.drawImage(halo[k], 0, 0);
     c.setTransform(dpr, 0, 0, dpr, 0, 0);
-    // X0, rising, its eye on the pointer (or, with none, on the one at the front of the team)
-    let lead = crew[0]; for (const c of crew) if (c.x > lead.x) lead = c;
-    sun.lookAt(ptr || [lead.x, H - 40]);
+    // X0, rising: its eye on the pointer; with the pointer still, on a jetpack lifting off, or the one at the front
+    const flying = crew.find((m) => m.role === "jet" && (m.state === "fly" || m.state === "ignite"));
+    let lead = crew[0]; for (const m of crew) if (m.x > lead.x && !m.gone) lead = m;
+    const look = ptr && now - ptrAt < 2500 ? ptr : flying ? [flying.x, ground() + flying.y - botH(flying)] : ptr || [lead.x, ground() - 40];
+    sun.lookAt(look);
     sun.draw(c, W / 2, H + 2 + sunDrop(now), t, reduced ? 1 : .42);   // big dots: the renderer's own dither, at a coarse grain
-    // the horizon, and the team on it
-    c.fillStyle = L.line; c.fillRect(0, H - 3, W, 1.5);
-    const h0 = Math.max(40, Math.min(72, H * .16));
-    crew.forEach((b, i) => {
-      const h = h0 * b.scale, bob = b.trick ? 0 : Math.abs(Math.sin(t * 6 * (b.speed / 46) + b.phase)) * 1.6;
-      c.save(); c.translate(b.x, H - 3 - bob - b.air); team[i].draw(c, 0, 0, h, now); c.restore();
+    // the horizon, and the crew on it (and over it)
+    c.fillStyle = L.line; c.fillRect(0, ground(), W, 1.5);
+    crew.forEach((m, i) => {
+      if (m.gone) return;
+      const h = botH(m), walking = m.state === "go" && m.role === "walk";
+      const bob = walking ? Math.abs(Math.sin(t * 6 * (m.speed / 46) + m.phase)) * 1.6 : 0;
+      const lift = m.role === "skate" ? h * .14 : 0;   // a skater's feet are on the board
+      c.save(); c.translate(m.x, ground() - bob - m.air + m.y);
+      if (m.rot) { c.translate(0, -h * .55); c.rotate(m.rot); c.translate(0, h * .55); }
+      if (m.role === "skate") board(m, L, h);
+      c.rotate(m.role === "skate" ? m.tilt : m.role === "jet" ? m.tilt : 0); c.scale(m.dir, 1);
+      if (m.role === "jet") pack(m, L, h, m.thrust, now);
+      team[i].draw(c, 0, -lift, h, now);
+      c.restore();
     });
   }
 
@@ -138,7 +216,7 @@ if (cv && B) {
   }
 
   function frame(now) {
-    stepTeam(now);
+    if (!reduced) stepCrew(now); else if (!placed) { crew.forEach((c, i) => { c.x = (i + .5) * (W / crew.length); }); placed = true; }
     drawLook("dark", now); drawLook("light", now); fieldMap();
     // the dark look where the field is dark, the light look where it is light
     const dc = layer.dark.getContext("2d"), lc = layer.light.getContext("2d");
