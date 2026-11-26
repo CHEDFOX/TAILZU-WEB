@@ -7,6 +7,7 @@ import "./minis.js";
 import "./game.js";
 import "./hero.js";
 import "./duo.js";
+import "./wall.js";
 import { blip } from "./blip/kit.js";
 
 // ---------------------------------------------------------------------------

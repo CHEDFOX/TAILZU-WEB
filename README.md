@@ -60,12 +60,17 @@ moves, and the page's own words flickering into 0/1 under the pointer
      together on its screen.
    It starts when it is scrolled to; the card comes back with the face at the
    end and it all goes round again.
-4. **The two promises, the plans and the close**: phone and computer,
-   staying in charge, free to start, and the key again with every device
-   under it and three plain facts. Beside it, **X and 0 against Blip**
-   (`js/game.js`): the visitor is X, Blip the green 0 (a zero, not an O); he
-   greets them by their time of day, plays well but can be beaten, keeps the
-   score, and each finished round sinks into the water.
+4. **The founders' wall and the footer** (`#wall`, `.sf`, `js/wall.js`): on a
+   dark ground, the bot in the middle with "One team. Every device." and the
+   four platforms (Apple, Android, Windows, Linux) under it, and round it an
+   orbit of twenty tiles on three rings: stills from the owner's clips
+   (`media/wall/`), films, and pixels drawn live, each with a caption. It turns
+   clockwise; a scroll pulls on it (the tiles lag and spring back), a gentle one
+   slows it and a hard one throws it anticlockwise before it eases back. Over a
+   tile, or holding it, it stops and opens into a line from the founders: what
+   we do and where we are going. Then the footer: the last key, the links, and
+   "x0bot" set huge on a band of green dots that drifts and brightens round the
+   pointer. The game and the old promise bands are gone (in git history).
 
 With reduced motion the film and the stories show their last frame.
 

@@ -955,3 +955,69 @@ html.key-handoff .mast .key { opacity: 0; pointer-events: none; }
     radial-gradient(circle, rgba(98, 150, 72, .85) 1.2px, transparent 1.7px) 3px 3px / 6px 6px;
   -webkit-mask-image: radial-gradient(130% 100% at 50% 110%, #000 0%, rgba(0, 0, 0, .6) 40%, rgba(0, 0, 0, .12) 75%, transparent 100%);
   mask-image: radial-gradient(130% 100% at 50% 110%, #000 0%, rgba(0, 0, 0, .6) 40%, rgba(0, 0, 0, .12) 75%, transparent 100%); }
+
+/* =====================================================================
+   THE WALL (#wall) and THE FOOTER (.sf): the page's end, on its own dark ground (the field's light and dark stop here).
+   The wall: the bot and the platforms in the middle, and round them an orbit of tiles, stills, films and pixels, each
+   with a small caption; over or held, a tile opens into a card with a line from the founders (js/wall.js). The footer:
+   the last key and the links, over the name, set huge in the serif on a band of green dots.
+   ===================================================================== */
+.wall, .sf { --wall-bg: #10120E; --bone: #EEE9DE; --sage: #9BCF7C; position: relative; width: 100vw; margin-inline: calc(50% - 50vw); background: var(--wall-bg); color: var(--bone); }
+.wall { height: 100svh; min-height: 620px; overflow: hidden; isolation: isolate; }
+.wall::before { content: ""; position: absolute; inset: 0; z-index: 0; pointer-events: none;
+  background: radial-gradient(40% 36% at 50% 50%, rgba(111, 163, 82, .16), transparent 70%); }
+.wall-orbit { position: absolute; inset: 0; z-index: 1; will-change: transform; transform: translate3d(0, var(--pull, 0px), 0); }
+.wt { position: absolute; left: 0; top: 0; width: var(--s, 110px); will-change: transform; cursor: pointer; touch-action: pan-y; -webkit-user-select: none; user-select: none; }
+.wt .face { position: relative; display: block; width: 100%; aspect-ratio: 1; border-radius: 10px; overflow: hidden; background: #1A1D16;
+  box-shadow: 0 0 0 1px rgba(238, 233, 222, .07), 0 20px 40px -24px rgba(0, 0, 0, .9); filter: saturate(.75) brightness(.86); transition: filter .3s ease, box-shadow .3s ease; }
+.wt img, .wt video, .wt canvas { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
+.wt canvas { image-rendering: pixelated; }
+.wt .lab { display: block; margin-top: 7px; font: 500 10px/1.2 var(--sans); letter-spacing: .14em; text-transform: uppercase; color: rgba(238, 233, 222, .42); white-space: nowrap; transition: color .3s ease; }
+.wt:hover .face, .wt.open .face { filter: none; box-shadow: 0 0 0 1px rgba(155, 207, 124, .5), 0 26px 50px -24px rgba(0, 0, 0, .95); }
+.wt:hover .lab, .wt.open .lab { color: var(--sage); }
+/* the card it opens into: beside it, away from the middle where there is room (js/wall.js sets .left) */
+.wt .q { position: absolute; top: -6px; width: min(270px, 70vw); padding: 14px 16px 15px; border-radius: 12px; background: #F4F1EA; color: #16140F; z-index: 3;
+  box-shadow: 0 30px 60px -24px rgba(0, 0, 0, .8); opacity: 0; translate: 0 8px; scale: .97; pointer-events: none; transition: opacity .25s ease, translate .35s cubic-bezier(.2, .9, .3, 1), scale .35s cubic-bezier(.2, .9, .3, 1); }
+.wt.left .q { right: calc(100% + 12px); } .wt:not(.left) .q { left: calc(100% + 12px); }
+.wt.open .q { opacity: 1; translate: 0 0; scale: 1; }
+.wt .q b { display: block; font: 400 19px/1.18 var(--serif); letter-spacing: -.01em; }
+.wt .q small { display: block; margin-top: 9px; font: 500 10px/1 var(--sans); letter-spacing: .16em; text-transform: uppercase; color: #4F7A3A; }
+.wt.open { z-index: 5; }
+/* the middle */
+.wall-core { position: absolute; left: 50%; top: 50%; z-index: 2; translate: -50% -50%; display: flex; flex-direction: column; align-items: center; text-align: center; pointer-events: none; }
+.wall-core > * { pointer-events: auto; }
+.wall-bot { width: 180px; height: 200px; }
+.wall-k { margin: 6px 0 0; font: 400 clamp(26px, 2.6vw, 40px)/1.1 var(--serif); letter-spacing: -.02em; color: var(--bone); }
+.wall-plats { display: flex; gap: 10px; margin-top: 18px; }
+.wall-plats a { display: grid; place-items: center; width: 50px; height: 50px; border-radius: 14px; color: var(--bone); background: rgba(238, 233, 222, .06);
+  box-shadow: inset 0 0 0 1px rgba(238, 233, 222, .12); transition: background .25s ease, color .25s ease, translate .25s cubic-bezier(.2, .9, .3, 1.4); }
+.wall-plats a:hover { background: rgba(155, 207, 124, .16); color: var(--sage); translate: 0 -3px; }
+.wall-plats a:focus-visible { outline: 1.5px solid var(--sage); outline-offset: 3px; }
+.wall-plats svg { width: 24px; height: 24px; }
+.wall-hint { margin: 16px 0 0; font: 500 10px/1 var(--sans); letter-spacing: .2em; text-transform: uppercase; color: rgba(238, 233, 222, .35); }
+/* the footer */
+.sf { padding: clamp(56px, 8vw, 110px) max(24px, 6vw) 0; overflow: hidden; }
+.sf-top { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 48px; max-width: 1200px; margin: 0 auto; }
+.sf-lead { max-width: 30rem; }
+.sf-lead h2 { margin: 0; font: 400 clamp(34px, 3.4vw, 52px)/1.05 var(--serif); letter-spacing: -.025em; color: var(--bone); }
+.sf-lead p { margin: 14px 0 26px; font: 400 16px/1.55 var(--sans); color: rgba(238, 233, 222, .66); }
+.sf-cols { display: flex; flex-wrap: wrap; gap: clamp(32px, 6vw, 96px); }
+.sf-cols div { display: flex; flex-direction: column; gap: 12px; min-width: 7rem; }
+.sf-cols h3 { margin: 0 0 6px; font: 500 11px/1 var(--sans); letter-spacing: .2em; text-transform: uppercase; color: rgba(238, 233, 222, .4); }
+.sf-cols a, .sf-bar a { font: 400 15px/1.3 var(--sans); color: var(--bone); text-decoration: none; transition: color .2s ease; }
+.sf-cols a:hover, .sf-bar a:hover { color: var(--sage); }
+.sf-bar { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; max-width: 1200px; margin: clamp(48px, 6vw, 80px) auto 0; font: 400 13px/1 var(--sans); color: rgba(238, 233, 222, .5); }
+.sf-bar a { font-size: 13px; }
+.sf-mark { position: relative; margin: clamp(18px, 3vw, 36px) calc(-1 * max(24px, 6vw)) 0; height: clamp(130px, 22vw, 380px); overflow: hidden; }
+.sf-mark canvas { position: absolute; inset: 0; width: 100%; height: 100%; image-rendering: pixelated; }
+.sf-mark span { position: absolute; left: 50%; bottom: -.16em; translate: -50% 0; font: 400 clamp(130px, 26vw, 440px)/1 var(--serif); font-variant-numeric: lining-nums; font-feature-settings: "lnum" 1; letter-spacing: -.045em; color: var(--bone); white-space: nowrap; }
+@media (max-width: 760px) {
+  .wall { min-height: 560px; }
+  .wall-bot { width: 140px; height: 156px; }
+  .wt .q { width: min(230px, 62vw); }
+}
+@media (prefers-reduced-motion: reduce) { .wt .q, .wt .face, .wall-plats a { transition: none; } }
+
+/* over the page's dark end the mast is dark too, whatever the field says (js/wall.js sets .over-end) */
+.mast.over-end { background: linear-gradient(180deg, rgba(16, 18, 14, .92) 40%, rgba(16, 18, 14, 0)); }
+.mast.over-end .mark img { filter: invert(.92) sepia(.15); }
