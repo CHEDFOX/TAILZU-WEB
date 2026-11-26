@@ -4,6 +4,7 @@ import { splash } from "./paper/water.js";
 import { scroll } from "./stage.js";
 import "./tone.js";
 import "./minis.js";
+import "./nomaz.js";
 import "./game.js";
 import { blip } from "./blip/kit.js";
 
@@ -1529,7 +1530,8 @@ function sayer(aside) {
 // ---------------------------------------------------------------------------
 // THE ROAM. Four journeys cut fast into one 2.39:1 loop (media/roam/journeys.mp4:
 // fourteen cuts of under a second or so, each place at three framings, a slow
-// push on every shot, one grade). The film plays only while it can be seen.
+// push on every shot, one grade). The film plays only while it can be seen: the view's pinned part is watched, the
+// view itself being three windows tall (js/nomaz.js turns the scroll through it into the box's steps).
 // ---------------------------------------------------------------------------
 {
   const sec = document.getElementById("roam"), film = document.getElementById("roamFilm");
@@ -1538,7 +1540,7 @@ function sayer(aside) {
       const vis = es.some((e) => e.isIntersecting);
       if (vis) { sec.classList.add("seen"); if (!reduced) film.play().catch(() => {}); }
       else film.pause();
-    }, { threshold: .3 }).observe(sec);
+    }, { threshold: .3 }).observe(sec.querySelector(".roam-pin") || sec);
   }
 }
 

@@ -38,8 +38,13 @@ moves, and the page's own words flickering into 0/1 under the pointer
    middle; the card clears and the bot's face puts itself together, small.
    The first time only, the page then scrolls itself to the next view; the
    film itself plays round again every eleven seconds, while it can be seen.
-2. **The roam** (`#roam`): a dotted box for its words (empty until they are
-   written), and beside it a landscape frame, 2.39:1, playing four journeys cut
+2. **The roam** (`#roam`): Nomaz, X0 Bot's travel bot, in its own words, in a
+   dotted box: "Hey, I'm NOMAZ", what it loves, and three stops on a route (I
+   plan for you, I do the boring part, just promise me company). The view is
+   three windows tall and stays in place while it is scrolled through
+   (`js/nomaz.js`): the intro alone, then each stop in turn, while Nomaz itself,
+   drawn blue by the bot renderer, walks the route and at the last throws its
+   paper plane out to the film. Beside it a landscape frame, 2.39:1, playing four journeys cut
    fast into one 13.8-second loop (`media/roam/journeys.mp4`: fourteen cuts,
    each place at three framings with a slow push, one grade, made with ffmpeg
    from the owner's clips; `journeys.jpg` is its first frame).
