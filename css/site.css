@@ -990,13 +990,19 @@ html.key-handoff .mast .key { opacity: 0; pointer-events: none; }
 .wall-hint .tw { --on-dark: rgba(243, 238, 230, .6); }
 /* the foot, in the wall's own view: the name in dots across the bottom and a small line under it; the orbits and the
    middle take the space above it (--foot) */
-.wall { --foot: clamp(78px, 10vw, 140px); }
+.wall { --foot: clamp(96px, 11vw, 150px); }
 .wall-cv { height: calc(100% - var(--foot)); }   /* a canvas's height is its own ratio unless it is set */
 .wall-core { translate: -50% 0; }   /* its top is set from the bot's size (js/wall.js) */
 .wall-hint { bottom: calc(var(--foot) + 4px); }
-.sf { position: absolute; left: 0; right: 0; bottom: 0; height: var(--foot); display: flex; flex-direction: column; align-items: center; justify-content: flex-end; padding: 0 20px 8px; box-sizing: border-box; }
-.sf-mark { display: block; width: min(100%, 560px); flex: 1; min-height: 0; }
-.sf-small { margin: 2px 0 0; font: 400 11px/1.4 var(--sans); color: var(--muted); }
+.sf { position: absolute; left: 0; right: 0; bottom: 0; height: var(--foot); display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; padding: 0 max(16px, 3vw) 10px; box-sizing: border-box; }
+.sf-glyph { flex: none; height: 100%; aspect-ratio: .82; }
+.sf-mid { flex: 1; min-width: 0; display: flex; flex-direction: column; align-items: center; gap: 6px; padding-bottom: 4px; text-align: center; }
+.sf-links { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 4px 18px; }
+.sf-links a { font: 500 12.5px/1.5 var(--sans); color: var(--ink-2); text-decoration: none; transition: color .45s ease; }
+.sf-links a:hover { color: #4F7A3A; text-decoration: underline; text-underline-offset: 4px; }
+.sf-links a.dk { color: rgba(243, 238, 230, .74); }
+.sf-links i { width: 4px; height: 4px; border-radius: 50%; background: #4F7A3A; }
+.sf-small { margin: 0; font: 400 11px/1.4 var(--sans); color: var(--muted); }
 .sf-small a { color: inherit; }
 .sf-small .tw { --on-dark: rgba(243, 238, 230, .55); }
-@media (max-width: 760px) { .wall { min-height: 600px; --foot: 76px; } }
+@media (max-width: 760px) { .wall { min-height: 600px; --foot: 104px; } .sf { gap: 6px; padding: 0 10px 8px; } .sf-glyph { height: 70%; } .sf-links { gap: 2px 12px; } .sf-links a { font-size: 11.5px; } }

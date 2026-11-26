@@ -589,10 +589,14 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   </div>
   <p class="wall-note" aria-live="polite"><span class="wn-t"></span><span class="wn-by">the founders</span><svg class="wn-arrow" viewBox="0 0 120 60" aria-hidden="true"><path d="M4 8 C 30 6, 70 14, 104 46"/><path d="M104 46 L 88 44 M104 46 L 100 31"/></svg></p>
   <p class="wall-hint">hover a badge, or hold it</p>
-  <!-- the page's foot, in the same view: the name in dots with the bot looking over its 0 (js/wall.js) -->
+  <!-- the page's foot, in the same view: X in one corner and 0 in the other, in dots, the bot looking over the 0, and the links between them (js/wall.js) -->
   <footer class="sf">
-    <canvas class="sf-mark" aria-label="x0bot" role="img"></canvas>
-    <p class="sf-small">X0 Bot &copy; 2026 &middot; made by <a href="https://xooteq.com">Xooteq Lab</a> &middot; <a href="/privacy">Privacy</a> &middot; <a href="/terms">Terms</a></p>
+    <canvas class="sf-glyph" data-glyph="X" aria-hidden="true"></canvas>
+    <div class="sf-mid">
+      <nav class="sf-links" aria-label="Footer"><a href="https://apps.apple.com/app/id6784811357" data-place="footer">iPhone</a><a href="https://play.google.com/store/apps/details?id=com.tulmi.app" data-place="footer">Android</a><a href="https://apps.microsoft.com/detail/9n3gx0xhq7mx" data-place="footer">Windows</a><a href="https://api.x0bot.com/downloads/Tailzu.dmg" data-place="footer">Mac</a><a href="https://api.x0bot.com/downloads/Tailzu.AppImage" data-place="footer">Linux</a><i aria-hidden="true"></i><a href="/support">Support</a><a href="/pricing">Pricing</a><a href="/privacy">Privacy</a><a href="/terms">Terms</a></nav>
+      <p class="sf-small">X0 Bot &copy; 2026 &middot; made by <a href="https://xooteq.com">Xooteq Lab</a></p>
+    </div>
+    <canvas class="sf-glyph" data-glyph="0" data-peek aria-hidden="true"></canvas>
   </footer>
 </section>
 

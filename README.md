@@ -69,9 +69,10 @@ moves, and the page's own words flickering into 0/1 under the pointer
    through it like the opening. A scroll pulls on it (the badges lag and spring
    back), a gentle one slows it and a hard one throws it anticlockwise before it
    eases back. Over a badge, or holding it, it stops and grows, and a founders'
-   note is written beside it by hand with an arrow to it. Across the bottom of
-   the same view, "x0bot" in the same dots with the peeking bot looking over the
-   0, and one small line: ©, Xooteq Lab, Privacy, Terms.
+   note is written beside it by hand with an arrow to it. Along the bottom of
+   the same view, the foot: an X in one corner and a 0 in the other, in the same
+   dots, the peeking bot looking over the 0, and between them the links and one
+   small line (©, Xooteq Lab).
 
 With reduced motion the film and the stories show their last frame.
 

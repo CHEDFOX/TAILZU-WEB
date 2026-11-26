@@ -6,8 +6,8 @@
 // anticlockwise, before it eases back. A badge under the pointer, or held on a touch screen, stops and grows, and a
 // founders' note is written beside it by hand, with an arrow to it.
 //
-// The footer's name, "x0bot", is drawn in the same dots, with the peeking bot looking over the top of the 0, its eye
-// on the pointer.
+// The footer's corners, an X and a 0, are drawn in the same dots, with the peeking bot looking over the top of the 0,
+// its eye on the pointer; the links stand between them.
 //
 // Like the opening, both turn with the field (stage.js): each is drawn twice, ink on the paper and light on the dark,
 // and the two are laid together through a map of how dark the field is under it, every frame. They run only while
@@ -264,44 +264,43 @@ if (wall) {
   else new IntersectionObserver((es) => { cancelAnimationFrame(raf); last = 0; if (es.some((e) => e.isIntersecting)) raf = requestAnimationFrame(loop); }).observe(wall);
 }
 
-// ---- the footer's name, in dots, with the bot looking over the 0 ----
-const mark = document.querySelector(".sf-mark");
-if (mark) {
-  const T = toned(mark), B = blip();
-  let W = 0, H = 0, cell = 6, grid = null, cols = 0, rows = 0, zero = [0, 0], ptr = null, raf = 0, last = 0;
-  const peek = B ? { dark: B.createBlip({ height: 90, ink: LOOK.dark.edge, pale: LOOK.dark.dot }), light: B.createBlip({ height: 90, ink: LOOK.light.edge, pale: LOOK.light.dot }) } : null;
+// ---- the footer's corners: X and 0, each in dots, the bot looking over the 0 ----
+document.querySelectorAll(".sf-glyph").forEach((mark) => {
+  const glyph = mark.dataset.glyph, T = toned(mark), B = mark.hasAttribute("data-peek") ? blip() : null;
+  let W = 0, H = 0, cell = 4, grid = null, cols = 0, rows = 0, top = [0, 0], ptr = null, raf = 0, last = 0;
+  const peek = B ? { dark: B.createBlip({ height: 60, ink: LOOK.dark.edge, pale: LOOK.dark.dot }), light: B.createBlip({ height: 60, ink: LOOK.light.edge, pale: LOOK.light.dot }) } : null;
   if (peek) { peek.dark.pose("peek"); peek.light.pose("peek"); if (reduced) { peek.dark.still(true); peek.light.still(true); } }
   function size() {
     ({ W, H } = T.size());
-    cell = H < 90 ? 3 : 4; cols = Math.floor(W / cell); rows = Math.floor(H / cell);
-    // the word, drawn once into a grid of how much of each cell it covers
+    cell = H < 80 ? 3 : 4; cols = Math.floor(W / cell); rows = Math.floor(H / cell);
     const c = document.createElement("canvas"); c.width = cols; c.height = rows; const x = c.getContext("2d");
-    let fs = rows * 1.15;
+    // the glyph as large as fits, standing on the bottom, with room over the 0 for the bot
+    let fs = rows * (peek ? 1.05 : 1.25);
     x.font = `400 ${fs}px Newsreader, Georgia, serif`;
-    const tw = x.measureText("x0bot").width; if (tw > cols * .96) { fs *= cols * .96 / tw; x.font = `400 ${fs}px Newsreader, Georgia, serif`; }
+    const tw = x.measureText(glyph).width; if (tw > cols * .98) { fs *= cols * .98 / tw; x.font = `400 ${fs}px Newsreader, Georgia, serif`; }
     x.fillStyle = "#fff"; x.textAlign = "center"; x.textBaseline = "alphabetic"; x.fontVariantNumeric = "lining-nums";
-    const base = rows * .92; x.fillText("x0bot", cols / 2, base);
-    const w0 = x.measureText("x").width, w1 = x.measureText("x0").width, total = x.measureText("x0bot").width;
-    zero = [(cols / 2 - total / 2 + (w0 + w1) / 2) * cell, (base - fs * .7) * cell];
+    const base = rows * .97; x.fillText(glyph, cols / 2, base);
+    top = [W / 2, (base - fs * .7) * cell];
     const d = x.getImageData(0, 0, cols, rows).data; grid = new Float32Array(cols * rows);
     for (let i = 0; i < cols * rows; i++) grid[i] = d[i * 4 + 3] / 255;
-    if (peek) { const ph = Math.min(120, fs * cell * .78); peek.dark.size(ph); peek.light.size(ph); }
+    if (peek) { const ph = Math.min(90, fs * cell * .62); peek.dark.size(ph); peek.light.size(ph); }
   }
-  mark.addEventListener("pointermove", (e) => { const r = mark.getBoundingClientRect(); ptr = [e.clientX - r.left, e.clientY - r.top]; });
-  mark.addEventListener("pointerleave", () => { ptr = null; });
+  const sf = mark.closest(".sf");
+  sf.addEventListener("pointermove", (e) => { const r = mark.getBoundingClientRect(); ptr = [e.clientX - r.left, e.clientY - r.top]; });
+  sf.addEventListener("pointerleave", () => { ptr = null; });
   function frame(now) {
     last = now; const t = now / 1000;
     T.draw((g, L, k) => {
       for (let y = 0; y < rows; y++) for (let x = 0; x < cols; x++) {
         let v = grid[y * cols + x];
         if (v < .05) continue;
-        v *= .82 + .18 * noise(x * .08, y * .1, t * .7);
-        if (ptr) v += Math.max(0, 1 - Math.hypot(x * cell - ptr[0], y * cell - ptr[1]) / 120) * .35;
+        v *= .82 + .18 * noise(x * .1, y * .12, t * .7);
+        if (ptr) v += Math.max(0, 1 - Math.hypot(x * cell - ptr[0], y * cell - ptr[1]) / 90) * .35;
         if (v <= BAYER[(y & 3) * 4 + (x & 3)]) continue;
         g.fillStyle = rgb(v > .6 ? L.dot : L.soft);
-        g.fillRect(x * cell, y * cell, cell - 1.5, cell - 1.5);
+        g.fillRect(x * cell, y * cell, cell - 1, cell - 1);
       }
-      if (peek) { peek[k].lookAt(ptr || [W * .8, H * .2]); peek[k].draw(g, zero[0], zero[1], t, reduced ? 1 : .5); }
+      if (peek) { peek[k].lookAt(ptr || [-W, -H * .5]); peek[k].draw(g, top[0], top[1], t, reduced ? 1 : .5); }
     });
   }
   const loop = (now) => { raf = requestAnimationFrame(loop); if (now - last < 1000 / 24) return; frame(now); };
@@ -311,4 +310,4 @@ if (mark) {
   start();
   if (reduced) addEventListener("scroll", () => frame(3000), { passive: true });
   else new IntersectionObserver((es) => { cancelAnimationFrame(raf); if (es.some((e) => e.isIntersecting)) raf = requestAnimationFrame(loop); }).observe(mark);
-}
+});
