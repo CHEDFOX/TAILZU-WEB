@@ -74,19 +74,16 @@ a small canvas laid over the fabric as a difference with warm white, so paper,
 grain and words all turn over together. The mast goes dark when the top of
 the window is.
 
-**The small Blip** (`js/minis.js`): one little Blip who goes down the page:
-when the view changes he flies to the next on his jetpack, from where he was,
-and lands on the boxes; the flier dodges the pointer and the skater ollies
-over it. In the first two views, on one canvas over the page that never takes
-the pointer. Over the film
-he flies about on a jetpack, out of the screen and back in somewhere else;
-on the work view he rides a skateboard along the top edges of the two boxes,
-flips off their ends, turns round in the air and jumps the gap between them
-(and up onto the phone when it stands up out of the box at the end). Only the
-view mostly on screen has him
+**The small Blip** (`js/minis.js`): one little Blip on a skateboard, in the
+film, once the card has opened into the desktop and the phone: he drops onto the
+box's edge and rides the top edges of the two boxes, flips off their ends, turns
+round in the air and jumps the gap between them (and up onto the phone when it
+stands up out of the box at the end); he ollies over the pointer. Over the card
+itself there is none. On one canvas over the page that never takes the pointer,
 running, and with reduced motion there are none. He is drawn by the desktop
-app's own renderer, `js/blip/blip.js`, copied unchanged from TAILZU-DESKTOP
-`src/shared/blip.js`; its moves, which the app compiles at run time from its
+app's own renderer, `js/blip/blip.js`, copied from TAILZU-DESKTOP
+`src/shared/blip.js` with one addition, the peeking bot's `ball()` (where its
+antenna's ball was drawn, for the opening's glow): keep it when copying anew; its moves, which the app compiles at run time from its
 catalog, are sampled once into `js/blip/moves.js` by
 `node scripts/gen-blip-moves.mjs` (run it again when the catalog or the
 renderer changes, after copying `blip.js` anew). `js/blip/kit.js` puts those

@@ -1,13 +1,12 @@
 // THE MINI: one small Blip who goes down the page with you, drawn by the desktop app's own renderer (js/blip/blip.js,
 // window.TailzuBlip) on one canvas over the page, so he is the same dotted character here as in the app.
 //
-//   1. the film      a jetpack on his back: he flies about the screen, out of it and back in from somewhere else
-//   2. the work      a skateboard: he rides along the top edges of the two boxes, flips off their ends, turns round in
-//                    the air, and jumps the gap from one box to the other (and up onto the phone, when it stands up
-//                    out of the box at the end)
+//   the work      a skateboard: once the card has opened into the desktop and the phone, he drops onto the box's edge
+//                 and rides along the top edges, flips off their ends, turns round in the air, and jumps the gap from
+//                 one box to the other (and up onto the phone, when it stands up out of the box at the end). Over the
+//                 card itself there is no Blip.
 //
-// He is one character: when the page moves on to the other view he flies there on his jetpack from wherever he was, and
-// lands on the boxes. He minds the pointer: the flier dodges it, and the skater ollies over it. The canvas never takes the pointer, and with motion reduced there is no Blip.
+// He minds the pointer: he ollies over it. The canvas never takes the pointer, and with motion reduced there is no Blip.
 import { reduced } from "./util.js";
 import { blip } from "./blip/kit.js";
 
@@ -58,64 +57,6 @@ if (B && !reduced) {
     const k = Math.min(1, (now - f.t0) / f.T), e = k * k * (3 - 2 * k);
     return { k, x: f.x0 + (f.x1 - f.x0) * e, y: f.y0 + (f.y1 - f.y0) * e - Math.sin(Math.PI * k) * f.arc, fx: f.x1 >= f.x0 ? 1 : -1 };
   }
-
-  // ======================================================================== 1. the jetpack, over the film
-  const flier = (() => {
-    const me = B.createPerformer({ dpr, glow: amber });
-    me.play("rest");
-    const s = { x: -80, y: 0, vx: 0, vy: 0, tx: 0, ty: 0, fx: 1, mode: "in", until: 0, started: false };
-    const size = () => clamp(W * .042, 42, 64);
-    const edgePoint = (h) => {      // somewhere just off the screen
-      const side = pick(["l", "r", "t"]);
-      if (side === "l") return [-h * 1.6, rnd(H * .2, H * .8)];
-      if (side === "r") return [W + h * 1.6, rnd(H * .2, H * .8)];
-      return [rnd(W * .15, W * .85), -h * 1.8];
-    };
-    const inside = () => [rnd(W * .08, W * .92), rnd(H * .18, H * .9)];
-    function next(now, h) {
-      if (Math.random() < .18) { [s.tx, s.ty] = edgePoint(h); s.mode = "out"; }
-      else { [s.tx, s.ty] = inside(); s.mode = "wander"; s.until = now + rnd(2600, 4600); }
-      if (Math.random() < .2) me.play("celebrate", { then: "rest", again: true });   // a loop in the air
-    }
-    let dodgeAt = 0;
-    function draw(now, dt) {
-      const h = size();
-      if (!s.started) { s.started = true; [s.x, s.y] = edgePoint(h); [s.tx, s.ty] = inside(); s.mode = "in"; }
-      // the pointer coming at him: he darts away from it
-      if (s.mode !== "away" && now > dodgeAt && near(s.x, s.y - h * .5, h * 2.2)) {
-        dodgeAt = now + 700;
-        const ax = s.x - ptr.x, ay = s.y - h * .5 - ptr.y, d = Math.hypot(ax, ay) || 1;
-        s.tx = clamp(s.x + ax / d * h * 5, h, W - h); s.ty = clamp(s.y + ay / d * h * 4, h * 2, H - h * .5);
-        s.vx += ax / d * h * 4; s.vy += ay / d * h * 4; s.mode = "wander"; s.until = now + 2400;
-      }
-      if (s.mode === "away") {
-        if (now < s.until) return;
-        [s.x, s.y] = edgePoint(h); [s.tx, s.ty] = inside(); s.vx = s.vy = 0; s.mode = "in";
-        me.play("done", { then: "rest", again: true });   // back in, with a wave
-      }
-      // steer: towards the target, never faster than his top speed, a little lazy about it
-      const dx = s.tx - s.x, dy = s.ty - s.y, d = Math.hypot(dx, dy), top = h * 6.5;
-      const want = Math.min(top, d * 1.4);
-      const k = 1 - Math.exp(-dt * 1.9);
-      s.vx += ((d ? dx / d * want : 0) - s.vx) * k; s.vy += ((d ? dy / d * want : 0) - s.vy) * k;
-      s.x += s.vx * dt; s.y += s.vy * dt;
-      if (s.mode === "out" && d < h) { s.mode = "away"; s.until = now + rnd(1400, 3200); return; }
-      if ((s.mode === "wander" || s.mode === "in") && (d < h * .8 || (s.mode === "wander" && now > s.until))) next(now, h);
-      if (Math.abs(s.vx) > 12) s.fx += (Math.sign(s.vx) - s.fx) * (1 - Math.exp(-dt * 7));
-      const hover = Math.sin(now / 420) * h * .06;
-      jet(me, s.x, s.y + hover, h, clamp(s.vx / (top * 2.4), -.32, .32), s.fx, Math.min(1, Math.hypot(s.vx, s.vy) / top), now);
-    }
-    return {
-      draw,
-      pos: () => (s.started && s.mode !== "away" ? [s.x, s.y] : null),
-      /** Here from another view: he carries on flying from where he was. */
-      enter(p) {
-        const h = size(); s.started = true;
-        if (p) { [s.x, s.y] = p; s.vx = s.vy = 0; } else [s.x, s.y] = edgePoint(h);
-        [s.tx, s.ty] = inside(); s.mode = "in"; me.play("rest");
-      },
-    };
-  })();
 
   // ======================================================================== 2. the skateboard, on the work view's boxes
   const skater = (() => {
@@ -266,22 +207,21 @@ if (B && !reduced) {
     return {
       draw,
       pos: () => (s.mode === "land" || s.x ? [s.x, s.y - h0()] : null),
-      /** Here from another view: he flies in on the jetpack from where he was and lands on the nearer box's edge. */
+      /** The screens are out: he drops onto the box's edge from just above it, board under his feet (no jetpack). */
       enter(p, now) {
         const E = edges(); if (!E.length) return;
-        const h = size(), from = p || [W * .5, -h * 1.5];
-        let best = 0, bd = 1e9;
-        E.forEach((e, i) => { const d = Math.abs(clamp(from[0], e.x1, e.x2) - from[0]) + Math.abs(e.y - from[1]) * .3; if (d < bd) { bd = d; best = i; } });
-        const e = E[best];
-        s.seg = best; s.at = clamp((from[0] - e.x1) / Math.max(1, e.x2 - e.x1), .12, .88); s.air = null; s.pause = 0;
-        s.land = { x0: from[0], y0: from[1], x1: 0, y1: 0, t0: now, T: 1100, arc: h * 1.2 };
-        s.mode = "land"; pack.play("rest");
+        const h = size();
+        const best = Math.floor(Math.random() * E.length), e = E[best], u = .25 + Math.random() * .5;
+        const [x, y] = at(e, u);
+        s.seg = best; s.at = u; s.pause = 0; s.dir = Math.random() < .5 ? 1 : -1;
+        s.air = { a: best, ua: u, b: best, ub: u, t: 0, T: .55, high: .35, spin: 0, kick: 0, turn: false, fx: x, fy: y - h * 2.2 };
+        s.mode = "air"; me.play("laugh", { then: "tiptoe", again: true });
       },
     };
   })();
 
   // ======================================================================== the one loop
-  const views = [["stage", flier], ["work", skater]].map(([id, m]) => [document.getElementById(id), m]).filter(([el]) => el);
+  const views = [["stage", skater]].map(([id, m]) => [document.getElementById(id), m]).filter(([el]) => el);
   let last = 0, drew = false, cur = null, lastPos = null, lastScroll = 0;
   function frame(now) {
     requestAnimationFrame(frame);
@@ -293,7 +233,7 @@ if (B && !reduced) {
     const st = views[0] && views[0][0];
     if (st) {
       const r = st.getBoundingClientRect(), seen = Math.min(r.bottom, H) - Math.max(r.top, 0);
-      if (seen > H * .34) best = st.classList.contains("devices-on") ? skater : flier;
+      if (seen > H * .34 && st.classList.contains("devices-on")) best = skater;   // no bot over the card: only the skater, once the screens are out
     }
     // a new view: he goes there from where he was last seen (on screen, or just above or below it)
     if (best && best !== cur) {
