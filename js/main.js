@@ -1527,9 +1527,9 @@ function sayer(aside) {
 }
 
 // ---------------------------------------------------------------------------
-// THE ROAM. Seven journeys cut fast into one loop (media/roam/roam.mp4: fourteen
-// one-second cuts, seven places twice round). The line writes itself in the
-// first time the view is seen; the film plays only while it can be seen.
+// THE ROAM. Four journeys cut fast into one 2.39:1 loop (media/roam/journeys.mp4:
+// fourteen cuts of under a second or so, each place at three framings, a slow
+// push on every shot, one grade). The film plays only while it can be seen.
 // ---------------------------------------------------------------------------
 {
   const sec = document.getElementById("roam"), film = document.getElementById("roamFilm");

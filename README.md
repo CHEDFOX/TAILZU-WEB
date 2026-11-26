@@ -6,7 +6,7 @@ it for the backend's pages and the downloads.
 ```
 index.html            the page: markup (the film, the views, the bots, the close), the tag manager inline, a <noscript> fallback; loads js/main.js
 media/face.svg        Blip's face, the mark in the mast (the film's vector icon, on its own)
-media/roam/           the roaming view's loop (roam.mp4, seven journeys in fast cuts) and its first frame (roam.jpg)
+media/roam/           the roaming view's loop (journeys.mp4, four journeys in fast cuts, 2.39:1) and its first frame (journeys.jpg)
 js/                   the page's script: paper/ (grain, water, words, glitch: the fabric), stage.js (the fabric's loop, the hand and the scroll on the water, the key), main.js (the film and the views), minis.js and blip/ (the small bots)
 css/site.css          everything the page looks like
 media/meet/           three short muted clips of people on a video call, for the meeting card (Mixkit, free stock video)
@@ -38,11 +38,11 @@ moves, and the page's own words flickering into 0/1 under the pointer
    middle; the card clears and the bot's face puts itself together, small.
    The first time only, the page then scrolls itself to the next view; the
    film itself plays round again every eleven seconds, while it can be seen.
-2. **The roam** (`#roam`): "The bot that loves *adventures*" and, written by
-   hand over three rows, "and exploring the world, / your best buddy, / always
-   by your side."; beside it a tall frame playing seven journeys cut fast into
-   one 14-second loop (`media/roam/roam.mp4`, fourteen one-second cuts, made
-   with ffmpeg from the owner's clips; `roam.jpg` is its first frame).
+2. **The roam** (`#roam`): a dotted box for its words (empty until they are
+   written), and beside it a landscape frame, 2.39:1, playing four journeys cut
+   fast into one 13.8-second loop (`media/roam/journeys.mp4`: fourteen cuts,
+   each place at three framings with a slow push, one grade, made with ffmpeg
+   from the owner's clips; `journeys.jpg` is its first frame).
 3. **The work** (`#work`): "A day, handled." (the last word by hand), then a
    box with a desktop and a phone in it, and under the
    box only the stories' names as tabs (Mail, Food, Code, Meet), which show
