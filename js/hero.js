@@ -45,7 +45,7 @@ if (cv && B) {
   for (const k of ["dark", "light"]) {
     const L = LOOK[k];
     const sun = B.createBlip({ height: 600, ink: L.edge, pale: L.dot, live: hex(L.dot) });
-    sun.pose("peek"); sun.live(true);
+    sun.pose("peek");   // not live: the opening lights the antenna itself (glow, below)
     const team = crew.map(() => {
       const me = B.createPerformer({ dpr: 2, dot: hex(L.dot), sticker: L.edge, glow: hex(L.dot) });
       me.play(reduced ? "rest" : "stroll");
@@ -148,6 +148,37 @@ if (cv && B) {
     lc.drawImage(mask, 0, 0, layer.light.width, layer.light.height); lc.globalCompositeOperation = "source-over";
     g.setTransform(1, 0, 0, 1, 0, 0); g.clearRect(0, 0, cv.width, cv.height);
     g.drawImage(layer.light, 0, 0); g.drawImage(layer.dark, 0, 0);
+    glow(now);
+  }
+
+  // ---- the lit antenna: a hot core, a bloom that spreads and fades, a faint streak where a lens would catch it, and a
+  // slow breath with a little flicker. On the dark it adds light (it brightens the dots round it); on the paper it is a
+  // soft green halo ----
+  function glow(now) {
+    const b = cast.dark.sun.ball();
+    if (!b) return;
+    const t = now / 1000, [x, y, r0] = b, r = Math.max(2.5, r0);
+    const dark = fieldDark(cv.getBoundingClientRect().left + x, cv.getBoundingClientRect().top + y) > .5;
+    const breath = reduced ? .85 : .72 + .2 * Math.sin(t * 1.7) + .06 * Math.sin(t * 9.3) * Math.sin(t * 3.1);
+    g.save(); g.setTransform(dpr, 0, 0, dpr, 0, 0);
+    g.globalCompositeOperation = dark ? "lighter" : "source-over";
+    const k = dark ? 1 : .55;
+    // the bloom
+    let gr = g.createRadialGradient(x, y, 0, x, y, r * 11 * (.9 + .2 * breath));
+    gr.addColorStop(0, `rgba(170, 235, 140, ${.42 * breath * k})`); gr.addColorStop(.18, `rgba(140, 214, 110, ${.18 * breath * k})`);
+    gr.addColorStop(.5, `rgba(110, 190, 90, ${.06 * breath * k})`); gr.addColorStop(1, "rgba(110, 190, 90, 0)");
+    g.fillStyle = gr; g.beginPath(); g.arc(x, y, r * 11 * (.9 + .2 * breath), 0, Math.PI * 2); g.fill();
+    // the streak a lens would catch
+    g.save(); g.translate(x, y); g.scale(1, .07);
+    gr = g.createRadialGradient(0, 0, 0, 0, 0, r * 16);
+    gr.addColorStop(0, `rgba(210, 255, 190, ${.35 * breath * k})`); gr.addColorStop(1, "rgba(210, 255, 190, 0)");
+    g.fillStyle = gr; g.beginPath(); g.arc(0, 0, r * 16, 0, Math.PI * 2); g.fill(); g.restore();
+    // the core: the ball itself lit, near white at its middle
+    gr = g.createRadialGradient(x - r * .25, y - r * .25, 0, x, y, r * 1.25);
+    gr.addColorStop(0, `rgba(250, 255, 240, ${dark ? 1 : .95})`); gr.addColorStop(.45, `rgba(200, 245, 170, ${dark ? .95 : .9})`); gr.addColorStop(1, `rgba(140, 214, 110, ${dark ? .5 : .7})`);
+    g.globalCompositeOperation = "source-over";
+    g.fillStyle = gr; g.beginPath(); g.arc(x, y, r * 1.08, 0, Math.PI * 2); g.fill();
+    g.restore();
   }
 
   let raf = 0, last = 0;

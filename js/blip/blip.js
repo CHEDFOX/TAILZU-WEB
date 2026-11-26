@@ -74,6 +74,7 @@
     let target = null;        // where the pointing hand points, canvas CSS px
     let speaking = false;
     let live = false;
+    let ballAt = null, ballPage = null;   // the antenna's ball: in the figure's box, and where it was last drawn
     let level = 0;            // the voice, 0..1: the lit antenna's glow breathes with it
     let still = false;        // reduced motion: no bob, no sway, no hop, no nod
     let nodNext = false, nodAt = -1e9;
@@ -219,6 +220,9 @@
       }
       c.fillStyle = ink; c.beginPath(); c.arc(kx, ky, br + .012 * H, 0, TAU); c.fill();
       c.fillStyle = live ? o.live : pale; c.beginPath(); c.arc(kx, ky, br, 0, TAU); c.fill();
+      // where the ball is in the figure's box, the head's tilt applied, for a caller that lights it itself (ball())
+      { const cs = Math.cos(f.angle), sn = Math.sin(f.angle), dx = kx - hx, dy = ky - (hy + R);
+        ballAt = [hx + dx * cs - dy * sn, hy + R + dx * sn + dy * cs, br]; }
       c.fillStyle = ink; c.beginPath(); c.arc(ex, ey, er + .016 * H, 0, TAU); c.fill();
       c.fillStyle = pale; c.beginPath(); c.arc(ex, ey, er, 0, TAU); c.fill();
       const pr2 = .042 * H;
@@ -322,6 +326,7 @@
       // The face, solid, over the dots.
       ctx.save(); ctx.translate(ox, oy); drawFace(ctx, f.face, t); ctx.restore();
       ctx.restore();
+      ballPage = ballAt ? [ox + ballAt[0], oy + ballAt[1], ballAt[2]] : null;
       tip = f.fingertip ? [ox + f.fingertip[0], oy + f.fingertip[1]] : null;
     }
 
@@ -332,6 +337,8 @@
       // can say when it is down.
       step,
       lookAt(p) { look = p ? [p[0], p[1]] : null; },
+      /** Where the antenna's ball was last drawn, [x, y, radius] in the caller's units, or null. */
+      ball() { return ballPage; },
       pointAt(p) { target = p ? [p[0], p[1]] : null; },
       speaking(on) { speaking = !!on; },
       live(on) { live = !!on; },
