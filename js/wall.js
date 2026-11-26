@@ -82,21 +82,21 @@ if (wall) {
   // ---- the badges: what each shows, and its card: a title (three words at most), a line (forty at most) and who says it,
   // written small by hand. The first nine are the inner two rings, the ones a phone shows. ----
   const BADGES = [
-    ["w1", "Hard things, handled", "We take the hard things. The inbox, the bookings, the follow-ups. You keep what only you can do: decide, create, live. That trade is the whole point of us.", "the X0 Bot team"],
-    ["rings", "Curiosity comes first", "Every bot we ship started as one question: what if this just got done? We guard that question like our most valuable asset. Because it is.", "the X0 Bot team"],
-    ["w5", "Built at night", "It broke every night. We rebuilt it every morning. Then one morning, it simply worked. Nobody remembers being tired. Everyone remembers that morning.", "the engineers, X0 Bot"],
+    ["w1", "Less busywork", "Honestly, most of what eats your day isn't hard, it's just endless. Replying, booking, chasing people up. We'd rather the bots carry that, so your head's free for the stuff you actually care about.", "the X0 Bot team"],
+    ["rings", "Why by hand?", "Pretty much every bot we've built started with someone on the team asking, wait, why am I still doing this by hand? We try hard not to lose that. It's the best part of the job.", "the X0 Bot team"],
+    ["w5", "That one morning", "The first build crashed every night for weeks. We'd come in, fix it, and it'd crash again. Then one morning it just didn't. We still talk about how quiet the room went.", "the engineers, X0 Bot"],
     ["noise", "Without thinking", "Civilization advances by extending the number of important operations which we can perform without thinking about them.", "Alfred North Whitehead"],
-    ["w3", "Bots for everything", "Mail. Meals. Code. Meetings. Then anything you can name. Every week the team grows, and the list of things you will never do again grows with it.", "the X0 Bot team"],
+    ["w3", "What's next", "We started with mail. Then food, then code, then meetings. Every time one works, someone asks what's next, and the list hasn't got any shorter. Honestly, we hope it never does.", "the X0 Bot team"],
     ["face", "Invent the future", "The best way to predict the future is to invent it.", "Alan Kay"],
-    ["w7", "No easy days", "Every wall we hit, we hit again until it broke. Easy work builds ordinary products. We did not come here to be ordinary.", "the product team, X0 Bot"],
+    ["w7", "Bad weeks", "Some weeks nothing works. A feature we loved gets binned, or a fix breaks two other things. We've learned to keep at it. The answer usually turns up right after we almost gave up.", "the product team, X0 Bot"],
     ["grid", "Passionately curious", "I have no special talents. I am only passionately curious.", "Albert Einstein"],
-    ["w8", "Xooteq Lab", "Crafted by Xooteq Lab. Refined every single day. We are the creators of FunTech: technology that works relentlessly hard, and still feels like play.", "Xooteq Lab"],
-    ["w2", "One team", "We argue over one pixel. We celebrate one saved minute. Nobody here works alone, and nobody wants to. Most people dream of a room like this. We work in it.", "the X0 Bot team"],
+    ["w8", "Xooteq Lab", "X0 Bot is made at Xooteq Lab, and we're still working on it every day. We call what we do FunTech: tools that take real work off your plate and are actually fun to use.", "Xooteq Lab"],
+    ["w2", "Chai breaks", "We'll argue for twenty minutes about the shade of a button, then go get chai together. Nobody guards their own corner here. If something's broken, whoever's free picks it up. It's a good place to be.", "the X0 Bot team"],
     ["rain", "Indistinguishable from magic", "Any sufficiently advanced technology is indistinguishable from magic.", "Arthur C. Clarke"],
-    ["w4", "Your time, returned", "Every task a bot takes is an hour handed back. To the people you love. To the ideas that keep you up at night. To the life you meant to live.", "the X0 Bot team"],
-    ["w6", "The green revolution", "Green is not our colour. It is our direction. Bots that work so people can live. Others will follow. The green revolution has already begun.", "Xooteq Lab"],
+    ["w4", "Minutes add up", "Every small thing a bot handles gives you a few minutes back. They add up faster than you'd think. Spend them on dinner with your family, or that idea you keep putting off.", "the X0 Bot team"],
+    ["w6", "Green revolution", "Green's been our colour since day one, and lately it feels like a direction too: let the bots do the grind so people get their time back. We call it the green revolution. Half joking.", "Xooteq Lab"],
     ["noise", "A vigorous mind", "Curiosity is one of the permanent and certain characteristics of a vigorous mind.", "Samuel Johnson"],
-    ["face", "Made to lead", "We are not building another assistant. We are building the team everyone will soon expect to have. Being first is not luck. It is a decision we make daily.", "Xooteq Lab"],
+    ["face", "Thinking big", "We're a small team going after something big: bots that everyone just has, the way everyone has a phone. Some days that sounds a bit mad. We're building it anyway.", "Xooteq Lab"],
   ];
   const RINGS = [{ n: 4, speed: 1, r: 40 }, { n: 5, speed: .78, r: 34 }, { n: 6, speed: .6, r: 30 }];
   const badges = [];
