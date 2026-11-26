@@ -287,38 +287,61 @@ if (cv && B) {
 // ---------------------------------------------------------------------------
 // THE KEY'S HAND-OFF. There is one "Take me home" at a time: in the opening it stands in the middle, under the line,
 // and the mast's is not shown. As the page scrolls, the opening's key goes up and across into the mast's corner,
-// growing smaller to the mast key's size, over the mast; once it is there (half a window down) the mast's key is shown
-// in its place and it is put away. Scrolling back up brings it down again. With motion reduced there is no journey:
-// the mast's key shows once the opening's has scrolled out of sight.
+// growing smaller to the mast key's size, over the mast. It follows the scroll with a little lag, every frame, so a
+// flick of the wheel still moves it smoothly. Once it has got there it stays there for the rest of the visit
+// (sessionStorage): the mast's key is shown and the opening's is put away, even scrolled back to the top, and on a
+// reload in the same visit. With motion reduced there is no journey: the mast's key shows once the page is scrolled.
+//
+// The opening is held while it is scrolled (THE PULL, .hero-pin is sticky), so the key's place is measured inside the
+// pin and read off the pin each frame, not off the page.
 // ---------------------------------------------------------------------------
 {
   const key = document.getElementById("heroKey"), mastKey = document.querySelector(".mast .key"), root = document.documentElement;
-  if (key && mastKey) {
-    let home = null;                                         // the key's own place on the page, untransformed
-    const measure = () => {
-      key.style.transform = "";
-      const r = key.getBoundingClientRect();
-      home = { x: r.left + scrollX, y: r.top + scrollY, w: r.width, h: r.height };
-      place();
-    };
-    const smooth = (k) => k * k * (3 - 2 * k);
-    function place() {
-      if (!home) return;
-      const range = innerHeight * .5, p = Math.min(1, Math.max(0, scrollY / range));
-      if (reduced) { root.classList.toggle("key-handoff", scrollY < home.y + home.h); return; }
-      const m = mastKey.getBoundingClientRect();
-      const k = smooth(p);
-      // where it is in the window if left alone, and where the mast's key is: the way between them
-      const x0 = home.x - scrollX, y0 = home.y - scrollY;
-      const x = x0 + (m.left - x0) * k, y = y0 + (m.top - y0) * k, s = 1 + (m.width / home.w - 1) * k;
-      key.style.transform = `translate(${(x - x0).toFixed(2)}px, ${(y - y0).toFixed(2)}px) scale(${s.toFixed(4)})`;
-      const there = p >= 1;
-      key.style.visibility = there ? "hidden" : "";
-      root.classList.toggle("key-handoff", !there);
+  const pin = key?.closest(".hero-pin") || key?.closest(".hero"), KEY = "x0-key";
+  if (key && mastKey && pin) {
+    let done = false; try { done = sessionStorage.getItem(KEY) === "1"; } catch {}
+    const park = () => { key.style.visibility = "hidden"; key.style.transform = ""; root.classList.remove("key-handoff"); };
+    if (done) park();
+    else {
+      let rel = null;                                        // the key's untransformed place, inside the pin
+      const measure = () => {
+        if (done) return;
+        const t = key.style.transform; key.style.transform = "";
+        const r = key.getBoundingClientRect(), pr = pin.getBoundingClientRect();
+        rel = { x: r.left - pr.left, y: r.top - pr.top, w: r.width, h: r.height };
+        key.style.transform = t; kick();
+      };
+      const smooth = (k) => k * k * (3 - 2 * k);
+      const target = () => Math.min(1, Math.max(0, scrollY / (innerHeight * .45)));
+      let p = target(), raf = 0, last = 0;
+      function draw() {
+        const pr = pin.getBoundingClientRect(), m = mastKey.getBoundingClientRect(), k = smooth(p);
+        const x0 = pr.left + rel.x, y0 = pr.top + rel.y;
+        const dx = (m.left - x0) * k, dy = (m.top - y0) * k, s = 1 + (m.width / rel.w - 1) * k;
+        key.style.transform = `translate3d(${dx.toFixed(2)}px, ${dy.toFixed(2)}px, 0) scale(${s.toFixed(4)})`;
+      }
+      function step(now) {
+        raf = 0;
+        if (done || !rel) return;
+        const dt = Math.min(.1, last ? (now - last) / 1000 : .016); last = now;
+        const want = target();
+        p += (want - p) * (1 - Math.exp(-dt * 10));
+        if (Math.abs(want - p) < .002) p = want;
+        if (p >= .998) { done = true; try { sessionStorage.setItem(KEY, "1"); } catch {} park(); return; }
+        draw();
+        if (p !== want) raf = requestAnimationFrame(step); else last = 0;
+      }
+      function kick() {
+        if (done) return;
+        if (reduced) { if (scrollY > 40) { done = true; try { sessionStorage.setItem(KEY, "1"); } catch {} park(); } return; }
+        if (!raf) raf = requestAnimationFrame(step);
+      }
+      root.classList.add("key-handoff");
+      addEventListener("scroll", kick, { passive: true });
+      addEventListener("resize", measure);
+      document.fonts?.ready.then(measure);
+      measure();
+      if (rel && !reduced) draw();
     }
-    addEventListener("scroll", place, { passive: true });
-    addEventListener("resize", measure);
-    document.fonts?.ready.then(measure);
-    measure();
   }
 }

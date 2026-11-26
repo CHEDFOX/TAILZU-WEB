@@ -935,7 +935,7 @@ html.key-handoff .mast .key { opacity: 0; pointer-events: none; }
 .duo-slide::after { content: ""; position: absolute; inset: 0; pointer-events: none;
   background: linear-gradient(180deg, rgba(14, 18, 12, 0) 45%, rgba(14, 18, 12, .82) 100%); }
 .duo-h { position: absolute; left: clamp(22px, 3vw, 48px); bottom: clamp(18px, 3vw, 44px); z-index: 2; margin: 0;
-  font: 400 clamp(40px, 5vw, 84px)/.9 var(--serif); letter-spacing: -.035em; text-transform: uppercase; color: #F3EEE6; will-change: transform; }
+  font: 400 clamp(40px, 5vw, 84px)/.9 var(--serif); letter-spacing: -.035em; word-spacing: .22em; text-transform: uppercase; color: #F3EEE6; will-change: transform; }
 /* the turn: the first film sinks back and fades as the second comes up through it; the lines slide past each other */
 .duo-slide:nth-child(1) { opacity: calc(1 - var(--t)); transform: scale(calc(1 + var(--t) * .06)); }
 .duo-slide:nth-child(1) .duo-h { transform: translateY(calc(var(--t) * -56px)); opacity: max(0, calc(1 - var(--t) * 2.2)); }
