@@ -76,34 +76,35 @@ function dots(g, grey, n, x, y, r, L, lift) {
 const wall = document.getElementById("wall");
 if (wall) {
   const cv = wall.querySelector(".wall-cv"), core = wall.querySelector(".wall-core"), card = wall.querySelector(".wall-card");
-  const cImg = card.querySelector("img"), cCv = card.querySelector("canvas"), cT = card.querySelector(".wc-t"), cP = card.querySelector(".wc-p");
+  const cImg = card.querySelector("img"), cCv = card.querySelector("canvas"), cT = card.querySelector(".wc-t"), cP = card.querySelector(".wc-p"), cBy = card.querySelector(".wc-by");
   const T = toned(cv, true);
   const N = 28;                                      // a badge's dots across
-  // ---- the badges: what each shows, and its card's title and line ----
+  // ---- the badges: what each shows, and its card: a title (three words at most), a line (forty at most) and who says it,
+  // written small by hand. The first nine are the inner two rings, the ones a phone shows. ----
   const BADGES = [
-    ["w1", "Bots that do the work", "We build bots that do the work, not bots that talk about it."],
-    ["noise", "Up when you are", "Up at 2 a.m. or 6 a.m., it is up when you are."],
-    ["w5", "Keep the view", "You went there for the view, not for your phone."],
-    ["face", "Every device", "One team, every device. Your phone and your computer, the same bots."],
-    ["w3", "Next: Nomaz", "Next: Nomaz, the travel buddy. It plans, it handles, you keep it company."],
-    ["rain", "44 of 45 handled", "45 emails in, 44 handled. One left for you, the one that needs a person."],
-    ["w7", "Your data is yours", "We never sell your data, and never use it to train AI."],
-    ["grid", "You say yes", "Nothing ships until you approve. Nothing is booked or paid until you say yes."],
-    ["w2", "74 languages", "74 languages today. Every language tomorrow."],
-    ["w6", "Where we are going", "Where we are going: bots that run your days, and tell you only what matters."],
-    ["rings", "Ask once", "Ask once. It happens every day, at the hour you choose."],
-    ["w4", "Dinner, sorted", "Dinner, sorted. Have a peaceful evening."],
-    ["w8", "Xooteq Lab", "Built by Xooteq Lab: the codes that contain value."],
-    ["noise", "For every person", "A team of bots for every person, not just for companies."],
-    ["face", "Free to start", "Free to start. Pay only when it has earned it."],
+    ["w1", "Hard things, handled", "We take the hard things. The inbox, the bookings, the follow-ups. You keep what only you can do: decide, create, live. That trade is the whole point of us.", "the X0 Bot team"],
+    ["rings", "Curiosity comes first", "Every bot we ship started as one question: what if this just got done? We guard that question like our most valuable asset. Because it is.", "the X0 Bot team"],
+    ["w5", "Built at night", "It broke every night. We rebuilt it every morning. Then one morning, it simply worked. Nobody remembers being tired. Everyone remembers that morning.", "the engineers, X0 Bot"],
+    ["noise", "Without thinking", "Civilization advances by extending the number of important operations which we can perform without thinking about them.", "Alfred North Whitehead"],
+    ["w3", "Bots for everything", "Mail. Meals. Code. Meetings. Then anything you can name. Every week the team grows, and the list of things you will never do again grows with it.", "the X0 Bot team"],
+    ["face", "Invent the future", "The best way to predict the future is to invent it.", "Alan Kay"],
+    ["w7", "No easy days", "Every wall we hit, we hit again until it broke. Easy work builds ordinary products. We did not come here to be ordinary.", "the product team, X0 Bot"],
+    ["grid", "Passionately curious", "I have no special talents. I am only passionately curious.", "Albert Einstein"],
+    ["w8", "Xooteq Lab", "Crafted by Xooteq Lab. Refined every single day. We are the creators of FunTech: technology that works relentlessly hard, and still feels like play.", "Xooteq Lab"],
+    ["w2", "One team", "We argue over one pixel. We celebrate one saved minute. Nobody here works alone, and nobody wants to. Most people dream of a room like this. We work in it.", "the X0 Bot team"],
+    ["rain", "Indistinguishable from magic", "Any sufficiently advanced technology is indistinguishable from magic.", "Arthur C. Clarke"],
+    ["w4", "Your time, returned", "Every task a bot takes is an hour handed back. To the people you love. To the ideas that keep you up at night. To the life you meant to live.", "the X0 Bot team"],
+    ["w6", "The green revolution", "Green is not our colour. It is our direction. Bots that work so people can live. Others will follow. The green revolution has already begun.", "Xooteq Lab"],
+    ["noise", "A vigorous mind", "Curiosity is one of the permanent and certain characteristics of a vigorous mind.", "Samuel Johnson"],
+    ["face", "Made to lead", "We are not building another assistant. We are building the team everyone will soon expect to have. Being first is not luck. It is a decision we make daily.", "Xooteq Lab"],
   ];
   const RINGS = [{ n: 4, speed: 1, r: 40 }, { n: 5, speed: .78, r: 34 }, { n: 6, speed: .6, r: 30 }];
   const badges = [];
   let bi = 0;
   RINGS.forEach((ring, k) => {
     for (let j = 0; j < ring.n; j++) {
-      const [what, title, line] = BADGES[bi++ % BADGES.length];
-      const b = { ring: k, speed: ring.speed, rb: ring.r * (.9 + Math.random() * .2), r0: 0, a: (j / ring.n) * Math.PI * 2 + k * .9, what, title, line, grey: null, grow: 0, fade: 1, x: 0, y: 0, wob: Math.random() * 6 };
+      const [what, title, line, by] = BADGES[bi++ % BADGES.length];
+      const b = { ring: k, speed: ring.speed, rb: ring.r * (.9 + Math.random() * .2), r0: 0, a: (j / ring.n) * Math.PI * 2 + k * .9, what, title, line, by, grey: null, grow: 0, fade: 1, x: 0, y: 0, wob: Math.random() * 6 };
       if (/^w\d/.test(what)) {
         const im = new Image(); im.src = `/media/wall/${what}.jpg`;
         im.onload = () => { const c = document.createElement("canvas"); c.width = c.height = N; const x = c.getContext("2d"); x.drawImage(im, 0, 0, N, N);
@@ -195,7 +196,7 @@ if (wall) {
     const photo = /^w\d/.test(b.what);
     card.dataset.kind = photo ? "photo" : "pixels";
     if (photo) cImg.src = `/media/wall/${b.what}.jpg`;
-    cT.textContent = b.title; cP.textContent = b.line;
+    cT.textContent = b.title; cP.textContent = b.line; cBy.textContent = b.by;
     // where it stands: its picture over the badge, kept inside the wall
     card.classList.remove("on"); card.style.transition = "none";
     const cw = card.offsetWidth, ch = card.offsetHeight, mh = cw * 9 / 16;
