@@ -191,3 +191,42 @@ if (cv && B) {
     if (es.some((e) => e.isIntersecting)) { if (!seenAt) seenAt = performance.now(); raf = requestAnimationFrame(loop); }
   }).observe(cv);
 }
+
+// ---------------------------------------------------------------------------
+// THE KEY'S HAND-OFF. There is one "Take me home" at a time: in the opening it stands in the middle, under the line,
+// and the mast's is not shown. As the page scrolls, the opening's key goes up and across into the mast's corner,
+// growing smaller to the mast key's size, over the mast; once it is there (half a window down) the mast's key is shown
+// in its place and it is put away. Scrolling back up brings it down again. With motion reduced there is no journey:
+// the mast's key shows once the opening's has scrolled out of sight.
+// ---------------------------------------------------------------------------
+{
+  const key = document.getElementById("heroKey"), mastKey = document.querySelector(".mast .key"), root = document.documentElement;
+  if (key && mastKey) {
+    let home = null;                                         // the key's own place on the page, untransformed
+    const measure = () => {
+      key.style.transform = "";
+      const r = key.getBoundingClientRect();
+      home = { x: r.left + scrollX, y: r.top + scrollY, w: r.width, h: r.height };
+      place();
+    };
+    const smooth = (k) => k * k * (3 - 2 * k);
+    function place() {
+      if (!home) return;
+      const range = innerHeight * .5, p = Math.min(1, Math.max(0, scrollY / range));
+      if (reduced) { root.classList.toggle("key-handoff", scrollY < home.y + home.h); return; }
+      const m = mastKey.getBoundingClientRect();
+      const k = smooth(p);
+      // where it is in the window if left alone, and where the mast's key is: the way between them
+      const x0 = home.x - scrollX, y0 = home.y - scrollY;
+      const x = x0 + (m.left - x0) * k, y = y0 + (m.top - y0) * k, s = 1 + (m.width / home.w - 1) * k;
+      key.style.transform = `translate(${(x - x0).toFixed(2)}px, ${(y - y0).toFixed(2)}px) scale(${s.toFixed(4)})`;
+      const there = p >= 1;
+      key.style.visibility = there ? "hidden" : "";
+      root.classList.toggle("key-handoff", !there);
+    }
+    addEventListener("scroll", place, { passive: true });
+    addEventListener("resize", measure);
+    document.fonts?.ready.then(measure);
+    measure();
+  }
+}
