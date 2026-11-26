@@ -400,10 +400,23 @@ a { color: var(--ink); text-decoration-color: var(--line); text-underline-offset
   .roam-box { padding: 14px 16px 12px; } .roam-box li { font-size: 14px; }
   .roam { margin-top: clamp(64px, 12svh, 120px); }
   .roam-text { width: min(100%, 40rem); }
-  /* on a phone the film is below the box: the box fits its words, and the route does not run out of it */
-  .roam-box.nomaz { width: 100%; min-height: 0; padding: 22px 22px 20px; }
-  .nomaz .nz-name { font-size: 46px; } .nz-hey { font-size: 24px; } .nz-love { font-size: 18px; } .nomaz .nz-trip { margin-top: 22px; } .nz-run, .nomaz .nz-out b::after { display: none; } .nz-bot { width: 100%; }
-  .roam-frame { width: 100%; max-width: 40rem; border-radius: 16px; }
+  /* On a phone the box and the film are one screen, held: the film a strip of at most a fifth of the window, the box
+     the rest, its words set tighter. The route does not run out of the box (the film is below it). */
+  .roam-pin { justify-content: safe center; gap: 10px; padding: 66px 16px 12px; }
+  .roam-text { flex: 0 1 auto; min-height: 0; display: flex; }
+  .roam-box.nomaz { width: 100%; min-height: 0; padding: 16px 18px 14px; overflow: hidden; }
+  .nomaz .nz-name { font-size: 40px; } .nz-hey { font-size: 22px; margin-bottom: 2px; } .nz-love { margin-top: 8px; font-size: 16.5px; max-width: 30ch; }
+  .nomaz .nz-trip { margin-top: 14px; padding-top: 12px; gap: 10px; }
+  .nomaz .nz-trip li { --ring: calc(10.5px * 1.2 + 3px + 19px * .55 - 7px); gap: 3px; padding-right: 52px; }   /* a column on the right for Nomaz */
+  .nomaz .nz-trip li:not(:last-child)::after { bottom: calc(-10px - var(--ring)); }
+  .nz-trip b { font-size: 19px; } .nz-what { font-size: 12px; line-height: 1.35; }
+  .nz-run, .nomaz .nz-out b::after { display: none; } .nz-bot { width: 100%; }
+  .roam-frame { flex: none; width: 100%; max-width: 40rem; height: min(20svh, calc((100vw - 32px) / 2.39)); aspect-ratio: auto; border-radius: 14px; }
+}
+/* a short phone (an iPhone SE): the side lines go, so the three stops and the film still fit */
+@media (max-width: 860px) and (max-height: 620px) {
+  .nz-what { display: none; }
+  .nomaz .nz-name { font-size: 36px; } .nz-love { font-size: 15.5px; }
 }
 @media (prefers-reduced-motion: reduce) { .roam-kick, .roam-text h2, .roam-lede, .roam-box, .nomaz > *, .nomaz .nz-trip li, .nomaz .nz-trip li::after, .nz-run, .nomaz .nz-out b::after, .nz-head { opacity: 1 !important; translate: none !important; scale: none !important; transition: none !important; clip-path: none !important; } .nz-hey, .nz-name, .nz-love { opacity: 1 !important; clip-path: none !important; translate: none !important; } }
 /* THE MINDS VIEW (after the roam): the roam's layout the other way round, and its frame a black screen on which two

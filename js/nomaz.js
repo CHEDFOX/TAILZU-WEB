@@ -49,7 +49,7 @@ if (sec && box) {
       const r = canvas.getBoundingClientRect(); W = r.width; H = r.height;
       canvas.width = Math.round(W * dpr); canvas.height = Math.round(H * dpr);
     }
-    const h = () => Math.max(52, Math.min(104, box.clientWidth * .15));
+    const h = () => Math.max(46, Math.min(104, box.clientWidth * .14));
     // where it stands for a step, in the canvas's pixels: beside the name, then at the right of each stop, level with
     // its title (on the route out to the film, at the second)
     function spot(k) {
