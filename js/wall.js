@@ -1,133 +1,192 @@
-// THE WALL (#wall) and the footer's name (.sf-mark).
+// THE WALL (#wall) and THE FOOTER'S NAME (.sf-mark), on the page's own paper.
 //
-// The wall: the bot in the middle (drawn by the desktop app's renderer, cycling through what it does) with the
-// platforms under it, and round it an orbit of tiles on three rings, stills from the owner's clips, films, and pixels
-// drawn live, each with a small caption. It turns clockwise, slowly, the outer rings slower. A scroll pulls on it: the
-// tiles lag behind the page and spring back, a gentle scroll slows the turn, and a hard one throws it the other way,
-// anticlockwise, before it eases back. A tile under the pointer, or held on a touch screen, stops and opens into a card
-// with a line from the founders: what we do, and where we are going.
+// The wall: the bot in the middle, and round it three dotted orbits, like a dial, with round badges travelling along
+// them clockwise: stills from the owner's travel clips and patterns, all dithered into the site's dots. A scroll pulls
+// on it: the badges lag the page and spring back, a gentle scroll slows the turn, and a hard one throws it the other way,
+// anticlockwise, before it eases back. A badge under the pointer, or held on a touch screen, stops and grows, and a
+// founders' note is written beside it by hand, with an arrow to it.
 //
-// The footer's name stands on a band of green dots, dense at the foot and thinning upwards, drifting, brighter round
-// the pointer. Both run only while they can be seen; with motion reduced they are drawn once and stand still.
+// The footer's name, "x0bot", is drawn in the same dots, with the peeking bot looking over the top of the 0, its eye
+// on the pointer.
+//
+// Like the opening, both turn with the field (stage.js): each is drawn twice, ink on the paper and light on the dark,
+// and the two are laid together through a map of how dark the field is under it, every frame. They run only while
+// they can be seen; with motion reduced they are drawn once and stand still.
 import { reduced } from "./util.js";
 import { blip } from "./blip/kit.js";
+import { fieldDark } from "./stage.js";
 
 const BAYER = [0, 8, 2, 10, 12, 4, 14, 6, 3, 11, 1, 9, 15, 7, 13, 5].map((v) => (v + .5) / 16);
-const LIT = [160, 218, 128], MID = [92, 140, 70];
+const LOOK = {
+  dark: { dot: [160, 218, 128], soft: [98, 150, 72], edge: "#14200F" },
+  light: { dot: [22, 20, 15], soft: [79, 122, 58], edge: "#F4F2EC" },
+};
+const rgb = (c, a = 1) => `rgba(${c[0]}, ${c[1]}, ${c[2]}, ${a})`;
 const noise = (x, y, t) => .5 + .25 * Math.sin(x * 1.7 + t * 1.1) * Math.cos(y * 1.3 - t * .7) + .25 * Math.sin((x + y) * .9 + t * .5);
+
+// a canvas drawn in two looks and laid together through the field under it
+function toned(cv) {
+  const out = cv.getContext("2d"), layer = { dark: document.createElement("canvas"), light: document.createElement("canvas") };
+  const mask = document.createElement("canvas"), mg = mask.getContext("2d"), MW = 40, MH = 26;
+  mask.width = MW; mask.height = MH;
+  const mimg = mg.createImageData(MW, MH);
+  let W = 0, H = 0, dpr = 1;
+  return {
+    size() {
+      const r = cv.getBoundingClientRect(); dpr = Math.min(2, devicePixelRatio || 1);
+      W = Math.max(1, Math.round(r.width)); H = Math.max(1, Math.round(r.height));
+      for (const c of [cv, layer.dark, layer.light]) { c.width = Math.round(W * dpr); c.height = Math.round(H * dpr); }
+      return { W, H, dpr };
+    },
+    draw(paint) {
+      for (const k of ["dark", "light"]) {
+        const g = layer[k].getContext("2d");
+        g.setTransform(1, 0, 0, 1, 0, 0); g.clearRect(0, 0, layer[k].width, layer[k].height); g.setTransform(dpr, 0, 0, dpr, 0, 0);
+        paint(g, LOOK[k], k);
+      }
+      const r = cv.getBoundingClientRect(), px = mimg.data;
+      for (let y = 0; y < MH; y++) for (let x = 0; x < MW; x++) {
+        const d = fieldDark(r.left + (x + .5) / MW * r.width, r.top + (y + .5) / MH * r.height), o = (y * MW + x) * 4;
+        px[o] = px[o + 1] = px[o + 2] = 255; px[o + 3] = Math.round(Math.max(0, Math.min(1, (d - .35) / .3)) * 255);
+      }
+      mg.putImageData(mimg, 0, 0);
+      const dc = layer.dark.getContext("2d"), lc = layer.light.getContext("2d");
+      dc.setTransform(1, 0, 0, 1, 0, 0); dc.globalCompositeOperation = "destination-in"; dc.drawImage(mask, 0, 0, layer.dark.width, layer.dark.height); dc.globalCompositeOperation = "source-over";
+      lc.setTransform(1, 0, 0, 1, 0, 0); lc.globalCompositeOperation = "destination-out"; lc.drawImage(mask, 0, 0, layer.light.width, layer.light.height); lc.globalCompositeOperation = "source-over";
+      out.setTransform(1, 0, 0, 1, 0, 0); out.clearRect(0, 0, cv.width, cv.height);
+      out.drawImage(layer.light, 0, 0); out.drawImage(layer.dark, 0, 0);
+    },
+  };
+}
+
+// a grey picture (0 dark .. 1 light) as dots, into a disc of radius r at (x, y), in a look's colours
+function dots(g, grey, n, x, y, r, L, lift) {
+  const cell = (2 * r) / n;
+  for (let j = 0; j < n; j++) for (let i = 0; i < n; i++) {
+    const dx = (i + .5) / n - .5, dy = (j + .5) / n - .5;
+    if (dx * dx + dy * dy > .25) continue;
+    const v = Math.min(1, grey[j * n + i] * (lift || 1));
+    if (v <= BAYER[(j & 3) * 4 + (i & 3)]) continue;
+    g.fillStyle = rgb(v > .62 ? L.dot : L.soft);
+    g.fillRect(x - r + i * cell + cell * .12, y - r + j * cell + cell * .12, cell * .76, cell * .76);
+  }
+}
 
 const wall = document.getElementById("wall");
 if (wall) {
-  const orbit = wall.querySelector(".wall-orbit"), core = wall.querySelector(".wall-core");
-  // ---- the tiles: what each shows, its caption, and its line ----
-  const I = (n) => ({ kind: "img", src: `/media/wall/${n}.jpg` }), V = (src) => ({ kind: "video", src }), P = (style) => ({ kind: "pixel", style });
-  const TILES = [
-    [I("w1"), "The caravan", "We build bots that do the work, not bots that talk about it."],
-    [P("face"), "X0", "One team, every device. Your phone and your computer, the same bots."],
-    [V("/media/duo/plan.mp4"), "I plan", "Ask once, in your own words. The plan is made before you have finished your tea."],
-    [I("call-1"), "In your meeting", "It sits in on the call, writes down what was decided, and hands out the to-dos."],
-    [P("noise"), "Night shift", "Up at 2 a.m. or 6 a.m., it is up when you are."],
-    [I("w5"), "Somewhere quiet", "You went there for the view, not for your phone."],
-    [I("w3"), "Dusk", "Next: Nomaz, the travel buddy. It plans, it handles, you just keep it company."],
-    [P("rain"), "Inbox", "45 emails in. 44 handled. One left for you, the one that needs a person."],
-    [V("/media/meet/call-2.mp4"), "Live", "Your bots ask before they book, pay or message anyone."],
-    [I("w7"), "Wind", "We never sell your data, and never use it to train AI."],
-    [P("grid"), "Code", "Xode plans, writes and tests the code. Nothing ships until you approve."],
-    [I("w2"), "Long walk", "74 languages today. Every language tomorrow."],
-    [V("/media/duo/do.mp4"), "I do", "Tickets, transfers, the small print. Done while you were living your life."],
-    [I("call-3"), "The team", "Free to start. Pay only when it has earned it."],
-    [I("w6"), "Shoreline", "Where we are going: bots that run your routines every day, and tell you only what matters."],
-    [P("noise"), "Signal", "Small team, big ambition: a team of bots for every person, not just for companies."],
-    [I("w4"), "Last light", "Dinner, sorted. Have a peaceful evening."],
-    [I("w8"), "Cloak", "Built by Xooteq Lab. We make the codes that contain value."],
-    [I("call-2"), "Notes sent", "Reminders for you, and for the people you work with, at the moment they need them."],
-    [P("rain"), "Routines", "Ask once. It happens every day at the hour you choose."],
+  const cv = wall.querySelector(".wall-cv"), core = wall.querySelector(".wall-core"), note = wall.querySelector(".wall-note");
+  const noteT = note.querySelector(".wn-t"), arrow = note.querySelector(".wn-arrow");
+  const T = toned(cv);
+  const N = 28;                                      // a badge's dots across
+  // ---- the badges: what each shows, and its note ----
+  const BADGES = [
+    ["w1", "We build bots that do the work, not bots that talk about it."],
+    ["noise", "Up at 2 a.m. or 6 a.m., it is up when you are."],
+    ["w5", "You went there for the view, not for your phone."],
+    ["face", "One team, every device. Your phone and your computer, the same bots."],
+    ["w3", "Next: Nomaz, the travel buddy. It plans, it handles, you keep it company."],
+    ["rain", "45 emails in, 44 handled. One left for you, the one that needs a person."],
+    ["w7", "We never sell your data, and never use it to train AI."],
+    ["grid", "Nothing ships until you approve. Nothing is booked or paid until you say yes."],
+    ["w2", "74 languages today. Every language tomorrow."],
+    ["w6", "Where we are going: bots that run your days, and tell you only what matters."],
+    ["rings", "Ask once. It happens every day, at the hour you choose."],
+    ["w4", "Dinner, sorted. Have a peaceful evening."],
+    ["w8", "Built by Xooteq Lab: the codes that contain value."],
+    ["noise", "A team of bots for every person, not just for companies."],
+    ["face", "Free to start. Pay only when it has earned it."],
   ];
-  const RINGS = [{ n: 5, speed: 1, size: 112 }, { n: 7, speed: .8, size: 100 }, { n: 8, speed: .64, size: 88 }];
-  const tiles = [];
-  let ti = 0;
-  RINGS.forEach((ring, r) => {
+  const RINGS = [{ n: 4, speed: 1, r: 40 }, { n: 5, speed: .78, r: 34 }, { n: 6, speed: .6, r: 30 }];
+  const badges = [];
+  let bi = 0;
+  RINGS.forEach((ring, k) => {
     for (let j = 0; j < ring.n; j++) {
-      const [media, label, quote] = TILES[ti++ % TILES.length];
-      const el = document.createElement("div");
-      el.className = "wt"; el.tabIndex = 0;
-      el.setAttribute("role", "button"); el.setAttribute("aria-label", `${label}: ${quote}`);
-      const face = document.createElement("span"); face.className = "face";
-      let canvas = null, video = null;
-      if (media.kind === "img") { const im = new Image(); im.src = media.src; im.alt = ""; im.loading = "lazy"; im.decoding = "async"; face.appendChild(im); }
-      if (media.kind === "video") { video = document.createElement("video"); Object.assign(video, { src: media.src, muted: true, loop: true, playsInline: true, preload: "none" }); video.setAttribute("aria-hidden", "true"); face.appendChild(video); }
-      if (media.kind === "pixel") { canvas = document.createElement("canvas"); canvas.width = canvas.height = 36; face.appendChild(canvas); }
-      el.append(face);
-      const lab = document.createElement("span"); lab.className = "lab"; lab.textContent = label; el.append(lab);
-      const q = document.createElement("span"); q.className = "q";
-      q.innerHTML = "<b></b><small>From the founders</small>"; q.querySelector("b").textContent = quote; el.append(q);
-      orbit.appendChild(el);
-      const size = ring.size * (.86 + Math.random() * .28);
-      el.style.setProperty("--s", size.toFixed(0) + "px");
-      tiles.push({ el, ring: r, speed: ring.speed, a: (j / ring.n) * Math.PI * 2 + r * .7 + Math.random() * .25, size, canvas, video, style: media.style, open: false, wob: Math.random() * 6 });
+      const [what, line] = BADGES[bi++ % BADGES.length];
+      const b = { ring: k, speed: ring.speed, rb: ring.r * (.9 + Math.random() * .2), r0: 0, a: (j / ring.n) * Math.PI * 2 + k * .9, what, line, grey: null, grow: 0, x: 0, y: 0, wob: Math.random() * 6 };
+      if (/^w\d/.test(what)) {
+        const im = new Image(); im.src = `/media/wall/${what}.jpg`;
+        im.onload = () => { const c = document.createElement("canvas"); c.width = c.height = N; const x = c.getContext("2d"); x.drawImage(im, 0, 0, N, N);
+          const d = x.getImageData(0, 0, N, N).data; b.grey = new Float32Array(N * N);
+          for (let i = 0; i < N * N; i++) b.grey[i] = Math.min(1, Math.max(0, ((d[i * 4] * .3 + d[i * 4 + 1] * .59 + d[i * 4 + 2] * .11) / 255 - .12) * 1.35)); };
+      }
+      badges.push(b);
     }
   });
-
-  // ---- opening a tile: under the pointer, focused, or held on a touch screen ----
-  let anyOpen = 0;
-  const setOpen = (t, on) => { if (t.open === on) return; t.open = on; anyOpen += on ? 1 : -1; t.el.classList.toggle("open", on); };
-  tiles.forEach((t) => {
-    let hold = 0;
-    t.el.addEventListener("pointerenter", (e) => { if (e.pointerType === "mouse") setOpen(t, true); });
-    t.el.addEventListener("pointerleave", (e) => { if (e.pointerType === "mouse") setOpen(t, false); });
-    t.el.addEventListener("pointerdown", (e) => { if (e.pointerType !== "mouse") { clearTimeout(hold); hold = setTimeout(() => setOpen(t, true), 260); } });
-    const up = () => { clearTimeout(hold); setTimeout(() => setOpen(t, false), 1400); };
-    t.el.addEventListener("pointerup", (e) => { if (e.pointerType !== "mouse") up(); });
-    t.el.addEventListener("pointercancel", up);
-    t.el.addEventListener("contextmenu", (e) => e.preventDefault());
-    t.el.addEventListener("focus", () => setOpen(t, true));
-    t.el.addEventListener("blur", () => setOpen(t, false));
-  });
-
-  // ---- the pixel tiles, drawn live ----
-  const face = new Image(); face.src = "/media/face.svg";
+  const faceIm = new Image(); faceIm.src = "/media/face.svg";
   let faceGrey = null;
-  face.onload = () => {
-    const c = document.createElement("canvas"); c.width = c.height = 36; const x = c.getContext("2d");
-    x.fillStyle = "#000"; x.fillRect(0, 0, 36, 36); x.filter = "invert(1)"; x.drawImage(face, 5, 5, 26, 25);
-    faceGrey = x.getImageData(0, 0, 36, 36).data;
-  };
-  function pixels(t, time) {
-    const g = t.canvas.getContext("2d"), im = g.createImageData(36, 36), px = im.data;
-    for (let y = 0; y < 36; y++) for (let x = 0; x < 36; x++) {
+  faceIm.onload = () => { const c = document.createElement("canvas"); c.width = c.height = N; const x = c.getContext("2d"); x.fillStyle = "#000"; x.fillRect(0, 0, N, N); x.filter = "invert(1)"; x.drawImage(faceIm, 4, 5, N - 8, N - 9);
+    const d = x.getImageData(0, 0, N, N).data; faceGrey = new Float32Array(N * N); for (let i = 0; i < N * N; i++) faceGrey[i] = d[i * 4] / 255; };
+  const live = new Float32Array(N * N);
+  function greyOf(b, t) {
+    if (b.grey) return b.grey;
+    if (b.what === "face") return faceGrey || live.fill(0);
+    for (let j = 0; j < N; j++) for (let i = 0; i < N; i++) {
       let v;
-      if (t.style === "noise") v = noise(x * .22, y * .22, time + t.wob) * (.3 + .7 * y / 36);
-      else if (t.style === "rain") { const col = (x * 7 + 3) % 11, head = (time * (6 + col) + col * 9) % 48 - 6; v = y < head && y > head - 9 ? 1 - (head - y) / 9 : .04; }
-      else if (t.style === "grid") v = ((x >> 2) + (y >> 2) + Math.floor(time * 3 + t.wob)) % 5 === 0 ? .9 : (Math.sin(x * 12.9 + y * 78.2 + Math.floor(time * 4)) * 43758.5 % 1 + 1) % 1 * .45;
-      else v = faceGrey ? faceGrey[(y * 36 + x) * 4] / 255 * (.85 + .15 * Math.sin(time * 3 + y * .5)) : 0;
-      const o = (y * 36 + x) * 4;
-      if (v > BAYER[(y & 3) * 4 + (x & 3)]) { const c = v > .6 ? LIT : MID; px[o] = c[0]; px[o + 1] = c[1]; px[o + 2] = c[2]; px[o + 3] = 255; }
-      else { px[o] = 16; px[o + 1] = 20; px[o + 2] = 14; px[o + 3] = 255; }
+      if (b.what === "noise") v = noise(i * .25, j * .25, t + b.wob);
+      else if (b.what === "rain") { const col = (i * 7 + 3) % 11, head = (t * (6 + col) + col * 9) % 40 - 5; v = j < head && j > head - 8 ? 1 - (head - j) / 8 : .05; }
+      else if (b.what === "rings") v = .5 + .5 * Math.sin(Math.hypot(i - N / 2, j - N / 2) * .9 - t * 3);
+      else v = ((i >> 2) + (j >> 2) + Math.floor(t * 3 + b.wob)) % 4 === 0 ? .95 : .2;
+      live[j * N + i] = v;
     }
-    g.putImageData(im, 0, 0);
+    return live;
   }
 
   // ---- the bot in the middle ----
-  const B = blip(), botCv = core.querySelector(".wall-bot");
-  let bot = null;
-  if (B && botCv) {
-    bot = B.createPerformer({ dpr: 2, dot: "#A0DA80", sticker: "#0C100A", glow: "#A0DA80" });
-    bot.play("rest");
-  }
+  const B = blip();
+  const bots = B ? { dark: B.createPerformer({ dpr: 2, dot: rgb(LOOK.dark.dot), sticker: LOOK.dark.edge, glow: rgb(LOOK.dark.dot) }),
+    light: B.createPerformer({ dpr: 2, dot: rgb(LOOK.light.dot), sticker: LOOK.light.edge, glow: rgb(LOOK.light.dot) }) } : null;
   const MOVES = ["look", "celebrate", "work", "think", "yourTurn", "done", "listen", "laugh"];
   let nextMove = 2500;
+  if (bots) { bots.dark.play("rest"); bots.light.play("rest"); }
 
-  // ---- the pull: scroll and hard scroll ----
-  let W = 0, H = 0, cx = 0, cy = 0, rings = [];
+  // ---- the size of things ----
+  let W = 0, H = 0, cx = 0, cy = 0, orbits = [];
   function size() {
-    W = wall.clientWidth; H = wall.clientHeight; cx = W / 2; cy = H / 2;
-    const c = core.getBoundingClientRect(), gap = 26;
-    const rx0 = c.width / 2 + 70 + gap, ry0 = c.height / 2 + 60 + gap;
-    const sx = Math.max(80, (W * .56 - rx0) / 2), sy = Math.max(70, (H * .56 - ry0) / 2);
-    rings = [0, 1, 2].map((k) => ({ rx: rx0 + sx * k, ry: ry0 + sy * k }));
-    if (botCv) { const d = Math.min(2, devicePixelRatio || 1), r = botCv.getBoundingClientRect(); botCv.width = r.width * d; botCv.height = r.height * d; }
+    ({ W, H } = T.size());
+    cx = W / 2; cy = H * .5;
+    // the inner orbit clears the middle (the bot, the line and the platforms) with a badge's room to spare
+    const small = W < 760, c = core.getBoundingClientRect(), w = wall.getBoundingClientRect();
+    const needX = c.width / 2 + 58, needY = Math.max(cy - (c.top - w.top) + 200, c.bottom - w.top - cy) + 52;
+    const rx0 = Math.max(needX, small ? W * .38 : W * .24), ry0 = Math.max(needY, rx0 * (small ? 1.1 : .55));
+    const step = Math.min(W * (small ? .1 : .12), 170);
+    orbits = [0, 1, 2].map((k) => ({ rx: rx0 + k * step, ry: ry0 + k * step * (small ? 1.2 : .62) }));
+    // on a phone the badges are smaller, and the outer ring is left out
+    badges.forEach((b) => { b.r0 = b.rb * (small ? .62 : 1); b.hidden = small && b.ring === 2; });
   }
-  const W0 = .055;                         // the turn at rest, radians a second, clockwise
+
+  // ---- opening a badge ----
+  let open = null, ptr = null, hold = 0, holdAt = 0;
+  const hit = (x, y) => badges.find((b) => !b.hidden && Math.hypot(b.x - x, b.y - y) < b.r0 * (1 + b.grow * .3) + 6) || null;
+  const local = (e) => { const r = cv.getBoundingClientRect(); return [e.clientX - r.left, e.clientY - r.top]; };
+  cv.addEventListener("pointermove", (e) => { if (e.pointerType !== "mouse") return; ptr = local(e); const b = hit(...ptr); cv.classList.toggle("over", !!b); setOpen(b); });
+  cv.addEventListener("pointerleave", (e) => { if (e.pointerType === "mouse") { ptr = null; setOpen(null); } });
+  cv.addEventListener("pointerdown", (e) => { if (e.pointerType === "mouse") return; const b = hit(...local(e)); clearTimeout(hold); if (b) hold = setTimeout(() => setOpen(b), 240); });
+  const release = () => { clearTimeout(hold); setTimeout(() => setOpen(null), 1600); };
+  cv.addEventListener("pointerup", (e) => { if (e.pointerType !== "mouse") release(); });
+  cv.addEventListener("pointercancel", release);
+  cv.addEventListener("contextmenu", (e) => e.preventDefault());
+  function setOpen(b) {
+    if (b === open) return;
+    open = b;
+    if (b) { noteT.textContent = b.line; note.classList.remove("on"); void note.offsetWidth; note.classList.add("on"); holdAt = performance.now(); }
+    else note.classList.remove("on");
+  }
+  // the note beside its badge, away from the middle where there is room, the arrow pointing back at the badge
+  function placeNote() {
+    if (!open) return;
+    const b = open, nw = note.offsetWidth, nh = note.offsetHeight, out = b.x > cx ? 1 : -1, gap = b.r0 * 1.4 + 50;
+    let side = out;
+    if (side > 0 && b.x + gap + nw > W - 12) side = -1; else if (side < 0 && b.x - gap - nw < 12) side = 1;
+    const x = side > 0 ? b.x + gap : b.x - gap - nw, y = Math.max(12, Math.min(H - nh - 12, b.y - nh * .7));
+    note.style.transform = `translate(${x.toFixed(0)}px, ${y.toFixed(0)}px)`;
+    arrow.style.left = side > 0 ? "-96px" : "auto"; arrow.style.right = side > 0 ? "auto" : "-96px";
+    arrow.style.top = Math.max(-10, Math.min(nh - 20, b.y - y - 30)) + "px";
+    arrow.style.transform = side > 0 ? "scaleX(-1)" : "none";
+    note.classList.toggle("dk", fieldDark(cv.getBoundingClientRect().left + x + nw / 2, cv.getBoundingClientRect().top + y + nh / 2) > .5);
+  }
+
+  // ---- the pull ----
+  const W0 = .07;
   let omega = W0, impulse = 0, pull = 0, pullV = 0, lastY = scrollY;
   const inView = () => { const r = wall.getBoundingClientRect(); return r.top < innerHeight && r.bottom > 0; };
   const kick = (d) => { if (inView() && d > 0) impulse = Math.min(9, impulse + d); };
@@ -138,86 +197,93 @@ if (wall) {
   addEventListener("scroll", () => { const dy = scrollY - lastY; lastY = scrollY; if (inView()) pullV -= dy * 4.5; }, { passive: true });
 
   // ---- one frame ----
-  let raf = 0, last = 0, pixAt = 0;
+  let raf = 0, last = 0;
   function frame(now) {
-    raf = requestAnimationFrame(frame);
     const dt = Math.min(.05, last ? (now - last) / 1000 : .016); last = now;
     const t = now / 1000;
-    // the turn: clockwise at rest; a scroll brakes it, a hard one throws it the other way; it eases back
     impulse *= Math.exp(-dt * 1.4);
-    const target = (W0 - impulse * .11) * (anyOpen ? .25 : 1);
-    omega += (target - omega) * Math.min(1, dt * 3.5);
-    // the pull: the tiles lag the page and spring back
-    pullV += (-70 * pull - 11 * pullV) * dt; pull += pullV * dt; pull = Math.max(-140, Math.min(140, pull));
-    orbit.style.setProperty("--pull", pull.toFixed(1) + "px");
-    for (const tile of tiles) {
-      if (!tile.open) tile.a += omega * tile.speed * dt;
-      const R = rings[tile.ring], half = tile.size / 2;
-      const x = cx + Math.cos(tile.a) * R.rx - half, y = cy + Math.sin(tile.a) * R.ry - half + Math.sin(t * .8 + tile.wob) * 4;
-      tile.el.style.transform = `translate3d(${x.toFixed(1)}px, ${y.toFixed(1)}px, 0)`;
-      // its card opens away from the middle, unless there is no room that side
-      const outward = x + half > cx ? 1 : -1, room = outward > 0 ? W - (x + tile.size + 12) : x - 12;
-      const left = (room > 280 ? outward : -outward) < 0;
-      if (left !== tile.left) { tile.left = left; tile.el.classList.toggle("left", left); }
+    omega += ((W0 - impulse * .14) * (open ? .2 : 1) - omega) * Math.min(1, dt * 3.5);
+    pullV += (-70 * pull - 11 * pullV) * dt; pull += pullV * dt; pull = Math.max(-120, Math.min(120, pull));
+    for (const b of badges) {
+      if (b.hidden) continue;
+      if (b !== open) b.a += omega * b.speed * dt;
+      b.grow += ((b === open ? 1 : 0) - b.grow) * Math.min(1, dt * 9);
+      const o = orbits[b.ring];
+      b.x = cx + Math.cos(b.a) * o.rx; b.y = cy + Math.sin(b.a) * o.ry + pull * (1 + b.ring * .35) + Math.sin(t * .9 + b.wob) * 3;
     }
-    if (now - pixAt > 80) { pixAt = now; tiles.forEach((tile) => { if (tile.canvas) pixels(tile, t); }); }
-    if (bot) {
-      if (now > nextMove) { bot.play(MOVES[Math.floor(Math.random() * MOVES.length)], { then: "rest", again: true }); nextMove = now + 3000 + Math.random() * 2500; }
-      const g = botCv.getContext("2d"), d = botCv.width / botCv.clientWidth;
-      g.setTransform(d, 0, 0, d, 0, 0); g.clearRect(0, 0, botCv.clientWidth, botCv.clientHeight);
-      g.save(); g.translate(botCv.clientWidth / 2, botCv.clientHeight - 6); bot.draw(g, 0, 0, botCv.clientHeight * .82, now); g.restore();
-    }
+    if (bots && now > nextMove) { const m = MOVES[Math.floor(Math.random() * MOVES.length)]; bots.dark.play(m, { then: "rest", again: true }); bots.light.play(m, { then: "rest", again: true }); nextMove = now + 3000 + Math.random() * 2500; }
+    T.draw((g, L, k) => {
+      // the orbits: dotted ellipses, the dots marching with the turn
+      orbits.forEach((o, i) => {
+        const n = Math.round((o.rx + o.ry) * .17), sh = (t * omega * 2.2) % 1;
+        g.fillStyle = rgb(L.soft, .55);
+        for (let j = 0; j < n; j++) { const a = ((j + sh) / n) * Math.PI * 2; g.beginPath(); g.arc(cx + Math.cos(a) * o.rx, cy + Math.sin(a) * o.ry + pull * (1 + i * .35), 1.3, 0, Math.PI * 2); g.fill(); }
+      });
+      // the badges, back ones first
+      badges.filter((b) => !b.hidden).sort((p, q) => p.y - q.y).forEach((b) => {
+        const r = b.r0 * (1 + b.grow * .3);
+        g.fillStyle = L.edge; g.beginPath(); g.arc(b.x, b.y, r + 3, 0, Math.PI * 2); g.fill();
+        dots(g, greyOf(b, t), N, b.x, b.y, r, L, 1);
+        g.strokeStyle = rgb(L.dot, .9); g.lineWidth = 1.4 + b.grow; g.beginPath(); g.arc(b.x, b.y, r + 3, 0, Math.PI * 2); g.stroke();
+      });
+      // the bot, over the middle
+      if (bots) { const h = Math.min(170, H * .21); g.save(); g.translate(cx, cy - 6); bots[k].draw(g, 0, 0, h, now); g.restore(); }
+    });
+    placeNote();
   }
+  const loop = (now) => { raf = requestAnimationFrame(loop); if (now - last < 1000 / 40) return; frame(now); };
   size();
-  addEventListener("resize", size);
-  document.fonts?.ready.then(size);
-  if (reduced) { last = 0; frame(3000); cancelAnimationFrame(raf); tiles.forEach((tile) => tile.canvas && pixels(tile, 3)); }
-  else new IntersectionObserver((es) => {
-    const on = es.some((e) => e.isIntersecting);
-    cancelAnimationFrame(raf); last = 0;
-    tiles.forEach((tile) => { if (!tile.video) return; if (on) { tile.video.preload = "auto"; tile.video.play().catch(() => {}); } else tile.video.pause(); });
-    if (on) raf = requestAnimationFrame(frame);
-  }).observe(wall);
+  addEventListener("resize", () => { size(); if (reduced) frame(3000); });
+  document.fonts?.ready.then(() => { size(); if (reduced) frame(3000); });
+  if (reduced) { setTimeout(() => frame(3000), 400); addEventListener("scroll", () => frame(3000), { passive: true }); }
+  else new IntersectionObserver((es) => { cancelAnimationFrame(raf); last = 0; if (es.some((e) => e.isIntersecting)) raf = requestAnimationFrame(loop); }).observe(wall);
 }
 
-// ---- the footer's name, on a band of green dots ----
+// ---- the footer's name, in dots, with the bot looking over the 0 ----
 const mark = document.querySelector(".sf-mark");
 if (mark) {
-  const cv = mark.querySelector("canvas"), g = cv.getContext("2d");
-  const CELL = 6;
-  let cols = 0, rows = 0, img = null, ptr = null, raf = 0, last = 0;
+  const T = toned(mark), B = blip();
+  let W = 0, H = 0, cell = 6, grid = null, cols = 0, rows = 0, zero = [0, 0], ptr = null, raf = 0, last = 0;
+  const peek = B ? { dark: B.createBlip({ height: 90, ink: LOOK.dark.edge, pale: LOOK.dark.dot }), light: B.createBlip({ height: 90, ink: LOOK.light.edge, pale: LOOK.light.dot }) } : null;
+  if (peek) { peek.dark.pose("peek"); peek.light.pose("peek"); if (reduced) { peek.dark.still(true); peek.light.still(true); } }
   function size() {
-    const r = mark.getBoundingClientRect();
-    cols = Math.ceil(r.width / CELL); rows = Math.ceil(r.height / CELL);
-    cv.width = cols * CELL; cv.height = rows * CELL; img = g.createImageData(cv.width, cv.height);
+    ({ W, H } = T.size());
+    cell = W < 700 ? 4 : 6; cols = Math.floor(W / cell); rows = Math.floor(H / cell);
+    // the word, drawn once into a grid of how much of each cell it covers
+    const c = document.createElement("canvas"); c.width = cols; c.height = rows; const x = c.getContext("2d");
+    let fs = rows * 1.15;
+    x.font = `400 ${fs}px Newsreader, Georgia, serif`;
+    const tw = x.measureText("x0bot").width; if (tw > cols * .96) { fs *= cols * .96 / tw; x.font = `400 ${fs}px Newsreader, Georgia, serif`; }
+    x.fillStyle = "#fff"; x.textAlign = "center"; x.textBaseline = "alphabetic"; x.fontVariantNumeric = "lining-nums";
+    const base = rows * .92; x.fillText("x0bot", cols / 2, base);
+    const w0 = x.measureText("x").width, w1 = x.measureText("x0").width, total = x.measureText("x0bot").width;
+    zero = [(cols / 2 - total / 2 + (w0 + w1) / 2) * cell, (base - fs * .7) * cell];
+    const d = x.getImageData(0, 0, cols, rows).data; grid = new Float32Array(cols * rows);
+    for (let i = 0; i < cols * rows; i++) grid[i] = d[i * 4 + 3] / 255;
+    if (peek) { const ph = Math.min(190, fs * cell * .78); peek.dark.size(ph); peek.light.size(ph); }
   }
-  mark.closest(".sf").addEventListener("pointermove", (e) => { const r = mark.getBoundingClientRect(); ptr = [(e.clientX - r.left) / CELL, (e.clientY - r.top) / CELL]; }, { passive: true });
-  mark.closest(".sf").addEventListener("pointerleave", () => { ptr = null; });
-  function draw(now) {
-    const t = now / 1000, px = img.data, W = cv.width;
-    px.fill(0);
-    for (let y = 0; y < rows; y++) for (let x = 0; x < cols; x++) {
-      const yy = y / rows;
-      let v = Math.pow(yy, 1.5) * 1.15 * (.65 + .55 * noise(x * .09, y * .14, t * .6)) - .08;
-      if (ptr) { const d = Math.hypot(x - ptr[0], (y - ptr[1]) * 1.4); v += Math.max(0, 1 - d / 22) * .55; }
-      if (v <= BAYER[(y & 3) * 4 + (x & 3)]) continue;
-      const c = v > .62 ? LIT : MID, X = x * CELL, Y = y * CELL;
-      for (let j = 0; j < CELL - 2; j++) { const row = (Y + j) * W; for (let k = 0; k < CELL - 2; k++) { const o = (row + X + k) * 4; px[o] = c[0]; px[o + 1] = c[1]; px[o + 2] = c[2]; px[o + 3] = 255; } }
-    }
-    g.putImageData(img, 0, 0);
+  mark.addEventListener("pointermove", (e) => { const r = mark.getBoundingClientRect(); ptr = [e.clientX - r.left, e.clientY - r.top]; });
+  mark.addEventListener("pointerleave", () => { ptr = null; });
+  function frame(now) {
+    last = now; const t = now / 1000;
+    T.draw((g, L, k) => {
+      for (let y = 0; y < rows; y++) for (let x = 0; x < cols; x++) {
+        let v = grid[y * cols + x];
+        if (v < .05) continue;
+        v *= .82 + .18 * noise(x * .08, y * .1, t * .7);
+        if (ptr) v += Math.max(0, 1 - Math.hypot(x * cell - ptr[0], y * cell - ptr[1]) / 120) * .35;
+        if (v <= BAYER[(y & 3) * 4 + (x & 3)]) continue;
+        g.fillStyle = rgb(v > .6 ? L.dot : L.soft);
+        g.fillRect(x * cell, y * cell, cell - 1.5, cell - 1.5);
+      }
+      if (peek) { peek[k].lookAt(ptr || [W * .8, H * .2]); peek[k].draw(g, zero[0], zero[1], t, reduced ? 1 : .5); }
+    });
   }
-  const loop = (now) => { raf = requestAnimationFrame(loop); if (now - last < 1000 / 15) return; last = now; draw(now); };
-  size();
-  addEventListener("resize", () => { size(); if (reduced) draw(3000); });
-  if (reduced) draw(3000);
+  const loop = (now) => { raf = requestAnimationFrame(loop); if (now - last < 1000 / 24) return; frame(now); };
+  const start = () => { size(); if (reduced) frame(3000); };
+  addEventListener("resize", start);
+  document.fonts?.ready.then(start);
+  start();
+  if (reduced) addEventListener("scroll", () => frame(3000), { passive: true });
   else new IntersectionObserver((es) => { cancelAnimationFrame(raf); if (es.some((e) => e.isIntersecting)) raf = requestAnimationFrame(loop); }).observe(mark);
-}
-
-// ---- the mast, dark over the page's dark end ----
-{
-  const mast = document.querySelector(".mast"), end = document.getElementById("wall");
-  if (mast && end) {
-    const set = () => mast.classList.toggle("over-end", end.getBoundingClientRect().top < 70);
-    addEventListener("scroll", set, { passive: true }); addEventListener("resize", set); set();
-  }
 }

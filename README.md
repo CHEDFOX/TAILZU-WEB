@@ -60,17 +60,18 @@ moves, and the page's own words flickering into 0/1 under the pointer
      together on its screen.
    It starts when it is scrolled to; the card comes back with the face at the
    end and it all goes round again.
-4. **The founders' wall and the footer** (`#wall`, `.sf`, `js/wall.js`): on a
-   dark ground, the bot in the middle with "One team. Every device." and the
-   four platforms (Apple, Android, Windows, Linux) under it, and round it an
-   orbit of twenty tiles on three rings: stills from the owner's clips
-   (`media/wall/`), films, and pixels drawn live, each with a caption. It turns
-   clockwise; a scroll pulls on it (the tiles lag and spring back), a gentle one
-   slows it and a hard one throws it anticlockwise before it eases back. Over a
-   tile, or holding it, it stops and opens into a line from the founders: what
-   we do and where we are going. Then the footer: the last key, the links, and
-   "x0bot" set huge on a band of green dots that drifts and brightens round the
-   pointer. The game and the old promise bands are gone (in git history).
+4. **The founders' wall and the footer** (`#wall`, `.sf`, `js/wall.js`), on the
+   page's own paper and field: the bot in the middle with "One team. Every
+   device." and the four platforms under it, and round it three dotted orbits,
+   like a dial, with round badges travelling clockwise along them (stills from
+   the owner's travel clips in `media/wall/`, and patterns drawn live, all in the
+   site's dots). Everything turns with the field, drawn twice and laid together
+   through it like the opening. A scroll pulls on it (the badges lag and spring
+   back), a gentle one slows it and a hard one throws it anticlockwise before it
+   eases back. Over a badge, or holding it, it stops and grows, and a founders'
+   note is written beside it by hand with an arrow to it. Then the footer: "we'll
+   meet soon" by hand, "Put the team to work.", the key, one row of links, and
+   "x0bot" in the same dots with the peeking bot looking over the 0.
 
 With reduced motion the film and the stories show their last frame.
 
