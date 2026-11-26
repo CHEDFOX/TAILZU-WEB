@@ -574,14 +574,13 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   <p class="sr" id="filmsay" aria-live="polite"></p>
 </section>
 
-<!-- THE WALL (#wall), on the page's own paper: the bot in the middle and round it three dotted orbits, like a dial,
+<!-- THE WALL (#wall), the page's last view, with its foot in it, on the page's own paper: the bot in the middle and round it three dotted orbits, like a dial,
      with round badges travelling clockwise along them, all drawn in the site's dots and turning with the field. Over or
      held, a badge grows and a founders' note is written beside it by hand (js/wall.js). -->
 <section id="wall" class="wall" aria-label="The founders' wall">
   <canvas class="wall-cv" aria-hidden="true"></canvas>
   <div class="wall-core">
-    <h2 class="wall-k">One team.<br>Every device.</h2>
-    <div class="wall-plats">
+    <div class="wall-plats" aria-label="X0 Bot for every device">
       <a href="/download" data-place="wall" class="wp" aria-label="iPhone and Mac"><svg viewBox="0 0 24 24"><path d="M16.2 12.7c0-2.3 1.9-3.4 2-3.5-1.1-1.6-2.8-1.8-3.4-1.8-1.4-.1-2.8.9-3.5.9-.7 0-1.8-.8-3-.8-1.5 0-3 .9-3.8 2.3-1.6 2.8-.4 7 1.2 9.3.8 1.1 1.7 2.4 2.9 2.3 1.2 0 1.6-.7 3-.7s1.8.7 3 .7c1.3 0 2.1-1.1 2.8-2.3.9-1.3 1.3-2.6 1.3-2.7-.1 0-2.5-.9-2.5-3.7zM14 5.9c.6-.8 1.1-1.8 1-2.9-.9 0-2 .6-2.7 1.4-.6.7-1.1 1.8-1 2.8 1 .1 2-.5 2.7-1.3z" fill="currentColor"/></svg></a>
       <a href="https://play.google.com/store/apps/details?id=com.tulmi.app" data-place="wall" class="wp" aria-label="Android"><svg viewBox="0 0 24 24"><path d="M6 10.5h12V18a1 1 0 0 1-1 1h-1v2.2a1.2 1.2 0 0 1-2.4 0V19h-3.2v2.2a1.2 1.2 0 0 1-2.4 0V19H7a1 1 0 0 1-1-1zM3.2 10.5a1.2 1.2 0 0 1 2.4 0v5a1.2 1.2 0 0 1-2.4 0zm15.2 0a1.2 1.2 0 0 1 2.4 0v5a1.2 1.2 0 0 1-2.4 0zM6.1 9.6a6 6 0 0 1 11.8 0zm3.3-2.1a.7.7 0 1 0 0-1.4.7.7 0 0 0 0 1.4zm5.2 0a.7.7 0 1 0 0-1.4.7.7 0 0 0 0 1.4zM7.6 3.2l1.3 2.1M16.4 3.2l-1.3 2.1" fill="currentColor" stroke="currentColor" stroke-width=".9" stroke-linecap="round"/></svg></a>
       <a href="https://apps.microsoft.com/detail/9n3gx0xhq7mx" data-place="wall" class="wp" aria-label="Windows"><svg viewBox="0 0 24 24"><path d="M3 5.3l7.5-1v7.2H3zm8.5-1.2L21 2.8v8.7h-9.5zM3 12.5h7.5v7.2l-7.5-1zm8.5 0H21v8.7l-9.5-1.3z" fill="currentColor"/></svg></a>
@@ -590,24 +589,13 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   </div>
   <p class="wall-note" aria-live="polite"><span class="wn-t"></span><span class="wn-by">the founders</span><svg class="wn-arrow" viewBox="0 0 120 60" aria-hidden="true"><path d="M4 8 C 30 6, 70 14, 104 46"/><path d="M104 46 L 88 44 M104 46 L 100 31"/></svg></p>
   <p class="wall-hint">hover a badge, or hold it</p>
+  <!-- the page's foot, in the same view: the name in dots with the bot looking over its 0 (js/wall.js) -->
+  <footer class="sf">
+    <canvas class="sf-mark" aria-label="x0bot" role="img"></canvas>
+    <p class="sf-small">X0 Bot &copy; 2026 &middot; made by <a href="https://xooteq.com">Xooteq Lab</a> &middot; <a href="/privacy">Privacy</a> &middot; <a href="/terms">Terms</a></p>
+  </footer>
 </section>
 
-<!-- THE FOOTER, on the same paper: the last word by hand, the key, one row of links, and the name in dots with the bot
-     looking over it (js/wall.js) -->
-<footer class="sf">
-  <p class="sf-hand">we'll meet soon</p>
-  <h2 class="sf-h">Put the team to work.</h2>
-  <a class="key key-big" data-get data-lean href="/download" data-place="footer">
-    <span class="cap"><i class="led" aria-hidden="true"></i><b>Take me home</b><small data-get-os>X0 Bot for every device</small></span>
-  </a>
-  <nav class="sf-links" aria-label="Footer">
-    <a href="https://apps.apple.com/app/id6784811357" data-place="footer">iPhone</a><a href="https://play.google.com/store/apps/details?id=com.tulmi.app" data-place="footer">Android</a><a href="https://apps.microsoft.com/detail/9n3gx0xhq7mx" data-place="footer">Windows</a><a href="https://api.x0bot.com/downloads/Tailzu.dmg" data-place="footer">Mac</a><a href="https://api.x0bot.com/downloads/Tailzu.AppImage" data-place="footer">Linux</a>
-    <i aria-hidden="true"></i>
-    <a href="/support">Support</a><a href="/faq">Questions</a><a href="/pricing">Pricing</a><a href="/privacy">Privacy</a><a href="/terms">Terms</a>
-  </nav>
-  <canvas class="sf-mark" aria-label="x0bot" role="img"></canvas>
-  <p class="sf-small">X0 Bot &copy; 2026 &middot; made by <a href="https://xooteq.com">Xooteq Lab</a></p>
-</footer>
 
 </div>
 </main>

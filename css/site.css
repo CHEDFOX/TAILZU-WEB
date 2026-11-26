@@ -962,13 +962,13 @@ html.key-handoff .mast .key { opacity: 0; pointer-events: none; }
    the words turn with the field like the rest of the page's (tone.js).
    ===================================================================== */
 .wall { position: relative; width: 100vw; margin-inline: calc(50% - 50vw); height: 100svh; min-height: 620px; overflow: hidden; touch-action: pan-y; }
-.wall-cv { position: absolute; inset: 0; width: 100%; height: 100%; cursor: default; }
+.wall-cv { position: absolute; left: 0; right: 0; top: 0; width: 100%; height: 100%; cursor: default; }
 .wall-cv.over { cursor: pointer; }
 .wall-core { position: absolute; left: 50%; top: 50%; translate: -50% 18%; display: flex; flex-direction: column; align-items: center; text-align: center; pointer-events: none; }
 .wall-core > * { pointer-events: auto; }
 .wall-k { margin: 0; font: 400 clamp(28px, 2.8vw, 44px)/1.02 var(--serif); letter-spacing: -.025em; color: var(--ink); }
 .wall-k .tw { --on-dark: #F3EEE6; }
-.wall-plats { display: flex; gap: 8px; margin-top: 16px; }
+.wall-plats { display: flex; gap: 8px; margin-top: 4px; }
 .wp { display: grid; place-items: center; width: 44px; height: 44px; border-radius: 50%; color: var(--ink); box-shadow: inset 0 0 0 1.5px currentColor;
   transition: color .45s ease, translate .25s cubic-bezier(.2, .9, .3, 1.4), background .25s ease; }
 .wp.dk { color: #F3EEE6; }
@@ -988,19 +988,15 @@ html.key-handoff .mast .key { opacity: 0; pointer-events: none; }
 .wall-note.on .wn-arrow path + path { transition-delay: .55s; transition-duration: .25s; }
 .wall-hint { position: absolute; left: 50%; bottom: 26px; translate: -50% 0; margin: 0; font: 700 18px/1 "Caveat", "Segoe Print", cursive; color: var(--muted); }
 .wall-hint .tw { --on-dark: rgba(243, 238, 230, .6); }
-/* the footer */
-.sf { position: relative; width: 100vw; margin-inline: calc(50% - 50vw); display: flex; flex-direction: column; align-items: center; text-align: center; padding: clamp(56px, 9vw, 120px) 20px 18px; }
-.sf-hand { margin: 0; font: 700 clamp(28px, 2.6vw, 42px)/1 "Caveat", "Segoe Print", cursive; color: #4F7A3A; rotate: -3deg; }
-.sf-hand .tw { --on-dark: #9BCF7C; }
-.sf-h { margin: 10px 0 26px; font: 400 clamp(38px, 4.6vw, 72px)/1 var(--serif); letter-spacing: -.03em; color: var(--ink); }
-.sf-h .tw { --on-dark: #F3EEE6; }
-.sf-links { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 6px 22px; max-width: 46rem; margin-top: clamp(36px, 5vw, 60px); }
-.sf-links a { font: 500 13px/1.6 var(--sans); color: var(--ink-2); text-decoration: none; transition: color .45s ease; }
-.sf-links a:hover { color: #4F7A3A; text-decoration: underline; text-underline-offset: 4px; }
-.sf-links a.dk { color: rgba(243, 238, 230, .74); }
-.sf-links i { width: 5px; height: 5px; border-radius: 50%; background: #4F7A3A; }
-.sf-mark { display: block; width: min(100%, 1200px); height: clamp(150px, 22vw, 330px); margin-top: clamp(24px, 4vw, 52px); }
-.sf-small { margin: 10px 0 0; font: 400 12px/1.4 var(--sans); color: var(--muted); }
+/* the foot, in the wall's own view: the name in dots across the bottom and a small line under it; the orbits and the
+   middle take the space above it (--foot) */
+.wall { --foot: clamp(140px, 19vw, 280px); }
+.wall-cv { height: calc(100% - var(--foot)); }   /* a canvas's height is its own ratio unless it is set */
+.wall-core { translate: -50% 0; }   /* its top is set from the bot's size (js/wall.js) */
+.wall-hint { bottom: calc(var(--foot) + 4px); }
+.sf { position: absolute; left: 0; right: 0; bottom: 0; height: var(--foot); display: flex; flex-direction: column; align-items: center; justify-content: flex-end; padding: 0 20px 12px; box-sizing: border-box; }
+.sf-mark { display: block; width: min(100%, 1100px); flex: 1; min-height: 0; }
+.sf-small { margin: 6px 0 0; font: 400 12px/1.4 var(--sans); color: var(--muted); }
 .sf-small a { color: inherit; }
 .sf-small .tw { --on-dark: rgba(243, 238, 230, .55); }
-@media (max-width: 760px) { .wall { min-height: 560px; } .wall-core { translate: -50% 30%; } }
+@media (max-width: 760px) { .wall { min-height: 600px; --foot: 120px; } }

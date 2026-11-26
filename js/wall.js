@@ -140,16 +140,18 @@ if (wall) {
   if (bots) { bots.dark.play("rest"); bots.light.play("rest"); }
 
   // ---- the size of things ----
-  let W = 0, H = 0, cx = 0, cy = 0, orbits = [];
+  let W = 0, H = 0, cx = 0, cy = 0, orbits = [], botH = 160, botFeet = 0;
   function size() {
     ({ W, H } = T.size());
     cx = W / 2; cy = H * .5;
-    // the inner orbit clears the middle (the bot, the line and the platforms) with a badge's room to spare
-    const small = W < 760, c = core.getBoundingClientRect(), w = wall.getBoundingClientRect();
-    const needX = c.width / 2 + 58, needY = Math.max(cy - (c.top - w.top) + 200, c.bottom - w.top - cy) + 52;
-    const rx0 = Math.max(needX, small ? W * .38 : W * .24), ry0 = Math.max(needY, rx0 * (small ? 1.1 : .55));
-    const step = Math.min(W * (small ? .1 : .12), 170);
-    orbits = [0, 1, 2].map((k) => ({ rx: rx0 + k * step, ry: ry0 + k * step * (small ? 1.2 : .62) }));
+    // the middle: the bot standing a little above the centre, the platforms just under its feet
+    const small = W < 760;
+    botH = Math.min(small ? 130 : 170, H * .26); botFeet = cy + botH * .32;
+    core.style.top = (botFeet + 12).toFixed(0) + "px";
+    // the orbits fill the space round it, the inner one clear of the bot and the platforms
+    const ry0 = botH * .5 + 98, ryMax = H / 2 - (small ? 26 : 34), aspect = small ? .78 : 1.75;
+    const stepY = Math.max(24, (ryMax - ry0) / 2);
+    orbits = [0, 1, 2].map((k) => { const ry = ry0 + k * stepY; return { ry, rx: Math.min(W / 2 - (small ? 22 : 40), Math.max(ry * aspect, small ? 0 : 230 + k * 150)) }; });
     // on a phone the badges are smaller, and the outer ring is left out
     badges.forEach((b) => { b.r0 = b.rb * (small ? .62 : 1); b.hidden = small && b.ring === 2; });
   }
@@ -227,7 +229,7 @@ if (wall) {
         g.strokeStyle = rgb(L.dot, .9); g.lineWidth = 1.4 + b.grow; g.beginPath(); g.arc(b.x, b.y, r + 3, 0, Math.PI * 2); g.stroke();
       });
       // the bot, over the middle
-      if (bots) { const h = Math.min(170, H * .21); g.save(); g.translate(cx, cy - 6); bots[k].draw(g, 0, 0, h, now); g.restore(); }
+      if (bots) { g.save(); g.translate(cx, botFeet); bots[k].draw(g, 0, 0, botH, now); g.restore(); }
     });
     placeNote();
   }
