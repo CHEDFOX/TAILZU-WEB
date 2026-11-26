@@ -6,6 +6,7 @@ import "./tone.js";
 import "./minis.js";
 import "./game.js";
 import "./hero.js";
+import "./duo.js";
 import { blip } from "./blip/kit.js";
 
 // ---------------------------------------------------------------------------

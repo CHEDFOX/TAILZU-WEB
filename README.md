@@ -36,7 +36,11 @@ moves, and the page's own words flickering into 0/1 under the pointer
    its own pace, now and then hopping, waving or looking up at it. It turns
    with the field: drawn twice, ink on the paper and light on the dark, laid
    together through a map of the field under it, every frame.
-2. **The film** (`#stage`). One small white card and a camera; the card stands
+2. **Two cards** (`#duo`, `js/duo.js`): the view is held while it is scrolled
+   through and two cards come in from the right, one after the other, "I PLAN
+   THINGS" and "I DO THINGS", each a short film (`media/duo/`, cut from the
+   owner's clips) drawn live as green dots, with a small paper note.
+3. **The film** (`#stage`). One small white card and a camera; the card stands
    on the bottom of the window and opens up into a box with a desktop and a phone in it. One
    conversation, in four parts, named in the tabs under the box (Tasks, Food,
    Chat, Arrived), which show how far each has got and jump to one:
@@ -56,7 +60,7 @@ moves, and the page's own words flickering into 0/1 under the pointer
      together on its screen.
    It starts when it is scrolled to; the card comes back with the face at the
    end and it all goes round again.
-3. **The two promises, the plans and the close**: phone and computer,
+4. **The two promises, the plans and the close**: phone and computer,
    staying in charge, free to start, and the key again with every device
    under it and three plain facts. Beside it, **X and 0 against Blip**
    (`js/game.js`): the visitor is X, Blip the green 0 (a zero, not an O); he
