@@ -995,16 +995,27 @@ main { --vgap: clamp(96px, 16svh, 200px); }
 .wp:focus-visible { outline: 1.5px solid currentColor; outline-offset: 3px; }
 .wp svg { width: 20px; height: 20px; opacity: 0; }
 /* the founders' note: written by hand beside the badge, with an arrow to it */
-.wall-note { position: absolute; left: 0; top: 0; z-index: 3; width: min(300px, 72vw); margin: 0; pointer-events: none; opacity: 0; transition: opacity .25s ease; }
-.wall-note.on { opacity: 1; }
-.wn-t { display: block; font: 700 clamp(22px, 1.8vw, 28px)/1.08 "Caveat", "Segoe Print", "Bradley Hand", cursive; color: #4F7A3A; rotate: -2deg; text-wrap: balance; }
-.wn-by { display: block; margin-top: 6px; font: 500 10px/1 var(--sans); letter-spacing: .2em; text-transform: uppercase; color: var(--muted); }
-.wall-note.dk .wn-t { color: #9BCF7C; } .wall-note.dk .wn-by { color: rgba(243, 238, 230, .55); }
-.wn-arrow { position: absolute; width: 90px; height: 45px; overflow: visible; fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; color: var(--ink); }
-.wall-note.dk .wn-arrow { color: #F3EEE6; }
-.wn-arrow path { stroke-dasharray: 160; stroke-dashoffset: 160; }
-.wall-note.on .wn-arrow path { stroke-dashoffset: 0; transition: stroke-dashoffset .55s cubic-bezier(.5, .1, .4, 1) .1s; }
-.wall-note.on .wn-arrow path + path { transition-delay: .55s; transition-duration: .25s; }
+/* a badge, opened (js/wall.js): a small card grown out of the badge where it stood, minimal and in one colour, on the
+   site's own paper and ink: the picture (or the pattern's pixels) on top, fading into the card, and under it the words,
+   a title, a line and, small, by hand. Over the dark half of the field it turns dark with it (.dk). */
+.wall-card { --c-bg: #F7F6F2; --c-ink: #16140F; --c-mute: rgba(22, 20, 15, .6); --c-line: rgba(22, 20, 15, .14);
+  position: absolute; left: 0; top: 0; z-index: 4; width: min(280px, calc(100vw - 32px)); border-radius: 14px; overflow: hidden;
+  background: var(--c-bg); color: var(--c-ink); box-shadow: 0 0 0 1px var(--c-line), 0 24px 50px -28px rgba(0, 0, 0, .5);
+  opacity: 0; scale: .25; clip-path: circle(30% at var(--ox, 50%) var(--oy, 30%)); pointer-events: none;
+  transition: opacity .2s ease, scale .45s cubic-bezier(.2, .9, .3, 1), clip-path .5s cubic-bezier(.2, .8, .3, 1), background-color .4s ease, color .4s ease; }
+.wall-card.dk { --c-bg: #161511; --c-ink: #F3EEE6; --c-mute: rgba(243, 238, 230, .6); --c-line: rgba(243, 238, 230, .16); }
+.wall-card.on { opacity: 1; scale: 1; clip-path: circle(150% at var(--ox, 50%) var(--oy, 30%)); pointer-events: auto; }
+.wc-media { position: relative; aspect-ratio: 16 / 9; background: var(--c-line); overflow: hidden; }
+.wc-media img, .wc-media canvas { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.wc-media img { filter: grayscale(1) contrast(1.05); }
+.wall-card.dk .wc-media img { filter: grayscale(1) brightness(.9); }
+.wc-media canvas { image-rendering: pixelated; }
+.wall-card[data-kind="photo"] canvas, .wall-card[data-kind="pixels"] img { display: none; }
+.wc-media::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, transparent 50%, var(--c-bg) 100%); }
+.wc-body { padding: 2px 16px 14px; }
+.wc-t { margin: 0; font: 400 22px/1.1 var(--serif); letter-spacing: -.02em; color: var(--c-ink); }
+.wc-p { margin: 6px 0 0; font: 400 13.5px/1.5 var(--sans); color: var(--c-mute); text-wrap: pretty; }
+.wc-by { display: block; margin-top: 8px; font: 700 14px/1 "Caveat", "Segoe Print", "Bradley Hand", cursive; color: var(--c-mute); opacity: .8; }
 /* the foot, in the wall's own view: the name in dots across the bottom and a small line under it; the orbits and the
    middle take the space above it (--foot) */
 .wall { --foot: clamp(96px, 11vw, 150px); }

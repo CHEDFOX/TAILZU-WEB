@@ -1,10 +1,11 @@
 // THE WALL (#wall) and THE FOOTER'S NAME (.sf-mark), on the page's own paper.
 //
-// The wall: the bot in the middle, and round it three dotted orbits, like a dial, with round badges travelling along
+// The wall: three dotted orbits, like a dial, with round badges travelling along
 // them clockwise: stills from the owner's travel clips and patterns, all dithered into the site's dots. A scroll pulls
 // on it: the badges lag the page and spring back, a gentle scroll slows the turn, and a hard one throws it the other way,
-// anticlockwise, before it eases back. A badge under the pointer, or held on a touch screen, stops and grows, and a
-// founders' note is written beside it by hand, with an arrow to it.
+// anticlockwise, before it eases back. A badge under the pointer, or held on a touch screen, opens: everything stops,
+// the rest fade back, and the badge grows where it stood into a small card, its picture (or its pattern's pixels) on
+// top and its words under, in the site's paper and ink. Off the card it closes, and the turn goes on from where it was.
 //
 // The footer's corners, an X and a 0, are drawn in the same dots, with the peeking bot looking over the top of the 0,
 // its eye on the pointer; the links stand between them.
@@ -74,35 +75,35 @@ function dots(g, grey, n, x, y, r, L, lift) {
 
 const wall = document.getElementById("wall");
 if (wall) {
-  const cv = wall.querySelector(".wall-cv"), core = wall.querySelector(".wall-core"), note = wall.querySelector(".wall-note");
-  const noteT = note.querySelector(".wn-t"), arrow = note.querySelector(".wn-arrow");
+  const cv = wall.querySelector(".wall-cv"), core = wall.querySelector(".wall-core"), card = wall.querySelector(".wall-card");
+  const cImg = card.querySelector("img"), cCv = card.querySelector("canvas"), cT = card.querySelector(".wc-t"), cP = card.querySelector(".wc-p");
   const T = toned(cv, true);
   const N = 28;                                      // a badge's dots across
-  // ---- the badges: what each shows, and its note ----
+  // ---- the badges: what each shows, and its card's title and line ----
   const BADGES = [
-    ["w1", "We build bots that do the work, not bots that talk about it."],
-    ["noise", "Up at 2 a.m. or 6 a.m., it is up when you are."],
-    ["w5", "You went there for the view, not for your phone."],
-    ["face", "One team, every device. Your phone and your computer, the same bots."],
-    ["w3", "Next: Nomaz, the travel buddy. It plans, it handles, you keep it company."],
-    ["rain", "45 emails in, 44 handled. One left for you, the one that needs a person."],
-    ["w7", "We never sell your data, and never use it to train AI."],
-    ["grid", "Nothing ships until you approve. Nothing is booked or paid until you say yes."],
-    ["w2", "74 languages today. Every language tomorrow."],
-    ["w6", "Where we are going: bots that run your days, and tell you only what matters."],
-    ["rings", "Ask once. It happens every day, at the hour you choose."],
-    ["w4", "Dinner, sorted. Have a peaceful evening."],
-    ["w8", "Built by Xooteq Lab: the codes that contain value."],
-    ["noise", "A team of bots for every person, not just for companies."],
-    ["face", "Free to start. Pay only when it has earned it."],
+    ["w1", "Bots that do the work", "We build bots that do the work, not bots that talk about it."],
+    ["noise", "Up when you are", "Up at 2 a.m. or 6 a.m., it is up when you are."],
+    ["w5", "Keep the view", "You went there for the view, not for your phone."],
+    ["face", "Every device", "One team, every device. Your phone and your computer, the same bots."],
+    ["w3", "Next: Nomaz", "Next: Nomaz, the travel buddy. It plans, it handles, you keep it company."],
+    ["rain", "44 of 45 handled", "45 emails in, 44 handled. One left for you, the one that needs a person."],
+    ["w7", "Your data is yours", "We never sell your data, and never use it to train AI."],
+    ["grid", "You say yes", "Nothing ships until you approve. Nothing is booked or paid until you say yes."],
+    ["w2", "74 languages", "74 languages today. Every language tomorrow."],
+    ["w6", "Where we are going", "Where we are going: bots that run your days, and tell you only what matters."],
+    ["rings", "Ask once", "Ask once. It happens every day, at the hour you choose."],
+    ["w4", "Dinner, sorted", "Dinner, sorted. Have a peaceful evening."],
+    ["w8", "Xooteq Lab", "Built by Xooteq Lab: the codes that contain value."],
+    ["noise", "For every person", "A team of bots for every person, not just for companies."],
+    ["face", "Free to start", "Free to start. Pay only when it has earned it."],
   ];
   const RINGS = [{ n: 4, speed: 1, r: 40 }, { n: 5, speed: .78, r: 34 }, { n: 6, speed: .6, r: 30 }];
   const badges = [];
   let bi = 0;
   RINGS.forEach((ring, k) => {
     for (let j = 0; j < ring.n; j++) {
-      const [what, line] = BADGES[bi++ % BADGES.length];
-      const b = { ring: k, speed: ring.speed, rb: ring.r * (.9 + Math.random() * .2), r0: 0, a: (j / ring.n) * Math.PI * 2 + k * .9, what, line, grey: null, grow: 0, x: 0, y: 0, wob: Math.random() * 6 };
+      const [what, title, line] = BADGES[bi++ % BADGES.length];
+      const b = { ring: k, speed: ring.speed, rb: ring.r * (.9 + Math.random() * .2), r0: 0, a: (j / ring.n) * Math.PI * 2 + k * .9, what, title, line, grey: null, grow: 0, fade: 1, x: 0, y: 0, wob: Math.random() * 6 };
       if (/^w\d/.test(what)) {
         const im = new Image(); im.src = `/media/wall/${what}.jpg`;
         im.onload = () => { const c = document.createElement("canvas"); c.width = c.height = N; const x = c.getContext("2d"); x.drawImage(im, 0, 0, N, N);
@@ -153,20 +154,12 @@ if (wall) {
     }
   }
 
-  // ---- the bot in the middle ----
-  const B = blip();
-  const bots = B ? { dark: B.createPerformer({ dpr: 2, dot: rgb(LOOK.dark.dot), sticker: LOOK.dark.edge, glow: rgb(LOOK.dark.dot) }),
-    light: B.createPerformer({ dpr: 2, dot: rgb(LOOK.light.dot), sticker: LOOK.light.edge, glow: rgb(LOOK.light.dot) }) } : null;
-  const MOVES = ["look", "celebrate", "work", "think", "yourTurn", "done", "listen", "laugh"];
-  let nextMove = 2500;
-  if (bots) { bots.dark.play("rest"); bots.light.play("rest"); }
-
   // ---- the size of things ----
-  let W = 0, H = 0, cx = 0, cy = 0, orbits = [], botH = 160, botFeet = 0;
+  let W = 0, H = 0, cx = 0, cy = 0, orbits = [], botH = 160, botFeet = 0, dim = 0;
   function size() {
     ({ W, H } = T.size());
     cx = W / 2; cy = H * .5;
-    // the middle: the bot standing a little above the centre (the platforms are in the foot now, over its links)
+    // the middle: empty now, kept the bot's room so the orbits sit as they did (the platforms are in the foot)
     const small = W < 760;
     botH = Math.min(small ? 104 : 130, H * .2); botFeet = cy + botH * .32;
     core.style.top = (botFeet + 12).toFixed(0) + "px";
@@ -178,35 +171,55 @@ if (wall) {
     badges.forEach((b) => { b.r0 = b.rb * (small ? .62 : 1); b.hidden = small && b.ring === 2; });
   }
 
-  // ---- opening a badge ----
-  let open = null, ptr = null, hold = 0, holdAt = 0;
+  // ---- opening a badge: it grows into the card where it stands ----
+  let open = null, ptr = null, hold = 0, onCard = false, box = null;   // box: the card's place, grown, in the wall's terms
+  const inBox = (x, y) => box && x >= box.x - 6 && x <= box.x + box.w + 6 && y >= box.y - 6 && y <= box.y + box.h + 6;
   const hit = (x, y) => badges.find((b) => !b.hidden && Math.hypot(b.x - x, b.y - y) < b.r0 * (1 + b.grow * .3) + 6) || null;
   const local = (e) => { const r = cv.getBoundingClientRect(); return [e.clientX - r.left, e.clientY - r.top]; };
-  cv.addEventListener("pointermove", (e) => { if (e.pointerType !== "mouse") return; ptr = local(e); const b = hit(...ptr); cv.classList.toggle("over", !!b); setOpen(b); });
-  cv.addEventListener("pointerleave", (e) => { if (e.pointerType === "mouse") { ptr = null; setOpen(null); } });
-  cv.addEventListener("pointerdown", (e) => { if (e.pointerType === "mouse") return; const b = hit(...local(e)); clearTimeout(hold); if (b) hold = setTimeout(() => setOpen(b), 240); });
-  const release = () => { clearTimeout(hold); setTimeout(() => setOpen(null), 1600); };
+  cv.addEventListener("pointermove", (e) => { if (e.pointerType !== "mouse") return; ptr = local(e);
+    if (open && inBox(...ptr)) return;                     // still over the card (or where it is growing to): it stays
+    const b = hit(...ptr); cv.classList.toggle("over", !!b); if (!onCard) setOpen(b); });
+  // the card coming up under the pointer takes it off the canvas: that is not leaving
+  cv.addEventListener("pointerleave", (e) => { if (e.pointerType === "mouse" && !onCard && !card.contains(e.relatedTarget) && !(open && inBox(...local(e)))) { ptr = null; setOpen(null); } });
+  card.addEventListener("pointerenter", () => { onCard = true; });
+  card.addEventListener("pointerleave", (e) => { onCard = false; if (e.pointerType === "mouse" && !inBox(...local(e))) setOpen(null); });
+  cv.addEventListener("pointerdown", (e) => { if (e.pointerType === "mouse") return; const b = hit(...local(e)); clearTimeout(hold); if (b) hold = setTimeout(() => setOpen(b), 240); else setOpen(null); });
+  const release = () => { clearTimeout(hold); setTimeout(() => { if (!onCard) setOpen(null); }, 2400); };
   cv.addEventListener("pointerup", (e) => { if (e.pointerType !== "mouse") release(); });
   cv.addEventListener("pointercancel", release);
   cv.addEventListener("contextmenu", (e) => e.preventDefault());
   function setOpen(b) {
     if (b === open) return;
     open = b;
-    if (b) { noteT.textContent = b.line; note.classList.remove("on"); void note.offsetWidth; note.classList.add("on"); holdAt = performance.now(); }
-    else note.classList.remove("on");
+    if (!b) { card.classList.remove("on"); box = null; return; }
+    const photo = /^w\d/.test(b.what);
+    card.dataset.kind = photo ? "photo" : "pixels";
+    if (photo) cImg.src = `/media/wall/${b.what}.jpg`;
+    cT.textContent = b.title; cP.textContent = b.line;
+    // where it stands: its picture over the badge, kept inside the wall
+    card.classList.remove("on"); card.style.transition = "none";
+    const cw = card.offsetWidth, ch = card.offsetHeight, mh = cw * 9 / 16;
+    const x = Math.max(12, Math.min(W - cw - 12, b.x - cw / 2)), y = Math.max(12, Math.min(H - ch - 12, b.y - mh / 2));
+    card.style.left = x.toFixed(0) + "px"; card.style.top = y.toFixed(0) + "px"; box = { x, y, w: cw, h: ch };
+    card.style.transformOrigin = `${(b.x - x).toFixed(0)}px ${(b.y - y).toFixed(0)}px`;
+    card.style.setProperty("--ox", (b.x - x).toFixed(0) + "px"); card.style.setProperty("--oy", (b.y - y).toFixed(0) + "px");
+    const r = cv.getBoundingClientRect();
+    card.classList.toggle("dk", fieldDark(r.left + x + cw / 2, r.top + y + ch / 2) > .5);
+    void card.offsetWidth; card.style.transition = ""; card.classList.add("on");
   }
-  // the note beside its badge, away from the middle where there is room, the arrow pointing back at the badge
-  function placeNote() {
-    if (!open) return;
-    const b = open, nw = note.offsetWidth, nh = note.offsetHeight, out = b.x > cx ? 1 : -1, gap = b.r0 * 1.4 + 50;
-    let side = out;
-    if (side > 0 && b.x + gap + nw > W - 12) side = -1; else if (side < 0 && b.x - gap - nw < 12) side = 1;
-    const x = side > 0 ? b.x + gap : b.x - gap - nw, y = Math.max(12, Math.min(H - nh - 12, b.y - nh * .7));
-    note.style.transform = `translate(${x.toFixed(0)}px, ${y.toFixed(0)}px)`;
-    arrow.style.left = side > 0 ? "-96px" : "auto"; arrow.style.right = side > 0 ? "auto" : "-96px";
-    arrow.style.top = Math.max(-10, Math.min(nh - 20, b.y - y - 30)) + "px";
-    arrow.style.transform = side > 0 ? "scaleX(-1)" : "none";
-    note.classList.toggle("dk", fieldDark(cv.getBoundingClientRect().left + x + nw / 2, cv.getBoundingClientRect().top + y + nh / 2) > .5);
+  // a pattern's pixels, on the card: in its ink on its paper, square cells, the middle of the pattern
+  const cg = cCv.getContext("2d");
+  function drawPixels(t) {
+    if (!open || card.dataset.kind !== "pixels") return;
+    const cols = N, rows = Math.round(N * 9 / 16), w = cCv.width = cols * 8, h = cCv.height = rows * 8, grey = greyOf(open, t), y0 = Math.floor((N - rows) / 2);
+    const dk = card.classList.contains("dk");
+    cg.fillStyle = dk ? "#161511" : "#F7F6F2"; cg.fillRect(0, 0, w, h);
+    for (let j = 0; j < rows; j++) for (let i = 0; i < cols; i++) {
+      const v = grey[(j + y0) * N + i];
+      if (v <= BAYER[(j & 3) * 4 + (i & 3)]) continue;
+      cg.fillStyle = dk ? (v > .62 ? "#F3EEE6" : "rgba(243, 238, 230, .45)") : (v > .62 ? "#16140F" : "rgba(22, 20, 15, .4)");
+      cg.fillRect(i * 8 + 1, j * 8 + 1, 6, 6);
+    }
   }
 
   // ---- the pull ----
@@ -226,35 +239,37 @@ if (wall) {
     const dt = Math.min(.05, last ? (now - last) / 1000 : .016); last = now;
     const t = now / 1000;
     impulse *= Math.exp(-dt * 1.4);
-    omega += ((W0 - impulse * .14) * (open ? .2 : 1) - omega) * Math.min(1, dt * 3.5);
+    omega += ((W0 - impulse * .14) - omega) * Math.min(1, dt * 3.5);
+    dim += ((open ? 1 : 0) - dim) * Math.min(1, dt * 8);     // opened: the rest fade back
     pullV += (-70 * pull - 11 * pullV) * dt; pull += pullV * dt; pull = Math.max(-120, Math.min(120, pull));
     for (const b of badges) {
       if (b.hidden) continue;
-      if (b !== open) b.a += omega * b.speed * dt;
+      if (!open) b.a += omega * b.speed * dt;                // opened, everything stops where it is, and goes on from there
       b.grow += ((b === open ? 1 : 0) - b.grow) * Math.min(1, dt * 9);
+      // the rest stay, faint, so the card has the eye; the opened one has become the card
+      b.fade += ((!open ? 1 : b === open ? 0 : .2) - b.fade) * Math.min(1, dt * (open ? 10 : 6));
       const o = orbits[b.ring];
       b.x = cx + Math.cos(b.a) * o.rx; b.y = cy + Math.sin(b.a) * o.ry + pull * (1 + b.ring * .35) + Math.sin(t * .9 + b.wob) * 3;
     }
-    if (bots && now > nextMove) { const m = MOVES[Math.floor(Math.random() * MOVES.length)]; bots.dark.play(m, { then: "rest", again: true }); bots.light.play(m, { then: "rest", again: true }); nextMove = now + 3000 + Math.random() * 2500; }
     T.draw((g, L, k) => {
       // the orbits: dotted ellipses, the dots marching with the turn
       orbits.forEach((o, i) => {
         const n = Math.round((o.rx + o.ry) * .17), sh = (t * omega * 2.2) % 1;
-        g.fillStyle = rgb(L.soft, .55);
+        g.fillStyle = rgb(L.soft, .55 * (1 - dim * .6));
         for (let j = 0; j < n; j++) { const a = ((j + sh) / n) * Math.PI * 2; g.beginPath(); g.arc(cx + Math.cos(a) * o.rx, cy + Math.sin(a) * o.ry + pull * (1 + i * .35), 1.3, 0, Math.PI * 2); g.fill(); }
       });
       // the badges, back ones first
-      badges.filter((b) => !b.hidden).sort((p, q) => p.y - q.y).forEach((b) => {
+      badges.filter((b) => !b.hidden && b.fade > .01).sort((p, q) => p.y - q.y).forEach((b) => {
         const r = b.r0 * (1 + b.grow * .3);
+        g.globalAlpha = b.fade;
         g.fillStyle = L.edge; g.beginPath(); g.arc(b.x, b.y, r + 3, 0, Math.PI * 2); g.fill();
         dots(g, greyOf(b, t), N, b.x, b.y, r, L, 1);
         g.strokeStyle = rgb(L.dot, .9); g.lineWidth = 1.4 + b.grow; g.beginPath(); g.arc(b.x, b.y, r + 3, 0, Math.PI * 2); g.stroke();
+        g.globalAlpha = 1;
       });
-      // the bot, over the middle
-      if (bots) { g.save(); g.translate(cx, botFeet); bots[k].draw(g, 0, 0, botH, now); g.restore(); }
       drawPlats(g, L, k === "dark" ? dt : 0);
     });
-    placeNote();
+    drawPixels(t);
   }
   const loop = (now) => { raf = requestAnimationFrame(loop); if (now - last < 1000 / 40) return; frame(now); };
   size();

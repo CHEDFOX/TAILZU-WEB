@@ -588,7 +588,11 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   <canvas class="wall-cv" aria-hidden="true"></canvas>
   <div class="wall-core">
   </div>
-  <p class="wall-note" aria-live="polite"><span class="wn-t"></span><span class="wn-by">the founders</span><svg class="wn-arrow" viewBox="0 0 120 60" aria-hidden="true"><path d="M4 8 C 30 6, 70 14, 104 46"/><path d="M104 46 L 88 44 M104 46 L 100 31"/></svg></p>
+  <!-- a badge, opened: a small card where it stood, its picture or its pixels on top and its words under (js/wall.js) -->
+  <div class="wall-card" aria-live="polite">
+    <div class="wc-media"><img alt="" decoding="async"><canvas aria-hidden="true"></canvas></div>
+    <div class="wc-body"><h3 class="wc-t"></h3><p class="wc-p"></p><span class="wc-by">the founders</span></div>
+  </div>
   <!-- the page's foot, in the same view: X in one corner and 0 in the other, in dots, the bot looking over the 0, and the links between them (js/wall.js) -->
   <footer class="sf">
     <canvas class="sf-glyph" data-glyph="X" aria-hidden="true"></canvas>
