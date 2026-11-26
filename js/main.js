@@ -20,18 +20,24 @@ import { blip } from "./blip/kit.js";
 // stage's CSS transitions and animations are run at the same rate.
 // ---------------------------------------------------------------------------
 const stageClock = (() => {
-  let q = [], vnow = 0, boost = 0, lastT = 0, raf = 0, sped = false;
+  let q = [], vnow = 0, boost = 0, lastT = 0, raf = 0, sped = false, driver = null;
+  const MAX = 8;                                 // driven, the furthest it runs ahead of real time to catch the scroll up
   const stageEl = document.getElementById("stage");
   function tick(t) {
     const dt = lastT ? Math.min(100, t - lastT) : 0;
     lastT = t;
     boost = boost * Math.exp(-dt / 420);
     if (boost < .02) boost = 0;
-    const rate = 1 + boost;
-    vnow += dt * rate;
+    let rate = 1 + boost;
+    if (driver) {                               // on the scroll: towards where the scroll says, never past it
+      const want = driver();
+      const step = want == null ? dt : Math.max(0, Math.min(want - vnow, dt * MAX));
+      rate = dt ? Math.max(1, step / dt) : 1;   // the stage's animations: never slowed, sped to keep up
+      vnow += step;
+    } else vnow += dt * rate;
     // the animations follow in steps of a half, and one not yet started is left until it has (changing an animation's
     // rate every frame, or before it starts, keeps it on its first frame)
-    if (stageEl && (boost || sped)) {
+    if (stageEl && (boost || sped || rate > 1)) {
       const r = Math.round(rate * 2) / 2;
       stageEl.getAnimations({ subtree: true }).forEach((a) => {
         if (!a.pending && a.playbackRate !== r) a.updatePlaybackRate ? a.updatePlaybackRate(r) : (a.playbackRate = r);
@@ -45,7 +51,7 @@ const stageClock = (() => {
       const [x] = q.splice(k, 1);
       x.fn();
     }
-    if (q.length || boost) raf = requestAnimationFrame(tick);
+    if (q.length || boost || driver) raf = requestAnimationFrame(tick);
     else { raf = 0; lastT = 0; }
   }
   const kick = () => { if (!raf) raf = requestAnimationFrame(tick); };
@@ -77,6 +83,8 @@ const stageClock = (() => {
     },
     cancel(x) { const i = q.indexOf(x); if (i >= 0) q.splice(i, 1); },
     hurry(n) { boost = Math.min(7, boost + n); kick(); },
+    /** Put the clock on the scroll: `fn` says, every frame, the time the stage should have got to (null: run freely). */
+    drive(fn) { driver = fn; kick(); },
     now: () => vnow,
   };
 })();
@@ -343,11 +351,15 @@ if (card) {
   const narrow = () => matchMedia("(max-width: 760px)").matches;
 
   // ---- one exchange: the ask typed in the box, sent, and X0's answer, close up ----
+  // The card is never left empty: as an answer goes, the empty box comes back up with its caret, and the next exchange
+  // types into the box already there.
   function exchange(ask, answer, then) {
-    box.classList.remove("in", "out", "ready"); send.classList.remove("press"); ty.textContent = "";
+    const ready = box.classList.contains("in") && !box.classList.contains("out");
+    box.classList.remove("out", "ready"); if (!ready) box.classList.remove("in");
+    send.classList.remove("press"); ty.textContent = "";
     reply.classList.remove("in", "spoken", "gone"); bubble.textContent = answer;
     camTo("50% 50%", 1, true);
-    at(300, () => box.classList.add("in"));
+    if (!ready) at(300, () => box.classList.add("in"));
     at(600, () => {
       const t = box.querySelector(".ty");
       // a short ask, a close push on its first letters; a longer one, a gentle push on the middle, so it all stays in
@@ -360,7 +372,8 @@ if (card) {
         at(1060, () => camTo("50% 50%", answer.length > 24 ? 1.3 : 1.75));
         at(1700, () => { reply.classList.add("spoken"); if (filmsay) filmsay.textContent = "X0 Bot: " + answer; });
         at(2950, () => { reply.classList.add("gone"); knock(.5, .35, 2.8); });
-        at(3520, () => { wide(true); then(); });
+        at(3150, () => { wide(true); box.classList.remove("out", "ready"); send.classList.remove("press"); ty.textContent = ""; box.classList.add("in"); });
+        at(3520, () => { then(); });
       }));
     });
   }
@@ -424,8 +437,13 @@ if (card) {
     if (seen && waiting) { const fn = waiting; waiting = null; fn(); }
   }, { threshold: .3 }).observe(card);
 
+  // the parts the scroll is divided into: the opening exchange, then a part per tab, each as long as the film says
+  const PART = [0, ...BEATS.map((b, i) => (b.tab ? i : -1)).filter((i) => i > 0)];
+  const PLEN = PART.map(partLen);
+  let curPart = -1, partT0 = 0, driven = false;
   function beat(i) {
     const { tab, story, ask, answer } = BEATS[i];
+    if (PART.includes(i)) { curPart = PART.indexOf(i); partT0 = stageClock.now(); }
     if (i === 0) {
       reset(); played++;
       window.__filmT0 = performance.now();
@@ -442,6 +460,7 @@ if (card) {
         // the end: the phone in the middle with the face on it. The first time through, the page moves on from here;
         // then, a little later, the card comes back over the box with the same face, and it all goes round again
         if (held) moveOn();
+        if (driven) return;                                  // on the scroll the end holds; scrolling back plays it back
         at(1800, () => whenSeen(() => {
           iconAtRest();
           toCard(S().phone(), () => {
@@ -464,6 +483,10 @@ if (card) {
   // as on a video's
   tabs.forEach((b, k) => b.addEventListener("click", (e) => {
     const i = BEATS.findIndex((x) => x.tab === b.dataset.story);
+    if (driven) {
+      const r = b.getBoundingClientRect(), f = k === tabOn && e.clientX ? Math.min(.985, Math.max(0, (e.clientX - r.left) / r.width)) : 0;
+      seek(PART.indexOf(i), f, true); return;
+    }
     if (k !== tabOn || reduced || !e.clientX) { jump(i); return; }
     const r = b.getBoundingClientRect(), f = Math.min(.985, Math.max(0, (e.clientX - r.left) / r.width));
     const len = tabLen;
@@ -471,8 +494,55 @@ if (card) {
     if (f > .01) stageClock.skip(f * len);
   }));
 
+  // ===========================================================================
+  // THE STAGE ON THE SCROLL. The stage is held (sticky) over a long stretch of scroll (.stage-run), cut into its parts
+  // in proportion to their lengths, and the scroll is the stage's clock: scrolled down it plays, left alone it waits,
+  // scrolled back it goes back. The clock runs towards where the scroll says and never past it, at up to eight times
+  // its pace to catch a quick scroll up; a scroll more than a part ahead, or any scroll back, is a seek (straight to
+  // that part, then on to the point in it, as a bar's click does). Each part always shows its first moment, so a card
+  // is never left empty waiting for the scroll.
+  // ===========================================================================
+  const run = document.getElementById("stageRun");
+  const SUM = PLEN.reduce((a, b) => a + b, 0);
+  function where() {                                         // the part the scroll is in, and how far into it
+    const room = run.offsetHeight - innerHeight, P = room > 0 ? Math.min(1, Math.max(0, -run.getBoundingClientRect().top / room)) : 0;
+    let t = P * SUM, k = 0;
+    while (k < PLEN.length - 1 && t > PLEN[k]) { t -= PLEN[k]; k++; }
+    return { k, f: Math.min(1, t / PLEN[k]) };
+  }
+  const FIRST = 700;
+  function wanted() {
+    if (curPart < 0) return null;
+    const { k, f } = where();
+    if (k > curPart) return Infinity;                        // ahead: catch up, as fast as the clock may
+    if (k === curPart) return partT0 + Math.max(FIRST, f * PLEN[k]);
+    return partT0 + FIRST;                                   // the film ran a little past the part's end: wait at the next
+  }
+  function seek(k, f, move) {
+    jump(PART[k]);
+    if (f * PLEN[k] > 10) stageClock.skip(f * PLEN[k]);
+    if (move) {                                              // a tab: the page goes to that point of the stretch
+      const room = run.offsetHeight - innerHeight, top = run.getBoundingClientRect().top + scrollY;
+      const at = (PLEN.slice(0, k).reduce((a, b) => a + b, 0) + f * PLEN[k]) / SUM;
+      lastY = top + at * room + 1; scrollTo(0, lastY);
+    }
+  }
+  let lastY = scrollY, seekT = 0, seekLater = 0;
+  function onScroll() {
+    const up = scrollY < lastY; lastY = scrollY;
+    if (curPart < 0) return;
+    const { k, f } = where();
+    const back = up && (k < curPart || (k === curPart && partT0 + f * PLEN[k] < stageClock.now() - 400));
+    if (!back && k < curPart + 2) return;
+    // seeks are at most every 120 ms, with one more when the scroll settles, so a long scroll is not a long stall
+    clearTimeout(seekLater);
+    const go = () => { seekT = performance.now(); const w = where(); seek(w.k, w.f, false); };
+    if (performance.now() - seekT > 120) go(); else seekLater = setTimeout(go, 130);
+  }
+
   function play() {
     if (reduced) { reset(); finale(false); return; }
+    if (run) { driven = true; stageClock.drive(wanted); addEventListener("scroll", onScroll, { passive: true }); }
     beat(0);
   }
 

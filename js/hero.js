@@ -2,8 +2,8 @@
 // the bottom of the window like a sun, drawn by the desktop app's own renderer (js/blip/blip.js) in its own dithered
 // dots, its one eye on the visitor's pointer. On a
 // visit only its antennae are up, over the horizon; the opening is held while the page is scrolled, and the scroll pulls
-// it up into the sky, a hard pull (THE PULL, below). Once it is all the way up it stays up for the rest of the visit
-// (sessionStorage). Its antenna is lit like a real light.
+// it up into the sky, a hard pull (THE PULL, below). Once it is all the way up it stays up until the page is loaded
+// again. Its antenna is lit like a real light.
 //
 // On the horizon in front of it, the crew, each its own kind and never in step: walkers going either way at their own
 // pace, who stop to wave, cheer, laugh or look up at X0, now and then a quirk (dizzy, jelly); skaters, faster, on their
@@ -19,6 +19,10 @@
 import { reduced } from "./util.js";
 import { blip } from "./blip/kit.js";
 import { fieldDark } from "./stage.js";
+
+// Every visit and every refresh starts at the top, so the opening's pull and the stage's scroll start from the beginning
+// (not for a link to a part further down).
+if (!location.hash) { if ("scrollRestoration" in history) history.scrollRestoration = "manual"; scrollTo(0, 0); }
 
 const cv = document.querySelector(".hero-team");
 const B = blip();
@@ -141,11 +145,10 @@ if (cv && B) {
   // ---- THE PULL: only the antennae, until the scroll pulls X0 up ----
   // The opening is held (sticky) over a stretch of scroll (.hero --pull); how far through it the page is, is how far up
   // X0 is, followed with a little lag so it rises like something heavy being hauled. Scrolling back lets it sink again,
-  // until it has come all the way up once: then it stays up, and on a reload in the same visit the stretch is gone.
-  const hero = cv.closest(".hero"), KEY = "x0-up";
-  let up = false; try { up = sessionStorage.getItem(KEY) === "1"; } catch {}
-  if (up) document.documentElement.classList.add("x0-up");
-  let rise = up ? 1 : 0, riseT = 0;
+  // until it has come all the way up once: then it stays up until the page is loaded again (every visit and every
+  // refresh starts at the top, with only its antennae up).
+  const hero = cv.closest(".hero");
+  let up = false, rise = 0, riseT = 0;
   function pulled() {
     const room = hero.offsetHeight - innerHeight;
     return room > 0 ? Math.min(1, Math.max(0, -hero.getBoundingClientRect().top / room)) : 1;
@@ -155,7 +158,7 @@ if (cv && B) {
     const full = Math.min(SH * 1.48, W * .9) * .5, ant = full * .78;   // all but the antennae under the horizon, at first
     const want = up ? 1 : pulled(), dt = Math.min(.1, riseT ? (now - riseT) / 1000 : 0); riseT = now;
     rise += (want - rise) * (1 - Math.exp(-dt * 5));
-    if (!up && rise > .995) { up = true; rise = 1; try { sessionStorage.setItem(KEY, "1"); } catch {} }
+    if (!up && rise > .995) { up = true; rise = 1; }
     const u = rise, k = u * u * (3 - 2 * u);
     return ant * (1 - k);
   }
@@ -288,18 +291,17 @@ if (cv && B) {
 // THE KEY'S HAND-OFF. There is one "Take me home" at a time: in the opening it stands in the middle, under the line,
 // and the mast's is not shown. As the page scrolls, the opening's key goes up and across into the mast's corner,
 // growing smaller to the mast key's size, over the mast. It follows the scroll with a little lag, every frame, so a
-// flick of the wheel still moves it smoothly. Once it has got there it stays there for the rest of the visit
-// (sessionStorage): the mast's key is shown and the opening's is put away, even scrolled back to the top, and on a
-// reload in the same visit. With motion reduced there is no journey: the mast's key shows once the page is scrolled.
+// flick of the wheel still moves it smoothly. Once it has got there it stays there until the page is loaded again:
+// the mast's key is shown and the opening's is put away, even scrolled back to the top. With motion reduced there is no journey: the mast's key shows once the page is scrolled.
 //
 // The opening is held while it is scrolled (THE PULL, .hero-pin is sticky), so the key's place is measured inside the
 // pin and read off the pin each frame, not off the page.
 // ---------------------------------------------------------------------------
 {
   const key = document.getElementById("heroKey"), mastKey = document.querySelector(".mast .key"), root = document.documentElement;
-  const pin = key?.closest(".hero-pin") || key?.closest(".hero"), KEY = "x0-key";
+  const pin = key?.closest(".hero-pin") || key?.closest(".hero");
   if (key && mastKey && pin) {
-    let done = false; try { done = sessionStorage.getItem(KEY) === "1"; } catch {}
+    let done = false;
     const park = () => { key.style.visibility = "hidden"; key.style.transform = ""; root.classList.remove("key-handoff"); };
     if (done) park();
     else {
@@ -327,13 +329,13 @@ if (cv && B) {
         const want = target();
         p += (want - p) * (1 - Math.exp(-dt * 10));
         if (Math.abs(want - p) < .002) p = want;
-        if (p >= .998) { done = true; try { sessionStorage.setItem(KEY, "1"); } catch {} park(); return; }
+        if (p >= .998) { done = true; park(); return; }
         draw();
         if (p !== want) raf = requestAnimationFrame(step); else last = 0;
       }
       function kick() {
         if (done) return;
-        if (reduced) { if (scrollY > 40) { done = true; try { sessionStorage.setItem(KEY, "1"); } catch {} park(); } return; }
+        if (reduced) { if (scrollY > 40) { done = true; park(); } return; }
         if (!raf) raf = requestAnimationFrame(step);
       }
       root.classList.add("key-handoff");

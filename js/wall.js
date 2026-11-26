@@ -166,9 +166,9 @@ if (wall) {
   function size() {
     ({ W, H } = T.size());
     cx = W / 2; cy = H * .5;
-    // the middle: the bot standing a little above the centre, the platforms just under its feet
+    // the middle: the bot standing a little above the centre (the platforms are in the foot now, over its links)
     const small = W < 760;
-    botH = Math.min(small ? 130 : 170, H * .26); botFeet = cy + botH * .32;
+    botH = Math.min(small ? 104 : 130, H * .2); botFeet = cy + botH * .32;
     core.style.top = (botFeet + 12).toFixed(0) + "px";
     // the orbits fill the space round it, the inner one clear of the bot and the platforms
     const ry0 = botH * .5 + 98, ryMax = H / 2 - (small ? 26 : 34), aspect = small ? .78 : 1.75;
