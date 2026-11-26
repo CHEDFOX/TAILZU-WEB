@@ -100,14 +100,21 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <main data-fabric>
 <div class="wrap">
 
-<section id="stage" class="stage">
-  <h1 class="sr">X0 Bot: a team of bots to do the hard things</h1>
+<!-- THE OPENING: what X0 Bot is, in one line, and the team itself at a desk, drawn as dithered dots (js/hero.js) -->
+<section id="hero" class="hero">
+  <h1 class="hero-h"><span class="l1">A team of bots</span> <span class="l2">to do the hard things</span></h1>
+  <p class="hero-p">X0 Bot answers your mail, orders your food, ships your code and sits in your meetings. On iPhone, Android, Windows, Mac and Linux.</p>
+  <div class="hero-cta">
+    <a class="key key-big" data-get data-lean href="/download" data-place="hero">
+      <span class="cap"><i class="led" aria-hidden="true"></i><b>Take me home</b><small data-get-os>X0 Bot for every device</small></span>
+    </a>
+    <a class="ghost" href="#stage">See it work</a>
+  </div>
+  <canvas class="hero-team" aria-hidden="true"></canvas>
+</section>
 
-  <!-- the line, written by hand either side of the card (it writes itself in, once) -->
-  <p class="hand hand-l" aria-hidden="true">
-    <span class="hw">A team</span><span class="hw">of bots</span>
-    <svg class="hand-mark arrow" viewBox="0 0 140 130"><path d="M10 6 C 22 46, 62 84, 124 118"/><path d="M124 118 L 106 118 M124 118 L 118 101"/></svg>
-  </p>
+<section id="stage" class="stage">
+  <h2 class="sr">X0 Bot at work: tasks, dinner and a chat</h2>
   <div class="card" id="card" data-noglitch>
     <div class="cam" id="cam">
 
@@ -488,9 +495,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
     </div>
   </div>
-  <p class="hand hand-r" aria-hidden="true">
-    <span class="hw">to do the</span><span class="hw">hard things<svg class="hand-mark under" viewBox="0 0 200 24" preserveAspectRatio="none"><path d="M4 14 C 40 6, 80 20, 120 11 S 180 8, 196 13"/></svg></span>
-  </p>
   <!-- the card opens up into these: a desktop and a phone, and the stories they play (js/main.js THE STAGE) -->
   <div class="work" id="work" aria-label="X0 Bot at work: tasks, dinner and a chat">
   <div class="show-box">

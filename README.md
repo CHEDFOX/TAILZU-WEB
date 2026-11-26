@@ -27,11 +27,17 @@ moves, and the page's own words flickering into 0/1 under the pointer
 (`js/paper/`). The pointer and the scroll both disturb the water
 (`js/stage.js`). Nothing on it has a title: each view shows rather than says.
 
-1. **The film** (`#stage`). One small white card and a camera, with the line
-   written by hand in the space over it (Caveat, from Google Fonts): "A team
-   of bots" over its left shoulder, with an arrow down into it, and "to do the
-   hard things", underlined, off its right; the card stands on the bottom of
-   the window and opens up into a box with a desktop and a phone in it. One
+1. **The opening** (`#hero`). "A team of bots / to do the hard things", centred,
+   a line under it, and two ways in: "Take me home" (the key) and "See it work"
+   (down to the film). Under them, X0 itself rising over the horizon
+   (`js/hero.js`): the peeking bot, huge, in its own dithered dots; on a visit
+   only its antennae are up at first, then it comes up slowly and its eye
+   follows the pointer. In front of it the team goes by without end, each bot at
+   its own pace, now and then hopping, waving or looking up at it. It turns
+   with the field: drawn twice, ink on the paper and light on the dark, laid
+   together through a map of the field under it, every frame.
+2. **The film** (`#stage`). One small white card and a camera; the card stands
+   on the bottom of the window and opens up into a box with a desktop and a phone in it. One
    conversation, in four parts, named in the tabs under the box (Tasks, Food,
    Chat, Arrived), which show how far each has got and jump to one:
    - **Tasks**: "hey X0" and "Here, at your service.", then two things asked in
@@ -48,9 +54,9 @@ moves, and the page's own words flickering into 0/1 under the pointer
    - **Arrived**: the card fades into the phone, alone in the middle and standing
      up out of the box; "Your food has arrived", and the bot's face puts itself
      together on its screen.
-   The first time only, the page then scrolls itself to the next view, and the
-   card comes back with the face and it all goes round again.
-2. **The two promises, the plans and the close**: phone and computer,
+   It starts when it is scrolled to; the card comes back with the face at the
+   end and it all goes round again.
+3. **The two promises, the plans and the close**: phone and computer,
    staying in charge, free to start, and the key again with every device
    under it and three plain facts. Beside it, **X and 0 against Blip**
    (`js/game.js`): the visitor is X, Blip the green 0 (a zero, not an O); he

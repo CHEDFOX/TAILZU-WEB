@@ -5,6 +5,7 @@ import { scroll } from "./stage.js";
 import "./tone.js";
 import "./minis.js";
 import "./game.js";
+import "./hero.js";
 import { blip } from "./blip/kit.js";
 
 // ---------------------------------------------------------------------------
@@ -116,7 +117,8 @@ if (card) {
   // plays it faster. When it ends the page moves on by itself and is let go;
   // from then on, until the next load, it scrolls as normal. Not for a link
   // to a part further down (#...), or for reduced motion.
-  let held = !reduced && !!next && !location.hash;
+  // only while the stage is the page's first view (the opening, #hero, now comes before it: nothing is held)
+  let held = !reduced && !!next && !location.hash && card.closest("section") === document.querySelector("main section");
   const typing = (e) => e.target instanceof Element && e.target.closest("input, textarea, select, [contenteditable]");
   const SCROLL_KEYS = { ArrowDown: 1.2, PageDown: 2.2, " ": 2.2, Spacebar: 2.2, End: 3, ArrowUp: 0, PageUp: 0, Home: 0 };
   let touchY = null;
@@ -489,8 +491,15 @@ if (card) {
   addEventListener("resize", fitArrow);
   new ResizeObserver(fitArrow).observe(stage);
 
-  // Start once the fonts are in, so the first frames are set in the right face.
-  const go = () => { setTimeout(play, 500); stage.classList.add("written"); };
+  // Start once the fonts are in, so the first frames are set in the right face, and once the stage is on screen (it is
+  // the second view: it would otherwise play to nobody while the opening is read).
+  const go = () => {
+    const io = new IntersectionObserver((es) => {
+      if (!es.some((e) => e.isIntersecting)) return;
+      io.disconnect(); setTimeout(play, 300); stage.classList.add("written");
+    }, { threshold: .35 });
+    io.observe(card);
+  };
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(go); else go();
 }
 
