@@ -328,7 +328,7 @@ if (card) {
   ];
   // how long each story runs once the screens are up (its own clock, THE WORK VIEW), and an exchange in the card, for
   // the tabs' bars
-  const LEN = { food: 11600, arrive: 12600 }, EXCHANGE = 5600, MORPH = 2800;
+  const LEN = { food: 13100, arrive: 12600 }, EXCHANGE = 5600, MORPH = 2800;
   const partLen = (i) => {
     let t = 0;
     for (let j = i; j < BEATS.length && (j === i || !BEATS[j].tab); j++) t += (BEATS[j].ask ? EXCHANGE : 0) + (BEATS[j].story ? MORPH + LEN[BEATS[j].story] : 0);
@@ -783,10 +783,11 @@ function sayer(aside) {
       + '<div class="small">Corner Kitchen · paid with your yes.</div>'
       + '<div class="track"><b></b><i></i></div><div class="ends"><span>Corner Kitchen</span><span>You</span></div></div>';
     let s2 = {};
-    // ---- the bot in the food story, the real one (js/blip/kit.js): it walks in along the bottom of the screen and does
-    // the choosing itself, under the deck: it flicks away what you would not want, points out each part of the meal as
-    // it picks it, and cheers when it is done. Drawn on a canvas in the scene, in the mail screen's own 1040x650 design
-    // pixels; it stands on the screen's bottom edge.
+    // ---- the bot in the food story, the real one (js/blip/kit.js): it peeks round the screen's right edge, comes in
+    // to the middle to listen when it is told you are hungry, then goes down to the bottom of the screen and does the
+    // choosing itself, under the deck: it flicks away what you would not want, points out each part of the meal as it
+    // picks it, and cheers when it is done. Drawn on a canvas in the scene, in the mail screen's own 1040x650 design
+    // pixels.
     function foodBlip(host) {
       const B = blip();
       if (!B) return null;
@@ -794,36 +795,44 @@ function sayer(aside) {
       cv.className = "s2-cv"; cv.setAttribute("aria-hidden", "true");
       host.prepend(cv);       // under the words and the cards
       const g = cv.getContext("2d");
+      const PEEK_H = 210, edge = B.createBlip({ height: PEEK_H });
       const me = B.createPerformer({ dpr: 2 });
-      const FLOOR = 646, H = 128;
-      let x = 1180, from = 1180, to = 1180, t0 = 0, T = 1, fx = -1, face = -1, raf = 0, k = 0, walking = false;
+      // where it stands: feet (x, y), height H. Off round the edge; in the middle, listening; on the screen's bottom edge
+      const SPOT = { off: [1150, 400, 180], mid: [520, 398, 180], low: [520, 646, 128] };
+      let mode = "off", from = SPOT.off, to = SPOT.off, t0 = 0, T = 1, fx = -1, face = -1, raf = 0, k = 0, next = "rest";
       const io = (u) => u * u * (3 - 2 * u);
       const want = () => Math.min(3, (mailScreen.clientWidth / 1040) * Math.min(2, devicePixelRatio || 1));
       function fit() { k = want(); cv.width = Math.round(1040 * k); cv.height = Math.round(650 * k); }
+      let cur = SPOT.off;
       function frame(now) {
         raf = requestAnimationFrame(frame);
         if (Math.abs(want() - k) > .01) fit();           // the screen was resized
         g.setTransform(k, 0, 0, k, 0, 0); g.clearRect(0, 0, 1040, 650);
+        // round the edge: its "up" is to the left, into the screen
+        g.save(); g.translate(1040, 318); g.rotate(-Math.PI / 2);
+        edge.draw(g, 0, 0, now / 1000, k);
+        g.restore();
+        if (mode === "off") { if (!edge.shown()) stop(); return; }
         const u = io(Math.min(1, (now - t0) / T));
-        x = from + (to - from) * u;
-        if (u >= 1 && walking) { walking = false; me.play(next, { then: "rest", again: true }); }
-        fx += ((walking ? face : 1) - fx) * .2;              // it walks facing the way it goes, then turns to face you
-        g.save(); g.translate(x, FLOOR); g.scale(fx, 1); me.draw(g, 0, 0, H, now); g.restore();
+        cur = [0, 1, 2].map((i) => from[i] + (to[i] - from[i]) * u);
+        if (u >= 1 && mode === "walk") { mode = "still"; me.play(next, { then: next === "listen" ? "listen" : "rest", again: true }); }
+        fx += ((mode === "walk" ? face : 1) - fx) * .18;      // it walks facing the way it goes, then turns to face you
+        g.save(); g.translate(cur[0], cur[1]); g.scale(fx, 1); me.draw(g, 0, 0, cur[2], now); g.restore();
       }
-      let next = "rest";
       function start() { if (!raf) { fit(); raf = requestAnimationFrame(frame); } }
       function stop() { cancelAnimationFrame(raf); raf = 0; g.setTransform(1, 0, 0, 1, 0, 0); g.clearRect(0, 0, cv.width, cv.height); }
-      /** walk to x (design pixels), then do `then` */
-      function walk(nx, ms, then = "rest") {
-        from = x; to = nx; t0 = performance.now(); T = reduced ? 1 : ms; face = nx < x ? -1 : 1; next = then;
-        walking = Math.abs(nx - x) > 4; if (walking) me.play("stroll"); else me.play(then, { then: "rest", again: true });
-        start();
+      function walk(a, b, ms, then, gait = "stroll") {
+        mode = "walk"; from = a; to = b; t0 = performance.now(); T = reduced ? 1 : ms; next = then;
+        face = b[0] < a[0] ? -1 : 1; me.play(gait); start();
       }
       return {
-        comeIn() { x = from = to = 1180; walk(520, 1100, "look"); },  // in from the right, along the bottom, to under the deck
-        to(nx, then) { walk(nx, 420, then); },
+        peek() { edge.pose("peek"); start(); },
+        heard() { edge.pose("listening"); },                    // told it: it lifts up, all attention
+        comeIn() { edge.pose("hidden"); walk(SPOT.off, SPOT.mid, 900, "listen"); },   // round the edge, to the middle
+        down() { walk(cur, SPOT.low, 800, "look", "look"); },  // down to the bottom of the screen, under the deck
+        to(nx, then) { walk(cur, [nx, SPOT.low[1], SPOT.low[2]], 420, then); },
         act(name) { me.play(name, { then: "rest", again: true }); },
-        clear() { stop(); x = from = to = 1180; },
+        clear() { edge.pose("hidden"); edge.snap(); mode = "off"; stop(); cur = SPOT.off; },
       };
     }
 
@@ -839,7 +848,7 @@ function sayer(aside) {
         blip: null, hungry: scene2El.querySelector(".hungry"), done: scene2El.querySelector(".done"),
         cards: scene2El.querySelector(".s2-cards"), pill: scene2El.querySelector(".s2-pill"),
       };
-      s2.blip = foodBlip(scene2El) || { comeIn() {}, to() {}, act() {}, clear() {} };
+      s2.blip = foodBlip(scene2El) || { peek() {}, heard() {}, comeIn() {}, down() {}, to() {}, act() {}, clear() {} };
       FOOD.forEach(([emo, name, from]) => {
         const card = document.createElement("div");
         card.className = "fc";
@@ -868,48 +877,51 @@ function sayer(aside) {
     function act2(B) {
       const cards = () => [...s2.cards.children];
       const left = () => cards().filter((c) => !c.classList.contains("swiped"));
-      // the screens clear, and it is said: I'm hungry
+      // the screens clear; the bot peeks round the desktop's edge
       wat(B, () => {
-        scene2El.classList.add("on", "listening");
+        scene2El.classList.add("on");
         feed.querySelectorAll(".f").forEach((f) => drop(f));
         focusOn("desk"); tell(LINES.food);
-        s2.pill.classList.add("on", "talking");
-        say("Listening…");
+        say("Here if you need me", false);
       });
-      wat(B + 500, () => words(s2.hungry, 300));
-      // the bot walks in along the bottom; the food comes
-      wat(B + 2100, () => {
+      wat(B + 300, () => s2.blip.peek());
+      // it is told: I'm hungry. It lifts up, all attention, and comes in to the middle to listen
+      wat(B + 1300, () => { s2.pill.classList.add("on", "talking"); scene2El.classList.add("listening"); s2.blip.heard(); say("Listening…"); });
+      wat(B + 1500, () => words(s2.hungry, 300));
+      wat(B + 2100, () => s2.blip.comeIn());
+      // then down to the bottom of the screen; the food comes
+      wat(B + 3700, () => {
         s2.pill.classList.remove("talking", "on");
         s2.hungry.classList.add("out");
         scene2El.classList.remove("listening");
-        s2.blip.comeIn();
+        s2.blip.down();
         say("Finding food…");
       });
-      wat(B + 2600, () => { deck(0, cards()); cards().forEach((c, i) => wat(i * 120, () => c.classList.add("in"))); });
+      wat(B + 4100, () => { deck(0, cards()); cards().forEach((c, i) => wat(i * 120, () => c.classList.add("in"))); });
       // it looks through the deck, to the pizza
-      wat(B + 3700, () => { deck(1, cards()); s2.blip.act("look"); });
-      wat(B + 4400, () => deck(2, cards()));
+      wat(B + 5200, () => deck(1, cards()));
+      wat(B + 5900, () => deck(2, cards()));
       // and flicks it away: not tonight
-      wat(B + 5000, () => s2.blip.act("send"));
-      wat(B + 5250, () => { const pz = cards()[2]; pz.classList.add("grab"); pz.style.setProperty("--x", "-48px"); pz.style.setProperty("--ry", "-8deg"); });
-      wat(B + 5550, () => {
+      wat(B + 6500, () => s2.blip.act("send"));
+      wat(B + 6750, () => { const pz = cards()[2]; pz.classList.add("grab"); pz.style.setProperty("--x", "-48px"); pz.style.setProperty("--ry", "-8deg"); });
+      wat(B + 7050, () => {
         const pz = cards()[2];
         pz.classList.remove("grab"); pz.classList.add("swiped");
         pz.style.setProperty("--x", "-640px"); pz.style.setProperty("--y", "-50px"); pz.style.setProperty("--ry", "-34deg");
       });
       // the three left settle back, fries in front; it walks under each and picks it
-      wat(B + 5900, () => deck(1, left()));
+      wat(B + 7400, () => deck(1, left()));
       [0, 1, 2].forEach((j) => {
-        wat(B + 6400 + j * 650, () => s2.blip.to(520 + (j - 1) * STEP, "point"));
-        wat(B + 6750 + j * 650, () => left()[j].classList.add("pick"));
+        wat(B + 7900 + j * 650, () => s2.blip.to(520 + (j - 1) * STEP, "point"));
+        wat(B + 8250 + j * 650, () => left()[j].classList.add("pick"));
       });
-      wat(B + 6400, () => say("Choosing…"));
+      wat(B + 7900, () => say("Choosing…"));
       // done
-      wat(B + 8500, () => { s2.blip.to(520, "celebrate"); words(s2.done, 0); say("Ordering…"); });
+      wat(B + 10000, () => { s2.blip.to(520, "celebrate"); words(s2.done, 0); say("Ordering…"); });
       // and on the phone: the order is placed
-      wat(B + 9400, () => { focusOn("phone"); feed.classList.add("center"); add(PLACED); say("Order placed", false); });
+      wat(B + 10900, () => { focusOn("phone"); feed.classList.add("center"); add(PLACED); say("Order placed", false); });
       // a moment with it on its way, then the next part
-      chain(act3, B + 11600);
+      chain(act3, B + 13100);
     }
 
     // ---- the third story: Xode on the desktop, orders from the phone ----
