@@ -969,12 +969,12 @@ html.key-handoff .mast .key { opacity: 0; pointer-events: none; }
 .wall-k { margin: 0; font: 400 clamp(28px, 2.8vw, 44px)/1.02 var(--serif); letter-spacing: -.025em; color: var(--ink); }
 .wall-k .tw { --on-dark: #F3EEE6; }
 .wall-plats { display: flex; gap: 8px; margin-top: 4px; }
-.wp { display: grid; place-items: center; width: 44px; height: 44px; border-radius: 50%; color: var(--ink); box-shadow: inset 0 0 0 1.5px currentColor;
-  transition: color .45s ease, translate .25s cubic-bezier(.2, .9, .3, 1.4), background .25s ease; }
-.wp.dk { color: #F3EEE6; }
-.wp:hover { translate: 0 -3px; background: rgba(79, 122, 58, .14); }
+/* the platforms: drawn on the wall's canvas, so they turn with the field region by region as the bot does
+   (js/wall.js); the links themselves stand over them, clear, for the pointer, the keyboard and screen readers */
+.wp { display: grid; place-items: center; width: 44px; height: 44px; border-radius: 50%; color: transparent; }
+.wp svg { opacity: 0; }
 .wp:focus-visible { outline: 1.5px solid currentColor; outline-offset: 3px; }
-.wp svg { width: 20px; height: 20px; }
+.wp svg { width: 20px; height: 20px; opacity: 0; }
 /* the founders' note: written by hand beside the badge, with an arrow to it */
 .wall-note { position: absolute; left: 0; top: 0; z-index: 3; width: min(300px, 72vw); margin: 0; pointer-events: none; opacity: 0; transition: opacity .25s ease; }
 .wall-note.on { opacity: 1; }
@@ -990,13 +990,13 @@ html.key-handoff .mast .key { opacity: 0; pointer-events: none; }
 .wall-hint .tw { --on-dark: rgba(243, 238, 230, .6); }
 /* the foot, in the wall's own view: the name in dots across the bottom and a small line under it; the orbits and the
    middle take the space above it (--foot) */
-.wall { --foot: clamp(140px, 19vw, 280px); }
+.wall { --foot: clamp(78px, 10vw, 140px); }
 .wall-cv { height: calc(100% - var(--foot)); }   /* a canvas's height is its own ratio unless it is set */
 .wall-core { translate: -50% 0; }   /* its top is set from the bot's size (js/wall.js) */
 .wall-hint { bottom: calc(var(--foot) + 4px); }
-.sf { position: absolute; left: 0; right: 0; bottom: 0; height: var(--foot); display: flex; flex-direction: column; align-items: center; justify-content: flex-end; padding: 0 20px 12px; box-sizing: border-box; }
-.sf-mark { display: block; width: min(100%, 1100px); flex: 1; min-height: 0; }
-.sf-small { margin: 6px 0 0; font: 400 12px/1.4 var(--sans); color: var(--muted); }
+.sf { position: absolute; left: 0; right: 0; bottom: 0; height: var(--foot); display: flex; flex-direction: column; align-items: center; justify-content: flex-end; padding: 0 20px 8px; box-sizing: border-box; }
+.sf-mark { display: block; width: min(100%, 560px); flex: 1; min-height: 0; }
+.sf-small { margin: 2px 0 0; font: 400 11px/1.4 var(--sans); color: var(--muted); }
 .sf-small a { color: inherit; }
 .sf-small .tw { --on-dark: rgba(243, 238, 230, .55); }
-@media (max-width: 760px) { .wall { min-height: 600px; --foot: 120px; } }
+@media (max-width: 760px) { .wall { min-height: 600px; --foot: 76px; } }

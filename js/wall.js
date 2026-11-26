@@ -25,9 +25,9 @@ const rgb = (c, a = 1) => `rgba(${c[0]}, ${c[1]}, ${c[2]}, ${a})`;
 const noise = (x, y, t) => .5 + .25 * Math.sin(x * 1.7 + t * 1.1) * Math.cos(y * 1.3 - t * .7) + .25 * Math.sin((x + y) * .9 + t * .5);
 
 // a canvas drawn in two looks and laid together through the field under it
-function toned(cv) {
+function toned(cv, fine) {
   const out = cv.getContext("2d"), layer = { dark: document.createElement("canvas"), light: document.createElement("canvas") };
-  const mask = document.createElement("canvas"), mg = mask.getContext("2d"), MW = 40, MH = 26;
+  const mask = document.createElement("canvas"), mg = mask.getContext("2d"), MW = fine ? 96 : 40, MH = fine ? 60 : 26;   // fine: the wall, where the bot and badges stand on the edge
   mask.width = MW; mask.height = MH;
   const mimg = mg.createImageData(MW, MH);
   let W = 0, H = 0, dpr = 1;
@@ -76,7 +76,7 @@ const wall = document.getElementById("wall");
 if (wall) {
   const cv = wall.querySelector(".wall-cv"), core = wall.querySelector(".wall-core"), note = wall.querySelector(".wall-note");
   const noteT = note.querySelector(".wn-t"), arrow = note.querySelector(".wn-arrow");
-  const T = toned(cv);
+  const T = toned(cv, true);
   const N = 28;                                      // a badge's dots across
   // ---- the badges: what each shows, and its note ----
   const BADGES = [
@@ -129,6 +129,28 @@ if (wall) {
       live[j * N + i] = v;
     }
     return live;
+  }
+
+  // ---- the platforms: their shapes, read from the links' own icons, drawn on the canvas ----
+  const plats = [...core.querySelectorAll(".wp")].map((el) => {
+    const paths = [...el.querySelectorAll("path")].map((p) => ({ d: new Path2D(p.getAttribute("d")), fill: p.getAttribute("fill") !== "none", stroke: p.hasAttribute("stroke"), rule: p.getAttribute("fill-rule") || "nonzero" }));
+    const p = { el, paths, hover: 0, on: false };
+    el.addEventListener("pointerenter", () => { p.on = true; }); el.addEventListener("pointerleave", () => { p.on = false; });
+    el.addEventListener("focus", () => { p.on = true; }); el.addEventListener("blur", () => { p.on = false; });
+    return p;
+  });
+  function drawPlats(g, L, dt) {
+    const w = cv.getBoundingClientRect();
+    for (const p of plats) {
+      p.hover += ((p.on ? 1 : 0) - p.hover) * Math.min(1, dt * 12);
+      const r = p.el.getBoundingClientRect(), x = r.left - w.left + r.width / 2, y = r.top - w.top + r.height / 2 - p.hover * 3, R = r.width / 2 - .75;
+      if (p.hover > .01) { g.fillStyle = rgb(L.soft, .18 * p.hover); g.beginPath(); g.arc(x, y, R, 0, Math.PI * 2); g.fill(); }
+      g.strokeStyle = rgb(L.dot); g.lineWidth = 1.5; g.beginPath(); g.arc(x, y, R, 0, Math.PI * 2); g.stroke();
+      g.save(); g.translate(x - 10, y - 10); g.scale(20 / 24, 20 / 24);
+      g.fillStyle = rgb(L.dot); g.strokeStyle = rgb(L.dot); g.lineWidth = .9; g.lineCap = "round";
+      for (const q of p.paths) { if (q.fill) g.fill(q.d, q.rule); if (q.stroke) g.stroke(q.d); }
+      g.restore();
+    }
   }
 
   // ---- the bot in the middle ----
@@ -230,6 +252,7 @@ if (wall) {
       });
       // the bot, over the middle
       if (bots) { g.save(); g.translate(cx, botFeet); bots[k].draw(g, 0, 0, botH, now); g.restore(); }
+      drawPlats(g, L, k === "dark" ? dt : 0);
     });
     placeNote();
   }
@@ -250,7 +273,7 @@ if (mark) {
   if (peek) { peek.dark.pose("peek"); peek.light.pose("peek"); if (reduced) { peek.dark.still(true); peek.light.still(true); } }
   function size() {
     ({ W, H } = T.size());
-    cell = W < 700 ? 4 : 6; cols = Math.floor(W / cell); rows = Math.floor(H / cell);
+    cell = H < 90 ? 3 : 4; cols = Math.floor(W / cell); rows = Math.floor(H / cell);
     // the word, drawn once into a grid of how much of each cell it covers
     const c = document.createElement("canvas"); c.width = cols; c.height = rows; const x = c.getContext("2d");
     let fs = rows * 1.15;
@@ -262,7 +285,7 @@ if (mark) {
     zero = [(cols / 2 - total / 2 + (w0 + w1) / 2) * cell, (base - fs * .7) * cell];
     const d = x.getImageData(0, 0, cols, rows).data; grid = new Float32Array(cols * rows);
     for (let i = 0; i < cols * rows; i++) grid[i] = d[i * 4 + 3] / 255;
-    if (peek) { const ph = Math.min(190, fs * cell * .78); peek.dark.size(ph); peek.light.size(ph); }
+    if (peek) { const ph = Math.min(120, fs * cell * .78); peek.dark.size(ph); peek.light.size(ph); }
   }
   mark.addEventListener("pointermove", (e) => { const r = mark.getBoundingClientRect(); ptr = [e.clientX - r.left, e.clientY - r.top]; });
   mark.addEventListener("pointerleave", () => { ptr = null; });
