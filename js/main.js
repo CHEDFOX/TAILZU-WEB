@@ -447,6 +447,7 @@ if (card) {
         // the end: the phone in the middle with the face on it. The first time through, the page moves on from here;
         // then, a little later, the card comes back over the box with the same face, and it all goes round again
         if (held) moveOn();
+        flowDone();
         at(1800, () => whenSeen(() => {
           iconAtRest();
           toCard(S().phone(), () => {
@@ -480,14 +481,53 @@ if (card) {
   // THE STAGE ON THE SCROLL. The stage plays by itself, at its own pace, and is held (sticky) over a stretch of scroll
   // (.stage-run): scrolling down through it fast-forwards it (the clock's boost, which dies away by itself once the
   // scroll stops). Scrolling back does nothing to it.
+  //
+  // The page does not go past it until the whole flow has played once on this load: at the end of the stretch the page
+  // is held, and a scroll down there (wheel, touch, keys) fast-forwards the stage instead of moving the page. Scrolling
+  // up is never held. When the last story ends the hold lets go, and someone waiting at it is taken on to the next view.
   // ===========================================================================
   const run = document.getElementById("stageRun");
-  let lastY = scrollY;
+  let lastY = scrollY, passed = reduced || !run, touchY0 = null, gliding = false;
+  const endY = () => run.getBoundingClientRect().top + scrollY + run.offsetHeight - innerHeight;
+  const atEnd = () => scrollY >= endY() - 2;
   function onScroll() {
+    if (!passed && !gliding && scrollY > endY()) scrollTo(0, endY());   // held at the end of the stretch
     const d = scrollY - lastY; lastY = scrollY;
     if (d <= 0 || !run) return;
     const r = run.getBoundingClientRect();
     if (r.top <= 1 && r.bottom >= innerHeight - 1) hurry(Math.min(d, 160) * .012);
+  }
+  const holding = () => !passed && atEnd();
+  const onHeldWheel = (e) => { if (holding() && e.deltaY > 0) { e.preventDefault(); hurry(Math.min(e.deltaY, 160) * (e.deltaMode ? .4 : .012)); } };
+  const onHeldTouchStart = (e) => { touchY0 = e.touches[0]?.clientY ?? null; };
+  const onHeldTouchMove = (e) => {
+    const y = e.touches[0]?.clientY;
+    if (holding() && touchY0 != null && y != null && touchY0 - y > 0) { e.preventDefault(); hurry((touchY0 - y) * .03); }
+    touchY0 = y ?? null;
+  };
+  const HELD_KEYS = { ArrowDown: 1.2, PageDown: 2.2, " ": 2.2, Spacebar: 2.2, End: 3 };
+  const onHeldKey = (e) => { if (holding() && e.key in HELD_KEYS && !typing(e)) { e.preventDefault(); hurry(HELD_KEYS[e.key]); } };
+  if (!passed) {
+    addEventListener("wheel", onHeldWheel, { passive: false });
+    addEventListener("touchstart", onHeldTouchStart, { passive: true });
+    addEventListener("touchmove", onHeldTouchMove, { passive: false });
+    addEventListener("keydown", onHeldKey);
+  }
+  function flowDone() {
+    if (passed) return;
+    const waiting = atEnd();
+    passed = true;
+    removeEventListener("wheel", onHeldWheel); removeEventListener("touchstart", onHeldTouchStart);
+    removeEventListener("touchmove", onHeldTouchMove); removeEventListener("keydown", onHeldKey);
+    const to = run.nextElementSibling;
+    if (!waiting || !to) return;
+    // on to the next view, a short glide; a scroll of their own takes over
+    const from = scrollY, dest = to.getBoundingClientRect().top + scrollY, dur = 1100;
+    let t0 = 0, raf = 0; gliding = true;
+    const stop = () => { cancelAnimationFrame(raf); gliding = false; ["wheel", "touchstart", "keydown"].forEach((e) => removeEventListener(e, stop)); };
+    ["wheel", "touchstart", "keydown"].forEach((e) => addEventListener(e, stop, { passive: true }));
+    const step = (t) => { t0 ||= t; const k = Math.min(1, (t - t0) / dur); scrollTo(0, from + (dest - from) * easeIO(k)); if (k < 1) raf = requestAnimationFrame(step); else stop(); };
+    at(1400, () => { raf = requestAnimationFrame(step); });   // the last frame is seen first
   }
 
   function play() {
