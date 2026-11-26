@@ -1,7 +1,7 @@
 // THE OPENING'S PICTURE (#hero .hero-team). X0 itself, rising over the horizon: the bot's head, huge, coming up from
 // the bottom of the window like a sun, drawn by the desktop app's own renderer (js/blip/blip.js) in its own dithered
-// dots, its one eye on the visitor's pointer. On a visit only its antennae are up at first, over the horizon; after a
-// beat it comes up, slowly, into the sky. Across the horizon in front of it the team goes by without end, small bots
+// dots, its one eye on the visitor's pointer. On a visit only its antennae are up at first, over the horizon; after two
+// seconds it comes up, very slowly (seven seconds), into the sky. Across the horizon in front of it the team goes by without end, small bots
 // each at its own pace, now and then hopping, stopping to wave, or looking up at X0. A thin halo of dots fades out
 // round it all.
 //
@@ -100,12 +100,12 @@ if (cv && B) {
 
   // ---- X0's arrival: only the antennae, then up, slowly ----
   let seenAt = 0;
-  const ease = (k) => 1 - Math.pow(1 - Math.min(1, Math.max(0, k)), 3);
   function sunDrop(now) {
     if (reduced) return 0;
     const full = cast.dark.sun ? Math.min(H * 1.48, W * .9) * .5 : 0;       // how far up it stands when it is all there
     const ant = full * .78;                                                  // all but the antennae under the horizon
-    const k = ease((now - seenAt - 1400) / 3400);
+    // the antennae alone for two seconds, then seven to come all the way up, easing in and out: a slow sunrise
+    const u = Math.min(1, Math.max(0, (now - seenAt - 2000) / 7000)), k = u * u * u * (u * (6 * u - 15) + 10);
     return ant * (1 - k);
   }
 
