@@ -72,7 +72,11 @@ moves, and the page's own words flickering into 0/1 under the pointer
    note is written beside it by hand with an arrow to it. Along the bottom of
    the same view, the foot: an X in one corner and a 0 in the other, in the same
    dots, the peeking bot looking over the 0, and between them the links and one
-   small line (©, Xooteq Lab).
+   small line (©, CRAFTED BY XOOTEQ LAB). FAQ, Support, Pricing, Privacy and
+   Terms open on a card on screen, not a page (`#sheet`, `js/sheet.js`): the
+   four pages are read live from their own `<main>`, so they never go stale;
+   the FAQ is the `<template id="faqList">` in `index.html` (one `<details>`
+   per question). The device links still go straight to the download.
 
 With reduced motion the film and the stories show their last frame.
 

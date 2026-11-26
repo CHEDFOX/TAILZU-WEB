@@ -8,6 +8,7 @@ import "./game.js";
 import "./hero.js";
 import "./duo.js";
 import "./wall.js";
+import "./sheet.js";
 import { blip } from "./blip/kit.js";
 
 // ---------------------------------------------------------------------------

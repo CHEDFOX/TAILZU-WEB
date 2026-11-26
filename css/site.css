@@ -1006,3 +1006,41 @@ html.key-handoff .mast .key { opacity: 0; pointer-events: none; }
 .sf-small a { color: inherit; }
 .sf-small .tw { --on-dark: rgba(243, 238, 230, .55); }
 @media (max-width: 760px) { .wall { min-height: 600px; --foot: 104px; } .sf { gap: 6px; padding: 0 10px 8px; } .sf-glyph { height: 70%; } .sf-links { gap: 2px 12px; } .sf-links a { font-size: 11.5px; } }
+
+/* =====================================================================
+   THE CARD the footer's links open on screen (js/sheet.js): paper, in the middle of the window, over a soft veil; its
+   page's words set in the site's type, whatever the page's own were.
+   ===================================================================== */
+.sheet { position: fixed; inset: 0; z-index: 40; display: grid; place-items: center; padding: max(16px, env(safe-area-inset-top, 0px)) 16px max(16px, env(safe-area-inset-bottom, 0px));
+  background: rgba(16, 15, 12, .42); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); opacity: 0; transition: opacity .25s ease; }
+.sheet[hidden] { display: none; }
+.sheet.on { opacity: 1; }
+.sheet-card { position: relative; display: flex; flex-direction: column; width: min(680px, 100%); max-height: min(82svh, 760px); border-radius: 20px; background: #F7F6F2; color: var(--ink);
+  box-shadow: 0 0 0 1px rgba(22, 20, 15, .1), 0 50px 100px -40px rgba(0, 0, 0, .55); translate: 0 16px; scale: .98; transition: translate .35s cubic-bezier(.2, .9, .3, 1), scale .35s cubic-bezier(.2, .9, .3, 1); }
+.sheet.on .sheet-card { translate: 0 0; scale: 1; }
+.sheet-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 20px 22px 12px; border-bottom: 2px dotted rgba(22, 20, 15, .16); }
+.sheet-title { margin: 0; font: 400 28px/1.1 var(--serif); letter-spacing: -.02em; }
+.sheet-x { flex: none; width: 36px; height: 36px; border: 0; border-radius: 50%; background: rgba(22, 20, 15, .06); color: var(--ink); font: 400 22px/1 var(--sans); cursor: pointer; }
+.sheet-x:hover { background: rgba(22, 20, 15, .12); }
+.sheet-x:focus-visible { outline: 1.5px solid var(--ink); outline-offset: 2px; }
+.sheet-body { overflow: auto; padding: 14px 22px 8px; font: 400 15px/1.6 var(--sans); color: rgba(22, 20, 15, .82); overscroll-behavior: contain; }
+.sheet-body h1 { display: none; }   /* the card's own title says it */
+.sheet-body h2, .sheet-body h3 { margin: 1.3em 0 .4em; font: 400 21px/1.2 var(--serif); letter-spacing: -.01em; color: var(--ink); }
+.sheet-body h3 { font-size: 18px; }
+.sheet-body p, .sheet-body ul, .sheet-body ol { margin: 0 0 .9em; }
+.sheet-body li { margin: .2em 0; }
+.sheet-body a { color: #4F7A3A; text-underline-offset: 3px; }
+.sheet-body table { width: 100%; border-collapse: collapse; margin: 0 0 1em; font-size: 14px; }
+.sheet-body th, .sheet-body td { padding: 6px 8px; border-bottom: 1px solid rgba(22, 20, 15, .1); text-align: left; vertical-align: top; }
+.sheet-body img, .sheet-body svg { max-width: 100%; height: auto; }
+.sheet-body nav, .sheet-body header, .sheet-body footer, .sheet-body button, .sheet-body form { display: none; }
+.sheet-body details { border-bottom: 1px solid rgba(22, 20, 15, .1); padding: 12px 0; }
+.sheet-body summary { cursor: pointer; font: 500 16px/1.4 var(--sans); color: var(--ink); list-style: none; }
+.sheet-body summary::after { content: "+"; float: right; color: #4F7A3A; }
+.sheet-body details[open] summary::after { content: "–"; }
+.sheet-body details p { margin: 8px 0 0; }
+.sheet-load { color: var(--muted); }
+.sheet-full { align-self: flex-start; margin: 4px 22px 18px; font: 500 12px/1 var(--sans); letter-spacing: .14em; text-transform: uppercase; color: #4F7A3A; text-decoration: none; }
+.sheet-full:hover { text-decoration: underline; }
+.sheet-full[hidden] { display: none; }
+@media (prefers-reduced-motion: reduce) { .sheet, .sheet-card { transition: none; } }

@@ -593,8 +593,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   <footer class="sf">
     <canvas class="sf-glyph" data-glyph="X" aria-hidden="true"></canvas>
     <div class="sf-mid">
-      <nav class="sf-links" aria-label="Footer"><a href="https://apps.apple.com/app/id6784811357" data-place="footer">iPhone</a><a href="https://play.google.com/store/apps/details?id=com.tulmi.app" data-place="footer">Android</a><a href="https://apps.microsoft.com/detail/9n3gx0xhq7mx" data-place="footer">Windows</a><a href="https://api.x0bot.com/downloads/Tailzu.dmg" data-place="footer">Mac</a><a href="https://api.x0bot.com/downloads/Tailzu.AppImage" data-place="footer">Linux</a><i aria-hidden="true"></i><a href="/support">Support</a><a href="/pricing">Pricing</a><a href="/privacy">Privacy</a><a href="/terms">Terms</a></nav>
-      <p class="sf-small">X0 Bot &copy; 2026 &middot; made by <a href="https://xooteq.com">Xooteq Lab</a></p>
+      <nav class="sf-links" aria-label="Footer"><a href="https://apps.apple.com/app/id6784811357" data-place="footer">iPhone</a><a href="https://play.google.com/store/apps/details?id=com.tulmi.app" data-place="footer">Android</a><a href="https://apps.microsoft.com/detail/9n3gx0xhq7mx" data-place="footer">Windows</a><a href="https://api.x0bot.com/downloads/Tailzu.dmg" data-place="footer">Mac</a><a href="https://api.x0bot.com/downloads/Tailzu.AppImage" data-place="footer">Linux</a><i aria-hidden="true"></i><a href="#faq" data-sheet="faq">FAQ</a><a href="/support" data-sheet="/support">Support</a><a href="/pricing" data-sheet="/pricing">Pricing</a><a href="/privacy" data-sheet="/privacy">Privacy</a><a href="/terms" data-sheet="/terms">Terms</a></nav>
+      <p class="sf-small">X0 Bot &copy; 2026 &middot; CRAFTED BY <a href="https://xooteq.com">XOOTEQ LAB</a></p>
     </div>
     <canvas class="sf-glyph" data-glyph="0" data-peek aria-hidden="true"></canvas>
   </footer>
@@ -602,6 +602,20 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
 
 </div>
+<!-- THE CARD the footer's links open on screen (js/sheet.js): Support, Pricing, Privacy and Terms are read from the
+     pages themselves (their <main>), so they are never out of date; the FAQ is the list below. -->
+<div class="sheet" id="sheet" data-noglitch role="dialog" aria-modal="true" aria-labelledby="sheetTitle" hidden>
+  <div class="sheet-card">
+    <div class="sheet-top"><h2 class="sheet-title" id="sheetTitle"></h2><button type="button" class="sheet-x" aria-label="Close">&times;</button></div>
+    <div class="sheet-body" id="sheetBody"></div>
+    <a class="sheet-full" id="sheetFull" href="#">Open the full page</a>
+  </div>
+</div>
+<!-- THE FAQ: one <details> per question, its answer in the <p>. Add them here; the card shows them as they are. -->
+<template id="faqList">
+  <details><summary>Question one</summary><p>The answer goes here.</p></details>
+  <details><summary>Question two</summary><p>The answer goes here.</p></details>
+</template>
 </main>
 <p class="sr" id="say" aria-live="polite"></p>
 <!-- Blip, drawn by the desktop app's own renderer, for the small bots on the first three views (js/minis.js) -->
