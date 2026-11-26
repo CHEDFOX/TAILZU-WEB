@@ -37,9 +37,9 @@ moves, and the page's own words flickering into 0/1 under the pointer
    with the field: drawn twice, ink on the paper and light on the dark, laid
    together through a map of the field under it, every frame.
 2. **Two cards** (`#duo`, `js/duo.js`): the view is held while it is scrolled
-   through and two cards come in from the right, one after the other, "I PLAN
-   THINGS" and "I DO THINGS", each a short film (`media/duo/`, cut from the
-   owner's clips) drawn live as green dots, with a small paper note.
+   through and two cards come in from the right, one after the other, "I PLAN" and
+   "I DO", each a short film (`media/duo/`, cut from the
+   owner's clips) drawn live as green dots.
 3. **The film** (`#stage`). One small white card and a camera; the card stands
    on the bottom of the window and opens up into a box with a desktop and a phone in it. One
    conversation, in four parts, named in the tabs under the box (Tasks, Food,
