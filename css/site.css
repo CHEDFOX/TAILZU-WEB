@@ -1004,14 +1004,11 @@ main { --vgap: clamp(96px, 16svh, 200px); }
 .wn-arrow path { stroke-dasharray: 160; stroke-dashoffset: 160; }
 .wall-note.on .wn-arrow path { stroke-dashoffset: 0; transition: stroke-dashoffset .55s cubic-bezier(.5, .1, .4, 1) .1s; }
 .wall-note.on .wn-arrow path + path { transition-delay: .55s; transition-duration: .25s; }
-.wall-hint { position: absolute; left: 50%; bottom: 26px; translate: -50% 0; margin: 0; font: 700 18px/1 "Caveat", "Segoe Print", cursive; color: var(--muted); }
-.wall-hint .tw { --on-dark: rgba(243, 238, 230, .6); }
 /* the foot, in the wall's own view: the name in dots across the bottom and a small line under it; the orbits and the
    middle take the space above it (--foot) */
 .wall { --foot: clamp(96px, 11vw, 150px); }
 .wall-cv { height: calc(100% - var(--foot)); }   /* a canvas's height is its own ratio unless it is set */
 .wall-core { translate: -50% 0; }   /* its top is set from the bot's size (js/wall.js) */
-.wall-hint { bottom: calc(var(--foot) + 4px); }
 .sf { position: absolute; left: 0; right: 0; bottom: 0; height: var(--foot); display: flex; align-items: flex-end; justify-content: center; gap: 16px; padding: 0 max(16px, 3vw) 8px; box-sizing: border-box; }
 /* the corners: X and 0, large, cut by the window's edges by about a third (the wall's overflow hides the rest) */
 .sf-glyph { position: absolute; bottom: 0; height: calc(var(--foot) * 1.55); aspect-ratio: .82; pointer-events: none; }
