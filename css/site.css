@@ -959,8 +959,9 @@ html.key-handoff .mast .key { opacity: 0; pointer-events: none; }
 
 /* the room between the views: each view stands on its own, with the page's paper between them */
 main { --vgap: clamp(96px, 16svh, 200px); }
-/* the stage on the scroll (js/main.js THE STAGE ON THE SCROLL): held over a long stretch, which plays it forward and back */
-.stage-run { --run: 720svh; position: relative; height: calc(100svh + var(--run)); }
+/* the stage on the scroll (js/main.js THE STAGE ON THE SCROLL): it plays by itself, held over a stretch of scroll that
+   fast-forwards it */
+.stage-run { --run: 300svh; position: relative; height: calc(100svh + var(--run)); }
 .stage-run > .stage { position: sticky; top: 0; height: 100svh; min-height: 0; }
 @media (prefers-reduced-motion: reduce) { .stage-run { --run: 0px; } }
 .duo { margin-block: var(--vgap); }
