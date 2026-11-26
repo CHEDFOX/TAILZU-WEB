@@ -4,7 +4,6 @@ import { splash } from "./paper/water.js";
 import { scroll } from "./stage.js";
 import "./tone.js";
 import "./minis.js";
-import "./nomaz.js";
 import "./game.js";
 import { blip } from "./blip/kit.js";
 
@@ -315,15 +314,26 @@ if (card) {
   // be the card, the face on it, and it all goes round again.
   // ===========================================================================
   const stage = card.closest(".stage");
+  // The flow: a few things asked of it in passing (not followed through), then dinner (the card opens into the screens:
+  // "I'm hungry.", the bot picks the meal, the order is placed), then a little more said to it, ending on its answer that
+  // all is handled, and last the food at the door. `tab` starts a tab's part; `story` opens the card into the screens.
   const BEATS = [
-    [null, "hey X0", "Here, at your service."],
-    ["mail", "Set up mail for leafandco.in", "On it. Your mail, in minutes."],
-    ["food", "Dinner tonight? Surprise me.", "On it. Something you'll love."],
-    ["code", "Ship the Notify me button.", "On it. Tested before it ships."],
-    ["meet", "Sit in on my 10:00, take notes.", "On it. Notes to everyone after."],
+    { ask: "hey X0", answer: "Here, at your service." },
+    { tab: "tasks", ask: "Move my 4 pm to Friday.", answer: "Done. Friday, 4 pm." },
+    { ask: "Tell Rahul yes for Sunday.", answer: "Sent." },
+    { tab: "food", story: "food" },
+    { tab: "chat", ask: "Book a cab for 9 tomorrow.", answer: "Booked. 9 am, at your door." },
+    { ask: "Is everything sorted?", answer: "All is handled. Have a peaceful dinner, we'll meet soon." },
+    { tab: "arrive", story: "arrive" },
   ];
-  // how long each story runs once the screens are up (its own clock, THE WORK VIEW), for the tabs' bars
-  const LEN = { mail: 29300, food: 13600, code: 29200, meet: 28700 };
+  // how long each story runs once the screens are up (its own clock, THE WORK VIEW), and an exchange in the card, for
+  // the tabs' bars
+  const LEN = { food: 11600, arrive: 12600 }, EXCHANGE = 5600, MORPH = 2800;
+  const partLen = (i) => {
+    let t = 0;
+    for (let j = i; j < BEATS.length && (j === i || !BEATS[j].tab); j++) t += (BEATS[j].ask ? EXCHANGE : 0) + (BEATS[j].story ? MORPH + LEN[BEATS[j].story] : 0);
+    return t;
+  };
   const S = () => window.__stories;
   const narrow = () => matchMedia("(max-width: 760px)").matches;
 
@@ -361,9 +371,9 @@ if (card) {
     const dx = r1.left + r1.width / 2 - (r0.left + r0.width * k / 2), dy = r1.top + r1.height / 2 - (r0.top + r0.height * k / 2);
     return `translate(${dx.toFixed(1)}px, ${dy.toFixed(1)}px) scale(${k.toFixed(4)})`;
   }
-  function toDevices(then) {
+  function toDevices(then, fade) {
     stage.classList.add("devices-on");                     // the desktop fades up in the box, the phone slides up (CSS)
-    if (narrow() || reduced) { card.classList.add("hide"); at(750, then); return; }
+    if (fade || narrow() || reduced) { card.classList.add("hide"); at(750, then); return; }
     const t = flipOnto(S().screen().getBoundingClientRect());
     card.style.transform = "none"; card.classList.add("morph", "leaving"); void card.offsetWidth;
     card.style.transform = t;
@@ -410,18 +420,19 @@ if (card) {
   }, { threshold: .3 }).observe(card);
 
   function beat(i) {
-    const [story, ask, answer] = BEATS[i];
+    const { tab, story, ask, answer } = BEATS[i];
     if (i === 0) {
       reset(); played++;
       window.__filmT0 = performance.now();
       tabOn = -1; tabs.forEach((b) => { b.classList.remove("on"); b.style.setProperty("--p", "0"); });
     }
-    if (story) setTab(tabs.findIndex((b) => b.dataset.story === story), 5600 + 2800 + LEN[story]);
-    exchange(ask, answer, () => {
-      if (!story) { beat(1); return; }
+    if (tab) setTab(tabs.findIndex((b) => b.dataset.story === tab), partLen(i));
+    const then = () => {
+      if (!story) { beat(i + 1); return; }
       S().prep(story);
+      // the food at the door is the phone's alone: the card fades into it rather than landing on the desktop
       toDevices(() => S().play(story, () => {
-        const last = story === "meet";
+        const last = story === "arrive";
         if (!last) { toCard(S().screen(), () => whenSeen(() => beat(i + 1))); return; }
         // the end: the phone in the middle with the face on it. The first time through, the page moves on from here;
         // then, a little later, the card comes back over the box with the same face, and it all goes round again
@@ -433,20 +444,21 @@ if (card) {
             at(2500, () => whenSeen(() => beat(0)));
           });
         }));
-      }));
-    });
+      }), story === "arrive");
+    };
+    if (ask) exchange(ask, answer, then); else then();
   }
   function jump(i) {                                         // a tab: straight to that story's ask
     reset(); waiting = null;
     S().stop(); S().reset();
     stage.classList.remove("devices-on"); card.classList.remove("hide", "morph", "cut"); card.style.transform = "";
-    if (reduced) { stage.classList.add("devices-on"); card.classList.add("hide"); S().play(BEATS[i][0]); setTab(i - 1, 1); return; }
+    if (reduced) { stage.classList.add("devices-on"); card.classList.add("hide"); S().play(BEATS[i].story || "arrive"); return; }
     beat(i);
   }
   // a tab: the first click goes to that story; on the story playing, a click on its bar goes to that point of it,
   // as on a video's
   tabs.forEach((b, k) => b.addEventListener("click", (e) => {
-    const i = BEATS.findIndex((x) => x[0] === b.dataset.story);
+    const i = BEATS.findIndex((x) => x.tab === b.dataset.story);
     if (k !== tabOn || reduced || !e.clientX) { jump(i); return; }
     const r = b.getBoundingClientRect(), f = Math.min(.985, Math.max(0, (e.clientX - r.left) / r.width));
     const len = tabLen;
@@ -766,14 +778,15 @@ function sayer(aside) {
       ["🍕", "Margherita slice", "Slice Lab · ₹129"],
       ["🥤", "Cold coffee", "Corner Kitchen · ₹119"],
     ];
-    const DELIV = '<div class="deliv"><div class="emos">🍔🍟🥤</div>'
+    const PLACED = '<div class="deliv"><div class="placed">Order placed</div><div class="emos">🍔🍟🥤</div>'
       + '<div class="big">Your happy meal is arriving in <em>31 mins</em></div>'
-      + '<div class="small">Hot and as you like.</div>'
+      + '<div class="small">Corner Kitchen · paid with your yes.</div>'
       + '<div class="track"><b></b><i></i></div><div class="ends"><span>Corner Kitchen</span><span>You</span></div></div>';
     let s2 = {};
-    // ---- Blip in the food story, the real one (js/blip/kit.js): he peeks round the screen's right edge, comes in to
-    // the middle to listen, then goes up out of the way, small, looking about while the food comes. Drawn on a canvas
-    // in the scene, in the mail screen's own 1040x650 design pixels.
+    // ---- the bot in the food story, the real one (js/blip/kit.js): it walks in along the bottom of the screen and does
+    // the choosing itself, under the deck: it flicks away what you would not want, points out each part of the meal as
+    // it picks it, and cheers when it is done. Drawn on a canvas in the scene, in the mail screen's own 1040x650 design
+    // pixels; it stands on the screen's bottom edge.
     function foodBlip(host) {
       const B = blip();
       if (!B) return null;
@@ -781,11 +794,9 @@ function sayer(aside) {
       cv.className = "s2-cv"; cv.setAttribute("aria-hidden", "true");
       host.prepend(cv);       // under the words and the cards
       const g = cv.getContext("2d");
-      const PEEK_H = 210, edge = B.createBlip({ height: PEEK_H });
       const me = B.createPerformer({ dpr: 2 });
-      // where he stands in each part: feet (x, y), height H
-      const SPOT = { off: [1150, 400, 180], mid: [520, 398, 180], up: [520, 150, 92] };
-      let mode = "off", from = SPOT.off, to = SPOT.off, t0 = 0, T = 1, fx = -1, raf = 0, k = 0;
+      const FLOOR = 646, H = 128;
+      let x = 1180, from = 1180, to = 1180, t0 = 0, T = 1, fx = -1, face = -1, raf = 0, k = 0, walking = false;
       const io = (u) => u * u * (3 - 2 * u);
       const want = () => Math.min(3, (mailScreen.clientWidth / 1040) * Math.min(2, devicePixelRatio || 1));
       function fit() { k = want(); cv.width = Math.round(1040 * k); cv.height = Math.round(650 * k); }
@@ -793,30 +804,26 @@ function sayer(aside) {
         raf = requestAnimationFrame(frame);
         if (Math.abs(want() - k) > .01) fit();           // the screen was resized
         g.setTransform(k, 0, 0, k, 0, 0); g.clearRect(0, 0, 1040, 650);
-        // round the edge: his "up" is to the left, into the screen
-        g.save(); g.translate(1040, 318); g.rotate(-Math.PI / 2);
-        edge.draw(g, 0, 0, now / 1000, k);
-        g.restore();
-        if (mode === "off") { if (!edge.shown()) stop(); return; }
         const u = io(Math.min(1, (now - t0) / T));
-        const x = from[0] + (to[0] - from[0]) * u, y = from[1] + (to[1] - from[1]) * u, H = from[2] + (to[2] - from[2]) * u;
-        if (u >= 1 && mode === "walk") { mode = "listen"; me.play("listen"); }
-        fx += ((mode === "walk" ? -1 : 1) - fx) * .18;          // he walks in facing left, then turns to face you
-        g.save(); g.translate(x, y); g.scale(fx, 1); me.draw(g, 0, 0, H, now); g.restore();
+        x = from + (to - from) * u;
+        if (u >= 1 && walking) { walking = false; me.play(next, { then: "rest", again: true }); }
+        fx += ((walking ? face : 1) - fx) * .2;              // it walks facing the way it goes, then turns to face you
+        g.save(); g.translate(x, FLOOR); g.scale(fx, 1); me.draw(g, 0, 0, H, now); g.restore();
       }
+      let next = "rest";
       function start() { if (!raf) { fit(); raf = requestAnimationFrame(frame); } }
       function stop() { cancelAnimationFrame(raf); raf = 0; g.setTransform(1, 0, 0, 1, 0, 0); g.clearRect(0, 0, cv.width, cv.height); }
-      function go(m, a, b, ms) { mode = m; from = a; to = b; t0 = performance.now(); T = ms; start(); }
+      /** walk to x (design pixels), then do `then` */
+      function walk(nx, ms, then = "rest") {
+        from = x; to = nx; t0 = performance.now(); T = reduced ? 1 : ms; face = nx < x ? -1 : 1; next = then;
+        walking = Math.abs(nx - x) > 4; if (walking) me.play("stroll"); else me.play(then, { then: "rest", again: true });
+        start();
+      }
       return {
-        peek() { edge.pose("peek"); start(); },
-        heard() { edge.pose("listening"); },                    // "Hey X0": he lifts up, all attention
-        comeIn() {                                              // round the edge and in, to the middle, to listen
-          edge.pose("hidden");
-          me.play("stroll");
-          go("walk", SPOT.off, SPOT.mid, reduced ? 1 : 900);
-        },
-        up() { me.play("look"); go("up", SPOT.mid, SPOT.up, reduced ? 1 : 750); },
-        clear() { edge.pose("hidden"); edge.snap(); mode = "off"; stop(); },
+        comeIn() { x = from = to = 1180; walk(520, 1100, "look"); },  // in from the right, along the bottom, to under the deck
+        to(nx, then) { walk(nx, 420, then); },
+        act(name) { me.play(name, { then: "rest", again: true }); },
+        clear() { stop(); x = from = to = 1180; },
       };
     }
 
@@ -824,16 +831,15 @@ function sayer(aside) {
       scene2El.classList.remove("on", "listening");
       if (s2 && s2.blip) s2.blip.clear();
       scene2El.innerHTML = '<div class="s2-rings"><i></i><i></i><i></i></div>'
-        + '<p class="s2-said hey"><span>Hey</span><span>X0</span></p>'
         + '<p class="s2-said hungry"><span>I\'m</span><span>hungry.</span></p>'
+        + '<p class="s2-said done"><span>Done.</span></p>'
         + '<div class="s2-cards"></div>'
-        + '<div class="s2-pill"><span class="wave"><i></i><i></i><i></i><i></i><i></i></span><span>Listening</span><kbd>Ctrl</kbd><kbd>Ctrl</kbd></div>'
-        + `<i class="cursor hide">${CURSOR}</i>`;
+        + '<div class="s2-pill"><span class="wave"><i></i><i></i><i></i><i></i><i></i></span><span>Listening</span><kbd>Ctrl</kbd><kbd>Ctrl</kbd></div>';
       s2 = {
-        blip: null, hey: scene2El.querySelector(".hey"), hungry: scene2El.querySelector(".hungry"),
-        cards: scene2El.querySelector(".s2-cards"), pill: scene2El.querySelector(".s2-pill"), cursor: scene2El.querySelector(".cursor"),
+        blip: null, hungry: scene2El.querySelector(".hungry"), done: scene2El.querySelector(".done"),
+        cards: scene2El.querySelector(".s2-cards"), pill: scene2El.querySelector(".s2-pill"),
       };
-      s2.blip = foodBlip(scene2El) || { peek() {}, heard() {}, comeIn() {}, up() {}, clear() {} };
+      s2.blip = foodBlip(scene2El) || { comeIn() {}, to() {}, act() {}, clear() {} };
       FOOD.forEach(([emo, name, from]) => {
         const card = document.createElement("div");
         card.className = "fc";
@@ -844,18 +850,13 @@ function sayer(aside) {
         s2.cards.appendChild(card);
       });
     }
-    function pointIn(el, fx, fy, dx = 0, dy = 0) {
-      let x = el.offsetWidth * fx, y = el.offsetHeight * fy, n = el;
-      while (n && n !== scene2El) { x += n.offsetLeft; y += n.offsetTop; n = n.offsetParent; }
-      s2.cursor.style.setProperty("--cx", (x - 2 + dx) + "px");
-      s2.cursor.style.setProperty("--cy", (y - 1 + dy) + "px");
-    }
     // the deck: card f in front; the others behind it to either side, each a
     // step further back, smaller and turned in, so each sits partly behind the next
+    const STEP = 150;
     function deck(f, list) {
       list.forEach((c, i) => {
         const d = i - f, ad = Math.abs(d);
-        c.style.setProperty("--x", (d * 150) + "px");
+        c.style.setProperty("--x", (d * STEP) + "px");
         c.style.setProperty("--z", (-ad * 110) + "px");
         c.style.setProperty("--ry", (-d * 18) + "deg");
         c.style.setProperty("--s", (1 - ad * .05).toFixed(3));
@@ -866,65 +867,49 @@ function sayer(aside) {
 
     function act2(B) {
       const cards = () => [...s2.cards.children];
-      // the screens clear
+      const left = () => cards().filter((c) => !c.classList.contains("swiped"));
+      // the screens clear, and it is said: I'm hungry
       wat(B, () => {
-        scene2El.classList.add("on");
+        scene2El.classList.add("on", "listening");
         feed.querySelectorAll(".f").forEach((f) => drop(f));
-        say("Here if you need me", false);
-      });
-      // Blip peeks in at the desktop's edge
-      wat(B + 600, () => { focusOn("desk"); tell(LINES.food); });
-      wat(B + 800, () => s2.blip.peek());
-      // called
-      wat(B + 1900, () => { s2.pill.classList.add("on", "talking"); words(s2.hey, 260); s2.blip.heard(); });
-      // he comes to the middle to listen
-      wat(B + 2800, () => {
-        s2.hey.classList.add("out");
-        s2.blip.comeIn();
-        scene2El.classList.add("listening");
+        focusOn("desk"); tell(LINES.food);
+        s2.pill.classList.add("on", "talking");
         say("Listening…");
       });
-      wat(B + 3500, () => words(s2.hungry, 300));
-      // up out of the way, and the food comes
-      wat(B + 4900, () => {
+      wat(B + 500, () => words(s2.hungry, 300));
+      // the bot walks in along the bottom; the food comes
+      wat(B + 2100, () => {
         s2.pill.classList.remove("talking", "on");
         s2.hungry.classList.add("out");
         scene2El.classList.remove("listening");
-        s2.blip.up();
+        s2.blip.comeIn();
         say("Finding food…");
       });
-      wat(B + 5300, () => { deck(0, cards()); cards().forEach((c, i) => wat(i * 120, () => c.classList.add("in"))); });
-      // the deck scrolls sideways, to the pizza
-      wat(B + 6500, () => deck(1, cards()));
-      wat(B + 7300, () => deck(2, cards()));
-      // the person swipes it away
-      wat(B + 7900, () => { s2.cursor.classList.remove("hide"); pointIn(cards()[2], .5, .42); });
-      wat(B + 8550, () => {
+      wat(B + 2600, () => { deck(0, cards()); cards().forEach((c, i) => wat(i * 120, () => c.classList.add("in"))); });
+      // it looks through the deck, to the pizza
+      wat(B + 3700, () => { deck(1, cards()); s2.blip.act("look"); });
+      wat(B + 4400, () => deck(2, cards()));
+      // and flicks it away: not tonight
+      wat(B + 5000, () => s2.blip.act("send"));
+      wat(B + 5250, () => { const pz = cards()[2]; pz.classList.add("grab"); pz.style.setProperty("--x", "-48px"); pz.style.setProperty("--ry", "-8deg"); });
+      wat(B + 5550, () => {
         const pz = cards()[2];
-        s2.cursor.classList.add("click");
-        pz.classList.add("grab");
-        pz.style.setProperty("--x", "-56px"); pz.style.setProperty("--ry", "-8deg");
-        pointIn(pz, .5, .42, -56, 4);
-      });
-      wat(B + 8900, () => {
-        const pz = cards()[2];
-        s2.cursor.classList.remove("click");
-        pz.classList.remove("grab");
-        pz.classList.add("swiped");
+        pz.classList.remove("grab"); pz.classList.add("swiped");
         pz.style.setProperty("--x", "-640px"); pz.style.setProperty("--y", "-50px"); pz.style.setProperty("--ry", "-34deg");
-        pointIn(pz, .5, .42, -250, 14);
       });
-      wat(B + 9250, () => s2.cursor.classList.add("hide"));
-      // the three left settle back into the deck, fries in front, and turn green: that is the meal
-      wat(B + 9400, () => deck(1, cards().filter((c) => !c.classList.contains("swiped"))));
-      wat(B + 9900, () => {
-        cards().filter((c) => !c.classList.contains("swiped")).forEach((c, i) => wat(i * 170, () => c.classList.add("pick")));
-        say("Ordering…");
+      // the three left settle back, fries in front; it walks under each and picks it
+      wat(B + 5900, () => deck(1, left()));
+      [0, 1, 2].forEach((j) => {
+        wat(B + 6400 + j * 650, () => s2.blip.to(520 + (j - 1) * STEP, "point"));
+        wat(B + 6750 + j * 650, () => left()[j].classList.add("pick"));
       });
-      // and on the phone, it is on its way
-      wat(B + 10850, () => { focusOn("phone"); feed.classList.add("center"); add(DELIV); say("On its way", false); });
-      // a moment with the meal on its way, then the third story
-      chain(act3, B + 13600);
+      wat(B + 6400, () => say("Choosing…"));
+      // done
+      wat(B + 8500, () => { s2.blip.to(520, "celebrate"); words(s2.done, 0); say("Ordering…"); });
+      // and on the phone: the order is placed
+      wat(B + 9400, () => { focusOn("phone"); feed.classList.add("center"); add(PLACED); say("Order placed", false); });
+      // a moment with it on its way, then the next part
+      chain(act3, B + 11600);
     }
 
     // ---- the third story: Xode on the desktop, orders from the phone ----
@@ -1395,7 +1380,7 @@ function sayer(aside) {
     // ---- one story at a time, for the stage's conductor (THE STAGE, above): it asks X0 for something in the card,
     // opens the card up into these screens, plays the story, and is told when it is over. Played that way, a story
     // does not run on into the next; played on its own (onDone unset), the four run on as one.
-    const STORY = { mail: 1, food: 1, code: 1, meet: 1 };
+    const STORY = { mail: 1, food: 1, code: 1, meet: 1, arrive: 1 };
     let onDone = null, prepped = false;       // prepped: the screens are already set for the story about to play
     function finish() { const d = onDone; onDone = null; if (d) d(); }
     function chain(next, at) { if (onDone) wat(at, finish); else next(at); }
@@ -1408,6 +1393,12 @@ function sayer(aside) {
         onDone = null; reset(); prepped = true;
         const sc = { food: scene2El, code: scene3El, meet: scene4El }[name];
         if (sc) { sc.style.transition = "none"; sc.classList.add("on"); void sc.offsetWidth; sc.style.transition = ""; }
+        // the food at the door: the phone alone, already in the middle, its screen empty
+        if (name === "arrive") {
+          [monitorEl, phoneEl].forEach((el) => { el.style.transition = "none"; });
+          monitorEl.classList.add("away"); phoneEl.classList.add("center"); feed.textContent = "";
+          void phoneEl.offsetWidth; [monitorEl, phoneEl].forEach((el) => { el.style.transition = ""; });
+        }
       },
       screen: () => mailScreen,
       phone: () => appScreen,
@@ -1423,6 +1414,7 @@ function sayer(aside) {
       if (story === "food") { act2(200); return; }
       if (story === "code") { act3(200); return; }
       if (story === "meet") { act5(200); return; }
+      if (story === "arrive") { act4(200); return; }
 
       // ---------- SET UP, on the desktop ----------
       focusOn("desk");
@@ -1524,131 +1516,5 @@ function sayer(aside) {
     }
 
     reset();
-  }
-}
-
-// ---------------------------------------------------------------------------
-// THE ROAM. Four journeys cut fast into one 2.39:1 loop (media/roam/journeys.mp4:
-// fourteen cuts of under a second or so, each place at three framings, a slow
-// push on every shot, one grade). The film plays only while it can be seen: the view's pinned part is watched, the
-// view itself being three windows tall (js/nomaz.js turns the scroll through it into the box's steps).
-// ---------------------------------------------------------------------------
-{
-  const sec = document.getElementById("roam"), film = document.getElementById("roamFilm");
-  if (sec && film) {
-    new IntersectionObserver((es) => {
-      const vis = es.some((e) => e.isIntersecting);
-      if (vis) { sec.classList.add("seen"); if (!reduced) film.play().catch(() => {}); }
-      else film.pause();
-    }, { threshold: .3 }).observe(sec.querySelector(".roam-pin") || sec);
-  }
-}
-
-// ---------------------------------------------------------------------------
-// THE MINDS. Three films (media/minds: a night at the desk, a face lit by its
-// thoughts, an observatory under the Milky Way) cut fast into shots, each its own framing of one of them with a
-// slow push, and drawn as an orange dither: each frame is sampled down to a
-// grid, levelled, and every cell is lit or not by a 4x4 ordered threshold, so
-// the mid-tones come out as checkerboards. A cut flashes inverted for a frame.
-// It runs only while the view can be seen.
-// ---------------------------------------------------------------------------
-{
-  const sec = document.getElementById("minds");
-  const frame = sec?.querySelector(".minds-frame");
-  if (sec && frame) {
-    const vids = [...frame.querySelectorAll("video")];
-    const out = frame.querySelector("canvas"), octx = out.getContext("2d");
-    const tcEl = frame.querySelector(".mf-tc"), nameEl = frame.querySelector(".mf-name");
-    const NAMES = ["NIGHT SHIFT", "DEEP THOUGHT", "STARGAZER"];
-    // [film, width of the framing as a part of the film's, its centre x, y, ms]
-    const SHOTS = [
-      [0, 1, .5, .5, 900], [1, .72, .5, .42, 520], [2, 1, .5, .5, 760], [0, .44, .62, .64, 420],
-      [1, .48, .64, .4, 640], [2, .42, .64, .66, 460], [0, .4, .5, .47, 480], [2, .4, .6, .2, 520],
-      [1, 1, .5, .5, 700], [0, .34, .84, .55, 380], [2, .5, .38, .5, 560], [1, .56, .48, .62, 480],
-      [0, .62, .4, .45, 620], [2, .36, .6, .76, 400], [1, .38, .56, .34, 440],
-    ];
-    const B = [0, 8, 2, 10, 12, 4, 14, 6, 3, 11, 1, 9, 15, 7, 13, 5].map((v) => (v + .5) / 16);
-    const COLS = 64, ROWS = 106;               // the picture's grid: 9:16 less the strip under it
-    const grab = document.createElement("canvas"); grab.width = COLS; grab.height = ROWS;
-    const gctx = grab.getContext("2d", { willReadFrequently: true });
-    const tiny = document.createElement("canvas"); tiny.width = COLS; tiny.height = ROWS;
-    const tctx = tiny.getContext("2d");
-    const img = tctx.createImageData(COLS, ROWS);
-    const lum = new Float32Array(COLS * ROWS), hist = new Uint32Array(64);
-    const FIRE = [255, 90, 31], DARK = [7, 6, 5];
-
-    let shot = 0, shotT = 0, t0 = 0, last = 0, raf = 0, on = false, flash = 0;
-    const fit = () => { const r = Math.min(2, devicePixelRatio || 1); out.width = Math.round(out.clientWidth * r); out.height = Math.round(out.clientHeight * r); };
-    new ResizeObserver(fit).observe(out);
-
-    function draw(k) {                          // k: how far through the shot, for the push
-      const [f, w0, cx, cy] = SHOTS[shot], v = vids[f];
-      if (v.readyState < 2) return false;
-      const W = v.videoWidth, H = v.videoHeight;
-      const sw = W * w0 * (1 - .08 * k), sh = sw * ROWS / COLS;
-      const sx = Math.max(0, Math.min(W - sw, W * cx - sw / 2)), sy = Math.max(0, Math.min(H - sh, H * cy - sh / 2));
-      gctx.drawImage(v, sx, sy, sw, sh, 0, 0, COLS, ROWS);
-      const px = gctx.getImageData(0, 0, COLS, ROWS).data;
-      hist.fill(0);
-      for (let i = 0, j = 0; i < lum.length; i++, j += 4) {
-        const l = (px[j] * .3 + px[j + 1] * .59 + px[j + 2] * .11) / 255;
-        lum[i] = l; hist[Math.min(63, l * 64 | 0)]++;
-      }
-      // levelled between its 3rd and 97th percentiles, so a dark film still uses the whole range
-      let lo = 0, hi = 63, acc = 0;
-      for (; lo < 63 && (acc += hist[lo]) < lum.length * .03; lo++);
-      acc = 0; for (; hi > 0 && (acc += hist[hi]) < lum.length * .03; hi--);
-      const a = lo / 64, span = Math.max(.08, (hi + 1) / 64 - a);
-      const inv = flash > 0;
-      const d = img.data;
-      for (let y = 0, i = 0; y < ROWS; y++) for (let x = 0; x < COLS; x++, i++) {
-        // a floor, so the dark round a figure stays black, and a steep S, so shapes come out as solid fields
-        const u = Math.min(1, Math.max(0, ((lum[i] - a) / span - .2) / .66)), l = u * u * (3 - 2 * u);
-        const lit = (l > B[(y & 3) * 4 + (x & 3)]) !== inv;
-        const c = lit ? FIRE : DARK, o = i * 4;
-        d[o] = c[0]; d[o + 1] = c[1]; d[o + 2] = c[2]; d[o + 3] = 255;
-      }
-      tctx.putImageData(img, 0, 0);
-      octx.imageSmoothingEnabled = false;
-      octx.drawImage(tiny, 0, 0, out.width, out.height);
-      return true;
-    }
-
-    const pad = (n) => String(n).padStart(2, "0");
-    function frameLoop(t) {
-      raf = requestAnimationFrame(frameLoop);
-      if (t - last < 1000 / 24) return;           // the films' own 24 a second
-      last = t; t0 ||= t; shotT ||= t;
-      if (t - shotT >= SHOTS[shot][4]) {
-        shot = (shot + 1) % SHOTS.length; shotT = t; flash = 1;
-        nameEl.textContent = NAMES[SHOTS[shot][0]];
-      }
-      if (draw((t - shotT) / SHOTS[shot][4])) flash = Math.max(0, flash - 1);
-      const e = (t - t0) / 1000, fr = Math.floor(e * 24);
-      tcEl.textContent = `${pad(Math.floor(e / 3600))}:${pad(Math.floor(e / 60) % 60)}:${pad(Math.floor(e) % 60)}:${pad(fr % 24)}`;
-    }
-
-    function start() {
-      if (on) return; on = true;
-      vids.forEach((v) => { v.preload = "auto"; v.play().catch(() => {}); });
-      if (reduced) {                               // one still, drawn once the first film has a frame
-        const still = () => { vids.forEach((v) => v.pause()); draw(0); };
-        if (vids[0].readyState >= 2) still(); else vids[0].addEventListener("loadeddata", still, { once: true });
-        return;
-      }
-      raf = requestAnimationFrame(frameLoop);
-    }
-    function stop() {
-      if (!on) return; on = false;
-      cancelAnimationFrame(raf); raf = 0; last = 0;
-      vids.forEach((v) => v.pause());
-    }
-    new IntersectionObserver((es) => {
-      const vis = es.some((e) => e.isIntersecting);
-      if (vis) { sec.classList.add("seen"); start(); } else stop();
-    }, { threshold: .2 }).observe(sec);
-    new IntersectionObserver((es) => {           // fetch the films a little before they are needed
-      if (es.some((e) => e.isIntersecting)) vids.forEach((v) => { if (v.preload === "none") v.preload = "auto"; });
-    }, { rootMargin: "100% 0px" }).observe(sec);
   }
 }

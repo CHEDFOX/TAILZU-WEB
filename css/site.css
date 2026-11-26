@@ -307,136 +307,6 @@ a { color: var(--ink); text-decoration-color: var(--line); text-underline-offset
 /* a change of line: the old one lifts away, the new one rises in */
 .show-say > :not(.tabs) { transition: opacity .32s ease, translate .42s cubic-bezier(.2, .8, .3, 1); }
 .show-say.out > :not(.tabs) { opacity: 0; translate: 0 -8px; transition-duration: .22s, .26s; }
-/* THE ROAMING VIEW (after the film): the line on the left, written over a few rows, and on the right a tall frame
-   playing seven journeys in fast cuts (js/main.js THE ROAM) */
-/* margin-top: room between the first view and this one */
-/* The view is three windows tall and its contents stay in place (sticky) while it is scrolled through: js/nomaz.js turns
-   how far into it the page is into a step (data-step: 0 the intro, then each stop). */
-.roam { position: relative; width: 100vw; margin-inline: calc(50% - 50vw); margin-top: clamp(96px, 18svh, 220px); height: 340svh; }
-.roam-pin { position: sticky; top: 0; box-sizing: border-box; height: 100svh;
-  display: flex; align-items: center; justify-content: center; gap: clamp(32px, 6vw, 120px); padding: 84px max(20px, 5vw) 40px; }
-.roam-text { flex: 0 0 auto; }
-.roam-text h2 { margin: 0 0 clamp(28px, 6svh, 64px); font-size: clamp(34px, 4.4vw, 64px); line-height: 1.02; }
-.scrawl { font: 700 1.12em/1 "Caveat", "Segoe Print", "Bradley Hand", cursive; color: #5E9145; display: inline-block; rotate: -4deg; translate: 0 .04em; }
-/* the words: a small label, the title, a short paragraph, and a dotted box of what it does. The box has a paper fill
-   of its own, so it reads the same on the light and the dark of the field */
-.roam-kick { margin: 0 0 14px; font: 500 11px/1 var(--sans); letter-spacing: .2em; text-transform: uppercase; color: var(--muted); }
-.roam-lede { margin: 0 0 clamp(20px, 3.4svh, 32px); max-width: 44ch; font: 400 clamp(16px, 1.25vw, 19px)/1.55 var(--sans); color: var(--ink-2); text-wrap: pretty; }
-.roam-box { max-width: 30rem; padding: 18px 22px 16px; border: 2px dotted rgba(22, 20, 15, .42); border-radius: 18px;
-  background: rgba(247, 246, 242, .9); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); color: var(--ink); }
-/* while it waits for its words: as big as it will be, so the view keeps its shape */
-/* THE NOMAZ BOX: X0 Bot's travel bot. As drawn: a little over a third of the window wide, two thirds of it tall,
-   centred on the film's height. Its name with what it is in the page's handwriting; then what it does as one trip,
-   three stops on a dotted route (before, on the way, out there). From the middle stop the route runs on out of the
-   box to the film, a dot travelling along it: the box is the plan, the film the trip. */
-.roam-box.nomaz { position: relative; box-sizing: border-box; width: min(35.5vw, 40rem); max-width: none; min-height: min(68svh, 46rem);
-  display: flex; flex-direction: column; padding: clamp(24px, 2.6vw, 44px) clamp(24px, 2.6vw, 44px) clamp(22px, 2.4vw, 40px); }
-/* it speaks: its face and "Hey, I'm" in the page's handwriting, its name, and what it loves */
-.nz-head { position: relative; }
-.nz-hey { margin: 0 0 4px; font: 700 clamp(24px, 2vw, 36px)/1 "Caveat", "Segoe Print", "Bradley Hand", cursive; color: #5E9145; rotate: -2deg; transform-origin: left; }
-.nomaz .nz-name { margin: 0; font: 400 clamp(46px, 4.6vw, 84px)/.95 var(--serif); letter-spacing: .02em; color: var(--ink); }
-.nz-love { margin: clamp(12px, 1.8svh, 18px) 0 0; max-width: 24ch; font: italic 400 clamp(19px, 1.6vw, 28px)/1.28 var(--serif); letter-spacing: -.01em; color: rgba(22, 20, 15, .84); text-wrap: balance; }
-.nomaz .nz-trip { list-style: none; margin: auto 0 0; padding: clamp(18px, 3svh, 30px) 0 0; border-top: 2px dotted rgba(22, 20, 15, .18); display: grid; gap: clamp(14px, 2.6svh, 26px); }
-/* each stop: a ring on the route, when, what (the owner's words), and a line of how */
-.nomaz .nz-trip li { position: relative; padding-left: 34px; display: grid; gap: 4px; }
-.nomaz .nz-trip li { --ring: calc(10.5px * 1.2 + 4px + clamp(21px, 1.7vw, 30px) * .55 - 7px); }   /* level with the title's middle */
-.nomaz .nz-trip li::before { content: ""; position: absolute; left: 0; top: var(--ring); width: 14px; height: 14px; box-sizing: border-box; border-radius: 50%;
-  border: 2px solid var(--ink); background: #F7F6F2; z-index: 1; }
-.nomaz .nz-trip li:not(:last-child)::after { content: ""; position: absolute; left: 6px; top: calc(var(--ring) + 14px); bottom: calc(-1 * clamp(14px, 2.6svh, 26px) - var(--ring));
-  border-left: 2px dotted rgba(22, 20, 15, .45); transform-origin: top; }
-.nz-when { font: 500 10.5px/1.2 var(--sans); letter-spacing: .18em; text-transform: uppercase; color: #5E9145; }
-.nz-trip b { font: 400 clamp(21px, 1.7vw, 30px)/1.1 var(--serif); letter-spacing: -.015em; color: var(--ink); }
-.nz-what { font: 400 clamp(12px, .8vw, 13.5px)/1.45 var(--sans); color: rgba(22, 20, 15, .56); max-width: 36ch; text-wrap: pretty; }
-/* the middle stop runs on out of the box, across the gap (6vw, as the box is 35.5vw), to the film's edge */
-/* in two pieces: from the end of its title to the box's edge, then from there across the padding and the gap */
-.nomaz .nz-out b { display: flex; align-items: center; gap: 12px; }
-.nomaz .nz-out b::after { content: ""; flex: 1; min-width: 0; border-top: 2px dotted rgba(22, 20, 15, .45); translate: 0 .12em; transform-origin: left; }
-.nz-run { position: absolute; left: 100%; top: calc(var(--ring) + 9px); width: calc(clamp(24px, 2.6vw, 44px) + clamp(32px, 6vw, 120px)); height: 0;
-  border-top: 2px dotted #6FA352; transform-origin: left; pointer-events: none; z-index: 0; }   /* green: it crosses the field's dark half too */
-/* The intro, the first time the view is seen: the hello writes itself, then the name and what it loves. It stands in the
-   middle of the box (--drop, js/nomaz.js) until the first scroll, then drifts up to its place as the first stop comes;
-   each scroll after brings the next stop, its piece of route drawn down to it, and from the second the route out to
-   the film. Scrolling back takes them away again. */
-.nz-hey { clip-path: inset(-30% 100% -30% -4%); transition: clip-path .8s cubic-bezier(.5, .1, .4, 1) .2s; }
-.roam.seen .nz-hey { clip-path: inset(-30% -6% -30% -4%); }
-.nz-name, .nz-love { transition: opacity .6s ease, translate .8s cubic-bezier(.2, .8, .25, 1); }
-.roam:not(.seen) .nz-name, .roam:not(.seen) .nz-love { opacity: 0; translate: 0 10px; }
-.roam.seen .nz-name { transition-delay: .8s; } .roam.seen .nz-love { transition-delay: 1.15s; }
-.nz-head { translate: 0 var(--drop, 0px); transition: translate 1s cubic-bezier(.5, 0, .2, 1); }
-.roam:not([data-step="0"]) .nz-head { translate: 0 0; }
-.nomaz .nz-trip { transition: border-color .6s ease; }
-.roam[data-step="0"] .nomaz .nz-trip { border-top-color: transparent; }
-.nomaz .nz-trip li { transition: opacity .55s ease, translate .7s cubic-bezier(.2, .8, .25, 1); }
-.nomaz .nz-trip li::after, .nz-run, .nomaz .nz-out b::after { transition: scale .6s cubic-bezier(.45, .05, .35, 1); }
-.roam[data-step="0"] .nomaz .nz-trip li, .roam[data-step="1"] .nomaz .nz-trip li:nth-child(n+2), .roam[data-step="2"] .nomaz .nz-trip li:nth-child(3) { opacity: 0; translate: 0 12px; }
-.roam[data-step="0"] .nomaz .nz-trip li::after, .roam[data-step="1"] .nomaz .nz-trip li::after, .roam[data-step="2"] .nomaz .nz-trip li:nth-child(2)::after { scale: 1 0; }
-.roam[data-step="0"] .nz-run, .roam[data-step="1"] .nz-run { scale: 0 1; transition-delay: 0s; }
-.roam[data-step="0"] .nomaz .nz-out b::after, .roam[data-step="1"] .nomaz .nz-out b::after { scale: 0 1; transition-delay: 0s; }
-.roam:is([data-step="2"], [data-step="3"]) .nomaz .nz-out b::after { transition-delay: .35s; }
-.roam:is([data-step="2"], [data-step="3"]) .nz-run { transition-delay: .9s; }
-.nomaz .nz-trip li:nth-child(1) { transition-delay: .35s; }   /* after the intro has started up */
-/* Nomaz, walking the route (js/nomaz.js): over the box and the gap to the film, never in the way */
-@media (prefers-reduced-motion: reduce) { .roam { height: auto; } .roam-pin { position: relative; min-height: 100svh; height: auto; } }
-.nz-bot { position: absolute; left: 0; top: 0; width: calc(100% + clamp(32px, 6vw, 120px)); height: 100%; pointer-events: none; z-index: 2; }
-.rb-h { margin: 0 0 10px; font: 500 11px/1 var(--sans); letter-spacing: .18em; text-transform: uppercase; color: rgba(22, 20, 15, .5); }
-.roam-box ul { margin: 0; padding: 0; list-style: none; display: grid; gap: 9px; }
-.roam-box li { position: relative; padding-left: 18px; font: 400 14.5px/1.45 var(--sans); color: rgba(22, 20, 15, .72); text-wrap: pretty; }
-.roam-box li::before { content: ""; position: absolute; left: 2px; top: .62em; width: 6px; height: 6px; border-radius: 50%; background: #5E9145; }
-.roam-box li b { font-weight: 600; color: var(--ink); }
-.rb-f { margin: 12px 0 0; padding-top: 11px; border-top: 2px dotted rgba(22, 20, 15, .2); font: 400 13.5px/1.4 var(--sans); color: rgba(22, 20, 15, .58); }
-/* they come in once, one after the other, the first time the view is seen */
-.roam-kick, .roam-text h2, .roam-lede, .roam-box { opacity: 0; translate: 0 14px; transition: opacity .7s ease, translate .9s cubic-bezier(.2, .8, .25, 1); }
-.roam.seen .roam-kick, .roam.seen .roam-text h2, .roam.seen .roam-lede, .roam.seen .roam-box { opacity: 1; translate: 0 0; }
-.roam.seen .roam-text h2 { transition-delay: .08s; } .roam.seen .roam-lede { transition-delay: .22s; } .roam.seen .roam-box { transition-delay: .38s; }
-/* the film: landscape, in cinema's 2.39:1, as wide as the room beside the box allows */
-.roam-frame { position: relative; flex: 0 1 auto; margin: 0; width: min(54vw, 920px, calc(70svh * 2.39)); aspect-ratio: 2.39 / 1; border-radius: 20px; overflow: hidden;
-  background: #1a1a1a url("/media/roam/journeys.jpg") center / cover; box-shadow: 0 0 0 1px rgba(22, 20, 15, .1), 0 50px 90px -50px rgba(22, 20, 15, .65); }
-.roam-frame video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
-@media (max-width: 860px) {
-  .roam-pin { flex-direction: column; justify-content: center; gap: 14px; padding: 72px 20px 18px; }
-  .roam-text { flex: none; width: min(100%, 30rem); }
-  .roam-text h2 { margin-bottom: 10px; font-size: clamp(28px, 7.4vw, 40px); }
-  .roam-lede { font-size: 15.5px; margin-bottom: 16px; }
-  .roam-box { padding: 14px 16px 12px; } .roam-box li { font-size: 14px; }
-  .roam { margin-top: clamp(64px, 12svh, 120px); }
-  .roam-text { width: min(100%, 40rem); }
-  /* On a phone the box and the film are one screen, held: the film a strip of at most a fifth of the window, the box
-     the rest, its words set tighter. The route does not run out of the box (the film is below it). */
-  .roam-pin { justify-content: safe center; gap: 10px; padding: 66px 16px 12px; }
-  .roam-text { flex: 0 1 auto; min-height: 0; display: flex; }
-  .roam-box.nomaz { width: 100%; min-height: 0; padding: 16px 18px 14px; overflow: hidden; }
-  .nomaz .nz-name { font-size: 40px; } .nz-hey { font-size: 22px; margin-bottom: 2px; } .nz-love { margin-top: 8px; font-size: 16.5px; max-width: 30ch; }
-  .nomaz .nz-trip { margin-top: 14px; padding-top: 12px; gap: 10px; }
-  .nomaz .nz-trip li { --ring: calc(10.5px * 1.2 + 3px + 19px * .55 - 7px); gap: 3px; padding-right: 52px; }   /* a column on the right for Nomaz */
-  .nomaz .nz-trip li:not(:last-child)::after { bottom: calc(-10px - var(--ring)); }
-  .nz-trip b { font-size: 19px; } .nz-what { font-size: 12px; line-height: 1.35; }
-  .nz-run, .nomaz .nz-out b::after { display: none; } .nz-bot { width: 100%; }
-  .roam-frame { flex: none; width: 100%; max-width: 40rem; height: min(20svh, calc((100vw - 32px) / 2.39)); aspect-ratio: auto; border-radius: 14px; }
-}
-/* a short phone (an iPhone SE): the side lines go, so the three stops and the film still fit */
-@media (max-width: 860px) and (max-height: 620px) {
-  .nz-what { display: none; }
-  .nomaz .nz-name { font-size: 36px; } .nz-love { font-size: 15.5px; }
-}
-@media (prefers-reduced-motion: reduce) { .roam-kick, .roam-text h2, .roam-lede, .roam-box, .nomaz > *, .nomaz .nz-trip li, .nomaz .nz-trip li::after, .nz-run, .nomaz .nz-out b::after, .nz-head { opacity: 1 !important; translate: none !important; scale: none !important; transition: none !important; clip-path: none !important; } .nz-hey, .nz-name, .nz-love { opacity: 1 !important; clip-path: none !important; translate: none !important; } }
-/* THE MINDS VIEW (after the roam): the roam's layout the other way round, and its frame a black screen on which two
-   films, cut fast, are drawn as an orange dither, a timecode and the shot's name under them (js/main.js THE MINDS) */
-.minds { flex-direction: row-reverse; }
-.minds-frame { --fire: #FF5A1F; container-type: size; position: relative; flex: none; margin: 0; height: min(60svh, 580px, calc((100vw - 40px) * 16 / 9));
-  aspect-ratio: 9 / 16; border-radius: 24px; overflow: hidden; background: #070605;
-  box-shadow: 0 0 0 1px rgba(22, 20, 15, .1), 0 50px 90px -50px rgba(22, 20, 15, .65); }
-.minds-frame video { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
-.minds-frame canvas { position: absolute; inset: 0 0 auto; width: 100%; height: 92.2%; image-rendering: pixelated; }   /* 64:106 of the 9:16, the strip below for the timecode */
-.mf-tc, .mf-name { position: absolute; bottom: 3.6%; font: 400 clamp(5.5px, 2.5cqw, 12px)/1 var(--mono); letter-spacing: .2em;   /* to the frame's width, so the two never meet */
-  color: var(--fire); }
-.mf-tc { left: 8%; } .mf-name { right: 8%; margin-right: -.2em; }
-.minds-frame::before, .minds-frame::after { content: ""; position: absolute; bottom: 2.4%; width: 4.5%; aspect-ratio: 1;
-  border: solid var(--fire); border-width: 0 0 1.5px 1.5px; }
-.minds-frame::before { left: 4.5%; } .minds-frame::after { right: 4.5%; border-width: 0 1.5px 1.5px 0; }
-@media (max-width: 860px) {
-  .minds { flex-direction: column; }
-  .minds-frame { height: min(40svh, calc((100vw - 40px) * 16 / 9)); border-radius: 20px; }
-}
 
 
 /* THE WORK VIEW, inside the first: the desktop and phone stand where the card stands (their box's foot on the card's
@@ -725,7 +595,8 @@ a { color: var(--ink); text-decoration-color: var(--line); text-underline-offset
 @keyframes ring2 { 0% { transform: scale(.72); opacity: .8; } 100% { transform: scale(1.75); opacity: 0; } }
 
 .s2-said { position: absolute; left: 0; right: 0; text-align: center; font: 500 32px/1.2 var(--sans); letter-spacing: -.025em; color: #141414; }
-.s2-said.hey { top: 292px; } .s2-said.hungry { top: 420px; }
+/* "I'm hungry." in the middle of the listening rings; "Done." over the deck, once the meal is picked */
+.s2-said.hungry { top: 254px; font-size: 40px; } .s2-said.done { top: 92px; font-size: 30px; color: #4F7A3A; }
 .s2-said span { display: inline-block; margin: 0 .14em; opacity: 0; translate: 0 10px; transition: opacity .4s ease, translate .5s cubic-bezier(.2, .9, .3, 1); }
 .s2-said span.in { opacity: 1; translate: 0 0; }
 .s2-said.out span { opacity: 0; translate: 0 -10px; }
@@ -764,6 +635,8 @@ a { color: var(--ink); text-decoration-color: var(--line); text-underline-offset
 .fc.pick { box-shadow: 0 0 0 3px #4F7A3A, 0 34px 50px -26px rgba(0, 0, 0, .4), 0 10px 18px -12px rgba(0, 0, 0, .2); }
 
 .deliv { padding: 18px 17px 15px; border-radius: 20px; background: #fff; box-shadow: 0 0 0 1px #ECECEA, 0 18px 34px -20px rgba(0, 0, 0, .45); }
+.deliv .placed { display: inline-flex; align-items: center; gap: 6px; margin-bottom: 12px; padding: 5px 10px 5px 8px; border-radius: 99px; background: #EAF2E3; color: #2F5321; font-size: 11.5px; font-weight: 600; }
+.deliv .placed::before { content: ""; width: 14px; height: 14px; border-radius: 50%; background: #4F7A3A url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 14'><path d='M4 7.2 6.1 9.3 10 5' fill='none' stroke='white' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/></svg>") center / 14px no-repeat; }
 .deliv .emos { font-size: 30px; line-height: 1; letter-spacing: 3px; margin-bottom: 12px; }
 .deliv .big { font-size: 19px; font-weight: 600; line-height: 1.25; letter-spacing: -.015em; }
 .deliv .big em { font-style: normal; color: #4F7A3A; }
@@ -993,8 +866,8 @@ html.film-held { overscroll-behavior: none; }
    ===================================================================== */
 .tw { --on-dark: #F3EEE6; transition: color .45s ease, stroke .45s ease, opacity .3s ease; }
 .tw.dk { color: var(--on-dark); }
-.band > p, .two p, .plans .lede, .made, .plats, .proof, .roam-lede, .roam-kick { --dim: rgba(243, 238, 230, .74); }
-.band > p .tw, .two p .tw, .plans .lede .tw, .made .tw, .plats .tw, .proof .tw, .roam-lede .tw, .roam-kick .tw { --on-dark: var(--dim); }
+.band > p, .two p, .plans .lede, .made, .plats, .proof { --dim: rgba(243, 238, 230, .74); }
+.band > p .tw, .two p .tw, .plans .lede .tw, .made .tw, .plats .tw, .proof .tw { --on-dark: var(--dim); }
 .scrawl .tw, .hand-r .hw + .hw .tw { --on-dark: #9BCF7C; }
 .hand .arrow.dk { stroke: #F3EEE6; }
 .stage .tab { color: var(--ink); } .stage .tab.dk { color: #F3EEE6; }

@@ -492,7 +492,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <span class="hw">to do the</span><span class="hw">hard things<svg class="hand-mark under" viewBox="0 0 200 24" preserveAspectRatio="none"><path d="M4 14 C 40 6, 80 20, 120 11 S 180 8, 196 13"/></svg></span>
   </p>
   <!-- the card opens up into these: a desktop and a phone, and the stories they play (js/main.js THE STAGE) -->
-  <div class="work" id="work" aria-label="X0 Bot at work: mail, food, code and meetings">
+  <div class="work" id="work" aria-label="X0 Bot at work: tasks, dinner and a chat">
   <div class="show-box">
   <div class="devices" data-noglitch>
 
@@ -542,67 +542,13 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   </div>
   </div>
   <div class="tabs" id="workTabs" role="group" aria-label="Stories">
-      <button type="button" class="tab" data-story="mail"><span>Mail</span><i></i></button>
+      <button type="button" class="tab" data-story="tasks"><span>Tasks</span><i></i></button>
       <button type="button" class="tab" data-story="food"><span>Food</span><i></i></button>
-      <button type="button" class="tab" data-story="code"><span>Code</span><i></i></button>
-      <button type="button" class="tab" data-story="meet"><span>Meet</span><i></i></button>
+      <button type="button" class="tab" data-story="chat"><span>Chat</span><i></i></button>
+      <button type="button" class="tab" data-story="arrive"><span>Arrived</span><i></i></button>
     </div>
   </div>
   <p class="sr" id="filmsay" aria-live="polite"></p>
-</section>
-
-<section id="roam" class="roam" aria-label="Nomaz, X0 Bot when you travel">
-  <!-- the view stays in place while it is scrolled through (js/nomaz.js): the intro, then each stop in turn -->
-  <div class="roam-pin">
-  <div class="roam-text">
-    <!-- Nomaz, X0 Bot's travel bot, in its own words (css/site.css THE NOMAZ BOX): who it is, then what it does as one
-         trip, three stops on a route that runs on out of the box into the film. Nomaz itself, drawn on the canvas
-         (js/nomaz.js), walks the route as the stops come. -->
-    <div class="roam-box nomaz" data-noglitch>
-      <div class="nz-head">
-        <p class="nz-hey">Hey, I&rsquo;m</p>
-        <h2 class="nz-name">NOMAZ</h2>
-        <p class="nz-love">I love to explore and experience, with interesting people.</p>
-      </div>
-      <ol class="nz-trip">
-        <li><span class="nz-when">Before</span><b>I plan for you</b><span class="nz-what">The right hour, the right table, the tour worth taking. Held till you say yes.</span></li>
-        <li class="nz-out"><span class="nz-when">On the way</span><b>I do the boring part</b><span class="nz-what">Tickets, transfers, check-ins, the small print. Sorted.</span><i class="nz-run" aria-hidden="true"></i></li>
-        <li><span class="nz-when">Out there</span><b>Just promise me company</b><span class="nz-what">I&rsquo;ll watch the weather and the way back. You enjoy the view.</span></li>
-      </ol>
-      <canvas class="nz-bot" aria-hidden="true"></canvas>
-    </div>
-  </div>
-  <figure class="roam-frame" data-noglitch>
-    <video id="roamFilm" src="/media/roam/journeys.mp4" poster="/media/roam/journeys.jpg" muted loop playsinline preload="none" aria-hidden="true"></video>
-  </figure>
-  </div>
-</section>
-
-<section id="minds" class="roam minds" aria-label="X0 Bot works with curious minds">
-  <div class="roam-text">
-    <p class="roam-kick">When you build</p>
-    <h2><span class="on-field">Bots do work with the most</span> <span class="scrawl">curious minds</span></h2>
-    <p class="roam-lede">Every good question opens ten tabs, three notes and a to-do list. That is the price of curiosity, and it is usually paid in focus. X0 Bot carries the weight, so your attention stays on the part only you can do: the thinking.</p>
-    <div class="roam-box">
-      <p class="rb-h">While you think, it</p>
-      <ul>
-        <li><b>Digs in.</b> Reads, compares and sums it up, so you start from answers, not tabs.</li>
-        <li><b>Remembers.</b> Your projects, your notes and exactly where you left off.</li>
-        <li><b>Builds.</b> Xode plans, writes and tests the code. Nothing ships until you approve.</li>
-        <li><b>Keeps going.</b> Ask once, and it runs every day at the hour you choose.</li>
-      </ul>
-      <p class="rb-f">Up at 2 a.m. or 6 a.m., it is up when you are.</p>
-    </div>
-  </div>
-  <!-- two films cut fast and drawn as a dither in orange (js/main.js THE MINDS) -->
-  <figure class="minds-frame" data-noglitch>
-    <video src="/media/minds/night.mp4" muted loop playsinline preload="none" aria-hidden="true"></video>
-    <video src="/media/minds/mind.mp4" muted loop playsinline preload="none" aria-hidden="true"></video>
-    <video src="/media/minds/stars.mp4" muted loop playsinline preload="none" aria-hidden="true"></video>
-    <canvas aria-hidden="true"></canvas>
-    <span class="mf-tc" aria-hidden="true">00:00:00:00</span>
-    <span class="mf-name" aria-hidden="true">NIGHT SHIFT</span>
-  </figure>
 </section>
 
 <section class="band two">

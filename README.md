@@ -6,7 +6,6 @@ it for the backend's pages and the downloads.
 ```
 index.html            the page: markup (the film, the views, the bots, the close), the tag manager inline, a <noscript> fallback; loads js/main.js
 media/face.svg        Blip's face, the mark in the mast (the film's vector icon, on its own)
-media/roam/           the roaming view's loop (journeys.mp4, four journeys in fast cuts, 2.39:1) and its first frame (journeys.jpg)
 js/                   the page's script: paper/ (grain, water, words, glitch: the fabric), stage.js (the fabric's loop, the hand and the scroll on the water, the key), main.js (the film and the views), minis.js and blip/ (the small bots)
 css/site.css          everything the page looks like
 media/meet/           three short muted clips of people on a video call, for the meeting card (Mixkit, free stock video)
@@ -32,41 +31,26 @@ moves, and the page's own words flickering into 0/1 under the pointer
    written by hand in the space over it (Caveat, from Google Fonts): "A team
    of bots" over its left shoulder, with an arrow down into it, and "to do the
    hard things", underlined, off its right; the card stands on the bottom of
-   the window;
-   it writes itself in once. In the card a box rises and "hey X0" is typed
-   while the camera pushes in; the reply, "Here, at your service.", in the
-   middle; the card clears and the bot's face puts itself together, small.
-   The first time only, the page then scrolls itself to the next view; the
-   film itself plays round again every eleven seconds, while it can be seen.
-2. **The roam** (`#roam`): Nomaz, X0 Bot's travel bot, in its own words, in a
-   dotted box: "Hey, I'm NOMAZ", what it loves, and three stops on a route (I
-   plan for you, I do the boring part, just promise me company). The view is
-   three windows tall and stays in place while it is scrolled through
-   (`js/nomaz.js`): the intro alone, then each stop in turn, while Nomaz itself,
-   drawn blue by the bot renderer, walks the route and at the last throws its
-   paper plane out to the film. Beside it a landscape frame, 2.39:1, playing four journeys cut
-   fast into one 13.8-second loop (`media/roam/journeys.mp4`: fourteen cuts,
-   each place at three framings with a slow push, one grade, made with ffmpeg
-   from the owner's clips; `journeys.jpg` is its first frame).
-3. **The work** (`#work`): "A day, handled." (the last word by hand), then a
-   box with a desktop and a phone in it, and under the
-   box only the stories' names as tabs (Mail, Food, Code, Meet), which show
-   how far each has got and jump to one. Four stories, once each as the view comes into
-   sight, and whichever screen is doing the work
-   comes forward while the other steps back: a business's mail set up in the
-   four steps of the backend's docs/mail.md and its inbox filling, then the
-   phone sorting, drafting, asking "Send all" and handing back the one that
-   needs a person; Blip (the real one, drawn like the small bots) peeking round
-   the screen's edge and walking in to listen, "I'm hungry", a deck of food cards, one
-   swiped away, the order on its way; Xode with three repos added, a task, a
-   plan approved, the work done in sight, a flaky test re-run from the phone,
-   shipped, and a daily 8:00 mail set up; a team call on the desktop (real
-   people, the clips in `media/meet/`), captions under whoever speaks, Blip
-   writing the decision and the to-dos as they come, the call ending with the
-   notes sent to all four, and on the phone the notes and three reminders, for
-   you and for the people you work with. Then the desktop fades, the phone
-   takes the middle, "Your food has arrived", and the face again.
-4. **The two promises, the plans and the close**: phone and computer,
+   the window and opens up into a box with a desktop and a phone in it. One
+   conversation, in four parts, named in the tabs under the box (Tasks, Food,
+   Chat, Arrived), which show how far each has got and jump to one:
+   - **Tasks**: "hey X0" and "Here, at your service.", then two things asked in
+     passing and answered in a word ("Move my 4 pm to Friday.", "Tell Rahul
+     yes for Sunday."), not followed through.
+   - **Food**: the card opens into the screens. "I'm hungry." is said; the bot
+     (the real one, drawn like the small bots) walks in along the bottom of the
+     desktop and does the choosing under a deck of food cards: flicks the pizza
+     away, picks the burger, fries and cold coffee one by one, "Done."; and on
+     the phone, "Order placed", arriving in 31 minutes.
+   - **Chat**: back in the card, one more thing asked ("Book a cab for 9
+     tomorrow."), then "Is everything sorted?" and its answer, "All is handled.
+     Have a peaceful dinner, we'll meet soon."
+   - **Arrived**: the card fades into the phone, alone in the middle and standing
+     up out of the box; "Your food has arrived", and the bot's face puts itself
+     together on its screen.
+   The first time only, the page then scrolls itself to the next view, and the
+   card comes back with the face and it all goes round again.
+2. **The two promises, the plans and the close**: phone and computer,
    staying in charge, free to start, and the key again with every device
    under it and three plain facts. Beside it, **X and 0 against Blip**
    (`js/game.js`): the visitor is X, Blip the green 0 (a zero, not an O); he
@@ -78,8 +62,7 @@ With reduced motion the film and the stories show their last frame.
 **The dark half** (`#shade`, drawn in `js/stage.js`): the fabric is light paper
 with dark words in some places and dark with light words in others, and the
 two merge softly. Each view says where its dark is (`SHADE`: the film along
-the bottom, under the card; the roam on the right, behind its film; the day at
-the top, under its light title; the plans going dark into the close; the close
+the bottom, under the card; the plans going dark into the close; the close
 dark), the views are blended across their seams, and the result is drawn into
 a small canvas laid over the fabric as a difference with warm white, so paper,
 grain and words all turn over together. The mast goes dark when the top of

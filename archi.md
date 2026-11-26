@@ -49,7 +49,6 @@ js/                     the page's script, one ES module per part (no build step
   paper/glitch.js       the page's own words flicker into 0/1 under the pointer (not inside `[data-noglitch]`, i.e. the film's card)
 css/site.css            the whole page's look: the card, the showcases (box and line), the devices and every screen in them (the meeting too), the bands
 media/meet/             three muted five-second clips of people on a video call, for the meeting story (Mixkit, free stock video)
-media/roam/             the roaming view's loop: four journeys cut fast, 2.39:1 (journeys.mp4, 13.8 s, 1.8 MB) and its first frame (journeys.jpg)
 api/                    the serverless functions Vercel ran (unused on the VPS: the API serves both routes; to delete once the move is settled)
   _meta.js              shared Meta pixel / Conversions API helpers (reads the dataset id and token from Vercel env)
   site-event.js         POST /v1/site/event: a page event (e.g. a download press) sent to Meta's Conversions API
@@ -75,7 +74,6 @@ README.md               how the page behaves, what to run after a change, how pu
 
 | Looking for | Where |
 |---|---|
-| The roaming view: its loop and its lines | `media/roam/journeys.mp4`, markup `#roam`, `js/main.js` (THE ROAM), `.roam*` in `css/site.css` |
 | The handwritten line beside the film | markup `.hand` in `#stage`, styles `.hand`, `.hw`, `.hand-mark` in `css/site.css` |
 | The film: the typing, the reply, the face assembling, the hand-over scroll | `js/main.js` (THE OPENING FILM; `LINE`), markup `#stage`, styles `css/site.css` |
 | The face (the app icon as vector) | the `<svg id="icon">` inside `#endmark` in `index.html`; reused as a picture by `js/main.js` (`faceSrc`) |
