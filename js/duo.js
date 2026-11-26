@@ -1,28 +1,39 @@
-// WHAT IT DOES, IN TWO CARDS (#duo). The view is held while it is scrolled through, and the scroll moves its track
-// across: the first card comes in from the right and settles in the middle, then the second takes its place. Each card
-// plays a short film (media/duo), drawn live as the opening's green dots: every frame is sampled down to a grid and each
-// cell is lit or not against a 4x4 ordered threshold, light green where it is bright, on a dark ground. Only the card on
-// screen is drawn. With motion reduced the cards stand one above the other, each drawn once.
+// WHAT IT DOES, ON ONE CARD (#duo). The view is held while it is scrolled through and the one card stays in the middle
+// of it; the scroll turns what is on it from the first film and line to the second (--t on the card, css). Each film
+// (media/duo) is drawn live as the opening's green dots: every frame is sampled down to a grid and each cell is lit or
+// not against a 4x4 ordered threshold, light green where it is bright, on a dark ground. Only a film that can be seen is
+// drawn. With motion reduced the two stand one above the other, each drawn once.
 import { reduced } from "./util.js";
 
 const sec = document.getElementById("duo");
 if (sec) {
-  const track = sec.querySelector(".duo-track"), cards = [...sec.querySelectorAll(".duo-card")];
+  const card = sec.querySelector(".duo-card"), cards = [...sec.querySelectorAll(".duo-slide")];
   const BAYER = [0, 8, 2, 10, 12, 4, 14, 6, 3, 11, 1, 9, 15, 7, 13, 5].map((v) => (v + .5) / 16);
   const LIT = [160, 218, 128], MID = [92, 140, 70];
 
-  // ---- the track, moved by the scroll ----
+  // ---- the turn, moved by the scroll: the first film held, the turn to the second, the second held ----
+  // The scroll sets where the turn should be; the card follows it with a little lag, so a flick of the wheel still
+  // turns it smoothly rather than in steps.
   const ease = (k) => k * k * (3 - 2 * k);
-  function place() {
-    if (reduced) return;
+  let want = 0, t = 0, tRaf = 0, tLast = 0, inView = false;
+  function target() {
     const r = sec.getBoundingClientRect(), room = r.height - innerHeight;
     const p = room > 0 ? Math.min(1, Math.max(0, -r.top / room)) : 0;
-    // the track starts a window to the right (its padding); it ends with the last card in the middle
-    const last = cards[cards.length - 1], end = last.offsetLeft + last.offsetWidth / 2 - innerWidth / 2;
-    // two holds, one per card in the middle, with the travel between: in, hold, across, hold
-    const first = cards[0].offsetLeft + cards[0].offsetWidth / 2 - innerWidth / 2;
-    const k = p < .38 ? ease(p / .38) * first : p < .55 ? first : p < .9 ? first + ease((p - .55) / .35) * (end - first) : end;
-    track.style.setProperty("--x", (-k).toFixed(1) + "px");
+    return ease(Math.min(1, Math.max(0, (p - .3) / .4)));
+  }
+  function step(now) {
+    const dt = Math.min(.1, tLast ? (now - tLast) / 1000 : .016); tLast = now;
+    t += (want - t) * (1 - Math.exp(-dt * 9));
+    if (Math.abs(want - t) < .001) t = want;
+    card.style.setProperty("--t", t.toFixed(4));
+    // a film is drawn only while it can be seen at all
+    views.forEach((v, i) => v.show(inView && (i === 0 ? t < .999 : t > .001)));
+    tRaf = t === want ? 0 : requestAnimationFrame(step);
+  }
+  function place() {
+    if (reduced) return;
+    want = target();
+    if (!tRaf) { tLast = 0; tRaf = requestAnimationFrame(step); }
   }
   addEventListener("scroll", place, { passive: true });
   addEventListener("resize", place);
@@ -33,7 +44,7 @@ if (sec) {
     const src = document.createElement("canvas"), sg = src.getContext("2d", { willReadFrequently: true });
     let cols = 0, rows = 0, img = null, cell = 4, raf = 0, on = false, last = 0;
     function size() {
-      const r = card.getBoundingClientRect();
+      const r = { width: card.offsetWidth, height: card.offsetHeight };   // untransformed: the turn scales the films
       cell = r.width < 600 ? 3 : 4;
       cols = Math.ceil(r.width / cell); rows = Math.ceil(r.height / cell);
       src.width = cols; src.height = rows;
@@ -71,8 +82,12 @@ if (sec) {
   });
   views.forEach((v) => v.size());
   addEventListener("resize", () => views.forEach((v) => v.size()));
-  // a card is drawn only while it is on screen
-  const io = new IntersectionObserver((es) => es.forEach((e) => views[cards.indexOf(e.target)].show(e.isIntersecting)), { threshold: .05 });
-  cards.forEach((c) => io.observe(c));
-  place();
+  // the films are drawn only while the card is on screen (and, moving, only the ones that can be seen on it)
+  if (reduced) {
+    const io = new IntersectionObserver((es) => es.forEach((e) => views[cards.indexOf(e.target)].show(e.isIntersecting)), { threshold: .05 });
+    cards.forEach((c) => io.observe(c));
+  } else {
+    new IntersectionObserver((es) => { inView = es.some((e) => e.isIntersecting); views.forEach((v, i) => v.show(inView && (i === 0 ? t < .999 : t > .001))); }, { threshold: .05 }).observe(card);
+    t = want = target(); card.style.setProperty("--t", t.toFixed(4));
+  }
 }

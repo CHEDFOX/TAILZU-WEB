@@ -102,6 +102,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
 <!-- THE OPENING: what X0 Bot is, in one line, and the team itself at a desk, drawn as dithered dots (js/hero.js) -->
 <section id="hero" class="hero">
+  <div class="hero-pin">
   <h1 class="hero-h"><span class="l1">A team of bots</span> <span class="l2">to do the hard things</span></h1>
   <!-- the one key: in the middle here, and as the page scrolls it goes up into the mast's corner and becomes the mast's
        (js/hero.js THE KEY'S HAND-OFF) -->
@@ -111,23 +112,26 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     </a>
   </div>
   <canvas class="hero-team" aria-hidden="true"></canvas>
+  </div>
 </section>
 
-<!-- WHAT IT DOES, IN TWO CARDS: the view stays while it is scrolled through and the two cards come in sideways, each a
-     film drawn live as the opening's green dots, with its line (js/duo.js) -->
+<!-- WHAT IT DOES, ON ONE CARD: the view stays while it is scrolled through and the card stays in the middle of it; the
+     scroll turns what is on it from the first film and line to the second, each a film drawn live as the opening's green
+     dots (js/duo.js) -->
 <section id="duo" class="duo" aria-label="What X0 Bot does">
   <div class="duo-pin">
-    <div class="duo-track">
-      <article class="duo-card" data-noglitch>
+    <div class="duo-card" data-noglitch>
+      <article class="duo-slide">
         <canvas class="duo-media" aria-hidden="true"></canvas>
         <video src="/media/duo/plan.mp4" muted loop playsinline preload="none" aria-hidden="true"></video>
         <h2 class="duo-h">I plan</h2>
       </article>
-      <article class="duo-card" data-noglitch>
+      <article class="duo-slide">
         <canvas class="duo-media" aria-hidden="true"></canvas>
         <video src="/media/duo/do.mp4" muted loop playsinline preload="none" aria-hidden="true"></video>
         <h2 class="duo-h">I do</h2>
       </article>
+      <div class="duo-dots" aria-hidden="true"><i></i><i></i></div>
     </div>
   </div>
 </section>
@@ -565,10 +569,10 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   </div>
   </div>
   <div class="tabs" id="workTabs" role="group" aria-label="Stories">
-      <button type="button" class="tab" data-story="tasks"><span>Tasks</span><i></i></button>
-      <button type="button" class="tab" data-story="food"><span>Food</span><i></i></button>
-      <button type="button" class="tab" data-story="chat"><span>Chat</span><i></i></button>
-      <button type="button" class="tab" data-story="arrive"><span>Arrived</span><i></i></button>
+      <button type="button" class="tab" data-story="tasks" aria-label="Tasks"><i></i></button>
+      <button type="button" class="tab" data-story="food" aria-label="Food"><i></i></button>
+      <button type="button" class="tab" data-story="chat" aria-label="Chat"><i></i></button>
+      <button type="button" class="tab" data-story="arrive" aria-label="Arrived"><i></i></button>
     </div>
   </div>
   <p class="sr" id="filmsay" aria-live="polite"></p>

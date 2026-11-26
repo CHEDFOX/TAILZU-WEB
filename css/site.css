@@ -346,8 +346,7 @@ a { color: var(--ink); text-decoration-color: var(--line); text-underline-offset
 .stage .tab i { background: rgba(255, 255, 255, .25); } .stage .tab i::after { background: #fff; }
 .stage .tabs { width: min(30rem, 86%); }
 .tabs { display: flex; gap: 10px; margin: 0; }
-.tab { flex: 1; min-width: 0; padding: 8px 0 0; border: 0; background: none; cursor: pointer; text-align: center; font: 500 12px/1 var(--sans); letter-spacing: .01em; color: var(--muted); transition: color .3s ease; }
-.tab span { display: block; margin-bottom: 7px; }
+.tab { flex: 1; min-width: 0; padding: 13px 0 14px; border: 0; background: none; cursor: pointer; text-align: center; font: 500 12px/1 var(--sans); letter-spacing: .01em; color: var(--muted); transition: color .3s ease; }
 .tab i { position: relative; display: block; height: 3px; border-radius: 2px; background: rgba(22, 20, 15, .12); overflow: hidden; }
 .tab i::after { content: ""; position: absolute; inset: 0; border-radius: 2px; background: var(--ink); transform-origin: 0 50%; transform: scaleX(var(--p, 0)); }
 .tab.on, .tab:hover { color: var(--ink); }
@@ -895,7 +894,12 @@ html.seeking .stage *, html.seeking .stage *::before, html.seeking .stage *::aft
    itself at a desk, drawn as dithered dots in the brand's green on the field's dark (js/hero.js). The words turn with
    the field like the rest of the page's (tone.js).
    ===================================================================== */
-.hero { position: relative; box-sizing: border-box; min-height: 100svh; width: 100vw; margin-inline: calc(50% - 50vw); overflow: hidden;
+/* the pull (js/hero.js THE PULL): the opening is held while a stretch of scroll pulls X0 up over the horizon; once it is
+   up it stays up for the visit, and the stretch is gone on a reload (html.x0-up) */
+.hero { --pull: 90svh; position: relative; width: 100vw; margin-inline: calc(50% - 50vw); height: calc(100svh + var(--pull)); overflow: clip; }
+html.x0-up .hero { --pull: 0px; }
+@media (prefers-reduced-motion: reduce) { .hero { --pull: 0px !important; } }
+.hero-pin { position: sticky; top: 0; box-sizing: border-box; height: 100svh; overflow: hidden;
   display: flex; flex-direction: column; align-items: center; text-align: center; padding: clamp(108px, 17svh, 180px) 20px 0; }
 .hero-h { position: relative; z-index: 1; margin: 0; font: 400 clamp(44px, 6.2vw, 98px)/1 var(--serif); letter-spacing: -.032em; text-wrap: balance; }
 .hero-h > span { display: block; }
@@ -912,41 +916,52 @@ html.key-handoff .mast .key { opacity: 0; pointer-events: none; }
 /* the picture's canvas covers the whole opening (a jetpack's flight goes up past the title); its scene stands on the bottom */
 .hero-team { position: absolute; inset: 0; z-index: 0; width: 100%; height: 100%; pointer-events: none; }
 @media (max-width: 760px) {
-  .hero { padding-top: clamp(96px, 15svh, 130px); }
+  .hero { --pull: 70svh; }
+  .hero-pin { padding-top: clamp(96px, 15svh, 130px); }
 }
 
 /* =====================================================================
-   WHAT IT DOES, IN TWO CARDS (#duo): the view is held while it is scrolled through (sticky), and the two cards come in
-   from the right, one after the other, as the scroll moves them across (js/duo.js sets the track's --x). Each card is
-   a film drawn live as the opening's green dots on a dark ground, its line set large over it, and a small paper note.
+   WHAT IT DOES, ON ONE CARD (#duo): the view is held while it is scrolled through (sticky) and the one card stays in the
+   middle of it; the scroll turns what is on it from the first film and line to the second (js/duo.js sets --t, 0 to 1,
+   on the card). Each film is drawn live as the opening's green dots on a dark ground, its line set large over it.
    ===================================================================== */
-.duo { position: relative; width: 100vw; margin-inline: calc(50% - 50vw); height: 320svh; }
-.duo-pin { position: sticky; top: 0; height: 100svh; overflow: hidden; display: flex; align-items: center; }
-.duo-track { display: flex; gap: clamp(20px, 3vw, 48px); padding-left: 100vw; will-change: transform; transform: translate3d(var(--x, 0px), 0, 0); }
-.duo-card { position: relative; flex: none; width: min(44vw, 640px, calc(46svh * 1.4)); height: min(46svh, 460px); border-radius: 22px; overflow: hidden;
+.duo { position: relative; width: 100vw; margin-inline: calc(50% - 50vw); height: 240svh; }
+.duo-pin { position: sticky; top: 0; height: 100svh; overflow: hidden; display: grid; place-items: center; }
+.duo-card { --t: 0; position: relative; width: min(64vw, 900px, calc(56svh * 1.6)); height: min(56svh, 560px); border-radius: 22px; overflow: hidden;
   background: #0E120C; box-shadow: 0 0 0 1px rgba(22, 20, 15, .12), 0 60px 110px -50px rgba(0, 0, 0, .7); isolation: isolate; }
-.duo-card video { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
+.duo-slide { position: absolute; inset: 0; margin: 0; will-change: opacity, transform; }
+.duo-slide video { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
 .duo-media { position: absolute; inset: 0; width: 100%; height: 100%; image-rendering: pixelated; }
-.duo-card::after { content: ""; position: absolute; inset: 0; pointer-events: none;
+.duo-slide::after { content: ""; position: absolute; inset: 0; pointer-events: none;
   background: linear-gradient(180deg, rgba(14, 18, 12, 0) 45%, rgba(14, 18, 12, .82) 100%); }
 .duo-h { position: absolute; left: clamp(22px, 3vw, 48px); bottom: clamp(18px, 3vw, 44px); z-index: 2; margin: 0;
-  font: 400 clamp(40px, 5vw, 84px)/.9 var(--serif); letter-spacing: -.035em; text-transform: uppercase; color: #F3EEE6; }
-.duo-note { position: absolute; top: clamp(16px, 2.4vw, 34px); right: clamp(16px, 2.4vw, 34px); z-index: 2; width: min(300px, 62%);
-  padding: 14px 16px 15px; border-radius: 14px; background: #F7F6F2; color: var(--ink); box-shadow: 0 18px 40px -20px rgba(0, 0, 0, .6); rotate: 1.2deg; }
-.duo-card:nth-child(2) .duo-note { left: clamp(16px, 2.4vw, 34px); right: auto; rotate: -1.4deg; }
-.duo-note p { margin: 6px 0 0; font: 400 clamp(14px, 1.05vw, 16px)/1.4 var(--sans); color: rgba(22, 20, 15, .78); }
-.duo-n { font: 500 10.5px/1 var(--sans); letter-spacing: .2em; color: #4F7A3A; }
+  font: 400 clamp(40px, 5vw, 84px)/.9 var(--serif); letter-spacing: -.035em; text-transform: uppercase; color: #F3EEE6; will-change: transform; }
+/* the turn: the first film sinks back and fades as the second comes up through it; the lines slide past each other */
+.duo-slide:nth-child(1) { opacity: calc(1 - var(--t)); transform: scale(calc(1 + var(--t) * .06)); }
+.duo-slide:nth-child(1) .duo-h { transform: translateY(calc(var(--t) * -56px)); opacity: max(0, calc(1 - var(--t) * 2.2)); }
+.duo-slide:nth-child(2) { opacity: var(--t); transform: scale(calc(1.06 - var(--t) * .06)); }
+.duo-slide:nth-child(2) .duo-h { transform: translateY(calc((1 - var(--t)) * 56px)); opacity: max(0, calc(var(--t) * 2.2 - 1.2)); }
+/* which of the two is on: two small marks in the corner, the lit one long */
+.duo-dots { position: absolute; right: clamp(18px, 2.4vw, 34px); bottom: clamp(22px, 3.2vw, 48px); z-index: 3; display: flex; gap: 6px; }
+.duo-dots i { height: 6px; border-radius: 3px; background: rgba(243, 238, 230, .35); }
+.duo-dots i:nth-child(1) { width: calc(6px + (1 - var(--t)) * 16px); background: rgba(243, 238, 230, calc(.35 + (1 - var(--t)) * .6)); }
+.duo-dots i:nth-child(2) { width: calc(6px + var(--t) * 16px); background: rgba(243, 238, 230, calc(.35 + var(--t) * .6)); }
 @media (max-width: 760px) {
-  .duo { height: 280svh; }
-  .duo-card { width: 76vw; height: 48svh; border-radius: 18px; }
-  .duo-note { width: auto; left: 14px; right: 14px; }
-  .duo-card:nth-child(2) .duo-note { right: 14px; }
+  .duo { height: 220svh; }
+  .duo-card { width: calc(100vw - 32px); height: 56svh; border-radius: 18px; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .duo { height: auto; } .duo-pin { position: relative; height: auto; padding: 80px 20px; overflow: visible; }
-  .duo-track { flex-direction: column; padding-left: 0; transform: none; }
-  .duo-card { width: 100%; }
+  .duo { height: auto; } .duo-pin { position: relative; height: auto; padding: 0 16px; overflow: visible; }
+  .duo-card { display: grid; gap: 16px; height: auto; background: none; box-shadow: none; overflow: visible; border-radius: 0; }
+  .duo-slide { position: relative; height: min(56svh, 560px); opacity: 1 !important; transform: none !important; border-radius: 18px; overflow: hidden; background: #0E120C; }
+  .duo-slide .duo-h { transform: none !important; }
+  .duo-dots { display: none; }
 }
+
+/* the room between the views: each view stands on its own, with the page's paper between them */
+main { --vgap: clamp(96px, 16svh, 200px); }
+.duo { margin-block: var(--vgap); }
+.wall { margin-top: var(--vgap); }
 
 /* the dots of the film's box: two fields at different sizes, brighter towards the foot, faded at the top */
 .work .show-box::before { content: ""; position: absolute; inset: 0; z-index: -1; border-radius: inherit; pointer-events: none;

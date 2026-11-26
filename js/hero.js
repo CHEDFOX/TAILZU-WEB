@@ -1,7 +1,9 @@
 // THE OPENING'S PICTURE (#hero .hero-team). X0 itself, rising over the horizon: the bot's head, huge, coming up from
 // the bottom of the window like a sun, drawn by the desktop app's own renderer (js/blip/blip.js) in its own dithered
-// dots, its one eye on the visitor's pointer. On a visit only its antennae are up at first, over the horizon; after two
-// seconds it comes up, very slowly (seven seconds), into the sky. Its antenna is lit like a real light.
+// dots, its one eye on the visitor's pointer. On a
+// visit only its antennae are up, over the horizon; the opening is held while the page is scrolled, and the scroll pulls
+// it up into the sky, a hard pull (THE PULL, below). Once it is all the way up it stays up for the rest of the visit
+// (sessionStorage). Its antenna is lit like a real light.
 //
 // On the horizon in front of it, the crew, each its own kind and never in step: walkers going either way at their own
 // pace, who stop to wave, cheer, laugh or look up at X0, now and then a quirk (dizzy, jelly); skaters, faster, on their
@@ -136,13 +138,25 @@ if (cv && B) {
     }
   }
 
-  // ---- X0's arrival: only the antennae, then up, slowly ----
-  let seenAt = 0;
+  // ---- THE PULL: only the antennae, until the scroll pulls X0 up ----
+  // The opening is held (sticky) over a stretch of scroll (.hero --pull); how far through it the page is, is how far up
+  // X0 is, followed with a little lag so it rises like something heavy being hauled. Scrolling back lets it sink again,
+  // until it has come all the way up once: then it stays up, and on a reload in the same visit the stretch is gone.
+  const hero = cv.closest(".hero"), KEY = "x0-up";
+  let up = false; try { up = sessionStorage.getItem(KEY) === "1"; } catch {}
+  if (up) document.documentElement.classList.add("x0-up");
+  let rise = up ? 1 : 0, riseT = 0;
+  function pulled() {
+    const room = hero.offsetHeight - innerHeight;
+    return room > 0 ? Math.min(1, Math.max(0, -hero.getBoundingClientRect().top / room)) : 1;
+  }
   function sunDrop(now) {
     if (reduced) return 0;
     const full = Math.min(SH * 1.48, W * .9) * .5, ant = full * .78;   // all but the antennae under the horizon, at first
-    // the antennae alone for two seconds, then seven to come all the way up, easing in and out: a slow sunrise
-    const u = Math.min(1, Math.max(0, (now - seenAt - 2000) / 7000)), k = u * u * u * (u * (6 * u - 15) + 10);
+    const want = up ? 1 : pulled(), dt = Math.min(.1, riseT ? (now - riseT) / 1000 : 0); riseT = now;
+    rise += (want - rise) * (1 - Math.exp(-dt * 5));
+    if (!up && rise > .995) { up = true; rise = 1; try { sessionStorage.setItem(KEY, "1"); } catch {} }
+    const u = rise, k = u * u * (3 - 2 * u);
     return ant * (1 - k);
   }
 
@@ -266,7 +280,7 @@ if (cv && B) {
   if (reduced) { frame(4000); addEventListener("scroll", () => frame(4000), { passive: true }); }
   else new IntersectionObserver((es) => {
     cancelAnimationFrame(raf);
-    if (es.some((e) => e.isIntersecting)) { if (!seenAt) seenAt = performance.now(); raf = requestAnimationFrame(loop); }
+    if (es.some((e) => e.isIntersecting)) { riseT = 0; raf = requestAnimationFrame(loop); }
   }).observe(cv);
 }
 
