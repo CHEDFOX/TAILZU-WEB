@@ -50,7 +50,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <link rel="manifest" href="/site.webmanifest">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&amp;family=Newsreader:opsz,wght@6..72,300;6..72,400&amp;family=IBM+Plex+Mono:wght@400&amp;family=Caveat:wght@600;700&amp;display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&amp;family=Newsreader:opsz,wght@6..72,300;6..72,400;6..72,600&amp;family=IBM+Plex+Mono:wght@400&amp;family=Caveat:wght@600;700&amp;display=swap">
 <link rel="stylesheet" href="/css/site.css">
 <noscript>
 <style>
@@ -115,22 +115,17 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   </div>
 </section>
 
-<!-- WHAT IT DOES, ON ONE CARD: the view stays while it is scrolled through and the card stays in the middle of it; the
-     scroll turns what is on it from the first film and line to the second, each a film drawn live as the opening's green
-     dots (js/duo.js) -->
+<!-- WHAT IT DOES, ON ONE CARD: the view stays while it is scrolled through and the card stays in the middle of it; one
+     film plays on it the whole time, drawn live as the opening's green dots, and the scroll turns its line from the
+     first to the second (js/duo.js) -->
 <section id="duo" class="duo" aria-label="What X0 Bot does">
   <div class="duo-pin">
     <div class="duo-card" data-noglitch>
-      <article class="duo-slide">
-        <canvas class="duo-media" aria-hidden="true"></canvas>
-        <video src="/media/duo/plan.mp4" muted loop playsinline preload="none" aria-hidden="true"></video>
-        <h2 class="duo-h">I plan</h2>
-      </article>
-      <article class="duo-slide">
-        <canvas class="duo-media" aria-hidden="true"></canvas>
-        <video src="/media/duo/do.mp4" muted loop playsinline preload="none" aria-hidden="true"></video>
-        <h2 class="duo-h">I do</h2>
-      </article>
+      <!-- one film, playing on; only the line over it turns from the first to the second -->
+      <canvas class="duo-media" aria-hidden="true"></canvas>
+      <video src="/media/duo/plan.mp4" muted loop playsinline preload="none" aria-hidden="true"></video>
+      <h2 class="duo-h">I plan</h2>
+      <h2 class="duo-h">I do</h2>
       <div class="duo-dots" aria-hidden="true"><i></i><i></i></div>
     </div>
   </div>

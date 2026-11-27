@@ -921,25 +921,22 @@ html.key-handoff .mast .key { opacity: 0; pointer-events: none; }
 
 /* =====================================================================
    WHAT IT DOES, ON ONE CARD (#duo): the view is held while it is scrolled through (sticky) and the one card stays in the
-   middle of it; the scroll turns what is on it from the first film and line to the second (js/duo.js sets --t, 0 to 1,
-   on the card). Each film is drawn live as the opening's green dots on a dark ground, its line set large over it.
+   middle of it. One film plays on it the whole time, drawn live as the opening's green dots on a dark ground; the scroll
+   turns its line from the first to the second (js/duo.js sets --t, 0 to 1, on the card).
    ===================================================================== */
 .duo { position: relative; width: 100vw; margin-inline: calc(50% - 50vw); height: 240svh; }
 .duo-pin { position: sticky; top: 0; height: 100svh; overflow: hidden; display: grid; place-items: center; }
 .duo-card { --t: 0; position: relative; width: min(64vw, 900px, calc(56svh * 1.6)); height: min(56svh, 560px); border-radius: 22px; overflow: hidden;
   background: #0E120C; box-shadow: 0 0 0 1px rgba(22, 20, 15, .12), 0 60px 110px -50px rgba(0, 0, 0, .7); isolation: isolate; }
-.duo-slide { position: absolute; inset: 0; margin: 0; will-change: opacity, transform; }
-.duo-slide video { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
+.duo-card video { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
 .duo-media { position: absolute; inset: 0; width: 100%; height: 100%; image-rendering: pixelated; }
-.duo-slide::after { content: ""; position: absolute; inset: 0; pointer-events: none;
+.duo-card::after { content: ""; position: absolute; inset: 0; pointer-events: none;
   background: linear-gradient(180deg, rgba(14, 18, 12, 0) 45%, rgba(14, 18, 12, .82) 100%); }
 .duo-h { position: absolute; left: clamp(22px, 3vw, 48px); bottom: clamp(18px, 3vw, 44px); z-index: 2; margin: 0;
-  font: 400 clamp(40px, 5vw, 84px)/.9 var(--serif); letter-spacing: -.035em; word-spacing: .22em; text-transform: uppercase; color: #F3EEE6; will-change: transform; }
-/* the turn: the first film sinks back and fades as the second comes up through it; the lines slide past each other */
-.duo-slide:nth-child(1) { opacity: calc(1 - var(--t)); transform: scale(calc(1 + var(--t) * .06)); }
-.duo-slide:nth-child(1) .duo-h { transform: translateY(calc(var(--t) * -56px)); opacity: max(0, calc(1 - var(--t) * 2.2)); }
-.duo-slide:nth-child(2) { opacity: var(--t); transform: scale(calc(1.06 - var(--t) * .06)); }
-.duo-slide:nth-child(2) .duo-h { transform: translateY(calc((1 - var(--t)) * 56px)); opacity: max(0, calc(var(--t) * 2.2 - 1.2)); }
+  font: 600 clamp(40px, 5vw, 84px)/.9 var(--serif); letter-spacing: -.03em; word-spacing: .22em; text-transform: uppercase; color: #F3EEE6; will-change: transform, opacity; }
+/* the turn: the first line slides up and fades as the second comes up from under it; the film never stops */
+.duo-h:nth-of-type(1) { transform: translateY(calc(var(--t) * -56px)); opacity: max(0, calc(1 - var(--t) * 2.2)); }
+.duo-h:nth-of-type(2) { transform: translateY(calc((1 - var(--t)) * 56px)); opacity: max(0, calc(var(--t) * 2.2 - 1.2)); }
 /* which of the two is on: two small marks in the corner, the lit one long */
 .duo-dots { position: absolute; right: clamp(18px, 2.4vw, 34px); bottom: clamp(22px, 3.2vw, 48px); z-index: 3; display: flex; gap: 6px; }
 .duo-dots i { height: 6px; border-radius: 3px; background: rgba(243, 238, 230, .35); }
@@ -950,10 +947,9 @@ html.key-handoff .mast .key { opacity: 0; pointer-events: none; }
   .duo-card { width: calc(100vw - 32px); height: 56svh; border-radius: 18px; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .duo { height: auto; } .duo-pin { position: relative; height: auto; padding: 0 16px; overflow: visible; }
-  .duo-card { display: grid; gap: 16px; height: auto; background: none; box-shadow: none; overflow: visible; border-radius: 0; }
-  .duo-slide { position: relative; height: min(56svh, 560px); opacity: 1 !important; transform: none !important; border-radius: 18px; overflow: hidden; background: #0E120C; }
-  .duo-slide .duo-h { transform: none !important; }
+  .duo { height: auto; } .duo-pin { position: relative; height: auto; padding: 0 16px; }
+  .duo-h:nth-of-type(1) { transform: none; opacity: 1; bottom: calc(clamp(18px, 3vw, 44px) + 1.1em); }
+  .duo-h:nth-of-type(2) { transform: none; opacity: 1; }
   .duo-dots { display: none; }
 }
 

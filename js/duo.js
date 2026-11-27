@@ -1,13 +1,13 @@
 // WHAT IT DOES, ON ONE CARD (#duo). The view is held while it is scrolled through and the one card stays in the middle
-// of it; the scroll turns what is on it from the first film and line to the second (--t on the card, css). Each film
-// (media/duo) is drawn live as the opening's green dots: every frame is sampled down to a grid and each cell is lit or
-// not against a 4x4 ordered threshold, light green where it is bright, on a dark ground. Only a film that can be seen is
-// drawn. With motion reduced the two stand one above the other, each drawn once.
+// of it; one film plays on it the whole time, and the scroll turns only its line from the first to the second (--t on
+// the card, css). The film (media/duo/plan.mp4) is drawn live as the opening's green dots: every frame is sampled down
+// to a grid and each cell is lit or not against a 4x4 ordered threshold, light green where it is bright, on a dark
+// ground. It is drawn only while the card can be seen. With motion reduced it is drawn once and both lines stand on it.
 import { reduced } from "./util.js";
 
 const sec = document.getElementById("duo");
 if (sec) {
-  const card = sec.querySelector(".duo-card"), cards = [...sec.querySelectorAll(".duo-slide")];
+  const card = sec.querySelector(".duo-card"), cards = [card];   // one film, on the card itself
   const BAYER = [0, 8, 2, 10, 12, 4, 14, 6, 3, 11, 1, 9, 15, 7, 13, 5].map((v) => (v + .5) / 16);
   const LIT = [46, 226, 140], MID = [16, 138, 86];
 
@@ -27,7 +27,7 @@ if (sec) {
     if (Math.abs(want - t) < .001) t = want;
     card.style.setProperty("--t", t.toFixed(4));
     // a film is drawn only while it can be seen at all
-    views.forEach((v, i) => v.show(inView && (i === 0 ? t < .999 : t > .001)));
+    views[0].show(inView);   // the film plays the whole time the card can be seen
     tRaf = t === want ? 0 : requestAnimationFrame(step);
   }
   function place() {
@@ -87,7 +87,7 @@ if (sec) {
     const io = new IntersectionObserver((es) => es.forEach((e) => views[cards.indexOf(e.target)].show(e.isIntersecting)), { threshold: .05 });
     cards.forEach((c) => io.observe(c));
   } else {
-    new IntersectionObserver((es) => { inView = es.some((e) => e.isIntersecting); views.forEach((v, i) => v.show(inView && (i === 0 ? t < .999 : t > .001))); }, { threshold: .05 }).observe(card);
+    new IntersectionObserver((es) => { inView = es.some((e) => e.isIntersecting); views[0].show(inView); }, { threshold: .05 }).observe(card);
     t = want = target(); card.style.setProperty("--t", t.toFixed(4));
   }
 }
