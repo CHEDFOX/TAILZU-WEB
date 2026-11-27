@@ -1,6 +1,6 @@
 // THE WALL (#wall) and THE FOOTER'S NAME (.sf-mark), on the page's own paper.
 //
-// The wall: three dotted orbits, like a dial, with round badges travelling along
+// The wall: round badges travelling along three unseen orbits, like a dial,
 // them clockwise: stills from the owner's travel clips and patterns, all dithered into the site's dots. A scroll pulls
 // on it: the badges lag the page and spring back, a gentle scroll slows the turn, and a hard one throws it the other way,
 // anticlockwise, before it eases back. A badge under the pointer, or held on a touch screen, opens: everything stops,
@@ -156,7 +156,7 @@ if (wall) {
   }
 
   // ---- the size of things ----
-  let W = 0, H = 0, cx = 0, cy = 0, orbits = [], botH = 160, botFeet = 0, dim = 0;
+  let W = 0, H = 0, cx = 0, cy = 0, orbits = [], botH = 160, botFeet = 0;
   function size() {
     ({ W, H } = T.size());
     cx = W / 2; cy = H * .5;
@@ -241,7 +241,6 @@ if (wall) {
     const t = now / 1000;
     impulse *= Math.exp(-dt * 1.4);
     omega += ((W0 - impulse * .14) - omega) * Math.min(1, dt * 3.5);
-    dim += ((open ? 1 : 0) - dim) * Math.min(1, dt * 8);     // opened: the rest fade back
     pullV += (-70 * pull - 11 * pullV) * dt; pull += pullV * dt; pull = Math.max(-120, Math.min(120, pull));
     for (const b of badges) {
       if (b.hidden) continue;
@@ -253,12 +252,7 @@ if (wall) {
       b.x = cx + Math.cos(b.a) * o.rx; b.y = cy + Math.sin(b.a) * o.ry + pull * (1 + b.ring * .35) + Math.sin(t * .9 + b.wob) * 3;
     }
     T.draw((g, L, k) => {
-      // the orbits: dotted ellipses, the dots marching with the turn
-      orbits.forEach((o, i) => {
-        const n = Math.round((o.rx + o.ry) * .17), sh = (t * omega * 2.2) % 1;
-        g.fillStyle = rgb(L.soft, .55 * (1 - dim * .6));
-        for (let j = 0; j < n; j++) { const a = ((j + sh) / n) * Math.PI * 2; g.beginPath(); g.arc(cx + Math.cos(a) * o.rx, cy + Math.sin(a) * o.ry + pull * (1 + i * .35), 1.3, 0, Math.PI * 2); g.fill(); }
-      });
+      // (the orbits themselves are not drawn: only the badges, travelling along them)
       // the badges, back ones first
       badges.filter((b) => !b.hidden && b.fade > .01).sort((p, q) => p.y - q.y).forEach((b) => {
         const r = b.r0 * (1 + b.grow * .3);
