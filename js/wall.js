@@ -19,8 +19,8 @@ import { fieldDark } from "./stage.js";
 
 const BAYER = [0, 8, 2, 10, 12, 4, 14, 6, 3, 11, 1, 9, 15, 7, 13, 5].map((v) => (v + .5) / 16);
 const LOOK = {
-  dark: { dot: [160, 218, 128], soft: [98, 150, 72], edge: "#14200F" },
-  light: { dot: [22, 20, 15], soft: [79, 122, 58], edge: "#F4F2EC" },
+  dark: { dot: [46, 226, 140], soft: [16, 138, 86], edge: "#062016" },
+  light: { dot: [22, 20, 15], soft: [0, 168, 90], edge: "#F4F2EC" },
 };
 const rgb = (c, a = 1) => `rgba(${c[0]}, ${c[1]}, ${c[2]}, ${a})`;
 const noise = (x, y, t) => .5 + .25 * Math.sin(x * 1.7 + t * 1.1) * Math.cos(y * 1.3 - t * .7) + .25 * Math.sin((x + y) * .9 + t * .5);

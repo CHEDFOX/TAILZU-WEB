@@ -62,7 +62,7 @@ if (root) {
       const at = (i) => [50 + (i % 3) * 100, 50 + Math.floor(i / 3) * 100], [x1, y1] = at(w[0]), [x2, y2] = at(w[2]);
       const dx = Math.sign(x2 - x1) * 30, dy = Math.sign(y2 - y1) * 30;
       win.setAttribute("x1", x1 - dx); win.setAttribute("y1", y1 - dy); win.setAttribute("x2", x2 + dx); win.setAttribute("y2", y2 + dy);
-      win.style.setProperty("--wc", who === "x" ? "#141414" : "#4F7A3A");
+      win.style.setProperty("--wc", who === "x" ? "#141414" : "#00A85A");
       void win.getBoundingClientRect(); win.classList.add("on");
       if (who === "x") { score[0]++; root.classList.add("lost"); say(pick(SAY.won)); } else { score[1]++; root.classList.add("won"); say(pick(SAY.lost)); }
     } else say(pick(SAY.draw));

@@ -9,7 +9,7 @@ const sec = document.getElementById("duo");
 if (sec) {
   const card = sec.querySelector(".duo-card"), cards = [...sec.querySelectorAll(".duo-slide")];
   const BAYER = [0, 8, 2, 10, 12, 4, 14, 6, 3, 11, 1, 9, 15, 7, 13, 5].map((v) => (v + .5) / 16);
-  const LIT = [160, 218, 128], MID = [92, 140, 70];
+  const LIT = [46, 226, 140], MID = [16, 138, 86];
 
   // ---- the turn, moved by the scroll: the first film held, the turn to the second, the second held ----
   // The scroll sets where the turn should be; the card follows it with a little lag, so a flick of the wheel still

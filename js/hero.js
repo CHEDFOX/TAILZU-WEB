@@ -31,7 +31,7 @@ if (cv && B) {
   const BAYER = [0, 8, 2, 10, 12, 4, 14, 6, 3, 11, 1, 9, 15, 7, 13, 5].map((v) => (v + .5) / 16);
   // the two looks: on the dark, light green dots with dark edges; on the paper, ink dots with paper edges
   const LOOK = {
-    dark: { dot: [160, 218, 128], edge: "#14200F", line: "rgb(160, 218, 128)", halo: "rgb(98, 150, 72)" },
+    dark: { dot: [46, 226, 140], edge: "#062016", line: "rgb(46, 226, 140)", halo: "rgb(16, 138, 86)" },
     light: { dot: [22, 20, 15], edge: "#F4F2EC", line: "rgb(22, 20, 15)", halo: "rgba(22, 20, 15, .55)" },
   };
   const hex = (c) => `rgb(${c[0]}, ${c[1]}, ${c[2]})`;
@@ -246,33 +246,40 @@ if (cv && B) {
     glow(now);
   }
 
-  // ---- the lit antenna: a hot core, a bloom that spreads and fades, a faint streak where a lens would catch it, and a
-  // slow breath with a little flicker. On the dark it adds light (it brightens the dots round it); on the paper it is a
-  // soft green halo ----
+  // ---- the lit antenna: small and exact, in the site's own dots. A crisp mint ball, a tight soft halo hugging it, and
+  // round it a ring of fine dots, dithered, thinning outwards, that breathes slowly. No bloom and no lens streak: a
+  // light, not a flare. On the dark the halo adds light; on the paper it is a little deeper green ----
+  const GBAYER = [0, 8, 2, 10, 12, 4, 14, 6, 3, 11, 1, 9, 15, 7, 13, 5].map((v) => (v + .5) / 16);
   function glow(now) {
     const b = cast.dark.sun.ball();
     if (!b) return;
     const t = now / 1000, [x, y, r0] = b, r = Math.max(2.5, r0);
     const dark = fieldDark(cv.getBoundingClientRect().left + x, cv.getBoundingClientRect().top + y) > .5;
-    const breath = reduced ? .85 : .72 + .2 * Math.sin(t * 1.7) + .06 * Math.sin(t * 9.3) * Math.sin(t * 3.1);
+    const breath = reduced ? .8 : .78 + .22 * Math.sin(t * 1.3);           // slow, even: no flicker
+    const ink = dark ? [60, 242, 160] : [0, 150, 80];
     g.save(); g.setTransform(dpr, 0, 0, dpr, 0, 0);
+    // the ring of dots: a grid round the ball, each dot lit against an ordered threshold by how near it is
+    const cell = Math.max(1.6, r * .3), R = r * (2.9 + .4 * breath), n = Math.ceil(R / cell);
+    g.fillStyle = `rgb(${ink[0]}, ${ink[1]}, ${ink[2]})`;
+    for (let j = -n; j <= n; j++) for (let i = -n; i <= n; i++) {
+      const d = Math.hypot(i, j) * cell;
+      if (d < r * 1.3 || d > R) continue;
+      const v = (1 - (d - r * 1.3) / (R - r * 1.3)) ** 2 * (.45 + .35 * breath);
+      if (v <= GBAYER[((j + 64) & 3) * 4 + ((i + 64) & 3)]) continue;
+      const s = cell * (.38 + .22 * v);
+      g.fillRect(x + i * cell - s / 2, y + j * cell - s / 2, s, s);
+    }
+    // the halo: tight, just round the ball
     g.globalCompositeOperation = dark ? "lighter" : "source-over";
-    const k = dark ? 1 : .55;
-    // the bloom
-    let gr = g.createRadialGradient(x, y, 0, x, y, r * 11 * (.9 + .2 * breath));
-    gr.addColorStop(0, `rgba(170, 235, 140, ${.42 * breath * k})`); gr.addColorStop(.18, `rgba(140, 214, 110, ${.18 * breath * k})`);
-    gr.addColorStop(.5, `rgba(110, 190, 90, ${.06 * breath * k})`); gr.addColorStop(1, "rgba(110, 190, 90, 0)");
-    g.fillStyle = gr; g.beginPath(); g.arc(x, y, r * 11 * (.9 + .2 * breath), 0, Math.PI * 2); g.fill();
-    // the streak a lens would catch
-    g.save(); g.translate(x, y); g.scale(1, .07);
-    gr = g.createRadialGradient(0, 0, 0, 0, 0, r * 16);
-    gr.addColorStop(0, `rgba(210, 255, 190, ${.35 * breath * k})`); gr.addColorStop(1, "rgba(210, 255, 190, 0)");
-    g.fillStyle = gr; g.beginPath(); g.arc(0, 0, r * 16, 0, Math.PI * 2); g.fill(); g.restore();
-    // the core: the ball itself lit, near white at its middle
-    gr = g.createRadialGradient(x - r * .25, y - r * .25, 0, x, y, r * 1.25);
-    gr.addColorStop(0, `rgba(250, 255, 240, ${dark ? 1 : .95})`); gr.addColorStop(.45, `rgba(200, 245, 170, ${dark ? .95 : .9})`); gr.addColorStop(1, `rgba(140, 214, 110, ${dark ? .5 : .7})`);
+    let gr = g.createRadialGradient(x, y, r * .8, x, y, r * 2.2);
+    gr.addColorStop(0, `rgba(${ink[0]}, ${ink[1]}, ${ink[2]}, ${(dark ? .38 : .22) * breath})`); gr.addColorStop(1, `rgba(${ink[0]}, ${ink[1]}, ${ink[2]}, 0)`);
+    g.fillStyle = gr; g.beginPath(); g.arc(x, y, r * 2.2, 0, Math.PI * 2); g.fill();
+    // the ball: solid mint, a little lighter at the top, with one small highlight
     g.globalCompositeOperation = "source-over";
-    g.fillStyle = gr; g.beginPath(); g.arc(x, y, r * 1.08, 0, Math.PI * 2); g.fill();
+    gr = g.createLinearGradient(x, y - r, x, y + r);
+    gr.addColorStop(0, dark ? "rgb(170, 255, 214)" : "rgb(46, 226, 140)"); gr.addColorStop(1, dark ? "rgb(46, 226, 140)" : "rgb(0, 168, 90)");
+    g.fillStyle = gr; g.beginPath(); g.arc(x, y, r, 0, Math.PI * 2); g.fill();
+    g.fillStyle = "rgba(255, 255, 255, .7)"; g.beginPath(); g.arc(x - r * .32, y - r * .36, r * .22, 0, Math.PI * 2); g.fill();
     g.restore();
   }
 
