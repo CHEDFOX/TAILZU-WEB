@@ -93,7 +93,7 @@ if (cv && B) {
   // the crew keep to the middle of the window, not its whole width, and fade out at the band's ends
   const band = () => { const m = W < 760 ? .04 : .17; return [W * m, W * (1 - m)]; };
   const edgeFade = (x) => { const [a, b] = band(), f = 70; return Math.max(0, Math.min(1, (x - a) / f, (b - x) / f)); };
-  const botH = (c) => Math.max(40, Math.min(72, SH * .16)) * c.scale;
+  const botH = (c) => Math.max(30, Math.min(54, SH * .12)) * c.scale;   // the crew: small beside X0, in their band
 
   // ---- the crew, a step at a time ----
   let placed = false, lastT = 0;
@@ -285,12 +285,11 @@ if (cv && B) {
       const h = botH(m), walking = m.state === "go" && m.role === "walk";
       const bob = walking ? Math.abs(Math.sin(t * 6 * (m.speed / 46) + m.phase)) * 1.6 : 0;
       const lift = m.role === "skate" ? h * .14 : 0;   // a skater's feet are on the board
-      c.save(); c.translate(m.x, ground() - bob - m.air + m.y);
+      c.save(); c.globalAlpha = fade; c.translate(m.x, ground() - bob - m.air + m.y);   // its board and pack fade with it
       if (m.rot) { c.translate(0, -h * .55); c.rotate(m.rot); c.translate(0, h * .55); }
       if (m.role === "skate") board(m, L, h);
       c.rotate(m.role === "skate" ? m.tilt : m.role === "jet" ? m.tilt : 0); c.scale(m.dir, 1);
       if (m.role === "jet") pack(m, L, h, m.thrust, now);
-      c.globalAlpha = fade;
       team[i].draw(c, 0, -lift, h, now);
       c.restore();
     });
