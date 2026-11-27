@@ -57,7 +57,7 @@ if (cv && B) {
   const cast = {};
   for (const k of ["dark", "light"]) {
     const L = LOOK[k];
-    const sun = B.createBlip({ height: 600, ink: L.edge, pale: L.dot, live: hex(L.dot) });
+    const sun = B.createBlip({ height: 600, ink: L.edge, pale: L.dot, live: hex(L.dot), noStalks: true });   // its antennae are ours (THE ANTENNAE)
     sun.pose("peek");   // not live: the opening lights the antenna itself (glow, below)
     if (reduced) sun.still(true);
     const team = crew.map((c) => {
@@ -90,17 +90,20 @@ if (cv && B) {
     }
   }
   const ground = () => H - 3;
+  // the crew keep to the middle of the window, not its whole width, and fade out at the band's ends
+  const band = () => { const m = W < 760 ? .04 : .17; return [W * m, W * (1 - m)]; };
+  const edgeFade = (x) => { const [a, b] = band(), f = 70; return Math.max(0, Math.min(1, (x - a) / f, (b - x) / f)); };
   const botH = (c) => Math.max(40, Math.min(72, SH * .16)) * c.scale;
 
   // ---- the crew, a step at a time ----
   let placed = false, lastT = 0;
   function back(c, now) {                                   // round again: in from the side it is walking towards from
-    c.x = c.dir > 0 ? -60 : W + 60; c.y = 0; c.state = "go"; c.air = c.rot = c.flip = c.tilt = c.thrust = 0; c.gone = false;
+    const [bl, br] = band(); c.x = c.dir > 0 ? bl - 20 : br + 20; c.y = 0; c.state = "go"; c.air = c.rot = c.flip = c.tilt = c.thrust = 0; c.gone = false;
     c.next = now + rnd(2500, 6000); play(c.i, c.role === "skate" ? "tiptoe" : "stroll");
   }
   function stepCrew(now) {
     const dt = Math.min(.1, lastT ? (now - lastT) / 1000 : 0); lastT = now;
-    if (!placed) { crew.forEach((c, i) => { c.x = (i + rnd(.1, .7)) * (W / crew.length); }); placed = true; }
+    if (!placed) { const [bl, br] = band(); crew.forEach((c, i) => { c.x = bl + (i + rnd(.1, .7)) * ((br - bl) / crew.length); }); placed = true; }
     for (const c of crew) {
       const h = botH(c), since = (now - c.t0) / 1000;
       if (c.role === "jet") {
@@ -109,7 +112,7 @@ if (cv && B) {
         else if (c.state === "ignite") { c.thrust = .25 + Math.random() * .35; if (since > 1.1) { c.state = "fly"; c.t0 = now; c.vx = c.dir * rnd(40, 90); play(c.i, "celebrate", { then: "rest", again: true }); } }
         else if (c.state === "fly") {
           c.thrust = 1; c.y = -(180 * since * since + 30 * since); c.x += c.vx * dt * (1 + since); c.tilt = c.dir * Math.min(.35, since * .25);
-          if (ground() + c.y < -h * 1.6 || c.x < -120 || c.x > W + 120) { c.state = "away"; c.gone = true; c.t0 = now; }
+          if (ground() + c.y < -h * 1.6 || c.x < band()[0] - 60 || c.x > band()[1] + 60) { c.state = "away"; c.gone = true; c.t0 = now; }
         } else if (c.state === "away") { if (since > rnd(3, 6)) back(c, now); }
         else c.thrust = 0;
       } else if (c.role === "skate") {
@@ -138,7 +141,7 @@ if (cv && B) {
         if (c.state !== "go" && since > c.len) { if (c.state === "turn") c.dir *= -1; c.state = "go"; c.air = 0; play(c.i, "stroll"); c.next = now + rnd(2500, 6500); }
         if (c.state === "go" || c.state === "cheer") c.x += c.dir * c.speed * dt * (c.state === "cheer" ? 1.4 : 1);
       }
-      if (c.role !== "jet" || c.state === "go") { if (c.x > W + 90 && c.dir > 0) c.x = -90; if (c.x < -90 && c.dir < 0) c.x = W + 90; }
+      if (c.role !== "jet" || c.state === "go") { const [bl, br] = band(); if (c.x > br + 20 && c.dir > 0) c.x = bl - 20; if (c.x < bl - 20 && c.dir < 0) c.x = br + 20; }
     }
   }
 
@@ -193,6 +196,71 @@ if (cv && B) {
   }
   let c2 = null;   // the drawing it is being drawn into, for the props
 
+  // ---- THE ANTENNAE: X0's own, drawn as on its face (media/face.svg): two long thin stalks, the left with the light at
+  // its tip, the right curling over into a knob. Each is a chain of joints on springs, pulled towards that shape from
+  // where it is rooted in the skull: stiff at the root, looser towards the tip, damped. So when X0 comes up they lag
+  // and swing, overshoot a little and settle; held still, they only sway a little with its breath. ----
+  // the shapes, from the face's paths, in its own units from the root (y down); the face's mark is 809 wide
+  const SHAPE = [
+    [[0, 0], [-12, -32], [-32, -67], [-50, -97], [-60, -122], [-63, -143], [-59, -162]],
+    [[0, 0], [6, -44], [20, -80], [40, -112], [68, -144], [102, -169], [138, -182], [162, -174], [174, -151]],
+  ];
+  const ants = SHAPE.map((sh) => ({ sh, p: null, q: null }));
+  let antH = 0, antT = 0;
+  function restOf(a, root, angle, H0, sway) {
+    const sc = .62 * H0 / 809, cs = Math.cos(angle), sn = Math.sin(angle);   // the face's antennae, at their length on it
+    return a.sh.map(([x, y], i) => { const k = i / (a.sh.length - 1), xs = x * sc + sway * k * k * H0 * .04, ys = y * sc; return [root[0] + xs * cs - ys * sn, root[1] + xs * sn + ys * cs]; });
+  }
+  function stepAntennae(at, now) {
+    if (!at) return;
+    antH = at.H;
+    const dt = Math.min(.05, antT ? (now - antT) / 1000 : .016); antT = now;
+    const sway = reduced ? 0 : Math.sin(now / 1000 * .9) * .5 + Math.sin(now / 1000 * 1.7 + 1) * .25;
+    ants.forEach((a, j) => {
+      const rest = restOf(a, at.roots[j], at.angle, at.H, sway * (j ? -1 : 1));
+      if (!a.p || reduced) { a.p = rest.map((v) => v.slice()); a.q = rest.map((v) => v.slice()); return; }
+      const n = rest.length, sub = 3, h = dt / sub;
+      for (let s2 = 0; s2 < sub; s2++) {
+        a.p[0] = rest[0].slice(); a.q[0] = rest[0].slice();
+        for (let i = 1; i < n; i++) {
+          const k = 260 * (1 - .72 * (i / (n - 1))), damp = .9;          // springs: stiff at the root, loose at the tip
+          const vx = (a.p[i][0] - a.q[i][0]) * damp, vy = (a.p[i][1] - a.q[i][1]) * damp;
+          const ax = (rest[i][0] - a.p[i][0]) * k, ay = (rest[i][1] - a.p[i][1]) * k + at.H * .02;   // and a little weight
+          a.q[i] = a.p[i].slice();
+          a.p[i] = [a.p[i][0] + vx + ax * h * h, a.p[i][1] + vy + ay * h * h];
+        }
+        // the stalk does not stretch: each joint kept its length from the last
+        for (let it = 0; it < 2; it++) for (let i = 1; i < n; i++) {
+          const L0 = Math.hypot(rest[i][0] - rest[i - 1][0], rest[i][1] - rest[i - 1][1]);
+          const dx = a.p[i][0] - a.p[i - 1][0], dy = a.p[i][1] - a.p[i - 1][1], d = Math.hypot(dx, dy) || 1, f = (d - L0) / d;
+          a.p[i][0] -= dx * f; a.p[i][1] -= dy * f;
+        }
+      }
+    });
+  }
+  function stalkPath(c, pts) {
+    c.beginPath(); c.moveTo(pts[0][0], pts[0][1]);
+    for (let i = 1; i < pts.length - 1; i++) { const mx = (pts[i][0] + pts[i + 1][0]) / 2, my = (pts[i][1] + pts[i + 1][1]) / 2; c.quadraticCurveTo(pts[i][0], pts[i][1], mx, my); }
+    const e = pts[pts.length - 1]; c.lineTo(e[0], e[1]);
+  }
+  function drawAntennae(c, k) {
+    if (!antH || !ants[0].p) return;
+    const w = Math.max(1.6, antH * .011), rim = k === "dark" ? `rgb(${LOOK.dark.dot.join(", ")})` : null;
+    c.save(); c.lineCap = "round"; c.lineJoin = "round";
+    ants.forEach((a, j) => {
+      const tip = a.p[a.p.length - 1];
+      // tapering: the stalk drawn twice, the outer half thinner towards the tip
+      if (rim) { c.strokeStyle = rim; c.lineWidth = w + 1.6; stalkPath(c, a.p); c.stroke(); }
+      c.strokeStyle = "#0B0A08"; c.lineWidth = w; stalkPath(c, a.p); c.stroke();
+      if (j === 1) {   // the right one's knob
+        const kr = antH * .014;
+        if (rim) { c.fillStyle = rim; c.beginPath(); c.arc(tip[0], tip[1], kr + .9, 0, Math.PI * 2); c.fill(); }
+        c.fillStyle = "#0B0A08"; c.beginPath(); c.arc(tip[0], tip[1], kr, 0, Math.PI * 2); c.fill();
+      }
+    });
+    c.restore();
+  }
+
   function drawLook(k, now) {
     const t = now / 1000, c = layer[k].getContext("2d"), L = LOOK[k], { sun, team } = cast[k];
     c2 = c;
@@ -205,10 +273,15 @@ if (cv && B) {
     const look = ptr && now - ptrAt < 2500 ? ptr : flying ? [flying.x, ground() + flying.y - botH(flying)] : ptr || [lead.x, ground() - 40];
     sun.lookAt(look);
     sun.draw(c, W / 2, H + 2 + sunDrop(now), t, reduced ? 1 : .42);   // big dots: the renderer's own dither, at a coarse grain
+    if (k === "dark") stepAntennae(sun.antennae(), now);
+    drawAntennae(c, k);
     // the horizon, and the crew on it (and over it)
-    c.fillStyle = L.line; c.fillRect(0, ground(), W, 1.5);
+    { const [bl, br] = band(), hg = c.createLinearGradient(bl - 40, 0, br + 40, 0);
+      hg.addColorStop(0, "rgba(0,0,0,0)"); hg.addColorStop(.12, L.line); hg.addColorStop(.88, L.line); hg.addColorStop(1, "rgba(0,0,0,0)");
+      c.fillStyle = hg; c.fillRect(bl - 40, ground(), br - bl + 80, 1.5); }
     crew.forEach((m, i) => {
       if (m.gone) return;
+      const fade = edgeFade(m.x); if (fade <= 0) return;
       const h = botH(m), walking = m.state === "go" && m.role === "walk";
       const bob = walking ? Math.abs(Math.sin(t * 6 * (m.speed / 46) + m.phase)) * 1.6 : 0;
       const lift = m.role === "skate" ? h * .14 : 0;   // a skater's feet are on the board
@@ -217,6 +290,7 @@ if (cv && B) {
       if (m.role === "skate") board(m, L, h);
       c.rotate(m.role === "skate" ? m.tilt : m.role === "jet" ? m.tilt : 0); c.scale(m.dir, 1);
       if (m.role === "jet") pack(m, L, h, m.thrust, now);
+      c.globalAlpha = fade;
       team[i].draw(c, 0, -lift, h, now);
       c.restore();
     });
@@ -233,7 +307,7 @@ if (cv && B) {
   }
 
   function frame(now) {
-    if (!reduced) stepCrew(now); else if (!placed) { crew.forEach((c, i) => { c.x = (i + .5) * (W / crew.length); }); placed = true; }
+    if (!reduced) stepCrew(now); else if (!placed) { const [bl, br] = band(); crew.forEach((c, i) => { c.x = bl + (i + .5) * ((br - bl) / crew.length); }); placed = true; }
     drawLook("dark", now); drawLook("light", now); fieldMap();
     // the dark look where the field is dark, the light look where it is light
     const dc = layer.dark.getContext("2d"), lc = layer.light.getContext("2d");
@@ -246,40 +320,53 @@ if (cv && B) {
     glow(now);
   }
 
-  // ---- the lit antenna: small and exact, in the site's own dots. A crisp mint ball, a tight soft halo hugging it, and
-  // round it a ring of fine dots, dithered, thinning outwards, that breathes slowly. No bloom and no lens streak: a
-  // light, not a flare. On the dark the halo adds light; on the paper it is a little deeper green ----
-  const GBAYER = [0, 8, 2, 10, 12, 4, 14, 6, 3, 11, 1, 9, 15, 7, 13, 5].map((v) => (v + .5) / 16);
+  // ---- the light at the antenna's tip, alive: it breathes like something asleep (in, a rest, out, never quite even),
+  // its glow's edge shifts like a cell's, the light inside it wanders, now and then a mote drifts up off it like a
+  // firefly and goes out, and when the pointer comes near it brightens and leans towards it. Warm orange, the one warm
+  // thing on the page ----
+  const motes = [];
+  let nextMote = 0, near = 0;
   function glow(now) {
-    const b = cast.dark.sun.ball();
-    if (!b) return;
-    const t = now / 1000, [x, y, r0] = b, r = Math.max(2.5, r0);
+    if (!antH || !ants[0].p) return;
+    const tipP = ants[0].p[ants[0].p.length - 1], x = tipP[0], y = tipP[1], r = Math.max(2.5, antH * .024);
+    const t = now / 1000;
     const dark = fieldDark(cv.getBoundingClientRect().left + x, cv.getBoundingClientRect().top + y) > .5;
-    const breath = reduced ? .8 : .78 + .22 * Math.sin(t * 1.3);           // slow, even: no flicker
-    const ink = dark ? [60, 242, 160] : [0, 150, 80];
+    const ink = dark ? [255, 150, 52] : [226, 112, 24];
+    const ph = t * (.42 + .05 * Math.sin(t * .23)), w = (Math.sin(ph * Math.PI * 2) + 1) / 2;
+    const breath = reduced ? .7 : .55 + .45 * w ** 1.8 + .04 * Math.sin(t * 3.7) * Math.sin(t * 1.9);
+    const dist = ptr ? Math.hypot(ptr[0] - x, ptr[1] - y) : 1e9;
+    near += ((dist < 260 && performance.now() - ptrAt < 2500 ? 1 - dist / 260 : 0) - near) * .08;
+    const lx = ptr ? Math.max(-1, Math.min(1, (ptr[0] - x) / 200)) * near * r * .25 : 0, ly = ptr ? Math.max(-1, Math.min(1, (ptr[1] - y) / 200)) * near * r * .25 : 0;
+    const life = Math.min(1, breath + near * .35);
     g.save(); g.setTransform(dpr, 0, 0, dpr, 0, 0);
-    // the ring of dots: a grid round the ball, each dot lit against an ordered threshold by how near it is
-    const cell = Math.max(1.6, r * .3), R = r * (2.9 + .4 * breath), n = Math.ceil(R / cell);
-    g.fillStyle = `rgb(${ink[0]}, ${ink[1]}, ${ink[2]})`;
-    for (let j = -n; j <= n; j++) for (let i = -n; i <= n; i++) {
-      const d = Math.hypot(i, j) * cell;
-      if (d < r * 1.3 || d > R) continue;
-      const v = (1 - (d - r * 1.3) / (R - r * 1.3)) ** 2 * (.45 + .35 * breath);
-      if (v <= GBAYER[((j + 64) & 3) * 4 + ((i + 64) & 3)]) continue;
-      const s = cell * (.38 + .22 * v);
-      g.fillRect(x + i * cell - s / 2, y + j * cell - s / 2, s, s);
-    }
-    // the halo: tight, just round the ball
     g.globalCompositeOperation = dark ? "lighter" : "source-over";
-    let gr = g.createRadialGradient(x, y, r * .8, x, y, r * 2.2);
-    gr.addColorStop(0, `rgba(${ink[0]}, ${ink[1]}, ${ink[2]}, ${(dark ? .38 : .22) * breath})`); gr.addColorStop(1, `rgba(${ink[0]}, ${ink[1]}, ${ink[2]}, 0)`);
-    g.fillStyle = gr; g.beginPath(); g.arc(x, y, r * 2.2, 0, Math.PI * 2); g.fill();
-    // the ball: solid mint, a little lighter at the top, with one small highlight
+    const R = r * (2.1 + .7 * life);
+    g.beginPath();
+    for (let k = 0; k <= 48; k++) {
+      const a = k / 48 * Math.PI * 2, rr = R * (1 + .07 * Math.sin(a * 3 + t * 1.1) + .05 * Math.sin(a * 5 - t * 1.7));
+      const px = x + lx + Math.cos(a) * rr, py = y + ly + Math.sin(a) * rr; k ? g.lineTo(px, py) : g.moveTo(px, py);
+    }
+    let gr = g.createRadialGradient(x + lx, y + ly, r * .6, x + lx, y + ly, R * 1.08);
+    gr.addColorStop(0, `rgba(${ink[0]}, ${ink[1]}, ${ink[2]}, ${(dark ? .42 : .26) * life})`); gr.addColorStop(.55, `rgba(${ink[0]}, ${ink[1]}, ${ink[2]}, ${(dark ? .12 : .08) * life})`); gr.addColorStop(1, `rgba(${ink[0]}, ${ink[1]}, ${ink[2]}, 0)`);
+    g.fillStyle = gr; g.fill();
+    if (!reduced && now > nextMote) { motes.push({ x: x + (Math.random() - .5) * r, y: y - r * .6, vx: (Math.random() - .5) * 9, vy: -(10 + Math.random() * 12), t0: now, life: 1600 + Math.random() * 1600, s: .5 + Math.random() * .6 }); nextMote = now + 700 + Math.random() * 1600 - near * 500; }
+    for (let i = motes.length - 1; i >= 0; i--) {
+      const m = motes[i], k = (now - m.t0) / m.life;
+      if (k >= 1) { motes.splice(i, 1); continue; }
+      const sec = (now - m.t0) / 1000, mx = m.x + m.vx * sec + Math.sin(sec * 2.4 + i) * 3, my = m.y + m.vy * sec;
+      const a = Math.sin(Math.PI * k) * (.6 + .4 * Math.sin(sec * 9 + i * 2)), ms = r * .28 * m.s;
+      gr = g.createRadialGradient(mx, my, 0, mx, my, ms * 3.2);
+      gr.addColorStop(0, `rgba(${ink[0]}, ${ink[1]}, ${ink[2]}, ${.9 * a})`); gr.addColorStop(.35, `rgba(${ink[0]}, ${ink[1]}, ${ink[2]}, ${.3 * a})`); gr.addColorStop(1, `rgba(${ink[0]}, ${ink[1]}, ${ink[2]}, 0)`);
+      g.fillStyle = gr; g.beginPath(); g.arc(mx, my, ms * 3.2, 0, Math.PI * 2); g.fill();
+    }
     g.globalCompositeOperation = "source-over";
-    gr = g.createLinearGradient(x, y - r, x, y + r);
-    gr.addColorStop(0, dark ? "rgb(170, 255, 214)" : "rgb(46, 226, 140)"); gr.addColorStop(1, dark ? "rgb(46, 226, 140)" : "rgb(0, 168, 90)");
+    // its seat: a thin dark ring, so the light sits on the stalk
+    g.fillStyle = "#0B0A08"; g.beginPath(); g.arc(x, y, r + Math.max(1, r * .14), 0, Math.PI * 2); g.fill();
+    const hx = x + lx * .6 + Math.sin(t * .7) * r * .22 - r * .25, hy = y + ly * .6 + Math.cos(t * .53) * r * .18 - r * .25;
+    gr = g.createRadialGradient(hx, hy, 0, x, y, r * 1.05);
+    gr.addColorStop(0, `rgb(255, ${Math.round(214 + 30 * life)}, ${Math.round(160 + 50 * life)})`);
+    gr.addColorStop(.55, "rgb(255, 150, 52)"); gr.addColorStop(1, "rgb(196, 84, 14)");
     g.fillStyle = gr; g.beginPath(); g.arc(x, y, r, 0, Math.PI * 2); g.fill();
-    g.fillStyle = "rgba(255, 255, 255, .7)"; g.beginPath(); g.arc(x - r * .32, y - r * .36, r * .22, 0, Math.PI * 2); g.fill();
     g.restore();
   }
 

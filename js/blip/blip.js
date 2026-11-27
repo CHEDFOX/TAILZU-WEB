@@ -74,7 +74,7 @@
     let target = null;        // where the pointing hand points, canvas CSS px
     let speaking = false;
     let live = false;
-    let ballAt = null, ballPage = null;   // the antenna's ball: in the figure's box, and where it was last drawn
+    let ballAt = null, ballPage = null, antAt = null, antPage = null;   // antAt: the antennae's roots, for a caller drawing them   // the antenna's ball: in the figure's box, and where it was last drawn
     let level = 0;            // the voice, 0..1: the lit antenna's glow breathes with it
     let still = false;        // reduced motion: no bob, no sway, no hop, no nod
     let nodNext = false, nodAt = -1e9;
@@ -206,23 +206,28 @@
         c.moveTo(hx + .05 * H, hy - R * .82); c.lineTo(hx + .092 * H, hy - R * 1.24); c.lineTo(hx + .142 * H, hy - R * 1.17);
         c.stroke();
       };
-      c.strokeStyle = "rgba(15,13,11,.94)"; c.lineWidth = Math.max(2.6, .032 * H); stalks();
-      c.strokeStyle = pale; c.lineWidth = Math.max(1, .011 * H); stalks();
-      // The ball: amber while the microphone is open.
-      const br = .03 * H;
-      // (At a quarter of whatever the caller draws it at: Blip fades with the
-      // card when the card folds away.) With a voice (`level`) the glow
-      // swells and brightens with it, the way the pill's thread is plucked.
-      if (live) {
-        const a0 = c.globalAlpha, lv = clamp(level);
-        c.fillStyle = o.live; c.globalAlpha = a0 * (.25 + .45 * lv);
-        c.beginPath(); c.arc(kx, ky, br * (2.1 + 2.2 * lv), 0, TAU); c.fill(); c.globalAlpha = a0;
+      // the caller may draw the antennae itself (noStalks): then only where they are rooted is kept (antennae())
+      { const cs = Math.cos(f.angle), sn = Math.sin(f.angle), at = (x, y) => [hx + (x - hx) * cs - (y - hy - R) * sn, hy + R + (x - hx) * sn + (y - hy - R) * cs];
+        antAt = { roots: [at(hx - .062 * H, hy - R * .8), at(hx + .066 * H, hy - R * .8)], angle: f.angle, H }; }
+      if (!o.noStalks) {
+        c.strokeStyle = "rgba(15,13,11,.94)"; c.lineWidth = Math.max(2.6, .032 * H); stalks();
+        c.strokeStyle = pale; c.lineWidth = Math.max(1, .011 * H); stalks();
+        // The ball: amber while the microphone is open.
+        const br = .03 * H;
+        // (At a quarter of whatever the caller draws it at: Blip fades with the
+        // card when the card folds away.) With a voice (`level`) the glow
+        // swells and brightens with it, the way the pill's thread is plucked.
+        if (live) {
+          const a0 = c.globalAlpha, lv = clamp(level);
+          c.fillStyle = o.live; c.globalAlpha = a0 * (.25 + .45 * lv);
+          c.beginPath(); c.arc(kx, ky, br * (2.1 + 2.2 * lv), 0, TAU); c.fill(); c.globalAlpha = a0;
+        }
+        c.fillStyle = ink; c.beginPath(); c.arc(kx, ky, br + .012 * H, 0, TAU); c.fill();
+        c.fillStyle = live ? o.live : pale; c.beginPath(); c.arc(kx, ky, br, 0, TAU); c.fill();
+        // where the ball is in the figure's box, the head's tilt applied, for a caller that lights it itself (ball())
+        { const cs = Math.cos(f.angle), sn = Math.sin(f.angle), dx = kx - hx, dy = ky - (hy + R);
+          ballAt = [hx + dx * cs - dy * sn, hy + R + dx * sn + dy * cs, br]; }
       }
-      c.fillStyle = ink; c.beginPath(); c.arc(kx, ky, br + .012 * H, 0, TAU); c.fill();
-      c.fillStyle = live ? o.live : pale; c.beginPath(); c.arc(kx, ky, br, 0, TAU); c.fill();
-      // where the ball is in the figure's box, the head's tilt applied, for a caller that lights it itself (ball())
-      { const cs = Math.cos(f.angle), sn = Math.sin(f.angle), dx = kx - hx, dy = ky - (hy + R);
-        ballAt = [hx + dx * cs - dy * sn, hy + R + dx * sn + dy * cs, br]; }
       c.fillStyle = ink; c.beginPath(); c.arc(ex, ey, er + .016 * H, 0, TAU); c.fill();
       c.fillStyle = pale; c.beginPath(); c.arc(ex, ey, er, 0, TAU); c.fill();
       const pr2 = .042 * H;
@@ -327,6 +332,7 @@
       ctx.save(); ctx.translate(ox, oy); drawFace(ctx, f.face, t); ctx.restore();
       ctx.restore();
       ballPage = ballAt ? [ox + ballAt[0], oy + ballAt[1], ballAt[2]] : null;
+      antPage = antAt ? { roots: antAt.roots.map(([x, y]) => [ox + x, oy + y]), angle: antAt.angle, H: antAt.H } : null;
       tip = f.fingertip ? [ox + f.fingertip[0], oy + f.fingertip[1]] : null;
     }
 
@@ -339,6 +345,8 @@
       lookAt(p) { look = p ? [p[0], p[1]] : null; },
       /** Where the antenna's ball was last drawn, [x, y, radius] in the caller's units, or null. */
       ball() { return ballPage; },
+      /** Where the antennae are rooted when the caller draws them itself (noStalks): { roots: [[x, y], [x, y]], angle, H }. */
+      antennae() { return antPage; },
       pointAt(p) { target = p ? [p[0], p[1]] : null; },
       speaking(on) { speaking = !!on; },
       live(on) { live = !!on; },
