@@ -321,8 +321,7 @@ if (cv && B) {
 
   // ---- the light at the antenna's tip, alive: it breathes like something asleep (in, a rest, out, never quite even),
   // its glow's edge shifts like a cell's, the light inside it wanders, now and then a mote drifts up off it like a
-  // firefly and goes out, and when the pointer comes near it brightens and leans towards it. Warm orange, the one warm
-  // thing on the page ----
+  // firefly and goes out, and when the pointer comes near it brightens and leans towards it. In the site's mint ----
   const motes = [];
   let nextMote = 0, near = 0;
   function glow(now) {
@@ -330,7 +329,7 @@ if (cv && B) {
     const tipP = ants[0].p[ants[0].p.length - 1], x = tipP[0], y = tipP[1], r = Math.max(2.5, antH * .024);
     const t = now / 1000;
     const dark = fieldDark(cv.getBoundingClientRect().left + x, cv.getBoundingClientRect().top + y) > .5;
-    const ink = dark ? [255, 150, 52] : [226, 112, 24];
+    const ink = dark ? [60, 242, 160] : [0, 150, 80];
     const ph = t * (.42 + .05 * Math.sin(t * .23)), w = (Math.sin(ph * Math.PI * 2) + 1) / 2;
     const breath = reduced ? .7 : .55 + .45 * w ** 1.8 + .04 * Math.sin(t * 3.7) * Math.sin(t * 1.9);
     const dist = ptr ? Math.hypot(ptr[0] - x, ptr[1] - y) : 1e9;
@@ -363,8 +362,8 @@ if (cv && B) {
     g.fillStyle = "#0B0A08"; g.beginPath(); g.arc(x, y, r + Math.max(1, r * .14), 0, Math.PI * 2); g.fill();
     const hx = x + lx * .6 + Math.sin(t * .7) * r * .22 - r * .25, hy = y + ly * .6 + Math.cos(t * .53) * r * .18 - r * .25;
     gr = g.createRadialGradient(hx, hy, 0, x, y, r * 1.05);
-    gr.addColorStop(0, `rgb(255, ${Math.round(214 + 30 * life)}, ${Math.round(160 + 50 * life)})`);
-    gr.addColorStop(.55, "rgb(255, 150, 52)"); gr.addColorStop(1, "rgb(196, 84, 14)");
+    gr.addColorStop(0, dark ? `rgb(${Math.round(180 + 60 * life)}, 255, ${Math.round(212 + 28 * life)})` : "rgb(60, 242, 160)");
+    gr.addColorStop(.55, dark ? "rgb(60, 242, 160)" : "rgb(0, 168, 90)"); gr.addColorStop(1, dark ? "rgb(16, 160, 98)" : "rgb(0, 120, 64)");
     g.fillStyle = gr; g.beginPath(); g.arc(x, y, r, 0, Math.PI * 2); g.fill();
     g.restore();
   }
